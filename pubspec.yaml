@@ -1,0 +1,65 @@
+name: soccerpulse
+description: "App Flutter per seguire il calcio in tempo reale"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  provider: ^6.1.1
+  
+  # UI Components & Animations
+  flutter_animate: ^4.3.0
+  fl_chart: ^0.66.0
+  table_calendar: ^3.0.9
+  shimmer: ^3.0.0
+  flutter_staggered_animations: ^1.1.1
+  flutter_slidable: ^3.0.1
+  
+  # Network & Data
+  http: ^1.1.0
+  intl: ^0.19.0
+  cached_network_image: ^3.3.0
+  
+  # Persistence & Storage
+  shared_preferences: ^2.5.3
+  
+  # Device Features
+  vibration: ^1.8.4
+  
+  # Utilities
+
+  # Material Design Icons
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  # Genera le localizzazioni
+  generate: true
+  
+  # NON abbiamo bisogno di font custom - Roboto è già incluso in Material Design
+  # Se vuoi aggiungere font custom in futuro, usa questa struttura:
+  # fonts:
+  #   - family: CustomFont
+  #     fonts:
+  #       - asset: fonts/CustomFont-Regular.ttf
+  #       - asset: fonts/CustomFont-Bold.ttf
+  #         weight: 700
+  
+  # Assets (se hai immagini o altri assets)
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
