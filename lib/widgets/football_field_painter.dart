@@ -4,8 +4,18 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class FootballFieldPainter extends CustomPainter {
+  final double inset;
+
+  FootballFieldPainter({this.inset = 10});
+
   @override
   void paint(Canvas canvas, Size size) {
+    final safeInset = inset.clamp(0.0, size.shortestSide / 4);
+    final fieldLeft = safeInset;
+    final fieldTop = safeInset;
+    final fieldWidth = size.width - safeInset * 2;
+    final fieldHeight = size.height - safeInset * 2;
+
     // BACKGROUND NERO PURO
     final backgroundPaint = Paint()
       ..color = const Color(0xFF1E1E1E) // Nero puro
@@ -23,21 +33,21 @@ class FootballFieldPainter extends CustomPainter {
 
     // BORDO ESTERNO
     canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
+      Rect.fromLTWH(fieldLeft, fieldTop, fieldWidth, fieldHeight),
       linePaint,
     );
 
     // LINEA CENTRALE ORIZZONTALE
     canvas.drawLine(
-      Offset(0, size.height / 2),
-      Offset(size.width, size.height / 2),
+      Offset(fieldLeft, fieldTop + fieldHeight / 2),
+      Offset(fieldLeft + fieldWidth, fieldTop + fieldHeight / 2),
       linePaint,
     );
 
     // CERCHIO CENTRALE
-    final centerX = size.width / 2;
-    final centerY = size.height / 2;
-    final centerCircleRadius = size.width * 0.12;
+    final centerX = fieldLeft + fieldWidth / 2;
+    final centerY = fieldTop + fieldHeight / 2;
+    final centerCircleRadius = fieldWidth * 0.12;
     canvas.drawCircle(Offset(centerX, centerY), centerCircleRadius, linePaint);
 
     // PUNTO CENTRALE
@@ -47,12 +57,13 @@ class FootballFieldPainter extends CustomPainter {
     canvas.drawCircle(Offset(centerX, centerY), 2, centerDotPaint);
 
     // AREA DI RIGORE SUPERIORE (porta in alto)
-    final penaltyAreaWidth = size.width * 0.4;
-    final penaltyAreaHeight = size.height * 0.18;
-    final penaltyAreaLeft = (size.width - penaltyAreaWidth) / 2;
+    final penaltyAreaWidth = fieldWidth * 0.4;
+    final penaltyAreaHeight = fieldHeight * 0.18;
+    final penaltyAreaLeft = fieldLeft + (fieldWidth - penaltyAreaWidth) / 2;
 
     canvas.drawRect(
-      Rect.fromLTWH(penaltyAreaLeft, 0, penaltyAreaWidth, penaltyAreaHeight),
+      Rect.fromLTWH(
+          penaltyAreaLeft, fieldTop, penaltyAreaWidth, penaltyAreaHeight),
       linePaint,
     );
 
@@ -60,7 +71,7 @@ class FootballFieldPainter extends CustomPainter {
     canvas.drawRect(
       Rect.fromLTWH(
         penaltyAreaLeft,
-        size.height - penaltyAreaHeight,
+        fieldTop + fieldHeight - penaltyAreaHeight,
         penaltyAreaWidth,
         penaltyAreaHeight,
       ),
@@ -68,12 +79,12 @@ class FootballFieldPainter extends CustomPainter {
     );
 
     // AREA DI PORTA SUPERIORE (area piccola)
-    final goalAreaWidth = size.width * 0.2;
-    final goalAreaHeight = size.height * 0.08;
-    final goalAreaLeft = (size.width - goalAreaWidth) / 2;
+    final goalAreaWidth = fieldWidth * 0.2;
+    final goalAreaHeight = fieldHeight * 0.08;
+    final goalAreaLeft = fieldLeft + (fieldWidth - goalAreaWidth) / 2;
 
     canvas.drawRect(
-      Rect.fromLTWH(goalAreaLeft, 0, goalAreaWidth, goalAreaHeight),
+      Rect.fromLTWH(goalAreaLeft, fieldTop, goalAreaWidth, goalAreaHeight),
       linePaint,
     );
 
@@ -81,7 +92,7 @@ class FootballFieldPainter extends CustomPainter {
     canvas.drawRect(
       Rect.fromLTWH(
         goalAreaLeft,
-        size.height - goalAreaHeight,
+        fieldTop + fieldHeight - goalAreaHeight,
         goalAreaWidth,
         goalAreaHeight,
       ),
@@ -90,16 +101,17 @@ class FootballFieldPainter extends CustomPainter {
 
     // PUNTO DI RIGORE SUPERIORE
     final penaltySpotTop = penaltyAreaHeight * 0.65;
-    canvas.drawCircle(Offset(centerX, penaltySpotTop), 2, centerDotPaint);
+    canvas.drawCircle(
+        Offset(centerX, fieldTop + penaltySpotTop), 2, centerDotPaint);
 
     // PUNTO DI RIGORE INFERIORE
-    final penaltySpotBottom = size.height - (penaltyAreaHeight * 0.65);
+    final penaltySpotBottom = fieldTop + fieldHeight - (penaltyAreaHeight * 0.65);
     canvas.drawCircle(Offset(centerX, penaltySpotBottom), 2, centerDotPaint);
 
     // ARCO DI RIGORE SUPERIORE (mezzaluna!)
     _drawPenaltyArc(
       canvas,
-      Offset(centerX, penaltyAreaHeight),
+      Offset(centerX, fieldTop + penaltyAreaHeight),
       centerCircleRadius,
       linePaint,
       true, // arc superiore
@@ -108,7 +120,7 @@ class FootballFieldPainter extends CustomPainter {
     // ARCO DI RIGORE INFERIORE (mezzaluna!)
     _drawPenaltyArc(
       canvas,
-      Offset(centerX, size.height - penaltyAreaHeight),
+      Offset(centerX, fieldTop + fieldHeight - penaltyAreaHeight),
       centerCircleRadius,
       linePaint,
       false, // arc inferiore

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:math' as math;
+import '../models/player_detail.dart';
 
 class PlayerDetailScreen extends StatefulWidget {
   final PlayerDetail player;
@@ -83,7 +84,6 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
                 onPressed: () => Navigator.pop(context),
               ),
               const Spacer(),
-              // BOTTONE CONFRONTA
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
@@ -815,13 +815,8 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
     );
   }
 
-  // ============================================
-  // DIALOG CONFRONTO GIOCATORI - CON RICERCA
-  // ============================================
   void _showPlayerComparisonDialog(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    // Genera giocatori suggeriti
     final suggestedPlayers = _generateComparablePlayers();
 
     showModalBottomSheet(
@@ -852,7 +847,6 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
     );
   }
 
-  // Genera giocatori comparabili (mock - in produzione da API)
   List<PlayerDetail> _generateComparablePlayers() {
     final random = math.Random();
     final positions = ['Attaccante', 'Centrocampista', 'Difensore', 'Portiere'];
@@ -910,7 +904,8 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
         recentRatings:
             List.generate(10, (_) => 6.0 + random.nextDouble() * 2.5),
         recentForm: List.generate(5, (_) => ['W', 'D', 'L'][random.nextInt(3)]),
-        bestMatch: 'Serie A - ${random.nextDouble() * 2 + 7.5}',
+        bestMatch:
+            'Serie A - ${(random.nextDouble() * 2 + 7.5).toStringAsFixed(1)}',
         averageRating: 6.5 + random.nextDouble() * 1.5,
         decisiveGoals: random.nextInt(5),
         skills: {
@@ -942,12 +937,9 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
     });
   }
 }
+// CONTINUA DA PARTE 1...
+// Questo file va DOPO la PARTE 1
 
-// ============================================
-// SCHERMATA CONFRONTO GIOCATORI
-// ============================================
-
-// Widget Dialog con ricerca
 class _PlayerComparisonDialog extends StatefulWidget {
   final PlayerDetail currentPlayer;
   final List<PlayerDetail> suggestedPlayers;
@@ -971,8 +963,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
   List<PlayerDetail> _searchResults = [];
   bool _isSearching = false;
   bool _isLoading = false;
-
-  // Database completo di giocatori per la ricerca
   late List<PlayerDetail> _allPlayers;
 
   @override
@@ -1001,7 +991,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
       _isLoading = true;
     });
 
-    // Simula ricerca con delay (in produzione: chiamata API)
     Future.delayed(const Duration(milliseconds: 300), () {
       if (!mounted) return;
 
@@ -1030,7 +1019,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
       ),
       child: Column(
         children: [
-          // Handle bar
           Container(
             margin: const EdgeInsets.symmetric(vertical: 12),
             width: 40,
@@ -1040,8 +1028,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-
-          // Header
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Row(
@@ -1072,8 +1058,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
               ],
             ),
           ),
-
-          // Giocatore corrente selezionato (compatto)
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             padding: const EdgeInsets.all(12),
@@ -1165,8 +1149,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
               ],
             ),
           ),
-
-          // BARRA DI RICERCA
           Padding(
             padding: const EdgeInsets.all(16),
             child: Container(
@@ -1213,8 +1195,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
               ),
             ),
           ),
-
-          // Contenuto dinamico
           Expanded(
             child:
                 _isSearching ? _buildSearchResults() : _buildSuggestedPlayers(),
@@ -1341,7 +1321,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
             padding: const EdgeInsets.all(14),
             child: Row(
               children: [
-                // Foto giocatore
                 Container(
                   width: 48,
                   height: 48,
@@ -1372,7 +1351,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
                   ),
                 ),
                 const SizedBox(width: 14),
-                // Info giocatore
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1418,7 +1396,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
                     ],
                   ),
                 ),
-                // Stats mini
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -1456,12 +1433,10 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
     );
   }
 
-  // Database completo giocatori (in produzione: da API)
   List<PlayerDetail> _generateAllPlayers() {
-    final random = math.Random(42); // Seed fisso per consistenza
+    final random = math.Random(42);
 
     final playersData = [
-      // Serie A Top Players
       {
         'name': 'Paulo Dybala',
         'team': 'Roma',
@@ -1541,12 +1516,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
         'color': const Color(0xFF0033FF)
       },
       {
-        'name': 'Sergej Milinkovic-Savic',
-        'team': 'Al Hilal',
-        'position': 'Centrocampista',
-        'color': const Color(0xFF0066CC)
-      },
-      {
         'name': 'Khvicha Kvaratskhelia',
         'team': 'Napoli',
         'position': 'Ala Sinistra',
@@ -1575,12 +1544,6 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
         'team': 'Juventus',
         'position': 'Difensore',
         'color': const Color(0xFF000000)
-      },
-      {
-        'name': 'Kim Min-jae',
-        'team': 'Bayern Monaco',
-        'position': 'Difensore',
-        'color': const Color(0xFFDC143C)
       },
       {
         'name': 'Mike Maignan',
@@ -1705,6 +1668,8 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
     }).toList();
   }
 }
+// CONTINUA DA PARTE 2a...
+// Questa è la PARTE FINALE
 
 class PlayerComparisonScreen extends StatelessWidget {
   final PlayerDetail player1;
@@ -1743,19 +1708,12 @@ class PlayerComparisonScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Header con i due giocatori
             _buildPlayersHeader(isDark),
             const SizedBox(height: 24),
-
-            // Radar chart confronto
             _buildRadarComparison(isDark),
             const SizedBox(height: 24),
-
-            // Stats comparative
             _buildStatsComparison(isDark),
             const SizedBox(height: 24),
-
-            // Forma recente
             _buildFormComparison(isDark),
           ],
         ),
@@ -1779,11 +1737,9 @@ class PlayerComparisonScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Player 1
           Expanded(
             child: _buildPlayerHeaderCard(player1),
           ),
-          // VS
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 12),
             padding: const EdgeInsets.all(12),
@@ -1802,7 +1758,6 @@ class PlayerComparisonScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Player 2
           Expanded(
             child: _buildPlayerHeaderCard(player2),
           ),
@@ -1934,7 +1889,6 @@ class PlayerComparisonScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          // Legenda
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -2065,7 +2019,6 @@ class PlayerComparisonScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              // Barra player 1 (da destra a sinistra)
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -2097,7 +2050,6 @@ class PlayerComparisonScreen extends StatelessWidget {
                 height: 16,
                 color: Colors.grey[300],
               ),
-              // Barra player 2 (da sinistra a destra)
               Expanded(
                 child: Row(
                   children: [
@@ -2156,7 +2108,6 @@ class PlayerComparisonScreen extends StatelessWidget {
           const SizedBox(height: 20),
           Row(
             children: [
-              // Player 1 form
               Expanded(
                 child: Column(
                   children: [
@@ -2200,7 +2151,6 @@ class PlayerComparisonScreen extends StatelessWidget {
                 height: 80,
                 color: Colors.grey[300],
               ),
-              // Player 2 form
               Expanded(
                 child: Column(
                   children: [
@@ -2285,9 +2235,6 @@ class PlayerComparisonScreen extends StatelessWidget {
   }
 }
 
-// ============================================
-// RADAR CHART PAINTER - CONFRONTO
-// ============================================
 class ComparisonRadarChartPainter extends CustomPainter {
   final Map<String, double> skills1;
   final Map<String, double> skills2;
@@ -2308,7 +2255,6 @@ class ComparisonRadarChartPainter extends CustomPainter {
     final skillNames = skills1.keys.toList();
     final angleStep = (2 * math.pi) / skillNames.length;
 
-    // Draw grid
     final gridPaint = Paint()
       ..color = Colors.grey.withOpacity(0.3)
       ..style = PaintingStyle.stroke
@@ -2333,7 +2279,6 @@ class ComparisonRadarChartPainter extends CustomPainter {
       canvas.drawPath(path, gridPaint);
     }
 
-    // Draw axis lines
     for (int i = 0; i < skillNames.length; i++) {
       final angle = i * angleStep - math.pi / 2;
       final x = center.dx + radius * math.cos(angle);
@@ -2341,15 +2286,12 @@ class ComparisonRadarChartPainter extends CustomPainter {
       canvas.drawLine(center, Offset(x, y), gridPaint);
     }
 
-    // Draw player 1 skills
     _drawSkillArea(canvas, center, radius, skills1.values.toList(),
         skillNames.length, angleStep, color1);
 
-    // Draw player 2 skills
     _drawSkillArea(canvas, center, radius, skills2.values.toList(),
         skillNames.length, angleStep, color2);
 
-    // Draw labels
     final textStyle = TextStyle(
       color: Colors.grey[700],
       fontSize: 11,
@@ -2394,20 +2336,17 @@ class ComparisonRadarChartPainter extends CustomPainter {
     }
     path.close();
 
-    // Fill
     final fillPaint = Paint()
       ..color = color.withOpacity(0.2)
       ..style = PaintingStyle.fill;
     canvas.drawPath(path, fillPaint);
 
-    // Stroke
     final strokePaint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5;
     canvas.drawPath(path, strokePaint);
 
-    // Points
     for (int i = 0; i < count; i++) {
       final angle = i * angleStep - math.pi / 2;
       final value = values[i] / 100;
@@ -2428,9 +2367,6 @@ class ComparisonRadarChartPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// ============================================
-// RADAR CHART PAINTER - SINGOLO
-// ============================================
 class RadarChartPainter extends CustomPainter {
   final Map<String, double> skills;
   final Color color;
@@ -2448,7 +2384,6 @@ class RadarChartPainter extends CustomPainter {
     final skillValues = skills.values.toList();
     final angleStep = (2 * math.pi) / skillNames.length;
 
-    // Draw grid
     final gridPaint = Paint()
       ..color = Colors.grey.withOpacity(0.3)
       ..style = PaintingStyle.stroke
@@ -2473,7 +2408,6 @@ class RadarChartPainter extends CustomPainter {
       canvas.drawPath(path, gridPaint);
     }
 
-    // Draw axis lines
     for (int i = 0; i < skillNames.length; i++) {
       final angle = i * angleStep - math.pi / 2;
       final x = center.dx + radius * math.cos(angle);
@@ -2481,7 +2415,6 @@ class RadarChartPainter extends CustomPainter {
       canvas.drawLine(center, Offset(x, y), gridPaint);
     }
 
-    // Draw skill values
     final skillPath = Path();
     for (int i = 0; i < skillNames.length; i++) {
       final angle = i * angleStep - math.pi / 2;
@@ -2497,20 +2430,17 @@ class RadarChartPainter extends CustomPainter {
     }
     skillPath.close();
 
-    // Fill
     final fillPaint = Paint()
       ..color = color.withOpacity(0.3)
       ..style = PaintingStyle.fill;
     canvas.drawPath(skillPath, fillPaint);
 
-    // Stroke
     final strokePaint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     canvas.drawPath(skillPath, strokePaint);
 
-    // Draw points
     for (int i = 0; i < skillNames.length; i++) {
       final angle = i * angleStep - math.pi / 2;
       final value = skillValues[i] / 100;
@@ -2526,7 +2456,6 @@ class RadarChartPainter extends CustomPainter {
       );
     }
 
-    // Draw labels
     final textStyle = TextStyle(
       color: Colors.grey[700],
       fontSize: 12,
@@ -2558,97 +2487,4 @@ class RadarChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// ============================================
-// PLAYER DETAIL MODEL
-// ============================================
-class PlayerDetail {
-  final int number;
-  final String name;
-  final String position;
-  final String? photo;
-  final String teamName;
-  final Color teamColor;
-
-  // Season stats
-  final int matches;
-  final int goals;
-  final int assists;
-  final int minutes;
-  final int shots;
-  final int shotsOnTarget;
-  final int dribbles;
-  final int tackles;
-  final int interceptions;
-  final int saves;
-  final int duelsWon;
-  final int yellowCards;
-  final int redCards;
-  final int fouls;
-
-  // Performance
-  final List<double> recentRatings;
-  final List<String> recentForm;
-  final String bestMatch;
-  final double averageRating;
-  final int? decisiveGoals;
-
-  // Skills
-  final Map<String, double> skills;
-
-  // Advanced stats
-  final double passingAccuracy;
-  final double shotsPerGoal;
-  final double minutesPerGoal;
-
-  // Personal info
-  final String birthDate;
-  final int age;
-  final String nationality;
-  final int height;
-  final int weight;
-  final String preferredFoot;
-
-  // Career
-  final List<Map<String, String>> careerHistory;
-
-  PlayerDetail({
-    required this.number,
-    required this.name,
-    required this.position,
-    this.photo,
-    required this.teamName,
-    required this.teamColor,
-    required this.matches,
-    required this.goals,
-    required this.assists,
-    required this.minutes,
-    required this.shots,
-    required this.shotsOnTarget,
-    required this.dribbles,
-    required this.tackles,
-    required this.interceptions,
-    required this.saves,
-    required this.duelsWon,
-    required this.yellowCards,
-    required this.redCards,
-    required this.fouls,
-    required this.recentRatings,
-    required this.recentForm,
-    required this.bestMatch,
-    required this.averageRating,
-    this.decisiveGoals,
-    required this.skills,
-    required this.passingAccuracy,
-    required this.shotsPerGoal,
-    required this.minutesPerGoal,
-    required this.birthDate,
-    required this.age,
-    required this.nationality,
-    required this.height,
-    required this.weight,
-    required this.preferredFoot,
-    required this.careerHistory,
-  });
 }

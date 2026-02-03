@@ -11,6 +11,14 @@ import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
 import '../generated/l10n.dart';
 import 'player_detail_screen.dart';
+import 'player_match_stats_screen.dart';
+import 'player_finished_match_screen.dart';
+import '../widgets/animated_advanced_stats_widgets.dart';
+import '../widgets/interactive_shot_map_widget.dart';
+import '../widgets/passes_widget.dart';
+import '../widgets/heatmap_widget.dart'; // ✅ AGGIUNTO
+import '../painters/advanced_stats_painters.dart';
+import '../painters/formation_field_painter.dart';
 
 class MatchDetailScreen extends StatefulWidget {
   final SoccerMatch match;
@@ -38,7 +46,16 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   bool _heatmapShowHome = true;
   bool _touchMapShowHome = true;
 
+  String _advancedStatsFilter = 'shots';
+  bool _advancedStatsShowHome = true;
+
+  List<ShotData> _homeShotsData = [];
+  List<ShotData> _awayShotsData = [];
+
+  bool _showHomeLineup = true;
+
   String _eventFilter = 'all';
+  bool _matchNotificationsEnabled = false;
 
   @override
   void initState() {
@@ -53,13 +70,118 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     super.dispose();
   }
 
-  void _loadMatchData() {}
+  void _loadMatchData() {
+    _loadMockShotData();
+  }
+
+  void _loadMockShotData() {
+    _homeShotsData = [
+      ShotData(
+        playerName: 'Immobile',
+        playerPhoto: '',
+        minute: 23,
+        startX: 0.5,
+        startY: 0.25,
+        goalX: 0.55,
+        goalY: 0.45,
+        type: 'goal',
+        xG: 0.35,
+        xGOT: 0.42,
+      ),
+      ShotData(
+        playerName: 'Zaccagni',
+        playerPhoto: '',
+        minute: 12,
+        startX: 0.3,
+        startY: 0.35,
+        goalX: 0.65,
+        goalY: 0.30,
+        type: 'on_target',
+        xG: 0.18,
+        xGOT: 0.15,
+      ),
+      ShotData(
+        playerName: 'Anderson',
+        playerPhoto: '',
+        minute: 34,
+        startX: 0.7,
+        startY: 0.40,
+        goalX: 0.75,
+        goalY: 0.55,
+        type: 'blocked',
+        xG: 0.22,
+        xGOT: 0.20,
+      ),
+      ShotData(
+        playerName: 'Guendouzi',
+        playerPhoto: '',
+        minute: 45,
+        startX: 0.6,
+        startY: 0.50,
+        goalX: null,
+        goalY: null,
+        type: 'off_target',
+        xG: 0.08,
+        xGOT: null,
+      ),
+      ShotData(
+        playerName: 'Pedro',
+        playerPhoto: '',
+        minute: 78,
+        startX: 0.35,
+        startY: 0.30,
+        goalX: 0.80,
+        goalY: 0.25,
+        type: 'goal',
+        xG: 0.45,
+        xGOT: 0.50,
+      ),
+    ];
+
+    _awayShotsData = [
+      ShotData(
+        playerName: 'Leao',
+        playerPhoto: '',
+        minute: 18,
+        startX: 0.25,
+        startY: 0.35,
+        goalX: 0.35,
+        goalY: 0.40,
+        type: 'blocked',
+        xG: 0.28,
+        xGOT: 0.25,
+      ),
+      ShotData(
+        playerName: 'Giroud',
+        playerPhoto: '',
+        minute: 56,
+        startX: 0.5,
+        startY: 0.20,
+        goalX: 0.60,
+        goalY: 0.50,
+        type: 'goal',
+        xG: 0.38,
+        xGOT: 0.44,
+      ),
+      ShotData(
+        playerName: 'Theo Hernandez',
+        playerPhoto: '',
+        minute: 42,
+        startX: 0.20,
+        startY: 0.45,
+        goalX: null,
+        goalY: null,
+        type: 'off_target',
+        xG: 0.05,
+        xGOT: null,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final s = S.of(context);
 
     return Scaffold(
       body: Column(
@@ -70,11 +192,11 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                _buildStatisticsTab(theme, isDark, s),
+                _buildStatisticsTab(theme, isDark),
                 _buildAdvancedStatsTab(theme, isDark),
                 _buildEventsTab(theme, isDark),
                 _buildLineupsTab(theme, isDark),
-                _buildInfoTab(theme, isDark, s),
+                _buildInfoTab(theme, isDark),
               ],
             ),
           ),
@@ -111,16 +233,26 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
               ),
               const Spacer(),
               IconButton(
-                icon: const Icon(Icons.favorite_border, color: Colors.white),
-                onPressed: () => _haptic.lightImpact(),
+                icon: Icon(
+                  _matchNotificationsEnabled
+                      ? Icons.notifications
+                      : Icons.notifications_none,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _haptic.lightImpact();
+                  _showMatchNotificationDialog();
+                },
               ),
               IconButton(
-                icon: const Icon(Icons.share, color: Colors.white),
-                onPressed: () => _haptic.lightImpact(),
+                icon: const Icon(Icons.favorite_border, color: Colors.white),
+                onPressed: () {
+                  _haptic.lightImpact();
+                },
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -133,14 +265,13 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                         height: 60,
                         width: 60,
                         errorWidget: (context, url, error) => const Icon(
-                          Icons.shield,
-                          size: 60,
-                          color: Colors.white,
-                        ),
+                            Icons.shield,
+                            color: Colors.white,
+                            size: 60),
                       )
                     else
-                      const Icon(Icons.shield, size: 60, color: Colors.white),
-                    const SizedBox(height: 8),
+                      const Icon(Icons.shield, color: Colors.white, size: 60),
+                    const SizedBox(height: 12),
                     Text(
                       widget.match.homeTeamName,
                       style: const TextStyle(
@@ -155,34 +286,61 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                   ],
                 ),
               ),
-              Column(
-                children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: _getStatusColor(),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      _getStatusText(),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      '${widget.match.homeScore ?? 0} - ${widget.match.awayScore ?? 0}',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: 32,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '${widget.match.homeScore} - ${widget.match.awayScore}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+                    if (widget.match.status == 'live')
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.circle, color: Colors.white, size: 8),
+                            SizedBox(width: 6),
+                            Text(
+                              'LIVE',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      Text(
+                        widget.match.status.toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                  ],
+                ),
               ),
               Expanded(
                 child: Column(
@@ -193,14 +351,13 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                         height: 60,
                         width: 60,
                         errorWidget: (context, url, error) => const Icon(
-                          Icons.shield,
-                          size: 60,
-                          color: Colors.white,
-                        ),
+                            Icons.shield,
+                            color: Colors.white,
+                            size: 60),
                       )
                     else
-                      const Icon(Icons.shield, size: 60, color: Colors.white),
-                    const SizedBox(height: 8),
+                      const Icon(Icons.shield, color: Colors.white, size: 60),
+                    const SizedBox(height: 12),
                     Text(
                       widget.match.awayTeamName,
                       style: const TextStyle(
@@ -224,198 +381,271 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
 
   Widget _buildTabBar(ThemeData theme, bool isDark) {
     return Container(
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[850] : Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      color: isDark ? Colors.grey[900] : Colors.grey[50],
       child: TabBar(
         controller: _tabController,
+        isScrollable: true,
         labelColor: theme.primaryColor,
         unselectedLabelColor: Colors.grey,
         indicatorColor: theme.primaryColor,
-        isScrollable: true,
-        tabs: const [
-          Tab(text: 'Statistiche', icon: Icon(Icons.bar_chart, size: 20)),
-          Tab(text: 'Avanzate', icon: Icon(Icons.analytics, size: 20)),
-          Tab(text: 'Eventi', icon: Icon(Icons.timeline, size: 20)),
-          Tab(text: 'Formazioni', icon: Icon(Icons.people, size: 20)),
-          Tab(text: 'Info', icon: Icon(Icons.info_outline, size: 20)),
+        indicatorWeight: 3,
+        tabs: [
+          Tab(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.bar_chart, size: 20),
+                SizedBox(height: 4),
+                Text('Statistiche', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          ),
+          Tab(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.analytics, size: 20),
+                SizedBox(height: 4),
+                Text('Avanzate', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          ),
+          Tab(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.timeline, size: 20),
+                SizedBox(height: 4),
+                Text('Eventi', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          ),
+          Tab(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.sports_soccer, size: 20),
+                SizedBox(height: 4),
+                Text('Formazioni', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          ),
+          Tab(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.info_outline, size: 20),
+                SizedBox(height: 4),
+                Text('Info', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStatisticsTab(ThemeData theme, bool isDark, S? s) {
-    if (widget.match.isScheduled) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.bar_chart,
-                size: 64, color: Colors.grey.withOpacity(0.5)),
-            const SizedBox(height: 16),
-            Text(
-              s?.noDataAvailable ?? 'Dati non disponibili',
-              style: const TextStyle(color: Colors.grey),
-            ),
+  Widget _buildStatisticsTab(ThemeData theme, bool isDark) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            isDark ? Colors.grey[900]! : Colors.grey[50]!,
+            isDark ? Colors.grey[850]! : Colors.white,
           ],
         ),
-      );
-    }
-
-    final stats = [
-      {'type': 'Possesso', 'home': '55%', 'away': '45%'},
-      {'type': 'Tiri', 'home': '14', 'away': '12'},
-      {'type': 'Tiri in porta', 'home': '6', 'away': '5'},
-      {'type': 'Corner', 'home': '7', 'away': '4'},
-      {'type': 'Falli', 'home': '12', 'away': '15'},
-      {'type': 'Gialli', 'home': '2', 'away': '3'},
-      {'type': 'Rossi', 'home': '0', 'away': '0'},
-      {'type': 'Fuorigioco', 'home': '3', 'away': '2'},
-    ];
-
-    return Container(
-      color: isDark ? Colors.grey[900] : Colors.grey[50],
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        itemCount: stats.length,
-        itemBuilder: (context, index) {
-          final stat = stats[index];
-          return _buildStatRow(
-            stat['type']!,
-            stat['home']!,
-            stat['away']!,
-            theme,
-            isDark,
-          ).animate().fadeIn(delay: Duration(milliseconds: index * 50));
-        },
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildModernStatCard('Possesso Palla', 58, 42, isDark,
+                Icons.pie_chart, theme.primaryColor),
+            const SizedBox(height: 16),
+            _buildModernStatCard('Tiri Totali', 15, 8, isDark,
+                Icons.sports_soccer, Colors.orange),
+            const SizedBox(height: 16),
+            _buildModernStatCard(
+                'Tiri in Porta', 7, 3, isDark, Icons.gps_fixed, Colors.green),
+            const SizedBox(height: 16),
+            _buildModernStatCard(
+                'Calci d\'Angolo', 6, 4, isDark, Icons.flag, Colors.purple),
+            const SizedBox(height: 16),
+            _buildModernStatCard(
+                'Falli', 12, 15, isDark, Icons.warning, Colors.red),
+            const SizedBox(height: 16),
+            _buildModernStatCard('Cartellini Gialli', 2, 3, isDark,
+                Icons.rectangle, Colors.yellow[700]!),
+            const SizedBox(height: 16),
+            _buildModernStatCard(
+                'Fuorigioco', 3, 1, isDark, Icons.front_hand, Colors.blue),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildStatRow(
-      String type, String home, String away, ThemeData theme, bool isDark) {
-    double? homeValue, awayValue;
-    if (type.contains('%')) {
-      homeValue = double.tryParse(home.replaceAll('%', ''));
-      awayValue = double.tryParse(away.replaceAll('%', ''));
-    } else {
-      homeValue = double.tryParse(home);
-      awayValue = double.tryParse(away);
-    }
-
-    final maxValue = (homeValue ?? 0) > (awayValue ?? 0)
-        ? (homeValue ?? 0)
-        : (awayValue ?? 0);
+  Widget _buildModernStatCard(String label, int homeValue, int awayValue,
+      bool isDark, IconData icon, Color accentColor) {
+    final total = homeValue + awayValue;
+    final homePercent = total > 0 ? homeValue / total : 0.5;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            isDark ? Colors.grey[850]! : Colors.white,
+            isDark ? Colors.grey[800]! : Colors.grey[50]!,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: accentColor.withOpacity(0.2),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
       child: Column(
         children: [
-          Text(
-            type,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 12),
           Row(
             children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: accentColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: accentColor, size: 24),
+              ),
+              const SizedBox(width: 12),
               Expanded(
-                child: Row(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  homeValue.toString(),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFE53935), Color(0xFFC62828)],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  awayValue.toString(),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Stack(
+              children: [
+                Container(
+                  height: 12,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFF2196F3).withOpacity(0.3),
+                        const Color(0xFFE53935).withOpacity(0.3),
+                      ],
+                    ),
+                  ),
+                ),
+                Row(
                   children: [
                     Expanded(
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: Colors.blue.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
+                      flex: (homePercent * 100).round(),
+                      child: Container(
+                        height: 12,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
                           ),
-                          if (homeValue != null && maxValue > 0)
-                            FractionallySizedBox(
-                              alignment: Alignment.centerRight,
-                              widthFactor: homeValue / (maxValue * 1.1),
-                              child: Container(
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                            ),
-                        ],
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    SizedBox(
-                      width: 40,
-                      child: Text(
-                        home,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                    Expanded(
+                      flex: ((1 - homePercent) * 100).round(),
+                      child: Container(
+                        height: 12,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFFE53935), Color(0xFFC62828)],
+                          ),
                         ),
-                        textAlign: TextAlign.right,
                       ),
                     ),
                   ],
                 ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${(homePercent * 100).round()}%',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF2196F3),
+                ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 40,
-                      child: Text(
-                        away,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                          if (awayValue != null && maxValue > 0)
-                            FractionallySizedBox(
-                              alignment: Alignment.centerLeft,
-                              widthFactor: awayValue / (maxValue * 1.1),
-                              child: Container(
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
+              Text(
+                '${((1 - homePercent) * 100).round()}%',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFE53935),
                 ),
               ),
             ],
@@ -428,1148 +658,321 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   Widget _buildAdvancedStatsTab(ThemeData theme, bool isDark) {
     return Container(
       color: isDark ? Colors.grey[900] : Colors.grey[50],
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[850] : Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Statistiche Avanzate',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _buildAdvancedStatsFilterChip(
+                          'Tiri', 'shots', Icons.sports_soccer, isDark, theme),
+                      const SizedBox(width: 8),
+                      _buildAdvancedStatsFilterChip('Passaggi', 'passes',
+                          Icons.swap_horiz, isDark, theme),
+                      const SizedBox(width: 8),
+                      _buildAdvancedStatsFilterChip(
+                          'Heatmap', 'heatmap', Icons.whatshot, isDark, theme),
+                      const SizedBox(width: 8),
+                      _buildAdvancedStatsFilterChip('Pressione', 'pressure',
+                          Icons.fitness_center, isDark, theme),
+                      const SizedBox(width: 8),
+                      _buildAdvancedStatsFilterChip(
+                          'Tocchi', 'touches', Icons.touch_app, isDark, theme),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  // ✅ NASCOSTO SOLO PER PASSAGGI
+                  if (_advancedStatsFilter != 'passes')
+                    _buildTeamSelectorForAdvanced(isDark, theme),
+                  if (_advancedStatsFilter != 'passes')
+                    const SizedBox(height: 16),
+                  _buildSelectedAdvancedContent(isDark, theme),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAdvancedStatsFilterChip(
+      String label, String value, IconData icon, bool isDark, ThemeData theme) {
+    final isSelected = _advancedStatsFilter == value;
+    return GestureDetector(
+      onTap: () {
+        _haptic.lightImpact();
+        setState(() => _advancedStatsFilter = value);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [
+                    theme.primaryColor,
+                    theme.primaryColor.withOpacity(0.7)
+                  ],
+                )
+              : null,
+          color: isSelected
+              ? null
+              : (isDark ? Colors.grey[800] : Colors.grey[200]),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: theme.primaryColor.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            _buildXGChart(theme, isDark),
-            const SizedBox(height: 20),
-            _buildShotMap(theme, isDark),
-            const SizedBox(height: 20),
-            _buildTouchMap(theme, isDark),
-            const SizedBox(height: 20),
-            _buildHeatmap(theme, isDark),
-            const SizedBox(height: 20),
-            _buildPassNetwork(theme, isDark),
-            const SizedBox(height: 20),
-            _buildPressureMap(theme, isDark),
+            Icon(
+              icon,
+              size: 20,
+              color: isSelected
+                  ? Colors.white
+                  : (isDark ? Colors.white70 : Colors.black87),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected
+                    ? Colors.white
+                    : (isDark ? Colors.white70 : Colors.black87),
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildXGChart(ThemeData theme, bool isDark) {
-    const homeXG = 2.3;
-    const awayXG = 1.7;
-    const maxXG = 4.0;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[850] : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFFF9800), Color(0xFFFFA726)],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child:
-                    const Icon(Icons.insights, color: Colors.white, size: 20),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Expected Goals (xG)',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Qualità delle occasioni create',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              SizedBox(
-                width: 80,
-                child: Text(
-                  widget.match.homeTeamName,
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Stack(
-                  children: [
-                    Container(
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2196F3).withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: homeXG / maxXG,
-                      child: Container(
-                        height: 30,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF2196F3), Color(0xFF64B5F6)],
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              const SizedBox(
-                width: 40,
-                child: Text(
-                  '2.3',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2196F3),
-                  ),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              SizedBox(
-                width: 80,
-                child: Text(
-                  widget.match.awayTeamName,
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Stack(
-                  children: [
-                    Container(
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE53935).withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: awayXG / maxXG,
-                      child: Container(
-                        height: 30,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFFE53935), Color(0xFFEF5350)],
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              const SizedBox(
-                width: 40,
-                child: Text(
-                  '1.7',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFE53935),
-                  ),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildShotMap(ThemeData theme, bool isDark) {
-    final selectedShots =
-        _shotMapShowHome ? _generateMockShots(true) : _generateMockShots(false);
-    final teamColor =
-        _shotMapShowHome ? const Color(0xFF2196F3) : const Color(0xFFE53935);
-
-    final totalShots = selectedShots.length;
-    final onTarget = selectedShots.where((s) => s.isOnTarget).length;
-    final goals = selectedShots.where((s) => s.isGoal).length;
-    final avgXG = selectedShots.fold(0.0, (sum, shot) => sum + shot.xg) /
-        selectedShots.length;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            isDark ? Colors.grey[850]! : Colors.white,
-            isDark ? Colors.grey[900]! : Colors.grey[50]!,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: teamColor.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [teamColor, teamColor.withOpacity(0.7)],
-                  ),
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: teamColor.withOpacity(0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child:
-                    const Icon(Icons.gps_fixed, color: Colors.white, size: 22),
-              ),
-              const SizedBox(width: 14),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Shot Map',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.5),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'Posizione e qualità tiri',
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          _buildTeamSelector(
-            _shotMapShowHome,
-            (value) => setState(() => _shotMapShowHome = value),
-            isDark,
-          ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  teamColor.withOpacity(0.08),
-                  teamColor.withOpacity(0.03),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: teamColor.withOpacity(0.2), width: 1.5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildQuickStat('Tiri', totalShots.toString(),
-                    Icons.sports_soccer, teamColor),
-                _buildQuickStatDivider(isDark),
-                _buildQuickStat(
-                    'In porta', onTarget.toString(), Icons.adjust, teamColor),
-                _buildQuickStatDivider(isDark),
-                _buildQuickStat(
-                    'Goal', goals.toString(), Icons.sports_score, teamColor),
-                _buildQuickStatDivider(isDark),
-                _buildQuickStat('xG avg', avgXG.toStringAsFixed(2),
-                    Icons.analytics, teamColor),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF2D5A2D),
-                  Color(0xFF1E4A1E),
-                  Color(0xFF2D5A2D),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(14),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 3),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: SizedBox(
-                height: 500,
-                child: CustomPaint(
-                  painter: PerfectHalfFieldShotMapPainter(
-                    isDark: isDark,
-                    shots: selectedShots,
-                    teamColor: teamColor,
-                  ),
-                  size: const Size(double.infinity, 500),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 18),
-          _buildShotLegend(teamColor, isDark),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTouchMap(ThemeData theme, bool isDark) {
-    final teamColor =
-        _touchMapShowHome ? const Color(0xFF2196F3) : const Color(0xFFE53935);
-
-    final touches = _generateMockTouches();
-    final totalTouches = touches.length;
-    final defensiveThird = touches.where((t) => t.y > 0.66).length;
-    final middleThird = touches.where((t) => t.y >= 0.33 && t.y <= 0.66).length;
-    final attackingThird = touches.where((t) => t.y < 0.33).length;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            isDark ? Colors.grey[850]! : Colors.white,
-            isDark ? Colors.grey[900]! : Colors.grey[50]!,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: teamColor.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [teamColor, teamColor.withOpacity(0.7)],
-                  ),
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: teamColor.withOpacity(0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child:
-                    const Icon(Icons.touch_app, color: Colors.white, size: 22),
-              ),
-              const SizedBox(width: 14),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Touch Map',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.5),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'Posizione tocchi palla',
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          _buildTeamSelector(
-            _touchMapShowHome,
-            (value) => setState(() => _touchMapShowHome = value),
-            isDark,
-          ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  teamColor.withOpacity(0.08),
-                  teamColor.withOpacity(0.03),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: teamColor.withOpacity(0.2), width: 1.5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildQuickStat('Totale', totalTouches.toString(),
-                    Icons.touch_app, teamColor),
-                _buildQuickStatDivider(isDark),
-                _buildQuickStat('Difesa', defensiveThird.toString(),
-                    Icons.shield, teamColor),
-                _buildQuickStatDivider(isDark),
-                _buildQuickStat(
-                    'Centro', middleThird.toString(), Icons.code, teamColor),
-                _buildQuickStatDivider(isDark),
-                _buildQuickStat('Attacco', attackingThird.toString(),
-                    Icons.sports_soccer, teamColor),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF2D5A2D),
-                  Color(0xFF1E4A1E),
-                  Color(0xFF2D5A2D),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(14),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 3),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: SizedBox(
-                height: 500,
-                child: CustomPaint(
-                  painter: TouchMapPainter(
-                    isDark: isDark,
-                    touches: touches,
-                    teamColor: teamColor,
-                  ),
-                  size: const Size(double.infinity, 500),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 18),
-          _buildTouchLegend(teamColor, isDark),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeatmap(ThemeData theme, bool isDark) {
-    final teamColor =
-        _heatmapShowHome ? const Color(0xFF2196F3) : const Color(0xFFE53935);
-
-    final heatmapData = _generateHeatmapData();
-    final maxIntensity =
-        heatmapData.map((d) => d.intensity).reduce((a, b) => a > b ? a : b);
-    final avgIntensity = heatmapData.fold(0.0, (sum, d) => sum + d.intensity) /
-        heatmapData.length;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            isDark ? Colors.grey[850]! : Colors.white,
-            isDark ? Colors.grey[900]! : Colors.grey[50]!,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: teamColor.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [teamColor, teamColor.withOpacity(0.7)],
-                  ),
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: teamColor.withOpacity(0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child:
-                    const Icon(Icons.whatshot, color: Colors.white, size: 22),
-              ),
-              const SizedBox(width: 14),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Heatmap',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.5),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'Zone più frequentate',
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          _buildTeamSelector(
-            _heatmapShowHome,
-            (value) => setState(() => _heatmapShowHome = value),
-            isDark,
-          ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  teamColor.withOpacity(0.08),
-                  teamColor.withOpacity(0.03),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: teamColor.withOpacity(0.2), width: 1.5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildQuickStat('Zone', heatmapData.length.toString(),
-                    Icons.grid_on, teamColor),
-                _buildQuickStatDivider(isDark),
-                _buildQuickStat('Max', (maxIntensity * 100).toInt().toString(),
-                    Icons.trending_up, teamColor),
-                _buildQuickStatDivider(isDark),
-                _buildQuickStat(
-                    'Media',
-                    (avgIntensity * 100).toInt().toString(),
-                    Icons.show_chart,
-                    teamColor),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF2D5A2D),
-                  Color(0xFF1E4A1E),
-                  Color(0xFF2D5A2D),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(14),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 3),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: SizedBox(
-                height: 500,
-                child: CustomPaint(
-                  painter: HeatmapPainter(
-                    isDark: isDark,
-                    heatmapData: heatmapData,
-                    teamColor: teamColor,
-                  ),
-                  size: const Size(double.infinity, 500),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 18),
-          _buildHeatmapLegend(teamColor, isDark),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPassNetwork(ThemeData theme, bool isDark) {
-    final teamColor = _passNetworkShowHome
-        ? const Color(0xFF2196F3)
-        : const Color(0xFFE53935);
-
-    final players = _generatePassNetworkPlayers();
-    final passes = _generateMockPasses();
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[850] : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF9C27B0), Color(0xFFBA68C8)],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(Icons.share, color: Colors.white, size: 20),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Rete Passaggi',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Connessioni tra giocatori',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          _buildTeamSelector(
-            _passNetworkShowHome,
-            (value) => setState(() => _passNetworkShowHome = value),
-            isDark,
-          ),
-          const SizedBox(height: 20),
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF2E7D32),
-                  Color(0xFF1B5E20),
-                  Color(0xFF2E7D32),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.3), width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: SizedBox(
-                height: 500,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final fieldWidth = constraints.maxWidth;
-                    const fieldHeight = 500.0;
-
-                    return Stack(
-                      clipBehavior: Clip.hardEdge,
-                      children: [
-                        CustomPaint(
-                          painter: FootballFieldPainter(),
-                          size: Size(fieldWidth, fieldHeight),
-                        ),
-                        CustomPaint(
-                          painter: PassNetworkLinesPainter(
-                            isDark: isDark,
-                            passes: passes,
-                            players: players,
-                            teamColor: teamColor,
-                          ),
-                          size: Size(fieldWidth, fieldHeight),
-                        ),
-                        ...players.map((player) {
-                          final playerX = player.positionOffset.dx * fieldWidth;
-                          final playerY =
-                              player.positionOffset.dy * fieldHeight;
-                          final maxPasses = players
-                              .map((p) => p.totalPasses)
-                              .reduce((a, b) => a > b ? a : b);
-                          final passRatio = player.totalPasses / maxPasses;
-                          final radius = 20.0 + (passRatio * 10);
-
-                          return Positioned(
-                            left: playerX - 38,
-                            top: playerY - 30,
-                            child: GestureDetector(
-                              onTap: () {
-                                _haptic.lightImpact();
-                                // VAI DIRETTAMENTE AI DETTAGLI GIOCATORE
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PlayerDetailScreen(
-                                      player: PlayerDetail(
-                                        number: player.number,
-                                        name: player.name,
-                                        position: player.role,
-                                        photo: null,
-                                        teamName: _passNetworkShowHome
-                                            ? widget.match.homeTeamName
-                                            : widget.match.awayTeamName,
-                                        teamColor: teamColor,
-                                        matches: 25,
-                                        goals: 5,
-                                        assists: 3,
-                                        minutes: 2100,
-                                        shots: 45,
-                                        shotsOnTarget: 28,
-                                        dribbles: 32,
-                                        tackles: 45,
-                                        interceptions: 30,
-                                        saves: 0,
-                                        duelsWon: 58,
-                                        yellowCards: 2,
-                                        redCards: 0,
-                                        fouls: 18,
-                                        recentRatings: [
-                                          7.2,
-                                          7.8,
-                                          6.9,
-                                          8.1,
-                                          7.5,
-                                          7.0,
-                                          8.3,
-                                          7.6,
-                                          7.9,
-                                          7.4
-                                        ],
-                                        recentForm: ['W', 'W', 'D', 'W', 'L'],
-                                        bestMatch: 'Serie A - 8.5',
-                                        averageRating: 7.5,
-                                        decisiveGoals: 2,
-                                        skills: {
-                                          'Velocità': 85.0,
-                                          'Tiro': 88.0,
-                                          'Passaggio': 82.0,
-                                          'Dribbling': 87.0,
-                                          'Difesa': 68.0,
-                                          'Fisico': 76.0,
-                                        },
-                                        passingAccuracy: 87.5,
-                                        shotsPerGoal: 3.8,
-                                        minutesPerGoal: 175.0,
-                                        birthDate: '15/03/1995',
-                                        age: 28,
-                                        nationality: 'Italia',
-                                        height: 182,
-                                        weight: 75,
-                                        preferredFoot: 'Destro',
-                                        careerHistory: [],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: SizedBox(
-                                width: 76,
-                                height: 60,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: radius * 2,
-                                      height: radius * 2,
-                                      decoration: BoxDecoration(
-                                        gradient: RadialGradient(
-                                          colors: [
-                                            Color.lerp(
-                                                teamColor, Colors.white, 0.3)!,
-                                            teamColor,
-                                            Color.lerp(
-                                                teamColor, Colors.black, 0.2)!,
-                                          ],
-                                          stops: const [0.0, 0.5, 1.0],
-                                        ),
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 2.5,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: teamColor.withOpacity(0.7),
-                                            blurRadius: 12,
-                                            spreadRadius: 2,
-                                          ),
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.4),
-                                            blurRadius: 6,
-                                            offset: const Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          player.number.toString(),
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: radius * 0.7,
-                                            fontWeight: FontWeight.w900,
-                                            shadows: const [
-                                              Shadow(
-                                                color: Colors.black54,
-                                                blurRadius: 4,
-                                                offset: Offset(1, 1),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 3),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.85),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(
-                                        player.name.length > 8
-                                            ? '${player.name.substring(0, 7)}.'
-                                            : player.name,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 8,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFF9C27B0).withOpacity(0.12),
-                  const Color(0xFF9C27B0).withOpacity(0.05),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFF9C27B0).withOpacity(0.3),
-                width: 1.5,
-              ),
-            ),
-            child: const Wrap(
-              spacing: 8,
-              runSpacing: 6,
-              children: [
-                Text('• Linee spesse = Molti passaggi',
-                    style: TextStyle(fontSize: 11)),
-                Text('• Cerchi grandi = Più passaggi totali',
-                    style: TextStyle(fontSize: 11)),
-                Text('• Tap su giocatore = Vedi dettagli',
-                    style: TextStyle(fontSize: 11)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPressureMap(ThemeData theme, bool isDark) {
-    final teamColor = _pressureMapShowHome
-        ? const Color(0xFF2196F3)
-        : const Color(0xFFE53935);
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[850] : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFE53935), Color(0xFFEF5350)],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child:
-                    const Icon(Icons.flash_on, color: Colors.white, size: 20),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Mappa Pressing',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Zone di recupero palla',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          _buildTeamSelector(
-            _pressureMapShowHome,
-            (value) => setState(() => _pressureMapShowHome = value),
-            isDark,
-          ),
-          const SizedBox(height: 20),
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF2D5A2D),
-                  Color(0xFF1E4A1E),
-                  Color(0xFF2D5A2D),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(12),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.25), width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: teamColor.withOpacity(0.2),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                height: 400,
-                child: CustomPaint(
-                  painter: PerfectPressureMapPainter(
-                    isDark: isDark,
-                    pressureZones: _generateMockPressureZones(),
-                    teamColor: teamColor,
-                  ),
-                  size: const Size(double.infinity, 400),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  teamColor.withOpacity(0.12),
-                  teamColor.withOpacity(0.05),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: teamColor.withOpacity(0.3),
-                width: 1.5,
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildPressureLegendImproved('Alta', 0.8, teamColor),
-                Container(height: 30, width: 1, color: Colors.grey[400]),
-                _buildPressureLegendImproved('Media', 0.5, teamColor),
-                Container(height: 30, width: 1, color: Colors.grey[400]),
-                _buildPressureLegendImproved('Bassa', 0.3, teamColor),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPressureLegendImproved(
-      String label, double intensity, Color teamColor) {
-    return Column(
+  Widget _buildTeamSelectorForAdvanced(bool isDark, ThemeData theme) {
+    return Row(
       children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              colors: [
-                teamColor.withOpacity(intensity),
-                teamColor.withOpacity(intensity * 0.5),
-                teamColor.withOpacity(0),
-              ],
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              _haptic.lightImpact();
+              setState(() {
+                _advancedStatsShowHome = true;
+                _shotMapShowHome = true;
+                _passNetworkShowHome = true;
+                _pressureMapShowHome = true;
+                _heatmapShowHome = true;
+                _touchMapShowHome = true;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                gradient: _advancedStatsShowHome
+                    ? const LinearGradient(
+                        colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
+                      )
+                    : null,
+                color: _advancedStatsShowHome
+                    ? null
+                    : (isDark ? Colors.grey[800] : Colors.grey[200]),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: _advancedStatsShowHome
+                    ? [
+                        BoxShadow(
+                          color: const Color(0xFF2196F3).withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Text(
+                widget.match.homeTeamName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _advancedStatsShowHome
+                      ? Colors.white
+                      : (isDark ? Colors.white70 : Colors.black87),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
             ),
-            shape: BoxShape.circle,
-            border: Border.all(color: teamColor, width: 2),
           ),
         ),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+        const SizedBox(width: 12),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              _haptic.lightImpact();
+              setState(() {
+                _advancedStatsShowHome = false;
+                _shotMapShowHome = false;
+                _passNetworkShowHome = false;
+                _pressureMapShowHome = false;
+                _heatmapShowHome = false;
+                _touchMapShowHome = false;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                gradient: !_advancedStatsShowHome
+                    ? const LinearGradient(
+                        colors: [Color(0xFFE53935), Color(0xFFC62828)],
+                      )
+                    : null,
+                color: !_advancedStatsShowHome
+                    ? null
+                    : (isDark ? Colors.grey[800] : Colors.grey[200]),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: !_advancedStatsShowHome
+                    ? [
+                        BoxShadow(
+                          color: const Color(0xFFE53935).withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Text(
+                widget.match.awayTeamName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: !_advancedStatsShowHome
+                      ? Colors.white
+                      : (isDark ? Colors.white70 : Colors.black87),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
           ),
         ),
       ],
     );
   }
 
+  Widget _buildSelectedAdvancedContent(bool isDark, ThemeData theme) {
+    switch (_advancedStatsFilter) {
+      case 'shots':
+        return InteractiveShotMapWidget(
+          shots: _advancedStatsShowHome ? _homeShotsData : _awayShotsData,
+          teamColor: _advancedStatsShowHome
+              ? const Color(0xFF2196F3)
+              : const Color(0xFFE53935),
+          isDark: isDark,
+        );
+
+      case 'passes':
+        // ✅ WIDGET PASSAGGI CON CAMPO 600PX
+        return PassesWidget(
+          homeTeam: PassesData(
+            accuratePasses: 375,
+            throwIns: 16,
+            finalThirdEntries: 56,
+            finalThirdPasses: 86,
+            finalThirdTotal: 128,
+            longBalls: 30,
+            longBallsTotal: 55,
+            crosses: 3,
+            crossesTotal: 18,
+            leftZonePercentage: 26,
+            centerZonePercentage: 21,
+            rightZonePercentage: 0,
+          ),
+          awayTeam: PassesData(
+            accuratePasses: 478,
+            throwIns: 15,
+            finalThirdEntries: 46,
+            finalThirdPasses: 104,
+            finalThirdTotal: 130,
+            longBalls: 13,
+            longBallsTotal: 31,
+            crosses: 6,
+            crossesTotal: 17,
+            leftZonePercentage: 0,
+            centerZonePercentage: 21,
+            rightZonePercentage: 32,
+          ),
+        );
+
+      case 'heatmap':
+        // ✅ NUOVO WIDGET HEATMAP COMPLETO CON TUTTE LE FUNZIONALITÀ
+        return HeatmapWidget(
+          isHome: _advancedStatsShowHome,
+          homeTeamName: widget.match.homeTeamName,
+          awayTeamName: widget.match.awayTeamName,
+        );
+
+      case 'pressure':
+        return AnimatedDefensiveActionsWidget(
+          isDark: isDark,
+        );
+
+      case 'touches':
+        return AnimatedHeatmapWidget(
+          isHome: _advancedStatsShowHome,
+          isDark: isDark,
+          teamName: _advancedStatsShowHome
+              ? widget.match.homeTeamName
+              : widget.match.awayTeamName,
+        );
+
+      default:
+        return InteractiveShotMapWidget(
+          shots: _advancedStatsShowHome ? _homeShotsData : _awayShotsData,
+          teamColor: _advancedStatsShowHome
+              ? const Color(0xFF2196F3)
+              : const Color(0xFFE53935),
+          isDark: isDark,
+        );
+    }
+  }
+
   Widget _buildEventsTab(ThemeData theme, bool isDark) {
-    final events = _generateMockEvents();
+    final events = _generateDetailedMockEvents();
 
     if (events.isEmpty) {
       return Center(
@@ -1631,10 +1034,10 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             child: ListView.separated(
               padding: const EdgeInsets.all(20),
               itemCount: filteredEvents.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 20),
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final event = filteredEvents[index];
-                return _buildEventCard(event, isDark, theme);
+                return _buildDetailedEventCard(event, isDark, theme);
               },
             ),
           ),
@@ -1684,7 +1087,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     );
   }
 
-  Widget _buildEventCard(MatchEvent event, bool isDark, ThemeData theme) {
+  Widget _buildDetailedEventCard(
+      MatchEvent event, bool isDark, ThemeData theme) {
     final isHome = event.isHomeTeam;
     final teamColor =
         isHome ? const Color(0xFF2196F3) : const Color(0xFFE53935);
@@ -1692,266 +1096,778 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     return GestureDetector(
       onTap: () {
         _haptic.lightImpact();
-        // VAI DIRETTAMENTE AI DETTAGLI GIOCATORE
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PlayerDetailScreen(
-              player: PlayerDetail(
-                number: 10,
-                name: event.playerName,
-                position: 'Forward',
-                photo: null,
-                teamName: isHome
-                    ? widget.match.homeTeamName
-                    : widget.match.awayTeamName,
-                teamColor: teamColor,
-                matches: 25,
-                goals: 8,
-                assists: 5,
-                minutes: 2100,
-                shots: 45,
-                shotsOnTarget: 28,
-                dribbles: 32,
-                tackles: 45,
-                interceptions: 30,
-                saves: 0,
-                duelsWon: 58,
-                yellowCards: 2,
-                redCards: 0,
-                fouls: 18,
-                recentRatings: [
-                  7.2,
-                  7.8,
-                  6.9,
-                  8.1,
-                  7.5,
-                  7.0,
-                  8.3,
-                  7.6,
-                  7.9,
-                  7.4
-                ],
-                recentForm: ['W', 'W', 'D', 'W', 'L'],
-                bestMatch: 'Serie A - 8.5',
-                averageRating: 7.5,
-                decisiveGoals: 3,
-                skills: {
-                  'Velocità': 85.0,
-                  'Tiro': 88.0,
-                  'Passaggio': 82.0,
-                  'Dribbling': 87.0,
-                  'Difesa': 68.0,
-                  'Fisico': 76.0,
-                },
-                passingAccuracy: 87.5,
-                shotsPerGoal: 3.8,
-                minutesPerGoal: 175.0,
-                birthDate: '15/03/1995',
-                age: 28,
-                nationality: 'Italia',
-                height: 182,
-                weight: 75,
-                preferredFoot: 'Destro',
-                careerHistory: [],
+        if (event.type == 'substitution') {
+          _showSubstitutionDialog(event, isHome, teamColor);
+        } else {
+          if (widget.match.status == 'live') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PlayerMatchStatsScreen(
+                  playerName: event.playerName,
+                  playerNumber: event.minute,
+                  teamName: isHome
+                      ? widget.match.homeTeamName
+                      : widget.match.awayTeamName,
+                  teamColor: teamColor,
+                  match: widget.match,
+                ),
               ),
-            ),
-          ),
-        );
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PlayerFinishedMatchScreen(
+                  playerName: event.playerName,
+                  playerNumber: event.minute,
+                  teamName: isHome
+                      ? widget.match.homeTeamName
+                      : widget.match.awayTeamName,
+                  teamColor: teamColor,
+                  match: widget.match,
+                ),
+              ),
+            );
+          }
+        }
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              isDark ? Colors.grey[850]! : Colors.white,
-              isDark ? Colors.grey[900]! : Colors.grey[50]!,
-            ],
-          ),
-          borderRadius: BorderRadius.circular(16),
+          color: isDark ? Colors.grey[850] : Colors.white,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: teamColor.withOpacity(0.2),
-            width: 2,
+            color: teamColor.withOpacity(0.3),
+            width: 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: teamColor.withOpacity(0.1),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
-        child: Row(
+        child: Column(
           children: [
             Container(
-              width: 60,
-              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [teamColor, teamColor.withOpacity(0.8)],
-                ),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: teamColor.withOpacity(0.4),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                color: teamColor.withOpacity(0.1),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Row(
                 children: [
-                  Text(
-                    event.minute.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: teamColor,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ),
-                  const Text(
-                    '\'',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 16),
-            _buildEventIcon(event.type, teamColor),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: teamColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          isHome
-                              ? widget.match.homeTeamName
-                              : widget.match.awayTeamName,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: teamColor,
-                          ),
-                        ),
+                    child: Text(
+                      "${event.minute}'",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    event.playerName,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  if (event.detail != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      event.detail!,
+                  const SizedBox(width: 12),
+                  _buildEventIcon(event.type, teamColor),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _getEventTitle(event),
                       style: TextStyle(
                         fontSize: 14,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white : Colors.black87,
                       ),
                     ),
-                  ],
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    color: Colors.grey[400],
+                    size: 20,
+                  ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios,
-                color: teamColor.withOpacity(0.5), size: 16),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            if (event.playerPhoto != null)
+                              ClipOval(
+                                child: Image.network(
+                                  event.playerPhoto!,
+                                  width: 40,
+                                  height: 40,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: teamColor.withOpacity(0.2),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(Icons.person, color: teamColor),
+                                  ),
+                                ),
+                              )
+                            else
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: teamColor.withOpacity(0.2),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(Icons.person,
+                                    color: teamColor, size: 24),
+                              ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    event.playerName,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  if (event.detail != null)
+                                    Text(
+                                      event.detail!,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  if (event.subDetail != null)
+                                    Text(
+                                      event.subDetail!,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[500],
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
+  String _getEventTitle(MatchEvent event) {
+    switch (event.type) {
+      case 'goal':
+        return 'GOL';
+      case 'yellowCard':
+        return 'CARTELLINO GIALLO';
+      case 'redCard':
+        return 'CARTELLINO ROSSO';
+      case 'substitution':
+        return 'SOSTITUZIONE';
+      default:
+        return 'EVENTO';
+    }
+  }
+
+  void _showSubstitutionDialog(MatchEvent event, bool isHome, Color teamColor) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.grey[850] : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: teamColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.swap_horiz,
+                      color: teamColor,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Sostituzione',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "${event.minute}' minuto",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Scegli quale giocatore visualizzare:',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildSubstitutionPlayerCard(
+                icon: Icons.arrow_upward,
+                iconColor: Colors.red,
+                label: 'Giocatore uscente',
+                playerName: event.playerName,
+                teamName: isHome
+                    ? widget.match.homeTeamName
+                    : widget.match.awayTeamName,
+                teamColor: teamColor,
+                isDark: isDark,
+                onTap: () {
+                  Navigator.pop(context);
+                  if (widget.match.status == 'live') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PlayerMatchStatsScreen(
+                          playerName: event.playerName,
+                          playerNumber: event.minute,
+                          teamName: isHome
+                              ? widget.match.homeTeamName
+                              : widget.match.awayTeamName,
+                          teamColor: teamColor,
+                          match: widget.match,
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PlayerFinishedMatchScreen(
+                          playerName: event.playerName,
+                          playerNumber: event.minute,
+                          teamName: isHome
+                              ? widget.match.homeTeamName
+                              : widget.match.awayTeamName,
+                          teamColor: teamColor,
+                          match: widget.match,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+              _buildSubstitutionPlayerCard(
+                icon: Icons.arrow_downward,
+                iconColor: Colors.green,
+                label: 'Giocatore entrante',
+                playerName: event.detail ?? 'Sostituto',
+                teamName: isHome
+                    ? widget.match.homeTeamName
+                    : widget.match.awayTeamName,
+                teamColor: teamColor,
+                isDark: isDark,
+                onTap: () {
+                  Navigator.pop(context);
+                  if (widget.match.status == 'live') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PlayerMatchStatsScreen(
+                          playerName: event.detail ?? 'Sostituto',
+                          playerNumber: event.minute,
+                          teamName: isHome
+                              ? widget.match.homeTeamName
+                              : widget.match.awayTeamName,
+                          teamColor: teamColor,
+                          match: widget.match,
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PlayerFinishedMatchScreen(
+                          playerName: event.detail ?? 'Sostituto',
+                          playerNumber: event.minute,
+                          teamName: isHome
+                              ? widget.match.homeTeamName
+                              : widget.match.awayTeamName,
+                          teamColor: teamColor,
+                          match: widget.match,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubstitutionPlayerCard({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required String playerName,
+    required String teamName,
+    required Color teamColor,
+    required bool isDark,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.grey[800] : Colors.grey[100],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: teamColor.withOpacity(0.3),
+              width: 2,
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: iconColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: iconColor, size: 24),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      playerName,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      teamName,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: teamColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: Colors.grey[400],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  PlayerDetail _createMockPlayerDetail(
+      String name, String teamName, Color teamColor) {
+    return PlayerDetail(
+      number: 10,
+      name: name,
+      position: 'Forward',
+      photo: null,
+      teamName: teamName,
+      teamColor: teamColor,
+      matches: 25,
+      goals: 8,
+      assists: 5,
+      minutes: 2100,
+      shots: 45,
+      shotsOnTarget: 28,
+      dribbles: 32,
+      tackles: 45,
+      interceptions: 30,
+      saves: 0,
+      duelsWon: 58,
+      yellowCards: 2,
+      redCards: 0,
+      fouls: 18,
+      recentRatings: [7.2, 7.8, 6.9, 8.1, 7.5, 7.0, 8.3, 7.6, 7.9, 7.4],
+      recentForm: ['W', 'W', 'D', 'W', 'L'],
+      bestMatch: 'Serie A - 8.5',
+      averageRating: 7.5,
+      decisiveGoals: 3,
+      skills: {
+        'Velocità': 85.0,
+        'Tiro': 88.0,
+        'Passaggio': 82.0,
+        'Dribbling': 87.0,
+        'Difesa': 68.0,
+        'Fisico': 76.0,
+      },
+      passingAccuracy: 87.5,
+      shotsPerGoal: 3.8,
+      minutesPerGoal: 175.0,
+      birthDate: '15/03/1995',
+      age: 28,
+      nationality: 'Italia',
+      height: 182,
+      weight: 75,
+      preferredFoot: 'Destro',
+      careerHistory: [],
+    );
+  }
+
   Widget _buildEventIcon(String type, Color color) {
     IconData icon;
-    Color bgColor = color;
-
     switch (type) {
       case 'goal':
         icon = Icons.sports_soccer;
-        bgColor = const Color(0xFF00C853);
         break;
       case 'yellowCard':
         icon = Icons.rectangle;
-        bgColor = const Color(0xFFFFC107);
+        color = Colors.yellow[700]!;
         break;
       case 'redCard':
         icon = Icons.rectangle;
-        bgColor = const Color(0xFFE53935);
+        color = Colors.red;
         break;
       case 'substitution':
         icon = Icons.swap_horiz;
-        bgColor = const Color(0xFF2196F3);
-        break;
-      case 'penalty':
-        icon = Icons.sports_score;
-        bgColor = const Color(0xFF9C27B0);
         break;
       default:
         icon = Icons.circle;
     }
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: bgColor.withOpacity(0.4),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+        color: color.withOpacity(0.1),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, color: color, size: 20),
+    );
+  }
+
+  void _showMatchNotificationDialog() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: isDark ? Colors.grey[850] : Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.notifications, color: Theme.of(context).primaryColor),
+            const SizedBox(width: 12),
+            const Text('Notifiche Partita'),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildMatchNotificationOption('Inizio partita', true, isDark),
+              _buildMatchNotificationOption('Goal', true, isDark),
+              _buildMatchNotificationOption('Cartellini gialli', false, isDark),
+              _buildMatchNotificationOption('Cartellini rossi', true, isDark),
+              _buildMatchNotificationOption('Corner', false, isDark),
+              _buildMatchNotificationOption('Tiri in porta', false, isDark),
+              _buildMatchNotificationOption('Falli', false, isDark),
+              _buildMatchNotificationOption('Fuorigioco', false, isDark),
+              _buildMatchNotificationOption('Fine primo tempo', false, isDark),
+              _buildMatchNotificationOption('Fine partita', false, isDark),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annulla'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() => _matchNotificationsEnabled = true);
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Notifiche attivate per questa partita'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Salva'),
           ),
         ],
       ),
-      child: Icon(icon, color: Colors.white, size: 24),
+    );
+  }
+
+  Widget _buildMatchNotificationOption(
+      String label, bool enabled, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+          ),
+          Switch(
+            value: enabled,
+            onChanged: (value) {},
+            activeColor: Theme.of(context).primaryColor,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildLineupsTab(ThemeData theme, bool isDark) {
-    final homeLineup = _generateMockLineup(true);
-    final awayLineup = _generateMockLineup(false);
-
     return Container(
       color: isDark ? Colors.grey[900] : Colors.grey[50],
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // FORMAZIONE CASA
-            _buildTeamLineup(
-              widget.match.homeTeamName,
-              widget.match.homeTeamLogo,
-              homeLineup,
-              const Color(0xFF2196F3),
-              isDark,
+            Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDark ? Colors.grey[850] : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        _haptic.lightImpact();
+                        setState(() => _showHomeLineup = true);
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          gradient: _showHomeLineup
+                              ? const LinearGradient(
+                                  colors: [
+                                    Color(0xFF2196F3),
+                                    Color(0xFF1976D2)
+                                  ],
+                                )
+                              : null,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (widget.match.homeTeamLogo != null)
+                              CachedNetworkImage(
+                                imageUrl: widget.match.homeTeamLogo!,
+                                width: 24,
+                                height: 24,
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.shield,
+                                  size: 24,
+                                  color: _showHomeLineup
+                                      ? Colors.white
+                                      : Colors.grey,
+                                ),
+                              )
+                            else
+                              Icon(
+                                Icons.shield,
+                                size: 24,
+                                color: _showHomeLineup
+                                    ? Colors.white
+                                    : Colors.grey,
+                              ),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                widget.match.homeTeamName,
+                                style: TextStyle(
+                                  color: _showHomeLineup
+                                      ? Colors.white
+                                      : (isDark
+                                          ? Colors.white70
+                                          : Colors.black87),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        _haptic.lightImpact();
+                        setState(() => _showHomeLineup = false);
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          gradient: !_showHomeLineup
+                              ? const LinearGradient(
+                                  colors: [
+                                    Color(0xFFE53935),
+                                    Color(0xFFC62828)
+                                  ],
+                                )
+                              : null,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (widget.match.awayTeamLogo != null)
+                              CachedNetworkImage(
+                                imageUrl: widget.match.awayTeamLogo!,
+                                width: 24,
+                                height: 24,
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.shield,
+                                  size: 24,
+                                  color: !_showHomeLineup
+                                      ? Colors.white
+                                      : Colors.grey,
+                                ),
+                              )
+                            else
+                              Icon(
+                                Icons.shield,
+                                size: 24,
+                                color: !_showHomeLineup
+                                    ? Colors.white
+                                    : Colors.grey,
+                              ),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                widget.match.awayTeamName,
+                                style: TextStyle(
+                                  color: !_showHomeLineup
+                                      ? Colors.white
+                                      : (isDark
+                                          ? Colors.white70
+                                          : Colors.black87),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 20),
-            // FORMAZIONE OSPITE
-            _buildTeamLineup(
-              widget.match.awayTeamName,
-              widget.match.awayTeamLogo,
-              awayLineup,
-              const Color(0xFFE53935),
+            _buildGraphicalFormation(
+              _showHomeLineup
+                  ? widget.match.homeTeamName
+                  : widget.match.awayTeamName,
+              _showHomeLineup
+                  ? widget.match.homeTeamLogo
+                  : widget.match.awayTeamLogo,
+              _generateMockLineup(_showHomeLineup),
+              _showHomeLineup
+                  ? const Color(0xFF2196F3)
+                  : const Color(0xFFE53935),
+              '4-3-3',
               isDark,
+              _showHomeLineup,
             ),
           ],
         ),
@@ -1959,13 +1875,24 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     );
   }
 
-  Widget _buildTeamLineup(String teamName, String? teamLogo,
-      List<LineupPlayer> players, Color teamColor, bool isDark) {
+  Widget _buildGraphicalFormation(
+    String teamName,
+    String? teamLogo,
+    List<LineupPlayer> players,
+    Color teamColor,
+    String formation,
+    bool isDark,
+    bool isHome,
+  ) {
+    final bench = _generateMockBench(isHome);
+    final coach = 'Maurizio Sarri';
+    final injuries = _generateMockInjuries(isHome);
+
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: isDark ? Colors.grey[850] : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -1976,7 +1903,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       ),
       child: Column(
         children: [
-          // Header
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -1984,20 +1910,20 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                 colors: [teamColor, teamColor.withOpacity(0.8)],
               ),
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+                  const BorderRadius.vertical(top: Radius.circular(20)),
             ),
             child: Row(
               children: [
                 if (teamLogo != null)
                   CachedNetworkImage(
                     imageUrl: teamLogo,
-                    height: 30,
-                    width: 30,
+                    height: 32,
+                    width: 32,
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.shield, color: Colors.white, size: 30),
+                        const Icon(Icons.shield, color: Colors.white, size: 32),
                   )
                 else
-                  const Icon(Icons.shield, color: Colors.white, size: 30),
+                  const Icon(Icons.shield, color: Colors.white, size: 32),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -2009,410 +1935,558 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                     ),
                   ),
                 ),
-                const Text(
-                  '4-3-3',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    formation,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          // Lista giocatori
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+          SizedBox(
+            height: 500,
+            child: Stack(
+              children: [
+                FormationFieldWidget(
+                  isDark: isDark,
+                  height: 500,
+                ),
+                ..._positionPlayersOnField(
+                    players, teamColor, isDark, isHome, teamName),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
             padding: const EdgeInsets.all(16),
-            itemCount: players.length,
-            separatorBuilder: (context, index) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final player = players[index];
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: teamColor.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: teamColor, width: 2),
-                  ),
-                  child: Center(
-                    child: Text(
-                      player.number.toString(),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[800] : Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.event_seat, color: teamColor, size: 20),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Panchina',
                       style: TextStyle(
-                        color: teamColor,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                title: Text(
-                  player.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text(
-                  player.position,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  _haptic.lightImpact();
-                  // VAI DIRETTAMENTE AI DETTAGLI GIOCATORE
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PlayerDetailScreen(
-                        player: PlayerDetail(
-                          number: player.number,
-                          name: player.name,
-                          position: player.position,
-                          photo: null,
-                          teamName: teamName,
-                          teamColor: teamColor,
-                          matches: 25,
-                          goals: 5,
-                          assists: 3,
-                          minutes: 2100,
-                          shots: 45,
-                          shotsOnTarget: 28,
-                          dribbles: 32,
-                          tackles: 45,
-                          interceptions: 30,
-                          saves: 0,
-                          duelsWon: 58,
-                          yellowCards: 2,
-                          redCards: 0,
-                          fouls: 18,
-                          recentRatings: [
-                            7.2,
-                            7.8,
-                            6.9,
-                            8.1,
-                            7.5,
-                            7.0,
-                            8.3,
-                            7.6,
-                            7.9,
-                            7.4
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: bench.map((player) {
+                    return GestureDetector(
+                      onTap: () {
+                        _haptic.lightImpact();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PlayerDetailScreen(
+                              player: _createMockPlayerDetail(
+                                player.name,
+                                teamName,
+                                teamColor,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.grey[700] : Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: teamColor.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              player.number.toString(),
+                              style: TextStyle(
+                                color: teamColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              player.name,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ],
-                          recentForm: ['W', 'W', 'D', 'W', 'L'],
-                          bestMatch: 'Serie A - 8.5',
-                          averageRating: 7.5,
-                          decisiveGoals: 2,
-                          skills: {
-                            'Velocità': 85.0,
-                            'Tiro': 88.0,
-                            'Passaggio': 82.0,
-                            'Dribbling': 87.0,
-                            'Difesa': 68.0,
-                            'Fisico': 76.0,
-                          },
-                          passingAccuracy: 87.5,
-                          shotsPerGoal: 3.8,
-                          minutesPerGoal: 175.0,
-                          birthDate: '15/03/1995',
-                          age: 28,
-                          nationality: 'Italia',
-                          height: 182,
-                          weight: 75,
-                          preferredFoot: 'Destro',
-                          careerHistory: [],
                         ),
                       ),
-                    ),
-                  );
-                },
-              );
-            },
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
+          const SizedBox(height: 16),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[800] : Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: teamColor.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.person, color: teamColor, size: 24),
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Allenatore',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    Text(
+                      coach,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          if (injuries.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: isDark ? Colors.grey[800] : Colors.grey[100],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.medical_services,
+                          color: Colors.orange[700], size: 20),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Infortuni e qualifiche',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ...injuries.map((injury) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        children: [
+                          Icon(
+                            injury.status == 'doubt'
+                                ? Icons.help_outline
+                                : Icons.local_hospital,
+                            color: injury.status == 'doubt'
+                                ? Colors.orange
+                                : Colors.red,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  injury.playerName,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  injury.reason,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  Widget _buildInfoTab(ThemeData theme, bool isDark, S? s) {
-    final info = [
-      {
-        'label': 'Lega',
-        'value': widget.match.leagueName ?? 'N/A',
-        'icon': Icons.emoji_events
-      },
-      {
-        'label': 'Giornata',
-        'value': widget.match.round ?? 'N/A',
-        'icon': Icons.calendar_today
-      },
-      {
-        'label': 'Data',
-        'value':
-            '${widget.match.date.day}/${widget.match.date.month}/${widget.match.date.year}',
-        'icon': Icons.event
-      },
-      {'label': 'Ora', 'value': widget.match.time, 'icon': Icons.access_time},
-      {
-        'label': 'Stadio',
-        'value': widget.match.venue.isNotEmpty ? widget.match.venue : 'N/A',
-        'icon': Icons.stadium
-      },
-      {
-        'label': 'Arbitro',
-        'value': widget.match.referee ?? 'N/A',
-        'icon': Icons.person
-      },
-    ];
+  List<Widget> _positionPlayersOnField(
+    List<LineupPlayer> players,
+    Color teamColor,
+    bool isDark,
+    bool isHome,
+    String teamName,
+  ) {
+    final List<Widget> widgets = [];
 
-    return Container(
-      color: isDark ? Colors.grey[900] : Colors.grey[50],
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: info.length,
-        itemBuilder: (context, index) {
-          final item = info[index];
-          return Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: isDark ? Colors.grey[850] : Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
+    final positions = {
+      'Portiere': [Offset(0.5, 0.88)],
+      'Difensore': [
+        Offset(0.25, 0.72),
+        Offset(0.40, 0.72),
+        Offset(0.60, 0.72),
+        Offset(0.75, 0.72),
+      ],
+      'Centrocampista': [
+        Offset(0.28, 0.50),
+        Offset(0.5, 0.50),
+        Offset(0.72, 0.50),
+      ],
+      'Attaccante': [
+        Offset(0.28, 0.25),
+        Offset(0.5, 0.25),
+        Offset(0.72, 0.25),
+      ],
+    };
+
+    final Map<String, int> positionIndex = {
+      'Portiere': 0,
+      'Difensore': 0,
+      'Centrocampista': 0,
+      'Attaccante': 0,
+    };
+
+    for (final player in players) {
+      String posType = 'Centrocampista';
+      if (player.position.contains('Portiere'))
+        posType = 'Portiere';
+      else if (player.position.contains('Difensore') ||
+          player.position.contains('Terzino'))
+        posType = 'Difensore';
+      else if (player.position.contains('Centrocampista') ||
+          player.position.contains('Mediano'))
+        posType = 'Centrocampista';
+      else if (player.position.contains('Attaccante') ||
+          player.position.contains('Ala')) posType = 'Attaccante';
+
+      final positionList = positions[posType] ?? [];
+      final index = positionIndex[posType] ?? 0;
+
+      if (index < positionList.length) {
+        final offset = positionList[index];
+        widgets.add(
+          Positioned(
+            left: offset.dx * (MediaQuery.of(context).size.width - 32),
+            top: offset.dy * 500,
+            child: Transform.translate(
+              offset: const Offset(-25, -25),
+              child: GestureDetector(
+                onTap: () {
+                  _haptic.lightImpact();
+                  if (widget.match.status == 'live') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PlayerMatchStatsScreen(
+                          playerName: player.name,
+                          playerNumber: player.number,
+                          teamName: teamName,
+                          teamColor: teamColor,
+                          match: widget.match,
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PlayerFinishedMatchScreen(
+                          playerName: player.name,
+                          playerNumber: player.number,
+                          teamName: teamName,
+                          teamColor: teamColor,
+                          match: widget.match,
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [teamColor, teamColor.withOpacity(0.8)],
+                        ),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 3),
+                        boxShadow: [
+                          BoxShadow(
+                            color: teamColor.withOpacity(0.5),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          player.number.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.black87 : Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        player.name.split(' ').last,
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black87,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+            ),
+          ),
+        );
+        positionIndex[posType] = index + 1;
+      }
+    }
+
+    return widgets;
+  }
+
+  Widget _buildInfoTab(ThemeData theme, bool isDark) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            isDark ? Colors.grey[900]! : Colors.grey[50]!,
+            isDark ? Colors.grey[850]! : Colors.white,
+          ],
+        ),
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildModernInfoCard(
+              'Informazioni Partita',
+              Icons.info_outline,
+              Colors.blue,
+              [
+                _buildModernInfoRow(
+                    Icons.emoji_events, 'Competizione', 'Serie A', Colors.blue),
+                _buildModernInfoRow(
+                    Icons.stadium, 'Stadio', 'Stadio Olimpico', Colors.green),
+                _buildModernInfoRow(Icons.calendar_today, 'Data',
+                    '21 Gennaio 2026', Colors.orange),
+                _buildModernInfoRow(
+                    Icons.sports, 'Arbitro', 'Daniele Orsato', Colors.purple),
+                _buildModernInfoRow(
+                    Icons.people, 'Spettatori', '65.000', Colors.red),
               ],
+              isDark,
+            ),
+            const SizedBox(height: 16),
+            _buildModernInfoCard(
+              'Ultimi Risultati',
+              Icons.timeline,
+              Colors.green,
+              [
+                _buildResultRow(
+                    widget.match.homeTeamName, 'V-V-P-V-P', isDark, true),
+                const SizedBox(height: 8),
+                Divider(height: 1, color: Colors.grey.withOpacity(0.3)),
+                const SizedBox(height: 8),
+                _buildResultRow(
+                    widget.match.awayTeamName, 'P-V-V-P-V', isDark, false),
+              ],
+              isDark,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernInfoCard(String title, IconData icon, Color accentColor,
+      List<Widget> content, bool isDark) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            isDark ? Colors.grey[850]! : Colors.white,
+            isDark ? Colors.grey[800]! : Colors.grey[50]!,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: accentColor.withOpacity(0.3),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [accentColor, accentColor.withOpacity(0.8)],
+              ),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(18)),
             ),
             child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: theme.primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child:
-                      Icon(item['icon'] as IconData, color: theme.primaryColor),
+                  child: Icon(icon, color: Colors.white, size: 24),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item['label'] as String,
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        item['value'] as String,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ],
             ),
-          );
-        },
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: content,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // WIDGETS HELPER
-
-  Widget _buildTeamSelector(
-      bool showHome, Function(bool) onChanged, bool isDark) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : Colors.grey[100],
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+  Widget _buildModernInfoRow(
+      IconData icon, String label, String value, Color iconColor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () => onChanged(true),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                decoration: BoxDecoration(
-                  gradient: showHome
-                      ? const LinearGradient(
-                          colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
-                        )
-                      : null,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: showHome
-                      ? [
-                          BoxShadow(
-                            color: const Color(0xFF2196F3).withOpacity(0.5),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Text(
-                  widget.match.homeTeamName,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: showHome ? Colors.white : Colors.grey[600],
-                    letterSpacing: 0.2,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: GestureDetector(
-              onTap: () => onChanged(false),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                decoration: BoxDecoration(
-                  gradient: !showHome
-                      ? const LinearGradient(
-                          colors: [Color(0xFFE53935), Color(0xFFC62828)],
-                        )
-                      : null,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: !showHome
-                      ? [
-                          BoxShadow(
-                            color: const Color(0xFFE53935).withOpacity(0.5),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Text(
-                  widget.match.awayTeamName,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: !showHome ? Colors.white : Colors.grey[600],
-                    letterSpacing: 0.2,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickStat(
-      String label, String value, IconData icon, Color color) {
-    return Column(
-      children: [
-        Icon(icon, size: 18, color: color),
-        const SizedBox(height: 6),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-            color: color,
-            letterSpacing: -0.5,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Colors.grey,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildQuickStatDivider(bool isDark) {
-    return Container(
-      height: 40,
-      width: 1,
-      color: isDark ? Colors.grey[700] : Colors.grey[300],
-    );
-  }
-
-  Widget _buildShotLegend(Color teamColor, bool isDark) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : Colors.grey[50],
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildShotLegendItem(
-                  'Goal', const Color(0xFF00C853), Icons.check_circle),
-              _buildShotLegendItem(
-                  'In porta', const Color(0xFF2196F3), Icons.trip_origin),
-              _buildShotLegendItem(
-                  'Parato', const Color(0xFF9C27B0), Icons.block),
-              _buildShotLegendItem(
-                  'Fuori', const Color(0xFFFF9800), Icons.cancel),
-            ],
-          ),
-          const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: teamColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: iconColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+            child: Icon(icon, color: iconColor, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline, size: 14, color: teamColor),
-                const SizedBox(width: 8),
-                const Flexible(
-                  child: Text(
-                    'La dimensione dei cerchi rappresenta il valore xG',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -2423,730 +2497,430 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     );
   }
 
-  Widget _buildShotLegendItem(String label, Color color, IconData icon) {
+  Widget _buildResultRow(
+      String teamName, String form, bool isDark, bool isHome) {
+    final formList = form.split('-');
+    final teamColor =
+        isHome ? const Color(0xFF2196F3) : const Color(0xFFE53935);
+
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.2),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, size: 12, color: color),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTouchLegend(Color teamColor, bool isDark) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : Colors.grey[50],
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildTouchLegendItem(
-                  'Attacco', const Color(0xFFE53935), Icons.sports_soccer),
-              _buildTouchLegendItem(
-                  'Centro', const Color(0xFFFF9800), Icons.code),
-              _buildTouchLegendItem(
-                  'Difesa', const Color(0xFF2196F3), Icons.shield),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            decoration: BoxDecoration(
-              color: teamColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.info_outline, size: 14, color: teamColor),
-                const SizedBox(width: 8),
-                const Flexible(
-                  child: Text(
-                    'Ogni punto rappresenta un tocco palla',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTouchLegendItem(String label, Color color, IconData icon) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.2),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, size: 12, color: color),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildHeatmapLegend(Color teamColor, bool isDark) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : Colors.grey[50],
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'Intensità presenza',
+        Expanded(
+          child: Text(
+            teamName,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
+              color: teamColor,
             ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildHeatmapLegendItem('Bassa', teamColor, 0.3),
-              _buildHeatmapLegendItem('Media', teamColor, 0.6),
-              _buildHeatmapLegendItem('Alta', teamColor, 0.9),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            decoration: BoxDecoration(
-              color: teamColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.info_outline, size: 14, color: teamColor),
-                const SizedBox(width: 8),
-                const Flexible(
-                  child: Text(
-                    'Le zone più calde indicano maggiore presenza',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeatmapLegendItem(String label, Color color, double opacity) {
-    return Column(
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              colors: [
-                color.withOpacity(opacity),
-                color.withOpacity(opacity * 0.5),
-                color.withOpacity(0),
-              ],
-            ),
-            shape: BoxShape.circle,
-            border: Border.all(color: color, width: 2),
           ),
         ),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-          ),
+        Row(
+          children: formList.map((result) {
+            Color color;
+            if (result == 'V') {
+              color = Colors.green;
+            } else if (result == 'P') {
+              color = Colors.red;
+            } else {
+              color = Colors.grey;
+            }
+
+            return Container(
+              margin: const EdgeInsets.only(left: 4),
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.2),
+                shape: BoxShape.circle,
+                border: Border.all(color: color, width: 2),
+              ),
+              child: Center(
+                child: Text(
+                  result,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
-  }
-
-  // MOCK DATA GENERATORS
-  List<Shot> _generateMockShots(bool isHome) {
-    return [
-      Shot(
-          x: 0.75,
-          y: 0.5,
-          isGoal: true,
-          isOnTarget: true,
-          xg: 0.8,
-          isHome: isHome),
-      Shot(
-          x: 0.65,
-          y: 0.3,
-          isGoal: false,
-          isOnTarget: true,
-          xg: 0.4,
-          isHome: isHome),
-      Shot(
-          x: 0.70,
-          y: 0.7,
-          isGoal: false,
-          isOnTarget: false,
-          xg: 0.2,
-          isHome: isHome),
-      Shot(
-          x: 0.60,
-          y: 0.5,
-          isGoal: false,
-          isOnTarget: true,
-          xg: 0.5,
-          isHome: isHome),
-      Shot(
-          x: 0.80,
-          y: 0.4,
-          isGoal: true,
-          isOnTarget: true,
-          xg: 0.9,
-          isHome: isHome),
-      Shot(
-          x: 0.55,
-          y: 0.6,
-          isGoal: false,
-          isOnTarget: false,
-          xg: 0.15,
-          isHome: isHome),
-    ];
-  }
-
-  List<TouchPoint> _generateMockTouches() {
-    final random = math.Random(42);
-    return List.generate(120, (index) {
-      return TouchPoint(
-        x: 0.1 + random.nextDouble() * 0.8,
-        y: 0.1 + random.nextDouble() * 0.8,
-        intensity: 0.3 + random.nextDouble() * 0.7,
-      );
-    });
-  }
-
-  List<HeatmapPoint> _generateHeatmapData() {
-    return [
-      HeatmapPoint(x: 0.50, y: 0.35, intensity: 0.9, radius: 60),
-      HeatmapPoint(x: 0.30, y: 0.25, intensity: 0.7, radius: 50),
-      HeatmapPoint(x: 0.70, y: 0.25, intensity: 0.8, radius: 55),
-      HeatmapPoint(x: 0.50, y: 0.60, intensity: 0.6, radius: 45),
-      HeatmapPoint(x: 0.25, y: 0.50, intensity: 0.5, radius: 40),
-      HeatmapPoint(x: 0.75, y: 0.50, intensity: 0.5, radius: 40),
-      HeatmapPoint(x: 0.50, y: 0.80, intensity: 0.4, radius: 35),
-    ];
-  }
-
-  List<PassConnection> _generateMockPasses() {
-    return [
-      PassConnection(from: 1, to: 4, count: 18, successful: 16),
-      PassConnection(from: 1, to: 13, count: 16, successful: 15),
-      PassConnection(from: 4, to: 32, count: 22, successful: 20),
-      PassConnection(from: 13, to: 32, count: 20, successful: 18),
-      PassConnection(from: 29, to: 10, count: 19, successful: 17),
-      PassConnection(from: 77, to: 21, count: 17, successful: 15),
-      PassConnection(from: 32, to: 10, count: 25, successful: 22),
-      PassConnection(from: 32, to: 21, count: 15, successful: 13),
-      PassConnection(from: 10, to: 17, count: 18, successful: 16),
-      PassConnection(from: 10, to: 7, count: 16, successful: 14),
-      PassConnection(from: 21, to: 20, count: 14, successful: 12),
-      PassConnection(from: 7, to: 17, count: 12, successful: 10),
-      PassConnection(from: 20, to: 17, count: 11, successful: 9),
-    ];
-  }
-
-  List<PassNetworkPlayer> _generatePassNetworkPlayers() {
-    return [
-      PassNetworkPlayer(
-          number: 1,
-          name: 'Provedel',
-          role: 'GK',
-          positionOffset: const Offset(0.50, 0.88),
-          totalPasses: 45),
-      PassNetworkPlayer(
-          number: 29,
-          name: 'Lazzari',
-          role: 'DF',
-          positionOffset: const Offset(0.80, 0.70),
-          totalPasses: 32),
-      PassNetworkPlayer(
-          number: 13,
-          name: 'Romagnoli',
-          role: 'DF',
-          positionOffset: const Offset(0.60, 0.70),
-          totalPasses: 38),
-      PassNetworkPlayer(
-          number: 4,
-          name: 'Patric',
-          role: 'DF',
-          positionOffset: const Offset(0.40, 0.70),
-          totalPasses: 36),
-      PassNetworkPlayer(
-          number: 77,
-          name: 'Marusic',
-          role: 'DF',
-          positionOffset: const Offset(0.20, 0.70),
-          totalPasses: 30),
-      PassNetworkPlayer(
-          number: 32,
-          name: 'Cataldi',
-          role: 'MF',
-          positionOffset: const Offset(0.50, 0.50),
-          totalPasses: 65),
-      PassNetworkPlayer(
-          number: 10,
-          name: 'Luis Alberto',
-          role: 'MF',
-          positionOffset: const Offset(0.70, 0.45),
-          totalPasses: 58),
-      PassNetworkPlayer(
-          number: 21,
-          name: 'Milinkovic',
-          role: 'MF',
-          positionOffset: const Offset(0.30, 0.45),
-          totalPasses: 42),
-      PassNetworkPlayer(
-          number: 7,
-          name: 'Felipe And.',
-          role: 'FW',
-          positionOffset: const Offset(0.75, 0.25),
-          totalPasses: 35),
-      PassNetworkPlayer(
-          number: 17,
-          name: 'Immobile',
-          role: 'FW',
-          positionOffset: const Offset(0.50, 0.18),
-          totalPasses: 28),
-      PassNetworkPlayer(
-          number: 20,
-          name: 'Zaccagni',
-          role: 'FW',
-          positionOffset: const Offset(0.25, 0.25),
-          totalPasses: 33),
-    ];
-  }
-
-  List<PressureZone> _generateMockPressureZones() {
-    return [
-      PressureZone(x: 0.50, y: 0.35, intensity: 0.8, radius: 50),
-      PressureZone(x: 0.30, y: 0.25, intensity: 0.6, radius: 40),
-      PressureZone(x: 0.70, y: 0.25, intensity: 0.7, radius: 45),
-      PressureZone(x: 0.50, y: 0.60, intensity: 0.5, radius: 35),
-    ];
-  }
-
-  List<MatchEvent> _generateMockEvents() {
-    return [
-      MatchEvent(
-          minute: 5,
-          type: 'goal',
-          playerName: 'Immobile',
-          detail: 'Assist: Luis Alberto',
-          isHomeTeam: true),
-      MatchEvent(
-          minute: 12,
-          type: 'yellowCard',
-          playerName: 'Tomori',
-          detail: 'Fallo su Zaccagni',
-          isHomeTeam: false),
-      MatchEvent(
-          minute: 23,
-          type: 'substitution',
-          playerName: 'Pedro',
-          detail: 'Entra: Felipe Anderson',
-          isHomeTeam: true),
-      MatchEvent(
-          minute: 34,
-          type: 'goal',
-          playerName: 'Leão',
-          detail: 'Rigore',
-          isHomeTeam: false),
-    ];
   }
 
   List<LineupPlayer> _generateMockLineup(bool isHome) {
-    if (isHome) {
-      return [
-        LineupPlayer(
-            number: 1, name: 'Ivan Provedel', position: 'Portiere', x: 0, y: 0),
-        LineupPlayer(
-            number: 29,
-            name: 'Manuel Lazzari',
-            position: 'Difensore',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 13,
-            name: 'Alessio Romagnoli',
-            position: 'Difensore',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 4, name: 'Patric', position: 'Difensore', x: 0, y: 0),
-        LineupPlayer(
-            number: 77,
-            name: 'Adam Marušić',
-            position: 'Difensore',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 32,
-            name: 'Danilo Cataldi',
-            position: 'Centrocampista',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 10,
-            name: 'Luis Alberto',
-            position: 'Centrocampista',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 21,
-            name: 'Sergej Milinković',
-            position: 'Centrocampista',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 7,
-            name: 'Felipe Anderson',
-            position: 'Attaccante',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 17,
-            name: 'Ciro Immobile',
-            position: 'Attaccante',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 20,
-            name: 'Mattia Zaccagni',
-            position: 'Attaccante',
-            x: 0,
-            y: 0),
-      ];
-    } else {
-      return [
-        LineupPlayer(
-            number: 16, name: 'Mike Maignan', position: 'Portiere', x: 0, y: 0),
-        LineupPlayer(
-            number: 23,
-            name: 'Fikayo Tomori',
-            position: 'Difensore',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 46,
-            name: 'Matteo Gabbia',
-            position: 'Difensore',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 2,
-            name: 'Davide Calabria',
-            position: 'Difensore',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 19,
-            name: 'Theo Hernández',
-            position: 'Difensore',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 14,
-            name: 'Tijjani Reijnders',
-            position: 'Centrocampista',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 8,
-            name: 'Ruben Loftus-Cheek',
-            position: 'Centrocampista',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 10,
-            name: 'Rafael Leão',
-            position: 'Attaccante',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 11,
-            name: 'Christian Pulisic',
-            position: 'Attaccante',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 90,
-            name: 'Tammy Abraham',
-            position: 'Attaccante',
-            x: 0,
-            y: 0),
-        LineupPlayer(
-            number: 22,
-            name: 'Samuel Chukwueze',
-            position: 'Attaccante',
-            x: 0,
-            y: 0),
-      ];
-    }
+    return [
+      LineupPlayer(number: 1, name: 'Provedel', position: 'Portiere'),
+      LineupPlayer(number: 77, name: 'Marusic', position: 'Terzino Destro'),
+      LineupPlayer(
+          number: 13, name: 'Romagnoli', position: 'Difensore Centrale'),
+      LineupPlayer(number: 4, name: 'Patric', position: 'Difensore Centrale'),
+      LineupPlayer(
+          number: 23, name: 'Pellegrini', position: 'Terzino Sinistro'),
+      LineupPlayer(number: 6, name: 'Rovella', position: 'Centrocampista'),
+      LineupPlayer(number: 8, name: 'Guendouzi', position: 'Centrocampista'),
+      LineupPlayer(
+          number: 10, name: 'Luis Alberto', position: 'Centrocampista'),
+      LineupPlayer(number: 20, name: 'Zaccagni', position: 'Ala Sinistra'),
+      LineupPlayer(number: 9, name: 'Immobile', position: 'Attaccante'),
+      LineupPlayer(number: 7, name: 'Felipe Anderson', position: 'Ala Destra'),
+    ];
   }
 
-  Color _getStatusColor() {
-    if (widget.match.isLive) return Colors.red;
-    if (widget.match.isFinished) return Colors.green;
-    if (widget.match.isPostponed) return Colors.orange;
-    if (widget.match.isCancelled) return Colors.red[900]!;
-    return Colors.blue;
+  List<LineupPlayer> _generateMockBench(bool isHome) {
+    return [
+      LineupPlayer(
+          number: 94, name: 'Mandas', position: 'Portiere', isPlaying: false),
+      LineupPlayer(
+          number: 3, name: 'Lazzari', position: 'Difensore', isPlaying: false),
+      LineupPlayer(
+          number: 34, name: 'Hysaj', position: 'Difensore', isPlaying: false),
+      LineupPlayer(
+          number: 5,
+          name: 'Vecino',
+          position: 'Centrocampista',
+          isPlaying: false),
+      LineupPlayer(
+          number: 18,
+          name: 'Cataldi',
+          position: 'Centrocampista',
+          isPlaying: false),
+      LineupPlayer(
+          number: 11, name: 'Pedro', position: 'Attaccante', isPlaying: false),
+      LineupPlayer(
+          number: 19,
+          name: 'Castellanos',
+          position: 'Attaccante',
+          isPlaying: false),
+    ];
   }
 
-  String _getStatusText() {
-    if (widget.match.isLive) return 'LIVE';
-    if (widget.match.isFinished) return 'FT';
-    if (widget.match.isScheduled) return widget.match.time;
-    if (widget.match.isPostponed) return 'Posticipato';
-    if (widget.match.isCancelled) return 'Cancellato';
-    if (widget.match.isHalfTime) return 'HT';
-    return widget.match.status;
+  List<InjuredPlayer> _generateMockInjuries(bool isHome) {
+    return [
+      InjuredPlayer(
+        playerName: 'Piero Hincapié',
+        reason: 'In dubbio',
+        status: 'doubt',
+      ),
+      InjuredPlayer(
+        playerName: 'Max Dowman',
+        reason: 'Fuori',
+        status: 'injured',
+      ),
+      InjuredPlayer(
+        playerName: 'Riccardo Calafiori',
+        reason: 'In dubbio',
+        status: 'doubt',
+      ),
+    ];
+  }
+
+  List<MatchEvent> _generateDetailedMockEvents() {
+    return [
+      MatchEvent(
+        type: 'goal',
+        minute: 12,
+        playerName: 'Immobile',
+        detail: 'Assist: Zaccagni',
+        subDetail: 'Tiro di destro dall\'interno dell\'area',
+        isHomeTeam: true,
+        playerPhoto: null,
+      ),
+      MatchEvent(
+        type: 'yellowCard',
+        minute: 23,
+        playerName: 'Pellegrini',
+        detail: 'Fallo tattico',
+        subDetail: 'Fermata una ripartenza avversaria',
+        isHomeTeam: true,
+        playerPhoto: null,
+      ),
+      MatchEvent(
+        type: 'substitution',
+        minute: 65,
+        playerName: 'Luis Alberto',
+        detail: 'Cataldi',
+        subDetail: 'Cambio tattico a centrocampo',
+        isHomeTeam: true,
+        playerPhoto: null,
+      ),
+      MatchEvent(
+        type: 'goal',
+        minute: 78,
+        playerName: 'Felipe Anderson',
+        detail: 'Assist: Guendouzi',
+        subDetail: 'Tiro di sinistro dal limite dell\'area',
+        isHomeTeam: true,
+        playerPhoto: null,
+      ),
+      MatchEvent(
+        type: 'substitution',
+        minute: 82,
+        playerName: 'Pedro',
+        detail: 'Isaksen',
+        subDetail: 'Gestione del risultato',
+        isHomeTeam: false,
+        playerPhoto: null,
+      ),
+      MatchEvent(
+        type: 'yellowCard',
+        minute: 88,
+        playerName: 'Guendouzi',
+        detail: 'Proteste',
+        subDetail: 'Ammonito per proteste verso l\'arbitro',
+        isHomeTeam: true,
+        playerPhoto: null,
+      ),
+    ];
   }
 }
 
-// ============================================================================
-// MODELS
-// ============================================================================
+// CLASSI DI SUPPORTO
+class LineupPlayer {
+  final int number;
+  final String name;
+  final String position;
+  final bool isPlaying;
 
-class Shot {
-  final double x, y;
-  final bool isGoal, isOnTarget, isHome;
-  final double xg;
-  Shot(
-      {required this.x,
-      required this.y,
-      required this.isGoal,
-      required this.isOnTarget,
-      required this.xg,
-      required this.isHome});
-}
-
-class TouchPoint {
-  final double x, y, intensity;
-  TouchPoint({required this.x, required this.y, required this.intensity});
-}
-
-class HeatmapPoint {
-  final double x, y, intensity, radius;
-  HeatmapPoint(
-      {required this.x,
-      required this.y,
-      required this.intensity,
-      required this.radius});
-}
-
-class PassConnection {
-  final int from, to, count, successful;
-  PassConnection(
-      {required this.from,
-      required this.to,
-      required this.count,
-      required this.successful});
-  int get failed => count - successful;
-}
-
-class PassNetworkPlayer {
-  final int number, totalPasses;
-  final String name,
-      role; // Rinominato 'position' in 'role' per evitare conflitto
-  final Offset positionOffset;
-  PassNetworkPlayer(
-      {required this.number,
-      required this.name,
-      required this.role,
-      required this.positionOffset,
-      required this.totalPasses});
-}
-
-class PressureZone {
-  final double x, y, intensity, radius;
-  PressureZone(
-      {required this.x,
-      required this.y,
-      required this.intensity,
-      required this.radius});
+  LineupPlayer({
+    required this.number,
+    required this.name,
+    required this.position,
+    this.isPlaying = true,
+  });
 }
 
 class MatchEvent {
+  final String type;
   final int minute;
-  final String type, playerName;
+  final String playerName;
   final String? detail;
+  final String? subDetail;
   final bool isHomeTeam;
-  MatchEvent(
-      {required this.minute,
-      required this.type,
-      required this.playerName,
-      this.detail,
-      required this.isHomeTeam});
+  final String? playerPhoto;
+
+  MatchEvent({
+    required this.type,
+    required this.minute,
+    required this.playerName,
+    this.detail,
+    this.subDetail,
+    required this.isHomeTeam,
+    this.playerPhoto,
+  });
 }
 
-class LineupPlayer {
-  final int number;
-  final String name, position;
-  final double x, y;
-  LineupPlayer(
-      {required this.number,
-      required this.name,
-      required this.position,
-      required this.x,
-      required this.y});
+class InjuredPlayer {
+  final String playerName;
+  final String reason;
+  final String status;
+
+  InjuredPlayer({
+    required this.playerName,
+    required this.reason,
+    required this.status,
+  });
 }
 
-// ============================================================================
-// CUSTOM PAINTERS
-// ============================================================================
-
-class PerfectHalfFieldShotMapPainter extends CustomPainter {
+// PAINTERS (questi rimangono invariati)
+class ShotMapPainter extends CustomPainter {
+  final bool isHome;
   final bool isDark;
-  final List<Shot> shots;
-  final Color teamColor;
 
-  PerfectHalfFieldShotMapPainter(
-      {required this.isDark, required this.shots, required this.teamColor});
+  ShotMapPainter({required this.isHome, required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.85)
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke;
-    final w = size.width;
-    final h = size.height;
-    canvas.drawLine(Offset(0, h * 0.95), Offset(w, h * 0.95), paint);
-    final penaltyW = w * 0.55;
-    final penaltyH = h * 0.35;
-    final penaltyLeft = (w - penaltyW) / 2;
-    canvas.drawRect(Rect.fromLTWH(penaltyLeft, 0, penaltyW, penaltyH), paint);
-    final goalAreaW = w * 0.28;
-    final goalAreaH = h * 0.15;
-    final goalAreaLeft = (w - goalAreaW) / 2;
-    canvas.drawRect(
-        Rect.fromLTWH(goalAreaLeft, 0, goalAreaW, goalAreaH), paint);
-    final goalW = w * 0.22;
-    final goalLeft = (w - goalW) / 2;
-    final goalPaint = Paint()
-      ..color = Colors.white.withOpacity(0.95)
-      ..strokeWidth = 6
-      ..style = PaintingStyle.stroke;
+    final fieldPaint = Paint()
+      ..color = isDark ? Colors.green[900]! : Colors.green[600]!
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fieldPaint);
+
+    final linePaint = Paint()
+      ..color = Colors.white.withOpacity(0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
     canvas.drawLine(
-        Offset(goalLeft, 4), Offset(goalLeft + goalW, 4), goalPaint);
-    final postPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(goalLeft, 4), 6, postPaint);
-    canvas.drawCircle(Offset(goalLeft + goalW, 4), 6, postPaint);
-    final centerPaint = Paint()
-      ..color = Colors.white.withOpacity(0.9)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(w / 2, penaltyH * 0.65), 5, centerPaint);
-    for (final shot in shots) {
-      _drawShot(canvas, size, shot);
+      Offset(0, size.height / 2),
+      Offset(size.width, size.height / 2),
+      linePaint,
+    );
+
+    final random = math.Random(42);
+    final shotColor = isHome ? Colors.blue : Colors.red;
+
+    for (int i = 0; i < 15; i++) {
+      final x = size.width * (0.2 + random.nextDouble() * 0.6);
+      final y = isHome
+          ? size.height * (0.1 + random.nextDouble() * 0.4)
+          : size.height * (0.5 + random.nextDouble() * 0.4);
+
+      final isGoal = random.nextBool() && random.nextDouble() > 0.6;
+
+      canvas.drawCircle(
+        Offset(x, y),
+        isGoal ? 8 : 6,
+        Paint()
+          ..color = isGoal ? shotColor : shotColor.withOpacity(0.4)
+          ..style = PaintingStyle.fill,
+      );
+
+      if (isGoal) {
+        canvas.drawCircle(
+          Offset(x, y),
+          10,
+          Paint()
+            ..color = shotColor
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2,
+        );
+      }
     }
   }
 
-  void _drawShot(Canvas canvas, Size size, Shot shot) {
-    Color color;
-    IconData? icon;
-    if (shot.isGoal) {
-      color = const Color(0xFF00C853);
-      icon = Icons.sports_soccer;
-    } else if (shot.isOnTarget) {
-      color = const Color(0xFF2196F3);
-    } else if (!shot.isOnTarget && shot.xg > 0.3) {
-      color = const Color(0xFF9C27B0);
-    } else {
-      color = const Color(0xFFFF9800);
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class PassNetworkPainter extends CustomPainter {
+  final bool isHome;
+  final bool isDark;
+
+  PassNetworkPainter({required this.isHome, required this.isDark});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final fieldPaint = Paint()
+      ..color = isDark ? Colors.green[900]! : Colors.green[600]!
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fieldPaint);
+
+    final playerColor = isHome ? Colors.blue : Colors.red;
+    final passColor = playerColor.withOpacity(0.3);
+
+    final positions = [
+      Offset(size.width * 0.5, size.height * 0.85),
+      Offset(size.width * 0.3, size.height * 0.65),
+      Offset(size.width * 0.5, size.height * 0.65),
+      Offset(size.width * 0.7, size.height * 0.65),
+      Offset(size.width * 0.3, size.height * 0.4),
+      Offset(size.width * 0.5, size.height * 0.4),
+      Offset(size.width * 0.7, size.height * 0.4),
+      Offset(size.width * 0.3, size.height * 0.2),
+      Offset(size.width * 0.5, size.height * 0.2),
+      Offset(size.width * 0.7, size.height * 0.2),
+    ];
+
+    final passPaint = Paint()
+      ..color = passColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
+    for (int i = 0; i < positions.length - 1; i++) {
+      for (int j = i + 1; j < positions.length; j++) {
+        if (math.Random(i * j).nextDouble() > 0.6) {
+          canvas.drawLine(positions[i], positions[j], passPaint);
+        }
+      }
     }
-    final x = shot.x * size.width;
-    final y = shot.y * size.height;
-    final radius = 10.0 + (shot.xg * 18);
-    final glowPaint = Paint()
-      ..color = color.withOpacity(0.3)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(x, y), radius + 4, glowPaint);
-    final paint = Paint()
-      ..color = color.withOpacity(0.85)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(x, y), radius, paint);
-    final borderPaint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke;
-    canvas.drawCircle(Offset(x, y), radius, borderPaint);
-    if (shot.isGoal && icon != null) {
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: String.fromCharCode(icon.codePoint),
-          style: TextStyle(
-              fontSize: radius * 1.2,
-              fontFamily: icon.fontFamily,
-              color: Colors.white,
-              fontWeight: FontWeight.bold),
-        ),
-        textDirection: TextDirection.ltr,
+
+    for (final pos in positions) {
+      canvas.drawCircle(
+        pos,
+        8,
+        Paint()
+          ..color = playerColor
+          ..style = PaintingStyle.fill,
       );
-      textPainter.layout();
-      textPainter.paint(canvas,
-          Offset(x - textPainter.width / 2, y - textPainter.height / 2));
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class PressureMapPainter extends CustomPainter {
+  final bool isHome;
+  final bool isDark;
+
+  PressureMapPainter({required this.isHome, required this.isDark});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final fieldPaint = Paint()
+      ..color = isDark ? Colors.green[900]! : Colors.green[600]!
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fieldPaint);
+
+    final random = math.Random(42);
+    final pressureColor = isHome ? Colors.blue : Colors.red;
+
+    for (int i = 0; i < 20; i++) {
+      final x = size.width * (0.1 + random.nextDouble() * 0.8);
+      final y = isHome
+          ? size.height * (0.1 + random.nextDouble() * 0.5)
+          : size.height * (0.4 + random.nextDouble() * 0.5);
+
+      final intensity = random.nextDouble();
+
+      canvas.drawCircle(
+        Offset(x, y),
+        15 + intensity * 20,
+        Paint()
+          ..color = pressureColor.withOpacity(0.2 + intensity * 0.3)
+          ..style = PaintingStyle.fill,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class HeatmapPainter extends CustomPainter {
+  final bool isHome;
+  final bool isDark;
+
+  HeatmapPainter({required this.isHome, required this.isDark});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final fieldPaint = Paint()
+      ..color = isDark ? Colors.green[900]! : Colors.green[600]!
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fieldPaint);
+
+    final random = math.Random(42);
+    final colors = [
+      Colors.blue.withOpacity(0.3),
+      Colors.yellow.withOpacity(0.3),
+      Colors.red.withOpacity(0.3),
+    ];
+
+    for (int i = 0; i < 30; i++) {
+      final x = size.width * (0.1 + random.nextDouble() * 0.8);
+      final y = isHome
+          ? size.height * (0.1 + random.nextDouble() * 0.6)
+          : size.height * (0.3 + random.nextDouble() * 0.6);
+
+      final colorIndex = (random.nextDouble() * 3).floor();
+
+      canvas.drawCircle(
+        Offset(x, y),
+        20 + random.nextDouble() * 30,
+        Paint()
+          ..color = colors[colorIndex]
+          ..style = PaintingStyle.fill,
+      );
     }
   }
 
@@ -3155,284 +2929,33 @@ class PerfectHalfFieldShotMapPainter extends CustomPainter {
 }
 
 class TouchMapPainter extends CustomPainter {
+  final bool isHome;
   final bool isDark;
-  final List<TouchPoint> touches;
-  final Color teamColor;
 
-  TouchMapPainter(
-      {required this.isDark, required this.touches, required this.teamColor});
+  TouchMapPainter({required this.isHome, required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.85)
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke;
-    final w = size.width;
-    final h = size.height;
-    canvas.drawRect(Rect.fromLTWH(0, 0, w, h), linePaint);
-    canvas.drawLine(Offset(0, h / 2), Offset(w, h / 2), linePaint);
-    for (final touch in touches) {
-      _drawTouch(canvas, size, touch);
-    }
-  }
-
-  void _drawTouch(Canvas canvas, Size size, TouchPoint touch) {
-    final x = touch.x * size.width;
-    final y = touch.y * size.height;
-    Color color;
-    if (y < size.height * 0.33) {
-      color = const Color(0xFFE53935);
-    } else if (y < size.height * 0.66) {
-      color = const Color(0xFFFF9800);
-    } else {
-      color = const Color(0xFF2196F3);
-    }
-    final radius = 6.0 * touch.intensity;
-    final glowPaint = Paint()
-      ..color = color.withOpacity(0.3)
+    final fieldPaint = Paint()
+      ..color = isDark ? Colors.green[900]! : Colors.green[600]!
       ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(x, y), radius * 1.5, glowPaint);
-    final paint = Paint()
-      ..color = color.withOpacity(0.7)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(x, y), radius, paint);
-    final borderPaint = Paint()
-      ..color = Colors.white.withOpacity(0.5)
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke;
-    canvas.drawCircle(Offset(x, y), radius, borderPaint);
-  }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fieldPaint);
 
-class HeatmapPainter extends CustomPainter {
-  final bool isDark;
-  final List<HeatmapPoint> heatmapData;
-  final Color teamColor;
+    final random = math.Random(42);
+    final touchColor = isHome ? Colors.blue : Colors.red;
 
-  HeatmapPainter(
-      {required this.isDark,
-      required this.heatmapData,
-      required this.teamColor});
+    for (int i = 0; i < 40; i++) {
+      final x = size.width * (0.1 + random.nextDouble() * 0.8);
+      final y = size.height * (0.1 + random.nextDouble() * 0.8);
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.25)
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-    final w = size.width;
-    final h = size.height;
-    canvas.drawRect(Rect.fromLTWH(0, 0, w, h), linePaint);
-    canvas.drawLine(Offset(0, h / 2), Offset(w, h / 2), linePaint);
-    for (final zone in heatmapData) {
-      _drawHeatZone(canvas, size, zone);
-    }
-  }
-
-  void _drawHeatZone(Canvas canvas, Size size, HeatmapPoint zone) {
-    final center = Offset(zone.x * size.width, zone.y * size.height);
-    for (int i = 0; i < 5; i++) {
-      final currentRadius = zone.radius * (1 - i * 0.18);
-      final currentIntensity = zone.intensity * (1 - i * 0.15);
-      final gradient = RadialGradient(
-        colors: [
-          teamColor.withOpacity(currentIntensity),
-          teamColor.withOpacity(currentIntensity * 0.7),
-          teamColor.withOpacity(currentIntensity * 0.4),
-          teamColor.withOpacity(0),
-        ],
-        stops: const [0.0, 0.3, 0.6, 1.0],
+      canvas.drawCircle(
+        Offset(x, y),
+        3,
+        Paint()
+          ..color = touchColor.withOpacity(0.4)
+          ..style = PaintingStyle.fill,
       );
-      final paint = Paint()
-        ..shader = gradient.createShader(
-            Rect.fromCircle(center: center, radius: currentRadius))
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(center, currentRadius, paint);
-    }
-    final centerPaint = Paint()
-      ..color = teamColor.withOpacity(0.9)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(center, 5, centerPaint);
-    final borderPaint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-    canvas.drawCircle(center, 5, borderPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class PassNetworkLinesPainter extends CustomPainter {
-  final bool isDark;
-  final List<PassConnection> passes;
-  final List<PassNetworkPlayer> players;
-  final Color teamColor;
-
-  PassNetworkLinesPainter(
-      {required this.isDark,
-      required this.passes,
-      required this.players,
-      required this.teamColor});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final sortedPasses = List<PassConnection>.from(passes)
-      ..sort((a, b) => a.count.compareTo(b.count));
-    for (final pass in sortedPasses) {
-      final fromPlayer = players.firstWhere((p) => p.number == pass.from);
-      final toPlayer = players.firstWhere((p) => p.number == pass.to);
-      final from = Offset(fromPlayer.positionOffset.dx * size.width,
-          fromPlayer.positionOffset.dy * size.height);
-      final to = Offset(toPlayer.positionOffset.dx * size.width,
-          toPlayer.positionOffset.dy * size.height);
-      final double strokeWidth =
-          (2.5 + (pass.count / 6).clamp(0, 5)).toDouble();
-      final double opacity = (0.5 + (pass.count / 25).clamp(0, 0.5));
-      final glowPaint = Paint()
-        ..color = teamColor.withOpacity(opacity * 0.3)
-        ..strokeWidth = strokeWidth + 8
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
-      canvas.drawLine(from, to, glowPaint);
-      final midGlowPaint = Paint()
-        ..color = teamColor.withOpacity(opacity * 0.5)
-        ..strokeWidth = strokeWidth + 4
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
-      canvas.drawLine(from, to, midGlowPaint);
-      final paint = Paint()
-        ..color = teamColor.withOpacity(opacity)
-        ..strokeWidth = strokeWidth
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
-      canvas.drawLine(from, to, paint);
-      final innerPaint = Paint()
-        ..color = Colors.white.withOpacity(opacity * 0.4)
-        ..strokeWidth = strokeWidth * 0.3
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
-      canvas.drawLine(from, to, innerPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class FootballFieldPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.25)
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-    final w = size.width;
-    final h = size.height;
-    final margin = 15.0;
-    canvas.drawRect(
-        Rect.fromLTWH(margin, margin, w - margin * 2, h - margin * 2),
-        linePaint);
-    canvas.drawLine(
-        Offset(margin, h / 2), Offset(w - margin, h / 2), linePaint);
-    canvas.drawCircle(Offset(w / 2, h / 2), 50, linePaint);
-    final dotPaint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(w / 2, h / 2), 4, dotPaint);
-    final penaltyW = w * 0.50;
-    final penaltyH = h * 0.16;
-    final penaltyLeft = (w - penaltyW) / 2;
-    canvas.drawRect(
-        Rect.fromLTWH(penaltyLeft, margin, penaltyW, penaltyH), linePaint);
-    final goalAreaW = w * 0.22;
-    final goalAreaH = h * 0.06;
-    final goalAreaLeft = (w - goalAreaW) / 2;
-    canvas.drawRect(
-        Rect.fromLTWH(goalAreaLeft, margin, goalAreaW, goalAreaH), linePaint);
-    canvas.drawCircle(Offset(w / 2, margin + penaltyH * 0.75), 3, dotPaint);
-    canvas.drawArc(
-        Rect.fromCircle(center: Offset(w / 2, margin + penaltyH), radius: 35),
-        0,
-        3.14159,
-        false,
-        linePaint);
-    canvas.drawRect(
-        Rect.fromLTWH(penaltyLeft, h - margin - penaltyH, penaltyW, penaltyH),
-        linePaint);
-    canvas.drawRect(
-        Rect.fromLTWH(
-            goalAreaLeft, h - margin - goalAreaH, goalAreaW, goalAreaH),
-        linePaint);
-    canvas.drawCircle(Offset(w / 2, h - margin - penaltyH * 0.75), 3, dotPaint);
-    canvas.drawArc(
-        Rect.fromCircle(
-            center: Offset(w / 2, h - margin - penaltyH), radius: 35),
-        3.14159,
-        3.14159,
-        false,
-        linePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class PerfectPressureMapPainter extends CustomPainter {
-  final bool isDark;
-  final List<PressureZone> pressureZones;
-  final Color teamColor;
-
-  PerfectPressureMapPainter(
-      {required this.isDark,
-      required this.pressureZones,
-      required this.teamColor});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.85)
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke;
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-    canvas.drawLine(
-        Offset(0, size.height / 2), Offset(size.width, size.height / 2), paint);
-    for (final zone in pressureZones) {
-      final center = Offset(zone.x * size.width, zone.y * size.height);
-      for (int i = 0; i < 3; i++) {
-        final currentRadius = zone.radius * (1 - i * 0.3);
-        final currentIntensity = zone.intensity * (1 - i * 0.25);
-        final gradient = RadialGradient(colors: [
-          teamColor.withOpacity(currentIntensity),
-          teamColor.withOpacity(currentIntensity * 0.6),
-          teamColor.withOpacity(currentIntensity * 0.3),
-          teamColor.withOpacity(0)
-        ], stops: const [
-          0.0,
-          0.4,
-          0.7,
-          1.0
-        ]);
-        final zonePaint = Paint()
-          ..shader = gradient.createShader(
-              Rect.fromCircle(center: center, radius: currentRadius))
-          ..style = PaintingStyle.fill;
-        canvas.drawCircle(center, currentRadius, zonePaint);
-      }
-      final centerPaint = Paint()
-        ..color = teamColor
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(center, 6, centerPaint);
-      final borderPaint = Paint()
-        ..color = Colors.white
-        ..strokeWidth = 2
-        ..style = PaintingStyle.stroke;
-      canvas.drawCircle(center, 6, borderPaint);
     }
   }
 

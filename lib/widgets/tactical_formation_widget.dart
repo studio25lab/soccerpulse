@@ -561,63 +561,76 @@ class _TacticalFormationWidgetState extends State<TacticalFormationWidget> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(14),
-        child: CustomPaint(
-          painter: FootballFieldPainter(),
-          child: starters.isEmpty
-              ? Center(
-                  child: Text(
-                    'Formazione non disponibile',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      shadows: const [
-                        Shadow(
-                          color: Colors.black,
-                          offset: Offset(1, 1),
-                          blurRadius: 2,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final fieldSize =
+                Size(constraints.maxWidth, constraints.maxHeight);
+            return CustomPaint(
+              painter: FootballFieldPainter(inset: 12),
+              child: starters.isEmpty
+                  ? Center(
+                      child: Text(
+                        'Formazione non disponibile',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          shadows: const [
+                            Shadow(
+                              color: Colors.black,
+                              offset: Offset(1, 1),
+                              blurRadius: 2,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
+                    )
+                  : Stack(
+                      children: _positionPlayers(starters, formation, fieldSize),
                     ),
-                  ),
-                )
-              : Stack(
-                  children: _positionPlayers(starters, formation),
-                ),
+            );
+          },
         ),
       ),
     );
   }
 
-  List<Widget> _positionPlayers(List<Player> starters, String formation) {
+  List<Widget> _positionPlayers(
+      List<Player> starters, String formation, Size fieldSize) {
     if (starters.isEmpty) return [];
 
     final lines = formation.split('-').map(int.parse).toList();
     List<Widget> positioned = [];
     int playerIndex = 1;
 
+    const playerHalfWidth = 32.5;
+    const safeHorizontal = 16.0;
+    const safeTop = 24.0;
+    const safeBottom = 34.0;
+    final usableWidth = fieldSize.width - (safeHorizontal * 2);
+    final usableHeight = fieldSize.height - safeTop - safeBottom;
+
     if (starters.isNotEmpty) {
       positioned.add(
         Positioned(
-          left: MediaQuery.of(context).size.width / 2 - 80,
-          top: 20,
+          left: fieldSize.width / 2 - playerHalfWidth,
+          top: safeTop,
           child: _buildPlayerCircle(starters[0]),
         ),
       );
     }
 
-    double topPosition = 80;
-    final spacing = 360 / (lines.length + 1);
+    final spacing = usableHeight / (lines.length + 1);
 
     for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
       final playersInLine = lines[lineIndex];
-      final lineTop = topPosition + (spacing * lineIndex);
+      final lineTop = safeTop + (spacing * (lineIndex + 1));
 
       for (int i = 0; i < playersInLine && playerIndex < starters.length; i++) {
         final player = starters[playerIndex];
-        final horizontalSpacing =
-            (MediaQuery.of(context).size.width - 32) / (playersInLine + 1);
-        final leftPosition = horizontalSpacing * (i + 1) - 30;
+        final horizontalSpacing = usableWidth / (playersInLine + 1);
+        final leftPosition =
+            safeHorizontal + (horizontalSpacing * (i + 1)) - playerHalfWidth;
 
         positioned.add(
           Positioned(
