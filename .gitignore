@@ -43,3 +43,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Mac iCloud duplicates
+* 2
+* 3
+* 2.*
+* 3.*
+
+# Backup files
+*.bak
+*.bak_*
