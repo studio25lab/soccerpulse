@@ -25,7 +25,7 @@ class MatchNotificationPreferencesService extends ChangeNotifier {
     }
 
     // Altrimenti crea impostazioni di default
-    final defaultSettings = MatchNotificationSettings.minimal(matchId);
+    final defaultSettings = MatchNotificationSettings.disabled(matchId);
     _settingsCache[matchId] = defaultSettings;
     return defaultSettings;
   }
@@ -294,5 +294,15 @@ class MatchNotificationPreferencesService extends ChangeNotifier {
       default:
         return false;
     }
+  }
+
+  void enableBasicNotifications(int matchId) {
+    final settings = MatchNotificationSettings.minimal(matchId);
+    saveSettingsForMatch(settings);
+  }
+
+  void disableAllNotifications(int matchId) {
+    final settings = MatchNotificationSettings.disabled(matchId);
+    saveSettingsForMatch(settings);
   }
 }

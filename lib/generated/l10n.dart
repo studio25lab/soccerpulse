@@ -1654,6 +1654,1872 @@ abstract class S {
   /// In it, this message translates to:
   /// **'Riproduci suoni per eventi'**
   String get soundEffectsDesc;
+
+  /// No description provided for @advanced.
+  ///
+  /// In it, this message translates to:
+  /// **'Avanzate'**
+  String get advanced;
+
+  /// No description provided for @formazioni.
+  ///
+  /// In it, this message translates to:
+  /// **'Formazioni'**
+  String get formazioni;
+
+  /// No description provided for @keyEvents.
+  ///
+  /// In it, this message translates to:
+  /// **'Eventi chiave'**
+  String get keyEvents;
+
+  /// No description provided for @chrono.
+  ///
+  /// In it, this message translates to:
+  /// **'Crono'**
+  String get chrono;
+
+  /// No description provided for @offensive.
+  ///
+  /// In it, this message translates to:
+  /// **'Azioni offensive'**
+  String get offensive;
+
+  /// No description provided for @discipline.
+  ///
+  /// In it, this message translates to:
+  /// **'Disciplina'**
+  String get discipline;
+
+  /// No description provided for @other.
+  ///
+  /// In it, this message translates to:
+  /// **'Altro'**
+  String get other;
+
+  /// No description provided for @goalNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Goal'**
+  String get goalNotif;
+
+  /// No description provided for @assistNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Assist'**
+  String get assistNotif;
+
+  /// No description provided for @shotsOnTargetNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiri in porta'**
+  String get shotsOnTargetNotif;
+
+  /// No description provided for @keyPassesNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi chiave'**
+  String get keyPassesNotif;
+
+  /// No description provided for @dribblesNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Dribbling riusciti'**
+  String get dribblesNotif;
+
+  /// No description provided for @offsidesNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Fuorigioco'**
+  String get offsidesNotif;
+
+  /// No description provided for @yellowCardNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Cartellini gialli'**
+  String get yellowCardNotif;
+
+  /// No description provided for @redCardNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Cartellini rossi'**
+  String get redCardNotif;
+
+  /// No description provided for @foulsCommittedNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli commessi'**
+  String get foulsCommittedNotif;
+
+  /// No description provided for @foulsSufferedNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli subiti'**
+  String get foulsSufferedNotif;
+
+  /// No description provided for @substitutionNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Sostituzioni'**
+  String get substitutionNotif;
+
+  /// No description provided for @goalDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Reti segnate'**
+  String get goalDesc;
+
+  /// No description provided for @assistDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi decisivi'**
+  String get assistDesc;
+
+  /// No description provided for @shotsOnTargetDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiri nello specchio'**
+  String get shotsOnTargetDesc;
+
+  /// No description provided for @keyPassesDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi che creano occasioni'**
+  String get keyPassesDesc;
+
+  /// No description provided for @dribblesDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Dribbling completati'**
+  String get dribblesDesc;
+
+  /// No description provided for @offsidesDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Posizioni di offside'**
+  String get offsidesDesc;
+
+  /// No description provided for @yellowCardDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Ammonizioni'**
+  String get yellowCardDesc;
+
+  /// No description provided for @redCardDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Espulsioni'**
+  String get redCardDesc;
+
+  /// No description provided for @foulsCommittedDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli fischiati contro'**
+  String get foulsCommittedDesc;
+
+  /// No description provided for @foulsSufferedDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli subiti dal giocatore'**
+  String get foulsSufferedDesc;
+
+  /// No description provided for @substitutionDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Entrata/uscita dal campo'**
+  String get substitutionDesc;
+
+  /// No description provided for @activateAll.
+  ///
+  /// In it, this message translates to:
+  /// **'Attiva tutto'**
+  String get activateAll;
+
+  /// No description provided for @deactivate.
+  ///
+  /// In it, this message translates to:
+  /// **'Disattiva'**
+  String get deactivate;
+
+  /// No description provided for @notificationsActive.
+  ///
+  /// In it, this message translates to:
+  /// **'notifiche attive'**
+  String get notificationsActive;
+
+  /// No description provided for @noNotificationActive.
+  ///
+  /// In it, this message translates to:
+  /// **'Nessuna notifica attiva'**
+  String get noNotificationActive;
+
+  /// No description provided for @onlyForThisMatch.
+  ///
+  /// In it, this message translates to:
+  /// **'Solo per questa partita'**
+  String get onlyForThisMatch;
+
+  /// No description provided for @profile.
+  ///
+  /// In it, this message translates to:
+  /// **'Profilo'**
+  String get profile;
+
+  /// No description provided for @compare.
+  ///
+  /// In it, this message translates to:
+  /// **'Confronta'**
+  String get compare;
+
+  /// No description provided for @minutesPlayedLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Minuti giocati'**
+  String get minutesPlayedLabel;
+
+  /// No description provided for @heatmap.
+  ///
+  /// In it, this message translates to:
+  /// **'Heatmap'**
+  String get heatmap;
+
+  /// No description provided for @pres.
+  ///
+  /// In it, this message translates to:
+  /// **'Pres.'**
+  String get pres;
+
+  /// No description provided for @cart.
+  ///
+  /// In it, this message translates to:
+  /// **'Cart.'**
+  String get cart;
+
+  /// No description provided for @totalHome.
+  ///
+  /// In it, this message translates to:
+  /// **'Totale'**
+  String get totalHome;
+
+  /// No description provided for @casa.
+  ///
+  /// In it, this message translates to:
+  /// **'Casa'**
+  String get casa;
+
+  /// No description provided for @trasferta.
+  ///
+  /// In it, this message translates to:
+  /// **'Trasferta'**
+  String get trasferta;
+
+  /// No description provided for @classifica.
+  ///
+  /// In it, this message translates to:
+  /// **'Classifica'**
+  String get classifica;
+
+  /// No description provided for @marcatori.
+  ///
+  /// In it, this message translates to:
+  /// **'Marcatori'**
+  String get marcatori;
+
+  /// No description provided for @assistman.
+  ///
+  /// In it, this message translates to:
+  /// **'Assistman'**
+  String get assistman;
+
+  /// No description provided for @cleanSheet.
+  ///
+  /// In it, this message translates to:
+  /// **'Clean Sheet'**
+  String get cleanSheet;
+
+  /// No description provided for @cartellini.
+  ///
+  /// In it, this message translates to:
+  /// **'Cartellini'**
+  String get cartellini;
+
+  /// No description provided for @rendimento.
+  ///
+  /// In it, this message translates to:
+  /// **'Rendimento'**
+  String get rendimento;
+
+  /// No description provided for @punti.
+  ///
+  /// In it, this message translates to:
+  /// **'Punti'**
+  String get punti;
+
+  /// No description provided for @giocate.
+  ///
+  /// In it, this message translates to:
+  /// **'Giocate'**
+  String get giocate;
+
+  /// No description provided for @vittorie.
+  ///
+  /// In it, this message translates to:
+  /// **'Vittorie'**
+  String get vittorie;
+
+  /// No description provided for @pareggi.
+  ///
+  /// In it, this message translates to:
+  /// **'Pareggi'**
+  String get pareggi;
+
+  /// No description provided for @sconfitte.
+  ///
+  /// In it, this message translates to:
+  /// **'Sconfitte'**
+  String get sconfitte;
+
+  /// No description provided for @diffReti.
+  ///
+  /// In it, this message translates to:
+  /// **'Diff. Reti'**
+  String get diffReti;
+
+  /// No description provided for @partite.
+  ///
+  /// In it, this message translates to:
+  /// **'Partite'**
+  String get partite;
+
+  /// No description provided for @statistiche.
+  ///
+  /// In it, this message translates to:
+  /// **'Statistiche'**
+  String get statistiche;
+
+  /// No description provided for @giocatori.
+  ///
+  /// In it, this message translates to:
+  /// **'Giocatori'**
+  String get giocatori;
+
+  /// No description provided for @informazioni.
+  ///
+  /// In it, this message translates to:
+  /// **'Informazioni'**
+  String get informazioni;
+
+  /// No description provided for @aggiungiGiocatore.
+  ///
+  /// In it, this message translates to:
+  /// **'Aggiungi Giocatore'**
+  String get aggiungiGiocatore;
+
+  /// No description provided for @squadre.
+  ///
+  /// In it, this message translates to:
+  /// **'Squadre'**
+  String get squadre;
+
+  /// No description provided for @classifiche.
+  ///
+  /// In it, this message translates to:
+  /// **'Classifiche'**
+  String get classifiche;
+
+  /// No description provided for @gPlusA.
+  ///
+  /// In it, this message translates to:
+  /// **'G+A'**
+  String get gPlusA;
+
+  /// No description provided for @cleanSheetTab.
+  ///
+  /// In it, this message translates to:
+  /// **'Clean Sheet'**
+  String get cleanSheetTab;
+
+  /// No description provided for @cartelliniTab.
+  ///
+  /// In it, this message translates to:
+  /// **'Cartellini'**
+  String get cartelliniTab;
+
+  /// No description provided for @totale.
+  ///
+  /// In it, this message translates to:
+  /// **'Totale'**
+  String get totale;
+
+  /// No description provided for @rendimentoSerieA.
+  ///
+  /// In it, this message translates to:
+  /// **'Rendimento Serie A'**
+  String get rendimentoSerieA;
+
+  /// No description provided for @squadra.
+  ///
+  /// In it, this message translates to:
+  /// **'Squadra'**
+  String get squadra;
+
+  /// No description provided for @gol.
+  ///
+  /// In it, this message translates to:
+  /// **'Gol'**
+  String get gol;
+
+  /// No description provided for @classificaMarcatori.
+  ///
+  /// In it, this message translates to:
+  /// **'Classifica Marcatori'**
+  String get classificaMarcatori;
+
+  /// No description provided for @classificaAssistman.
+  ///
+  /// In it, this message translates to:
+  /// **'Classifica Assistman'**
+  String get classificaAssistman;
+
+  /// No description provided for @cerca.
+  ///
+  /// In it, this message translates to:
+  /// **'Cerca'**
+  String get cerca;
+
+  /// No description provided for @notifiche.
+  ///
+  /// In it, this message translates to:
+  /// **'Notifiche'**
+  String get notifiche;
+
+  /// No description provided for @impostazioni.
+  ///
+  /// In it, this message translates to:
+  /// **'Impostazioni'**
+  String get impostazioni;
+
+  /// No description provided for @aggiungiSquadra.
+  ///
+  /// In it, this message translates to:
+  /// **'Aggiungi Squadra'**
+  String get aggiungiSquadra;
+
+  /// No description provided for @nessunGiocatorePreferito.
+  ///
+  /// In it, this message translates to:
+  /// **'Nessun Giocatore Preferito'**
+  String get nessunGiocatorePreferito;
+
+  /// No description provided for @aggiungiGiocatoriDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Aggiungi giocatori per seguire le loro prestazioni'**
+  String get aggiungiGiocatoriDesc;
+
+  /// No description provided for @nessunDato.
+  ///
+  /// In it, this message translates to:
+  /// **'Nessun dato'**
+  String get nessunDato;
+
+  /// No description provided for @posizione.
+  ///
+  /// In it, this message translates to:
+  /// **'Posizione'**
+  String get posizione;
+
+  /// No description provided for @sistema.
+  ///
+  /// In it, this message translates to:
+  /// **'Sistema'**
+  String get sistema;
+
+  /// No description provided for @searchPlayers.
+  ///
+  /// In it, this message translates to:
+  /// **'Cerca giocatore...'**
+  String get searchPlayers;
+
+  /// No description provided for @possessoPalla.
+  ///
+  /// In it, this message translates to:
+  /// **'Possesso Palla'**
+  String get possessoPalla;
+
+  /// No description provided for @tiri.
+  ///
+  /// In it, this message translates to:
+  /// **'TIRI'**
+  String get tiri;
+
+  /// No description provided for @tiriTotali.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiri Totali'**
+  String get tiriTotali;
+
+  /// No description provided for @tiriInPorta.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiri in Porta'**
+  String get tiriInPorta;
+
+  /// No description provided for @tiriFuori.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiri Fuori'**
+  String get tiriFuori;
+
+  /// No description provided for @passaggi.
+  ///
+  /// In it, this message translates to:
+  /// **'PASSAGGI'**
+  String get passaggi;
+
+  /// No description provided for @passaggiTotali.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi Totali'**
+  String get passaggiTotali;
+
+  /// No description provided for @passaggiPrecisi.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi Precisi'**
+  String get passaggiPrecisi;
+
+  /// No description provided for @passaggiChiave.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi Chiave'**
+  String get passaggiChiave;
+
+  /// No description provided for @crossRiusciti.
+  ///
+  /// In it, this message translates to:
+  /// **'Cross Riusciti'**
+  String get crossRiusciti;
+
+  /// No description provided for @eventiChiave.
+  ///
+  /// In it, this message translates to:
+  /// **'Eventi chiave'**
+  String get eventiChiave;
+
+  /// No description provided for @recenti.
+  ///
+  /// In it, this message translates to:
+  /// **'Recenti'**
+  String get recenti;
+
+  /// No description provided for @intervallo.
+  ///
+  /// In it, this message translates to:
+  /// **'INTERVALLO'**
+  String get intervallo;
+
+  /// No description provided for @falloTattico.
+  ///
+  /// In it, this message translates to:
+  /// **'Fallo tattico'**
+  String get falloTattico;
+
+  /// No description provided for @falloSu.
+  ///
+  /// In it, this message translates to:
+  /// **'Fallo su'**
+  String get falloSu;
+
+  /// No description provided for @calcioInizio.
+  ///
+  /// In it, this message translates to:
+  /// **'CALCIO D\'INIZIO'**
+  String get calcioInizio;
+
+  /// No description provided for @finePartita.
+  ///
+  /// In it, this message translates to:
+  /// **'FINE PARTITA'**
+  String get finePartita;
+
+  /// No description provided for @dribbling.
+  ///
+  /// In it, this message translates to:
+  /// **'DRIBBLING'**
+  String get dribbling;
+
+  /// No description provided for @dribblingRiusciti.
+  ///
+  /// In it, this message translates to:
+  /// **'Dribbling Riusciti'**
+  String get dribblingRiusciti;
+
+  /// No description provided for @dribblingTentati.
+  ///
+  /// In it, this message translates to:
+  /// **'Dribbling Tentati'**
+  String get dribblingTentati;
+
+  /// No description provided for @duelli.
+  ///
+  /// In it, this message translates to:
+  /// **'DUELLI'**
+  String get duelli;
+
+  /// No description provided for @duelliTotali.
+  ///
+  /// In it, this message translates to:
+  /// **'Duelli Totali'**
+  String get duelliTotali;
+
+  /// No description provided for @duelliVinti.
+  ///
+  /// In it, this message translates to:
+  /// **'Duelli Vinti'**
+  String get duelliVinti;
+
+  /// No description provided for @duelliAerei.
+  ///
+  /// In it, this message translates to:
+  /// **'Duelli Aerei'**
+  String get duelliAerei;
+
+  /// No description provided for @difesa.
+  ///
+  /// In it, this message translates to:
+  /// **'DIFESA'**
+  String get difesa;
+
+  /// No description provided for @contrasti.
+  ///
+  /// In it, this message translates to:
+  /// **'Contrasti'**
+  String get contrasti;
+
+  /// No description provided for @intercettazioni.
+  ///
+  /// In it, this message translates to:
+  /// **'Intercettazioni'**
+  String get intercettazioni;
+
+  /// No description provided for @salvataggi.
+  ///
+  /// In it, this message translates to:
+  /// **'Salvataggi'**
+  String get salvataggi;
+
+  /// No description provided for @calciAngolo.
+  ///
+  /// In it, this message translates to:
+  /// **'Calci d\'Angolo'**
+  String get calciAngolo;
+
+  /// No description provided for @falli.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli'**
+  String get falli;
+
+  /// No description provided for @fuorigioco.
+  ///
+  /// In it, this message translates to:
+  /// **'Fuorigioco'**
+  String get fuorigioco;
+
+  /// No description provided for @attacco.
+  ///
+  /// In it, this message translates to:
+  /// **'Attacco'**
+  String get attacco;
+
+  /// No description provided for @possesso.
+  ///
+  /// In it, this message translates to:
+  /// **'Possesso'**
+  String get possesso;
+
+  /// No description provided for @fase.
+  ///
+  /// In it, this message translates to:
+  /// **'Fase'**
+  String get fase;
+
+  /// No description provided for @faseOffensiva.
+  ///
+  /// In it, this message translates to:
+  /// **'Fase Offensiva'**
+  String get faseOffensiva;
+
+  /// No description provided for @precisione.
+  ///
+  /// In it, this message translates to:
+  /// **'Precisione'**
+  String get precisione;
+
+  /// No description provided for @matchday.
+  ///
+  /// In it, this message translates to:
+  /// **'Giornata'**
+  String get matchday;
+
+  /// No description provided for @palleLunghe.
+  ///
+  /// In it, this message translates to:
+  /// **'Palle Lunghe'**
+  String get palleLunghe;
+
+  /// No description provided for @generali.
+  ///
+  /// In it, this message translates to:
+  /// **'GENERALI'**
+  String get generali;
+
+  /// No description provided for @rimesseLaterali.
+  ///
+  /// In it, this message translates to:
+  /// **'Rimesse Laterali'**
+  String get rimesseLaterali;
+
+  /// No description provided for @contrastiTotali.
+  ///
+  /// In it, this message translates to:
+  /// **'Contrasti Totali'**
+  String get contrastiTotali;
+
+  /// No description provided for @contrastiVinti.
+  ///
+  /// In it, this message translates to:
+  /// **'Contrasti Vinti'**
+  String get contrastiVinti;
+
+  /// No description provided for @intercetti.
+  ///
+  /// In it, this message translates to:
+  /// **'Intercetti'**
+  String get intercetti;
+
+  /// No description provided for @rinvii.
+  ///
+  /// In it, this message translates to:
+  /// **'Rinvii'**
+  String get rinvii;
+
+  /// No description provided for @falliTotali.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli Totali'**
+  String get falliTotali;
+
+  /// No description provided for @cartelliniGialli.
+  ///
+  /// In it, this message translates to:
+  /// **'Cartellini Gialli'**
+  String get cartelliniGialli;
+
+  /// No description provided for @cartelliniRossi.
+  ///
+  /// In it, this message translates to:
+  /// **'Cartellini Rossi'**
+  String get cartelliniRossi;
+
+  /// No description provided for @disciplinaSection.
+  ///
+  /// In it, this message translates to:
+  /// **'DISCIPLINA'**
+  String get disciplinaSection;
+
+  /// No description provided for @proteste.
+  ///
+  /// In it, this message translates to:
+  /// **'Proteste'**
+  String get proteste;
+
+  /// No description provided for @falloSuPlayer.
+  ///
+  /// In it, this message translates to:
+  /// **'Fallo su'**
+  String get falloSuPlayer;
+
+  /// No description provided for @fuorigiocoAttivo.
+  ///
+  /// In it, this message translates to:
+  /// **'Fuorigioco attivo'**
+  String get fuorigiocoAttivo;
+
+  /// No description provided for @fuorigiocoPassivo.
+  ///
+  /// In it, this message translates to:
+  /// **'Fuorigioco passivo'**
+  String get fuorigiocoPassivo;
+
+  /// No description provided for @falliLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli'**
+  String get falliLabel;
+
+  /// No description provided for @calciDAngolo.
+  ///
+  /// In it, this message translates to:
+  /// **'Calci d\'Angolo'**
+  String get calciDAngolo;
+
+  /// No description provided for @statisticheStagione.
+  ///
+  /// In it, this message translates to:
+  /// **'Statistiche Stagione 2023/24'**
+  String get statisticheStagione;
+
+  /// No description provided for @minuti.
+  ///
+  /// In it, this message translates to:
+  /// **'Minuti'**
+  String get minuti;
+
+  /// No description provided for @ammonizioni.
+  ///
+  /// In it, this message translates to:
+  /// **'Ammonizioni'**
+  String get ammonizioni;
+
+  /// No description provided for @mediaVoto.
+  ///
+  /// In it, this message translates to:
+  /// **'Media voto'**
+  String get mediaVoto;
+
+  /// No description provided for @attaccoSection.
+  ///
+  /// In it, this message translates to:
+  /// **'Attacco'**
+  String get attaccoSection;
+
+  /// No description provided for @possessoSection.
+  ///
+  /// In it, this message translates to:
+  /// **'Possesso'**
+  String get possessoSection;
+
+  /// No description provided for @tiriSection.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiri'**
+  String get tiriSection;
+
+  /// No description provided for @passaggiSection.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi'**
+  String get passaggiSection;
+
+  /// No description provided for @difesaSection.
+  ///
+  /// In it, this message translates to:
+  /// **'Difesa'**
+  String get difesaSection;
+
+  /// No description provided for @disciplinaLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Disciplina'**
+  String get disciplinaLabel;
+
+  /// No description provided for @presenze.
+  ///
+  /// In it, this message translates to:
+  /// **'Presenze'**
+  String get presenze;
+
+  /// No description provided for @dribblingLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Dribbling'**
+  String get dribblingLabel;
+
+  /// No description provided for @duelliLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Duelli'**
+  String get duelliLabel;
+
+  /// No description provided for @azioniDiGioco.
+  ///
+  /// In it, this message translates to:
+  /// **'Azioni di gioco'**
+  String get azioniDiGioco;
+
+  /// No description provided for @calcioPiazzato.
+  ///
+  /// In it, this message translates to:
+  /// **'Calcio piazzato'**
+  String get calcioPiazzato;
+
+  /// No description provided for @titoloPassaggi.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi'**
+  String get titoloPassaggi;
+
+  /// No description provided for @titoloTiri.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiri'**
+  String get titoloTiri;
+
+  /// No description provided for @titoloAttacco.
+  ///
+  /// In it, this message translates to:
+  /// **'Attacco'**
+  String get titoloAttacco;
+
+  /// No description provided for @titoloDifesa.
+  ///
+  /// In it, this message translates to:
+  /// **'Difesa'**
+  String get titoloDifesa;
+
+  /// No description provided for @titoloPossesso.
+  ///
+  /// In it, this message translates to:
+  /// **'Possesso'**
+  String get titoloPossesso;
+
+  /// No description provided for @mappaTiri.
+  ///
+  /// In it, this message translates to:
+  /// **'Mappa Tiri'**
+  String get mappaTiri;
+
+  /// No description provided for @attaccoTab.
+  ///
+  /// In it, this message translates to:
+  /// **'Attacco'**
+  String get attaccoTab;
+
+  /// No description provided for @passaggiTab.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi'**
+  String get passaggiTab;
+
+  /// No description provided for @difensiva.
+  ///
+  /// In it, this message translates to:
+  /// **'Difensiva'**
+  String get difensiva;
+
+  /// No description provided for @grandiOccasioniRealizzate.
+  ///
+  /// In it, this message translates to:
+  /// **'Grandi occasioni realizzate'**
+  String get grandiOccasioniRealizzate;
+
+  /// No description provided for @grandiOccasioniMancate.
+  ///
+  /// In it, this message translates to:
+  /// **'Grandi occasioni mancate'**
+  String get grandiOccasioniMancate;
+
+  /// No description provided for @tocchiAreaAvversaria.
+  ///
+  /// In it, this message translates to:
+  /// **'Tocchi nell\'area avversaria'**
+  String get tocchiAreaAvversaria;
+
+  /// No description provided for @falliTerzoOffensivo.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli avversari nel terzo offensivo'**
+  String get falliTerzoOffensivo;
+
+  /// No description provided for @attacchiPericolosi.
+  ///
+  /// In it, this message translates to:
+  /// **'Attacchi pericolosi'**
+  String get attacchiPericolosi;
+
+  /// No description provided for @attacchiLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Attacchi'**
+  String get attacchiLabel;
+
+  /// No description provided for @retePassaggi.
+  ///
+  /// In it, this message translates to:
+  /// **'Rete passaggi'**
+  String get retePassaggi;
+
+  /// No description provided for @azioniDifensive.
+  ///
+  /// In it, this message translates to:
+  /// **'Azioni difensive'**
+  String get azioniDifensive;
+
+  /// No description provided for @radarDuelli.
+  ///
+  /// In it, this message translates to:
+  /// **'Radar duelli'**
+  String get radarDuelli;
+
+  /// No description provided for @zoneCampo.
+  ///
+  /// In it, this message translates to:
+  /// **'Zone campo'**
+  String get zoneCampo;
+
+  /// No description provided for @palloniRecuperati.
+  ///
+  /// In it, this message translates to:
+  /// **'Palloni recuperati'**
+  String get palloniRecuperati;
+
+  /// No description provided for @passaggiRiusciti.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi riusciti'**
+  String get passaggiRiusciti;
+
+  /// No description provided for @passaggiLunghi.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi lunghi'**
+  String get passaggiLunghi;
+
+  /// No description provided for @passaggiCorti.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi corti'**
+  String get passaggiCorti;
+
+  /// No description provided for @crossTentati.
+  ///
+  /// In it, this message translates to:
+  /// **'Cross tentati'**
+  String get crossTentati;
+
+  /// No description provided for @assist.
+  ///
+  /// In it, this message translates to:
+  /// **'Assist'**
+  String get assist;
+
+  /// No description provided for @tocchi.
+  ///
+  /// In it, this message translates to:
+  /// **'Tocchi'**
+  String get tocchi;
+
+  /// No description provided for @passaggiPrecisilabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi precisi'**
+  String get passaggiPrecisilabel;
+
+  /// No description provided for @passaggiProgressivi.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi progressivi'**
+  String get passaggiProgressivi;
+
+  /// No description provided for @passaggiTerzoOffensivo.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi nel\nterzo offensivo'**
+  String get passaggiTerzoOffensivo;
+
+  /// No description provided for @passaggiAvanzano.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi che avanzano il gioco di almeno 10m verso la porta'**
+  String get passaggiAvanzano;
+
+  /// No description provided for @passaggiTotaliLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi totali'**
+  String get passaggiTotaliLabel;
+
+  /// No description provided for @rimuovi.
+  ///
+  /// In it, this message translates to:
+  /// **'Rimuovi'**
+  String get rimuovi;
+
+  /// No description provided for @aggiungiGiocatoriPerSeguire.
+  ///
+  /// In it, this message translates to:
+  /// **'Aggiungi giocatori per seguire le loro prestazioni'**
+  String get aggiungiGiocatoriPerSeguire;
+
+  /// No description provided for @notificheAttive.
+  ///
+  /// In it, this message translates to:
+  /// **'notifiche attive'**
+  String get notificheAttive;
+
+  /// No description provided for @nessunaNotificaAttiva.
+  ///
+  /// In it, this message translates to:
+  /// **'Nessuna notifica attiva'**
+  String get nessunaNotificaAttiva;
+
+  /// No description provided for @cartelliniGialliNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Cartellini gialli'**
+  String get cartelliniGialliNotif;
+
+  /// No description provided for @ammonizioni2.
+  ///
+  /// In it, this message translates to:
+  /// **'Ammonizioni e doppi gialli'**
+  String get ammonizioni2;
+
+  /// No description provided for @cartelliniRossiNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Cartellini rossi'**
+  String get cartelliniRossiNotif;
+
+  /// No description provided for @espulsioniNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Espulsioni dirette e per doppio giallo'**
+  String get espulsioniNotif;
+
+  /// No description provided for @calciAngoloDett.
+  ///
+  /// In it, this message translates to:
+  /// **'Calci d\'angolo'**
+  String get calciAngoloDett;
+
+  /// No description provided for @cornerDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Corner battuti da entrambe le squadre'**
+  String get cornerDesc;
+
+  /// No description provided for @falliNotif.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli'**
+  String get falliNotif;
+
+  /// No description provided for @falliDesc.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli commessi in campo'**
+  String get falliDesc;
+
+  /// No description provided for @partiteDelGiorno.
+  ///
+  /// In it, this message translates to:
+  /// **'Partite del'**
+  String get partiteDelGiorno;
+
+  /// No description provided for @oggi.
+  ///
+  /// In it, this message translates to:
+  /// **'Oggi'**
+  String get oggi;
+
+  /// No description provided for @ieri.
+  ///
+  /// In it, this message translates to:
+  /// **'Ier'**
+  String get ieri;
+
+  /// No description provided for @statisticheAvanzate.
+  ///
+  /// In it, this message translates to:
+  /// **'Statistiche Avanzate'**
+  String get statisticheAvanzate;
+
+  /// No description provided for @modulo.
+  ///
+  /// In it, this message translates to:
+  /// **'Modulo'**
+  String get modulo;
+
+  /// No description provided for @titolari.
+  ///
+  /// In it, this message translates to:
+  /// **'Titolari'**
+  String get titolari;
+
+  /// No description provided for @riserve.
+  ///
+  /// In it, this message translates to:
+  /// **'Riserve'**
+  String get riserve;
+
+  /// No description provided for @allenatore.
+  ///
+  /// In it, this message translates to:
+  /// **'Allenatore'**
+  String get allenatore;
+
+  /// No description provided for @sostituzione.
+  ///
+  /// In it, this message translates to:
+  /// **'Sostituzione'**
+  String get sostituzione;
+
+  /// No description provided for @rigore.
+  ///
+  /// In it, this message translates to:
+  /// **'Rigore'**
+  String get rigore;
+
+  /// No description provided for @secondoTempo.
+  ///
+  /// In it, this message translates to:
+  /// **'Secondo tempo'**
+  String get secondoTempo;
+
+  /// No description provided for @primoTempo.
+  ///
+  /// In it, this message translates to:
+  /// **'Primo tempo'**
+  String get primoTempo;
+
+  /// No description provided for @supplementari.
+  ///
+  /// In it, this message translates to:
+  /// **'Supplementari'**
+  String get supplementari;
+
+  /// No description provided for @vediProfilo.
+  ///
+  /// In it, this message translates to:
+  /// **'Vedi profilo'**
+  String get vediProfilo;
+
+  /// No description provided for @vediTutto.
+  ///
+  /// In it, this message translates to:
+  /// **'Vedi tutto'**
+  String get vediTutto;
+
+  /// No description provided for @giocatore.
+  ///
+  /// In it, this message translates to:
+  /// **'Giocatore'**
+  String get giocatore;
+
+  /// No description provided for @giocata.
+  ///
+  /// In it, this message translates to:
+  /// **'Giocata'**
+  String get giocata;
+
+  /// No description provided for @tutti.
+  ///
+  /// In it, this message translates to:
+  /// **'Tutti'**
+  String get tutti;
+
+  /// No description provided for @primoTempoShort.
+  ///
+  /// In it, this message translates to:
+  /// **'1° Tempo'**
+  String get primoTempoShort;
+
+  /// No description provided for @secondoTempoShort.
+  ///
+  /// In it, this message translates to:
+  /// **'2° Tempo'**
+  String get secondoTempoShort;
+
+  /// No description provided for @totali.
+  ///
+  /// In it, this message translates to:
+  /// **'Totali'**
+  String get totali;
+
+  /// No description provided for @contrastiLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Contrasti'**
+  String get contrastiLabel;
+
+  /// No description provided for @intercettiLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Intercetti'**
+  String get intercettiLabel;
+
+  /// No description provided for @vintiLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Vinti'**
+  String get vintiLabel;
+
+  /// No description provided for @topDifensori.
+  ///
+  /// In it, this message translates to:
+  /// **'Top difensori'**
+  String get topDifensori;
+
+  /// No description provided for @toccaGiocatore.
+  ///
+  /// In it, this message translates to:
+  /// **'Tocca un giocatore per filtrare il campo'**
+  String get toccaGiocatore;
+
+  /// No description provided for @centrocampo.
+  ///
+  /// In it, this message translates to:
+  /// **'Centrocampo'**
+  String get centrocampo;
+
+  /// No description provided for @dominioTerritoriale.
+  ///
+  /// In it, this message translates to:
+  /// **'Dominio Territoriale'**
+  String get dominioTerritoriale;
+
+  /// No description provided for @azioniMetaCampo.
+  ///
+  /// In it, this message translates to:
+  /// **'% azioni nella metà campo avversaria'**
+  String get azioniMetaCampo;
+
+  /// No description provided for @territorio.
+  ///
+  /// In it, this message translates to:
+  /// **'Territorio'**
+  String get territorio;
+
+  /// No description provided for @inPorta.
+  ///
+  /// In it, this message translates to:
+  /// **'In Porta'**
+  String get inPorta;
+
+  /// No description provided for @fuori.
+  ///
+  /// In it, this message translates to:
+  /// **'Fuori'**
+  String get fuori;
+
+  /// No description provided for @respinto.
+  ///
+  /// In it, this message translates to:
+  /// **'Respinto'**
+  String get respinto;
+
+  /// No description provided for @situazione.
+  ///
+  /// In it, this message translates to:
+  /// **'Situazione'**
+  String get situazione;
+
+  /// No description provided for @contropiede.
+  ///
+  /// In it, this message translates to:
+  /// **'Contropiede'**
+  String get contropiede;
+
+  /// No description provided for @tipoDiTiro.
+  ///
+  /// In it, this message translates to:
+  /// **'Tipo di tiro'**
+  String get tipoDiTiro;
+
+  /// No description provided for @tiroDiSinistro.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiro di sinistro'**
+  String get tiroDiSinistro;
+
+  /// No description provided for @tiroDiDestro.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiro di destro'**
+  String get tiroDiDestro;
+
+  /// No description provided for @colpoDiTesta.
+  ///
+  /// In it, this message translates to:
+  /// **'Colpo di testa'**
+  String get colpoDiTesta;
+
+  /// No description provided for @esito.
+  ///
+  /// In it, this message translates to:
+  /// **'Esito'**
+  String get esito;
+
+  /// No description provided for @zonaGol.
+  ///
+  /// In it, this message translates to:
+  /// **'Zona gol'**
+  String get zonaGol;
+
+  /// No description provided for @inBassoSinistra.
+  ///
+  /// In it, this message translates to:
+  /// **'In basso a sinistra'**
+  String get inBassoSinistra;
+
+  /// No description provided for @inBassoDestra.
+  ///
+  /// In it, this message translates to:
+  /// **'In basso a destra'**
+  String get inBassoDestra;
+
+  /// No description provided for @inBassoAlCentro.
+  ///
+  /// In it, this message translates to:
+  /// **'In basso al centro'**
+  String get inBassoAlCentro;
+
+  /// No description provided for @inAltoSinistra.
+  ///
+  /// In it, this message translates to:
+  /// **'In alto a sinistra'**
+  String get inAltoSinistra;
+
+  /// No description provided for @inAltoDestra.
+  ///
+  /// In it, this message translates to:
+  /// **'In alto a destra'**
+  String get inAltoDestra;
+
+  /// No description provided for @inAltoAlCentro.
+  ///
+  /// In it, this message translates to:
+  /// **'In alto al centro'**
+  String get inAltoAlCentro;
+
+  /// No description provided for @alCentro.
+  ///
+  /// In it, this message translates to:
+  /// **'Al centro'**
+  String get alCentro;
+
+  /// No description provided for @passaggiPrecisiLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi precisi'**
+  String get passaggiPrecisiLabel;
+
+  /// No description provided for @passaggiChiaveLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi chiave'**
+  String get passaggiChiaveLabel;
+
+  /// No description provided for @passaggiProgressiviLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi progressivi'**
+  String get passaggiProgressiviLabel;
+
+  /// No description provided for @passaggiNelTerzo.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi nel terzo offensivo'**
+  String get passaggiNelTerzo;
+
+  /// No description provided for @palleLungheLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Palle lunghe'**
+  String get palleLungheLabel;
+
+  /// No description provided for @palleCorte.
+  ///
+  /// In it, this message translates to:
+  /// **'Palle corte'**
+  String get palleCorte;
+
+  /// No description provided for @recuperiPalla.
+  ///
+  /// In it, this message translates to:
+  /// **'Recuperi palla'**
+  String get recuperiPalla;
+
+  /// No description provided for @salvataggiLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Salvataggi'**
+  String get salvataggiLabel;
+
+  /// No description provided for @grandiOccRealizzate.
+  ///
+  /// In it, this message translates to:
+  /// **'Grandi occasioni realizzate'**
+  String get grandiOccRealizzate;
+
+  /// No description provided for @grandiOccMancate.
+  ///
+  /// In it, this message translates to:
+  /// **'Grandi occasioni mancate'**
+  String get grandiOccMancate;
+
+  /// No description provided for @tocchiAreaAvv.
+  ///
+  /// In it, this message translates to:
+  /// **'Tocchi nell\'area avversaria'**
+  String get tocchiAreaAvv;
+
+  /// No description provided for @falliTerzoOff.
+  ///
+  /// In it, this message translates to:
+  /// **'Falli avversari nel terzo offensivo'**
+  String get falliTerzoOff;
+
+  /// No description provided for @attacchiPeric.
+  ///
+  /// In it, this message translates to:
+  /// **'Attacchi pericolosi'**
+  String get attacchiPeric;
+
+  /// No description provided for @attacchiTot.
+  ///
+  /// In it, this message translates to:
+  /// **'Attacchi'**
+  String get attacchiTot;
+
+  /// No description provided for @assistLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Assist'**
+  String get assistLabel;
+
+  /// No description provided for @tiriLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Tiri'**
+  String get tiriLabel;
+
+  /// No description provided for @passaggiRLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Passaggi'**
+  String get passaggiRLabel;
+
+  /// No description provided for @dribLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Drib'**
+  String get dribLabel;
+
+  /// No description provided for @difLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Dif'**
+  String get difLabel;
+
+  /// No description provided for @faseDifensiva.
+  ///
+  /// In it, this message translates to:
+  /// **'Fase Difensiva'**
+  String get faseDifensiva;
+
+  /// No description provided for @topAttaccanti.
+  ///
+  /// In it, this message translates to:
+  /// **'Top attaccanti'**
+  String get topAttaccanti;
+
+  /// No description provided for @topCentrocampisti.
+  ///
+  /// In it, this message translates to:
+  /// **'Top centrocampisti'**
+  String get topCentrocampisti;
+
+  /// No description provided for @toccaPerFiltrare.
+  ///
+  /// In it, this message translates to:
+  /// **'Tocca un giocatore per filtrare'**
+  String get toccaPerFiltrare;
+
+  /// No description provided for @azioneAperta.
+  ///
+  /// In it, this message translates to:
+  /// **'Azione aperta'**
+  String get azioneAperta;
+
+  /// No description provided for @calcioPiazzatoLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Calcio piazzato'**
+  String get calcioPiazzatoLabel;
+
+  /// No description provided for @reteLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Rete'**
+  String get reteLabel;
+
+  /// No description provided for @paratoLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Parato'**
+  String get paratoLabel;
+
+  /// No description provided for @traversaLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Traversa'**
+  String get traversaLabel;
+
+  /// No description provided for @paloLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Palo'**
+  String get paloLabel;
+
+  /// No description provided for @xGLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'xG'**
+  String get xGLabel;
+
+  /// No description provided for @totaliCarriera.
+  ///
+  /// In it, this message translates to:
+  /// **'Totali Carriera'**
+  String get totaliCarriera;
+
+  /// No description provided for @fuorigiocoLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Fuorigioco'**
+  String get fuorigiocoLabel;
+
+  /// No description provided for @fuorigiocoFischiati.
+  ///
+  /// In it, this message translates to:
+  /// **'Fuorigioco fischiati'**
+  String get fuorigiocoFischiati;
+
+  /// No description provided for @posizioniOffside.
+  ///
+  /// In it, this message translates to:
+  /// **'Posizioni di offside segnalate'**
+  String get posizioniOffside;
+
+  /// No description provided for @tuttiTentativi.
+  ///
+  /// In it, this message translates to:
+  /// **'Tutti i tentativi verso la porta'**
+  String get tuttiTentativi;
+
+  /// No description provided for @centrocampoSX.
+  ///
+  /// In it, this message translates to:
+  /// **'Centrocampo SX'**
+  String get centrocampoSX;
+
+  /// No description provided for @centrocampoCSX.
+  ///
+  /// In it, this message translates to:
+  /// **'Centrocampo CSX'**
+  String get centrocampoCSX;
+
+  /// No description provided for @centrocampoCDX.
+  ///
+  /// In it, this message translates to:
+  /// **'Centrocampo CDX'**
+  String get centrocampoCDX;
+
+  /// No description provided for @centrocampoDX.
+  ///
+  /// In it, this message translates to:
+  /// **'Centrocampo DX'**
+  String get centrocampoDX;
+
+  /// No description provided for @contrastiVintiLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Contrasti (vinti)'**
+  String get contrastiVintiLabel;
+
+  /// No description provided for @notificaFuorigioco.
+  ///
+  /// In it, this message translates to:
+  /// **'Notifica fuorigioco'**
+  String get notificaFuorigioco;
+
+  /// No description provided for @stagione.
+  ///
+  /// In it, this message translates to:
+  /// **'Stagione'**
+  String get stagione;
+
+  /// No description provided for @carriera.
+  ///
+  /// In it, this message translates to:
+  /// **'Carriera'**
+  String get carriera;
+
+  /// No description provided for @ultime5partite.
+  ///
+  /// In it, this message translates to:
+  /// **'Ultime 5 partite'**
+  String get ultime5partite;
+
+  /// No description provided for @overallFC26.
+  ///
+  /// In it, this message translates to:
+  /// **'Overall FC26'**
+  String get overallFC26;
+
+  /// No description provided for @rendimentoLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Rendimento'**
+  String get rendimentoLabel;
+
+  /// No description provided for @partiteGiocate.
+  ///
+  /// In it, this message translates to:
+  /// **'partite giocate'**
+  String get partiteGiocate;
+
+  /// No description provided for @vittoriePerc.
+  ///
+  /// In it, this message translates to:
+  /// **'vittorie'**
+  String get vittoriePerc;
+
+  /// No description provided for @golLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Gol'**
+  String get golLabel;
+
+  /// No description provided for @golFatti.
+  ///
+  /// In it, this message translates to:
+  /// **'Gol fatti'**
+  String get golFatti;
+
+  /// No description provided for @golSubiti.
+  ///
+  /// In it, this message translates to:
+  /// **'Gol subiti'**
+  String get golSubiti;
+
+  /// No description provided for @differenza.
+  ///
+  /// In it, this message translates to:
+  /// **'Differenza'**
+  String get differenza;
+
+  /// No description provided for @mediaGolPartita.
+  ///
+  /// In it, this message translates to:
+  /// **'Media gol/partita'**
+  String get mediaGolPartita;
+
+  /// No description provided for @puntiLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Points'**
+  String get puntiLabel;
+
+  /// No description provided for @totaleLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Totale'**
+  String get totaleLabel;
+
+  /// No description provided for @puntiPartita.
+  ///
+  /// In it, this message translates to:
+  /// **'Punti/partita'**
+  String get puntiPartita;
+
+  /// No description provided for @posizioneLabel.
+  ///
+  /// In it, this message translates to:
+  /// **'Posizione'**
+  String get posizioneLabel;
+
+  /// No description provided for @portiere.
+  ///
+  /// In it, this message translates to:
+  /// **'PORTIERE'**
+  String get portiere;
+
+  /// No description provided for @difensore.
+  ///
+  /// In it, this message translates to:
+  /// **'DIFENSORE'**
+  String get difensore;
+
+  /// No description provided for @centrocampista.
+  ///
+  /// In it, this message translates to:
+  /// **'CENTROCAMPISTA'**
+  String get centrocampista;
+
+  /// No description provided for @attaccante.
+  ///
+  /// In it, this message translates to:
+  /// **'ATTACCANTE'**
+  String get attaccante;
+
+  /// No description provided for @competizione.
+  ///
+  /// In it, this message translates to:
+  /// **'Competizione'**
+  String get competizione;
+
+  /// No description provided for @campionato.
+  ///
+  /// In it, this message translates to:
+  /// **'Campionato'**
+  String get campionato;
+
+  /// No description provided for @giornate.
+  ///
+  /// In it, this message translates to:
+  /// **'Giornate'**
+  String get giornate;
+
+  /// No description provided for @zonaChampions.
+  ///
+  /// In it, this message translates to:
+  /// **'Zona Champions League'**
+  String get zonaChampions;
+
+  /// No description provided for @puntiInPartite.
+  ///
+  /// In it, this message translates to:
+  /// **'punti in'**
+  String get puntiInPartite;
+
+  /// No description provided for @golPartita.
+  ///
+  /// In it, this message translates to:
+  /// **'Gol/partita'**
+  String get golPartita;
+
+  /// No description provided for @subitiPartita.
+  ///
+  /// In it, this message translates to:
+  /// **'Subiti/partita'**
+  String get subitiPartita;
+
+  /// No description provided for @formaRecente.
+  ///
+  /// In it, this message translates to:
+  /// **'Forma Recente'**
+  String get formaRecente;
+
+  /// No description provided for @sede.
+  ///
+  /// In it, this message translates to:
+  /// **'Sede'**
+  String get sede;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -1,6 +1,7 @@
 // lib/widgets/player_detail_bottom_sheet.dart
 
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
@@ -97,9 +98,9 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
             labelColor: theme.primaryColor,
             unselectedLabelColor: Colors.grey,
             indicatorColor: theme.primaryColor,
-            tabs: const [
-              Tab(text: 'Statistiche'),
-              Tab(text: 'Notifiche'),
+            tabs: [
+              Tab(text: tr(context, 'Statistiche')),
+              Tab(text: tr(context, 'Notifiche')),
             ],
           ),
 
@@ -202,7 +203,7 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Rating',
+                            tr(context, 'Rating'),
                             style: TextStyle(
                               fontSize: 11,
                               color: Colors.grey[600],
@@ -269,9 +270,9 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
             Row(
               children: [
                 Icon(Icons.location_on, color: theme.primaryColor, size: 20),
-                const SizedBox(width: 8),
-                const Text(
-                  'Heat Map Posizioni',
+                SizedBox(width: 8),
+                Text(
+                  tr(context, 'Heat Map Posizioni'),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -311,8 +312,8 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Performance Partita',
+            Text(
+              tr(context, 'Performance Partita'),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -323,19 +324,19 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildStatPill(
-                  'Goal',
+                  tr(context, 'Goal'),
                   (widget.player.goals ?? 0).toString(),
                   Icons.sports_soccer,
                   Colors.green,
                 ),
                 _buildStatPill(
-                  'Assist',
+                  tr(context, 'Assist'),
                   (widget.player.assists ?? 0).toString(),
                   Icons.assistant,
                   Colors.blue,
                 ),
                 _buildStatPill(
-                  'Tiri',
+                  tr(context, 'Tiri'),
                   (widget.player.shots ?? 0).toString(),
                   Icons.gps_fixed,
                   Colors.orange,
@@ -383,8 +384,8 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Statistiche Dettagliate',
+        Text(
+          tr(context, 'Statistiche Dettagliate'),
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -394,30 +395,30 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
 
         // Tiri
         _buildStatSection(
-          'Tiri',
+          tr(context, 'Tiri'),
           Icons.sports_soccer,
           theme,
           [
-            _buildStatRow('Tiri totali', widget.player.shots ?? 0),
-            _buildStatRow('Tiri in porta', widget.player.shotsOnTarget ?? 0),
+            _buildStatRow(tr(context, 'Tiri totali'), widget.player.shots ?? 0),
+            _buildStatRow(tr(context, 'Tiri in porta'), widget.player.shotsOnTarget ?? 0),
           ],
         ),
         const SizedBox(height: 16),
 
         // Passaggi
         _buildStatSection(
-          'Passaggi',
+          tr(context, 'Passaggi'),
           Icons.swap_calls,
           theme,
           [
-            _buildStatRow('Passaggi totali', widget.player.passes ?? 0),
+            _buildStatRow(tr(context, 'Passaggi totali'), widget.player.passes ?? 0),
             _buildStatRow(
-                'Passaggi riusciti', widget.player.passesCompleted ?? 0),
+                tr(context, 'Passaggi riusciti'), widget.player.passesCompleted ?? 0),
             if (widget.player.passes != null &&
                 widget.player.passes! > 0 &&
                 widget.player.passesCompleted != null)
               _buildStatRow(
-                'Precisione',
+                tr(context, 'Precisione'),
                 widget.player.passesCompleted ?? 0,
                 maxValue: widget.player.passes,
                 isPercentage: true,
@@ -428,27 +429,27 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
 
         // Difesa
         _buildStatSection(
-          'Difesa',
+          tr(context, 'Difesa'),
           Icons.shield,
           theme,
           [
-            _buildStatRow('Tackle', widget.player.tackles ?? 0),
-            _buildStatRow('Intercetti', widget.player.interceptions ?? 0),
+            _buildStatRow(tr(context, 'Tackle'), widget.player.tackles ?? 0),
+            _buildStatRow(tr(context, 'Intercetti'), widget.player.interceptions ?? 0),
           ],
         ),
         const SizedBox(height: 16),
 
         // Falli e Cartellini
         _buildStatSection(
-          'Disciplina',
+          tr(context, 'Disciplina'),
           Icons.warning,
           theme,
           [
-            _buildStatRow('Falli commessi', widget.player.foulsCommitted ?? 0),
-            _buildStatRow('Falli subiti', widget.player.foulsSuffered ?? 0),
-            _buildStatRow('Cartellini gialli', widget.player.yellowCards ?? 0,
+            _buildStatRow(tr(context, 'Falli commessi'), widget.player.foulsCommitted ?? 0),
+            _buildStatRow(tr(context, 'Falli subiti'), widget.player.foulsSuffered ?? 0),
+            _buildStatRow(tr(context, 'Cartellini gialli'), widget.player.yellowCards ?? 0,
                 color: Colors.yellow[700]),
-            _buildStatRow('Cartellini rossi', widget.player.redCards ?? 0,
+            _buildStatRow(tr(context, 'Cartellini rossi'), widget.player.redCards ?? 0,
                 color: Colors.red),
           ],
         ),
@@ -624,7 +625,7 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Notifiche Giocatore',
+                    tr(context, 'Notifiche Giocatore'),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: isDark ? Colors.white : Colors.black87,
@@ -633,7 +634,7 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
                   Text(
                     settings.enabled
                         ? '${settings.activeNotificationsCount} eventi attivi'
-                        : 'Disattivate',
+                        : tr(context, 'Disattivate'),
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
@@ -671,7 +672,7 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Configurazioni Rapide',
+          tr(context, 'Configurazioni Rapide'),
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -683,12 +684,12 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
           spacing: 8,
           runSpacing: 8,
           children: [
-            _buildPresetChip('Essenziale', 'essential', notifPrefs, theme),
-            _buildPresetChip('Attaccante', 'attacker', notifPrefs, theme),
-            _buildPresetChip('Centrocampista', 'midfielder', notifPrefs, theme),
-            _buildPresetChip('Difensore', 'defender', notifPrefs, theme),
-            _buildPresetChip('Portiere', 'goalkeeper', notifPrefs, theme),
-            _buildPresetChip('Disattiva', 'disabled', notifPrefs, theme),
+            _buildPresetChip(tr(context, 'Essenziale'), 'essential', notifPrefs, theme),
+            _buildPresetChip(tr(context, 'Attaccante'), 'attacker', notifPrefs, theme),
+            _buildPresetChip(tr(context, 'Centrocampista'), 'midfielder', notifPrefs, theme),
+            _buildPresetChip(tr(context, 'Difensore'), 'defender', notifPrefs, theme),
+            _buildPresetChip(tr(context, 'Portiere'), 'goalkeeper', notifPrefs, theme),
+            _buildPresetChip(tr(context, 'Disattiva tutto'), 'disabled', notifPrefs, theme),
           ],
         ),
       ],
@@ -713,7 +714,7 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
         );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Preset "$label" applicato'),
+            content: Text('${tr(context, 'Preset')} "$label" ${tr(context, 'applicato')}'),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -740,15 +741,15 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
                 Icon(Icons.sports_soccer, color: theme.primaryColor, size: 20),
                 const SizedBox(width: 8),
                 const Text(
-                  'Azioni Offensive',
+                  tr(context, 'Azioni Offensive'),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             _buildNotificationSwitch(
-              'Goal',
-              'Quando segna',
+              tr(context, 'Goal'),
+              tr(context, 'Quando segna'),
               settings.notifyGoals,
               (value) => _updateSetting(
                 notifPrefs,
@@ -758,8 +759,8 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               enabled: settings.enabled,
             ),
             _buildNotificationSwitch(
-              'Assist',
-              'Quando fa un assist',
+              tr(context, 'Assist'),
+              tr(context, 'Quando fa un assist'),
               settings.notifyAssists,
               (value) => _updateSetting(
                 notifPrefs,
@@ -769,8 +770,8 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               enabled: settings.enabled,
             ),
             _buildNotificationSwitch(
-              'Tiri in porta',
-              'Quando tira in porta',
+              tr(context, 'Tiri in porta'),
+              tr(context, 'Quando tira in porta'),
               settings.notifyShotsOnTarget,
               (value) => _updateSetting(
                 notifPrefs,
@@ -802,15 +803,15 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
                 Icon(Icons.shield, color: theme.primaryColor, size: 20),
                 const SizedBox(width: 8),
                 const Text(
-                  'Azioni Difensive',
+                  tr(context, 'Azioni Difensive'),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             _buildNotificationSwitch(
-              'Tackle',
-              'Quando fa un tackle',
+              tr(context, 'Tackle'),
+              tr(context, 'Quando fa un tackle'),
               settings.notifyTackles,
               (value) => _updateSetting(
                 notifPrefs,
@@ -820,8 +821,8 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               enabled: settings.enabled,
             ),
             _buildNotificationSwitch(
-              'Intercetti',
-              'Quando intercetta il pallone',
+              tr(context, 'Intercetti'),
+              tr(context, 'Quando intercetta il pallone'),
               settings.notifyInterceptions,
               (value) => _updateSetting(
                 notifPrefs,
@@ -833,8 +834,8 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
             if (widget.player.position.toLowerCase().contains('portiere') ||
                 widget.player.position.toLowerCase().contains('goalkeeper'))
               _buildNotificationSwitch(
-                'Salvataggi',
-                'Quando effettua una parata',
+                tr(context, 'Salvataggi'),
+                tr(context, 'Quando effettua una parata'),
                 settings.notifySaves,
                 (value) => _updateSetting(
                   notifPrefs,
@@ -866,15 +867,15 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
                 Icon(Icons.warning, color: theme.primaryColor, size: 20),
                 const SizedBox(width: 8),
                 const Text(
-                  'Disciplina',
+                  tr(context, 'Disciplina'),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _buildNotificationSwitch(
-              'Cartellino Giallo',
-              'Quando riceve ammonizione',
+              tr(context, 'Cartellino Giallo'),
+              tr(context, 'Quando riceve ammonizione'),
               settings.notifyYellowCard,
               (value) => _updateSetting(
                 notifPrefs,
@@ -886,8 +887,8 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               enabled: settings.enabled,
             ),
             _buildNotificationSwitch(
-              'Cartellino Rosso',
-              'Quando viene espulso',
+              tr(context, 'Cartellino Rosso'),
+              tr(context, 'Quando viene espulso'),
               settings.notifyRedCard,
               (value) => _updateSetting(
                 notifPrefs,
@@ -899,8 +900,8 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               enabled: settings.enabled,
             ),
             _buildNotificationSwitch(
-              'Fallo Commesso',
-              'Quando commette un fallo',
+              tr(context, 'Fallo Commesso'),
+              tr(context, 'Quando commette un fallo'),
               settings.notifyFoulCommitted,
               (value) => _updateSetting(
                 notifPrefs,
@@ -910,8 +911,8 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               enabled: settings.enabled,
             ),
             _buildNotificationSwitch(
-              'Fallo Subito',
-              'Quando subisce un fallo',
+              tr(context, 'Fallo Subito'),
+              tr(context, 'Quando subisce un fallo'),
               settings.notifyFoulSuffered,
               (value) => _updateSetting(
                 notifPrefs,

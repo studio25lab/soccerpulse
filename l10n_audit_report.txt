@@ -1,0 +1,214 @@
+======================================================================
+  SOCCERPULSE LOCALIZATION AUDIT REPORT
+======================================================================
+
+Files scanned: 124
+Files with issues: 19
+Total untranslated strings: 171
+
+
+────────────────────────────────────────────────────────────
+📄 pages/match_detail_screen.dart (61 issues)
+────────────────────────────────────────────────────────────
+  L 1817  "Passaggi precisi"
+  L 1817  "Passaggi chiave"
+  L 1818  "Passaggi progressivi"
+  L 1824  "Falli avversari nel terzo offensivo"
+  L 1831  "Gol Subiti"
+  L 1832  "Gol Fatti"
+  L 1833  "% Vittorie"
+  L 1836  "Confronto con avversario"
+  L 1841  "Falli subiti"
+  L 1844  "Tiri in porta"
+  L 1845  "Tiri totali"
+  L 1855  "Ultime 5 partite"
+  L 1856  "Dettaglio statistiche"
+  L 1865  "Statistiche Stagione 2023/24"
+  L 1866  "Media voto"
+  L 3648  "Passaggi che creano un'occasione da gol"
+  L 6054  "Assist: Zaccagni"
+  L 6328  "Assist: Leao"
+  L 6493  "Assist: Immobile"
+  L 6824  "Panchina"
+  ... and 41 more
+
+────────────────────────────────────────────────────────────
+📄 pages/team_detail_screen.dart (31 issues)
+────────────────────────────────────────────────────────────
+  L   51  "Posizione 1"
+  L   51  "Posizione 2"
+  L   52  "Posizione 3"
+  L   52  "Posizione 4"
+  L   53  "Posizione 5"
+  L   53  "Posizione 6"
+  L   54  "Posizione 7"
+  L   54  "Posizione 8"
+  L   55  "Posizione 9"
+  L   55  "Posizione 10"
+  L  559  "Gennaio"
+  L  559  "Febbraio"
+  L  559  "Marzo"
+  L  559  "Aprile"
+  L  559  "Maggio"
+  L  559  "Giugno"
+  L  559  "Luglio"
+  L  559  "Agosto"
+  L  559  "Settembre"
+  L  559  "Ottobre"
+  ... and 11 more
+
+────────────────────────────────────────────────────────────
+📄 services/match_data_service.dart (26 issues)
+────────────────────────────────────────────────────────────
+  L  304  "Attaccante"
+  L  405  "Difensore"
+  L  559  "Portiere"
+  L  572  "Difensore Centrale"
+  L  577  "Difensore Centrale"
+  L  588  "Centrocampista"
+  L  593  "Centrocampista"
+  L  600  "Centrocampista"
+  L  615  "Attaccante"
+  L  628  "Portiere"
+  L  637  "Difensore Centrale"
+  L  642  "Difensore Centrale"
+  L  652  "Centrocampista"
+  L  657  "Centrocampista"
+  L  670  "Attaccante"
+  L  674  "Attaccante"
+  L  683  "Portiere"
+  L  687  "Difensore"
+  L  693  "Centrocampista"
+  L  699  "Attaccante"
+  ... and 6 more
+
+────────────────────────────────────────────────────────────
+📄 pages/search_screen.dart (19 issues)
+────────────────────────────────────────────────────────────
+  L  155  "Attaccante"
+  L  157  "Centrocampista"
+  L  159  "Attaccante"
+  L  161  "Centrocampista"
+  L  163  "Attaccante"
+  L  165  "Attaccante"
+  L  167  "Attaccante"
+  L  169  "Attaccante"
+  L  171  "Attaccante"
+  L  173  "Attaccante"
+  L  175  "Difensore"
+  L  177  "Centrocampista"
+  L  179  "Attaccante"
+  L  181  "Attaccante"
+  L  183  "Portiere"
+  L  185  "Centrocampista"
+  L 1151  "Squadre (${_teamResults.length})"
+  L 1152  "Partite (${_matchResults.length})"
+  L 1153  "Giocatori (${_playerResults.length})"
+
+────────────────────────────────────────────────────────────
+📄 pages/player_detail_screen.dart (11 issues)
+────────────────────────────────────────────────────────────
+  L 1308  "Attaccante"
+  L 1308  "Centrocampista"
+  L 1308  "Difensore"
+  L 1308  "Portiere"
+  L 2708  "Confronto Abilità"
+  L 2785  "Statistiche Stagionali"
+  L 2792  "Partite"
+  L 2794  "Assist"
+  L 2795  "Tiri"
+  L 2796  "Dribbling"
+  L 2797  "Contrasti"
+
+────────────────────────────────────────────────────────────
+📄 widgets/live_notification_overlay.dart (5 issues)
+────────────────────────────────────────────────────────────
+  L   86  "🏁 Partita Iniziata!"
+  L  105  "⏱️ Partita Terminata"
+  L  108  "🏆 Vittoria $homeTeam"
+  L  110  "🏆 Vittoria $awayTeam"
+  L  111  "🤝 Pareggio"
+
+────────────────────────────────────────────────────────────
+📄 widgets/touches_widget.dart (4 issues)
+────────────────────────────────────────────────────────────
+  L  506  "Dribbling"
+  L  575  "Dribbling"
+  L 1155  "Dribbling"
+  L 1469  "Dribbling"
+
+────────────────────────────────────────────────────────────
+📄 pages/favorites_screen.dart (2 issues)
+────────────────────────────────────────────────────────────
+  L 1561  "Attaccante"
+  L 1562  "Centrocampista"
+
+────────────────────────────────────────────────────────────
+📄 services/share_service.dart (2 issues)
+────────────────────────────────────────────────────────────
+  L   74  "Errore: $e"
+  L  158  "Immagine pronta! Click destro → Salva immagine"
+
+────────────────────────────────────────────────────────────
+📄 pages/home_screen.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L  713  "$activeCount/${toggles.length} notifiche attive"
+
+────────────────────────────────────────────────────────────
+📄 pages/player_comparison_screen.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L  389  "Assist"
+
+────────────────────────────────────────────────────────────
+📄 pages/player_match_stats_screen.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L  855  "Centrocampista"
+
+────────────────────────────────────────────────────────────
+📄 pages/players_screen.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L  427  "Assist"
+
+────────────────────────────────────────────────────────────
+📄 services/match_notification_preferences_service.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L   45  "Errore salvataggio impostazioni match ${settings.m"
+
+────────────────────────────────────────────────────────────
+📄 services/player_notification_preferences_service.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L   52  "Errore salvataggio impostazioni giocatore ${settin"
+
+────────────────────────────────────────────────────────────
+📄 widgets/deep_stats_widgets.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L  252  "Expected Assists (xA)"
+
+────────────────────────────────────────────────────────────
+📄 widgets/duels_widget.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L  671  "Contrasti"
+
+────────────────────────────────────────────────────────────
+📄 widgets/quick_settings_panel.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L  506  "Intervallo"
+
+────────────────────────────────────────────────────────────
+📄 widgets/tactical_formation_widget.dart (1 issues)
+────────────────────────────────────────────────────────────
+  L 1562  "Assist"
+
+======================================================================
+  TOP 10 MOST COMMON UNTRANSLATED STRINGS
+======================================================================
+   21x  "Attaccante"
+   17x  "Centrocampista"
+    8x  "Portiere"
+    7x  "Assist"
+    7x  "Difensore"
+    5x  "Dribbling"
+    4x  "Fuorigioco"
+    4x  "Difensore Centrale"
+    3x  "Partite"
+    3x  "Contrasti"

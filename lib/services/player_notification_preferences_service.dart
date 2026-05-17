@@ -160,6 +160,66 @@ class PlayerNotificationPreferencesService extends ChangeNotifier {
     return settings.activeNotificationsCount;
   }
 
+  // Cerca settings per nome giocatore (qualsiasi ID)
+  PlayerNotificationSettings? getSettingsByPlayerName(String playerName) {
+    for (final s in _settingsCache.values) {
+      if (s.playerName == playerName && s.hasActiveNotifications) {
+        return s;
+      }
+    }
+    return null;
+  }
+
+  // Rimuovi TUTTE le settings per nome giocatore
+  Future<void> removeAllSettingsForPlayerByName(String playerName) async {
+    final keysToRemove = <String>[];
+    _settingsCache.forEach((key, s) {
+      if (s.playerName == playerName) keysToRemove.add(key);
+    });
+    for (final key in keysToRemove) {
+      _settingsCache.remove(key);
+    }
+    await _persistSettings();
+    notifyListeners();
+  }
+
+  // Aggiorna TUTTE le settings per nome giocatore
+  Future<void> updateAllSettingsForPlayerByName(String playerName, PlayerNotificationSettings template) async {
+    final keysToUpdate = <String>[];
+    _settingsCache.forEach((key, s) {
+      if (s.playerName == playerName) keysToUpdate.add(key);
+    });
+    for (final key in keysToUpdate) {
+      final existing = _settingsCache[key]!;
+      _settingsCache[key] = PlayerNotificationSettings(
+        playerId: existing.playerId,
+        playerName: existing.playerName,
+        matchId: existing.matchId,
+        enabled: template.enabled,
+        notifyGoals: template.notifyGoals,
+        notifyAssists: template.notifyAssists,
+        notifyShotsOnTarget: template.notifyShotsOnTarget,
+        notifyShotsOffTarget: template.notifyShotsOffTarget,
+        notifyYellowCard: template.notifyYellowCard,
+        notifyRedCard: template.notifyRedCard,
+        notifyFoulCommitted: template.notifyFoulCommitted,
+        notifyFoulSuffered: template.notifyFoulSuffered,
+        notifySubstitutionOn: template.notifySubstitutionOn,
+        notifySubstitutionOff: template.notifySubstitutionOff,
+        notifyInterceptions: template.notifyInterceptions,
+        notifyTackles: template.notifyTackles,
+        notifyClearances: template.notifyClearances,
+        notifySaves: template.notifySaves,
+        notifyPenaltySaved: template.notifyPenaltySaved,
+        notifyKeyPasses: template.notifyKeyPasses,
+        notifyDribblesSuccessful: template.notifyDribblesSuccessful,
+        notifyOffsides: template.notifyOffsides,
+      );
+    }
+    await _persistSettings();
+    notifyListeners();
+  }
+
   // Ottieni tutti i giocatori con notifiche attive
   List<PlayerNotificationSettings> getPlayersWithActiveNotifications() {
     return _settingsCache.values

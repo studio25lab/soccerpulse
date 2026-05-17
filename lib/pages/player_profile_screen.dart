@@ -1,6 +1,7 @@
 // lib/pages/player_profile_screen.dart
 
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/player.dart';
 import 'dart:math' as math;
@@ -165,9 +166,9 @@ class PlayerProfileScreen extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.person_outline, color: theme.primaryColor, size: 24),
-              const SizedBox(width: 8),
-              const Text(
-                'Informazioni Personali',
+              SizedBox(width: 8),
+              Text(
+                tr(context, 'Informazioni Personali'),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
@@ -371,9 +372,9 @@ class PlayerProfileScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           _buildContractRow(
-              'Squadra Attuale', player.teamName, Icons.shield, theme),
+              tr(context, 'Squadra Attuale'), player.teamName, Icons.shield, theme),
           _buildContractRow(
               'Scadenza', '30/06/2027', Icons.calendar_today, theme),
           _buildContractRow('Stipendio Annuale', '€6.5M', Icons.euro, theme),
@@ -466,7 +467,7 @@ class PlayerProfileScreen extends StatelessWidget {
               Icon(Icons.history, color: theme.primaryColor, size: 24),
               const SizedBox(width: 8),
               const Text(
-                'Carriera Calcistica',
+                tr(context, 'Carriera Calcistica'),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
@@ -681,7 +682,7 @@ class PlayerProfileScreen extends StatelessWidget {
 
   void _shareProfile(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Condivisione profilo in arrivo!')),
+      SnackBar(content: Text(tr(context, 'Condivisione profilo in arrivo!'))),
     );
   }
 

@@ -1,6 +1,7 @@
 // lib/widgets/quick_settings_panel.dart
 
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../services/theme_service.dart';
@@ -138,8 +139,8 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
                                 size: 24,
                               ),
                               const SizedBox(width: 12),
-                              const Text(
-                                'Impostazioni Rapide',
+                              Text(
+                                tr(context, 'Impostazioni Rapide'),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -400,8 +401,8 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
                 color: theme.primaryColor,
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Notifiche',
+              Text(
+                tr(context, 'Notifiche'),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -411,7 +412,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
           ),
           const SizedBox(height: 12),
           _buildToggleOption(
-            'Notifiche Goal',
+            tr(context, 'Notifiche Goal'),
             Icons.sports_soccer,
             _notificationsEnabled,
             (value) {
@@ -578,7 +579,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
                 () {
                   _haptic.mediumImpact();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Cache pulita')),
+                    SnackBar(content: Text(tr(context, 'Cache pulita'))),
                   );
                 },
                 Colors.orange,
@@ -590,7 +591,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
                 () {
                   _haptic.mediumImpact();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Sincronizzazione avviata')),
+                    SnackBar(content: Text(tr(context, 'Sincronizzazione avviata'))),
                   );
                 },
                 Colors.blue,

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../api/api_service.dart';
 import '../models/league.dart';
+import '../models/player.dart';
 import '../generated/l10n.dart';
 
 class TopScorersScreen extends StatefulWidget {
   const TopScorersScreen({super.key});
-
   @override
   State<TopScorersScreen> createState() => _TopScorersScreenState();
 }
@@ -14,7 +14,7 @@ class TopScorersScreen extends StatefulWidget {
 class _TopScorersScreenState extends State<TopScorersScreen> {
   final ApiService _apiService = ApiService();
   int _selectedLeagueId = 135; // Serie A di default
-  late Future<List<Map<String, dynamic>>> _scorersFuture;
+  late Future<List<Player>> _scorersFuture;
 
   @override
   void initState() {
@@ -30,7 +30,6 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
 
   Future<void> _selectLeague() async {
     final s = S.of(context)!;
-
     final selected = await showDialog<League>(
       context: context,
       builder: (context) => AlertDialog(
@@ -54,7 +53,6 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
         ),
       ),
     );
-
     if (selected != null && selected.id != _selectedLeagueId) {
       setState(() {
         _selectedLeagueId = selected.id;
@@ -95,13 +93,12 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
           ),
         ],
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
+      body: FutureBuilder<List<Player>>(
         future: _scorersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.hasError) {
             return Center(
               child: Column(
@@ -123,7 +120,6 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
               ),
             );
           }
-
           final scorers = snapshot.data ?? [];
           if (scorers.isEmpty) {
             return Center(
@@ -155,17 +151,13 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
               ),
             );
           }
-
           return ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: scorers.length,
             itemBuilder: (context, index) {
-              final scorer = scorers[index];
-              final player = scorer['player'];
-              final statistics = scorer['statistics']?[0];
-              final goals = statistics?['goals']?['total'] ?? 0;
-              final assists = statistics?['goals']?['assists'] ?? 0;
-              final team = statistics?['team'];
+              final player = scorers[index];
+              final goals = player.goals ?? 0;
+              final assists = player.assists ?? 0;
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
@@ -179,10 +171,10 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        backgroundImage: player?['photo'] != null
-                            ? NetworkImage(player['photo'])
+                        backgroundImage: player.photo != null
+                            ? NetworkImage(player.photo!)
                             : null,
-                        child: player?['photo'] == null
+                        child: player.photo == null
                             ? const Icon(Icons.person, size: 30)
                             : null,
                       ),
@@ -213,7 +205,7 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
                     ],
                   ),
                   title: Text(
-                    player?['name'] ?? 'Unknown',
+                    player.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -224,7 +216,7 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
                     children: [
                       const SizedBox(height: 4),
                       Text(
-                        team?['name'] ?? '',
+                        player.teamName,
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey[600],
@@ -266,7 +258,7 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.bold,
-          color: color.withOpacity(0.8), // ✅ CORRETTO
+          color: color.withOpacity(0.8),
         ),
       ),
     );

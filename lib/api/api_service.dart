@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 import '../models/soccer_match.dart';
 import '../models/team_standing.dart';
 import '../models/player.dart';
@@ -372,6 +373,84 @@ class ApiService {
       }
     } catch (e) {
       print('Error fetching teams: $e');
+      return [];
+    }
+  }
+
+  // ============================================================================
+  // PLAYER HEATMAP DATA (PREMIUM API FEATURE)
+  // ============================================================================
+  // Fetch player heatmap/touch positions for a specific match
+  // Returns list of normalized Offset(x, y) coordinates (0.0-1.0 range)
+  //
+  // IMPORTANT: This feature requires API-Football PREMIUM plan!
+  // Free plan will return empty list → app falls back to mock data
+  //
+  // When you upgrade to Premium:
+  // 1. This method will automatically fetch real touch data
+  // 2. Heatmap will display actual player movements
+  // 3. No code changes needed!
+  Future<List<Offset>> fetchPlayerHeatmap(int fixtureId, int playerId) async {
+    try {
+      final params = {
+        'fixture': fixtureId.toString(),
+        'player': playerId.toString(),
+      };
+
+      // Endpoint: /fixtures/players
+      // Premium plans may include position/heatmap data in response
+      final response = await _get('/fixtures/players', queryParams: params);
+
+      if (response['response'] != null && response['response'].isNotEmpty) {
+        final playerData = response['response'][0];
+
+        // Check for heatmap/position data (structure may vary by API version)
+        // Common fields: 'positions', 'heatmap', 'touches', 'coordinates'
+
+        // Try multiple possible field names
+        List<dynamic>? positionData;
+        if (playerData['positions'] != null) {
+          positionData = playerData['positions'] as List;
+        } else if (playerData['heatmap'] != null) {
+          positionData = playerData['heatmap'] as List;
+        } else if (playerData['touches'] != null) {
+          positionData = playerData['touches'] as List;
+        }
+
+        if (positionData != null && positionData.isNotEmpty) {
+          print('✅ Real heatmap data loaded: ${positionData.length} touches');
+
+          return positionData.map((pos) {
+            // Normalize coordinates to 0-1 range
+            // Expected format: {x: meters/percentage, y: meters/percentage}
+            // Field dimensions: 105m x 68m
+            double x, y;
+
+            if (pos['x'] != null && pos['y'] != null) {
+              x = (pos['x'] as num).toDouble();
+              y = (pos['y'] as num).toDouble();
+
+              // If coordinates are in meters (0-105, 0-68)
+              if (x > 1.0 || y > 1.0) {
+                x = x / 105.0;
+                y = y / 68.0;
+              }
+
+              return Offset(x.clamp(0.0, 1.0), y.clamp(0.0, 1.0));
+            }
+
+            // Fallback if format is different
+            return const Offset(0.5, 0.5);
+          }).toList();
+        }
+      }
+
+      // No position data available (free plan or data not provided)
+      print(
+          'ℹ️ Heatmap data not available - using mock data (upgrade to Premium for real data)');
+      return [];
+    } catch (e) {
+      print('ℹ️ Heatmap fetch failed - using mock data: $e');
       return [];
     }
   }

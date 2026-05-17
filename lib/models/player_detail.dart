@@ -50,6 +50,17 @@ class PlayerDetail {
   // Career
   final List<Map<String, String>> careerHistory;
 
+  // NEW: Pass map data
+  final List<PassData>? passes;
+  final int? keyPasses;
+  final double? expectedAssists; // xA
+  final int? bigChancesCreated;
+  final int? accurateCrosses;
+  final int? totalCrosses;
+
+  // NEW: Heatmap data
+  final List<Offset>? heatmapPositions;
+
   PlayerDetail({
     required this.number,
     required this.name,
@@ -87,5 +98,35 @@ class PlayerDetail {
     required this.weight,
     required this.preferredFoot,
     required this.careerHistory,
+    // NEW
+    this.passes,
+    this.keyPasses,
+    this.expectedAssists,
+    this.bigChancesCreated,
+    this.accurateCrosses,
+    this.totalCrosses,
+    this.heatmapPositions,
   });
+}
+
+// Pass data structure
+class PassData {
+  final Offset from;
+  final Offset to;
+  final bool isAccurate;
+  final PassType type;
+
+  PassData({
+    required this.from,
+    required this.to,
+    required this.isAccurate,
+    this.type = PassType.pass,
+  });
+}
+
+enum PassType {
+  shot,
+  pass,
+  dribble,
+  defensive,
 }

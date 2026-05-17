@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
+import 'package:flutter/services.dart';
 import 'dart:math' as math;
 
 // ========================================
@@ -8,6 +10,7 @@ class ShotData {
   final String playerName;
   final String playerPhoto;
   final int minute;
+  final int? addedTime;
   final double startX;
   final double startY;
   final double? goalX;
@@ -23,6 +26,7 @@ class ShotData {
     required this.playerName,
     required this.playerPhoto,
     required this.minute,
+    this.addedTime,
     required this.startX,
     required this.startY,
     this.goalX,
@@ -35,35 +39,23 @@ class ShotData {
     this.goalZone,
   });
 
-  Color get color {
-    switch (type) {
-      case 'goal':
-        return const Color(0xFFE53935); // Rosso per in porta
-      case 'on_target':
-        return const Color(0xFFE53935); // Rosso per in porta
-      case 'off_target':
-        return const Color(0xFF212121); // Nero (solo bordo)
-      case 'blocked':
-        return const Color(0xFF757575); // Grigio per stanghetta
-      default:
-        return const Color(0xFFE53935);
-    }
-  }
-
   String get esito {
     switch (type) {
       case 'goal':
         return 'Goal';
       case 'on_target':
-        return 'Risultato salvato';
+        return 'Saved';
       case 'off_target':
-        return 'Mancato';
+        return 'Fuori'; // kept Italian, translated at display
       case 'blocked':
-        return 'Respinto';
+        return 'Blocked';
       default:
-        return 'Tiro';
+        return type;
     }
   }
+
+  String get minuteDisplay =>
+      addedTime != null ? "$minute'+$addedTime" : "$minute'";
 }
 
 // ========================================
@@ -73,602 +65,722 @@ class InteractiveShotMapWidget extends StatefulWidget {
   final List<ShotData> shots;
   final Color teamColor;
   final bool isDark;
+  final void Function(String playerName)? onPlayerTap;
 
   const InteractiveShotMapWidget({
-    Key? key,
+    super.key,
     required this.shots,
     required this.teamColor,
-    required this.isDark,
-  }) : super(key: key);
+    this.isDark = false,
+    this.onPlayerTap,
+  });
 
   @override
   State<InteractiveShotMapWidget> createState() =>
       _InteractiveShotMapWidgetState();
 }
 
-class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget> {
-  int selectedShotIndex = 0;
+class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
+    with SingleTickerProviderStateMixin {
+  int? _selectedIndex;
+  late AnimationController _revealCtrl;
+  late Animation<double> _revealAnim;
+
+  static const double _goalSectionH = 175.0;
+  static const double _goalFrameW = 0.20; // matcha pw=0.20 in _FieldPainter
+  static const double _goalFrameH = 60.0;
+  static const double _goalFrameT = 28.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _revealCtrl = AnimationController(
+        duration: const Duration(milliseconds: 350), vsync: this);
+    _revealAnim =
+        CurvedAnimation(parent: _revealCtrl, curve: Curves.easeOutCubic);
+  }
+
+  @override
+  void dispose() {
+    _revealCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(InteractiveShotMapWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.shots != widget.shots) {
+      setState(() {
+        _selectedIndex = null;
+        _revealCtrl.reverse();
+      });
+    }
+  }
 
   void _selectShot(int index) {
+    HapticFeedback.lightImpact();
     setState(() {
-      selectedShotIndex = index;
+      if (_selectedIndex == index) {
+        _selectedIndex = null;
+        _revealCtrl.reverse();
+      } else {
+        _selectedIndex = index;
+        final shot = widget.shots[index];
+        if (shot.type != 'blocked') {
+          _revealCtrl.forward(
+              from: _revealCtrl.value > 0 ? _revealCtrl.value : 0);
+        } else {
+          _revealCtrl.reverse();
+        }
+      }
     });
   }
 
-  void _previousShot() {
-    if (selectedShotIndex > 0) {
-      _selectShot(selectedShotIndex - 1);
+  void _prevShot() {
+    if (_selectedIndex != null && _selectedIndex! > 0) {
+      setState(() {
+        _selectedIndex = _selectedIndex! - 1;
+        if (widget.shots[_selectedIndex!].type == 'blocked') {
+          _revealCtrl.reverse();
+        } else if (_revealCtrl.value == 0) {
+          _revealCtrl.forward(from: 0);
+        }
+      });
     }
   }
 
   void _nextShot() {
-    if (selectedShotIndex < widget.shots.length - 1) {
-      _selectShot(selectedShotIndex + 1);
+    if (_selectedIndex != null && _selectedIndex! < widget.shots.length - 1) {
+      setState(() {
+        _selectedIndex = _selectedIndex! + 1;
+        if (widget.shots[_selectedIndex!].type == 'blocked') {
+          _revealCtrl.reverse();
+        } else if (_revealCtrl.value == 0) {
+          _revealCtrl.forward(from: 0);
+        }
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.shots.isEmpty) {
-      return _buildEmptyState();
+    if (widget.shots.isEmpty) return _emptyState();
+    if (_selectedIndex != null && _selectedIndex! >= widget.shots.length) {
+      _selectedIndex = null;
+      _revealCtrl.value = 0;
     }
+    final sel = _selectedIndex != null ? widget.shots[_selectedIndex!] : null;
 
-    final selectedShot = widget.shots[selectedShotIndex];
-
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: const Color(0xFF1A1A1A),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            children: [
-              _buildGoalSection(selectedShot),
-
-              // ✅ SPAZIO NEUTRO tra porta e campo
-              const SizedBox(height: 16),
-
-              _buildFieldSection(selectedShot),
-            ],
-          ),
+    return Column(children: [
+      _shotSummaryBar(),
+      const SizedBox(height: 12),
+      _unifiedMap(sel),
+      _legend(),
+      if (sel != null) ...[
+        const SizedBox(height: 12),
+        GestureDetector(
+          onTap: () {
+            if (widget.onPlayerTap != null) {
+              widget.onPlayerTap!(sel.playerName);
+            }
+          },
+          child: _playerCard(sel),
         ),
-        const SizedBox(height: 16),
-        _buildPlayerInfoCard(selectedShot),
       ],
-    );
+    ]);
   }
 
-  Widget _buildGoalSection(ShotData selectedShot) {
+  Widget _shotSummaryBar() {
+    final shots = widget.shots;
+    final total = shots.length;
+    final goals = shots.where((s) => s.type == 'goal').length;
+    final saved = shots.where((s) => s.type == 'on_target').length;
+    final offTarget = shots.where((s) => s.type == 'off_target').length;
+    final blocked = shots.where((s) => s.type == 'blocked').length;
+    final dk = widget.isDark;
+    final bg = dk ? const Color(0xFF1E1E1E) : Colors.white;
+    final tx = dk ? Colors.white : const Color(0xFF1A1A1A);
+    final lb = Colors.grey[500]!;
+    final dv = dk ? Colors.white.withOpacity(0.08) : Colors.grey[200]!;
+
     return Container(
-      height: 165,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final width = constraints.maxWidth;
-          final goalWidth = width * 0.55;
-          final goalLeft = (width - goalWidth) / 2;
-          final goalHeight = 70.0;
-          final goalTop = 15.0;
-
-          // ✅ CENTRO PORTA ESATTO (stesso calcolo della linea!)
-          final goalCenterX = width / 2;
-
-          return Stack(
-            clipBehavior: Clip.none,
-            children: [
-              CustomPaint(
-                size: Size(width, 165),
-                painter: GoalPainter(
-                  goalLeft: goalLeft,
-                  goalWidth: goalWidth,
-                  goalHeight: goalHeight,
-                  goalTop: goalTop,
-                  totalWidth: width,
-                ),
-              ),
-
-              // ✅ IN PORTA - Coordinamento PERFETTO con startX
-              if (selectedShot.type == 'goal' ||
-                  selectedShot.type == 'on_target')
-                Positioned(
-                  // ✅ USA startX per orizzontale (stessa direzione del tiro!)
-                  left: goalLeft + (selectedShot.startX * goalWidth) - 18,
-                  // Usa goalY se presente, altrimenti centro porta
-                  top: selectedShot.goalY != null
-                      ? goalTop + (selectedShot.goalY! * goalHeight) - 18
-                      : goalTop + (goalHeight / 2) - 18,
-                  child:
-                      _buildImpactPoint(selectedShot.color, selectedShot.type),
-                ),
-
-              // ✅ FUORI - Coordinamento PERFETTO basato su startX
-              if (selectedShot.type == 'off_target')
-                Builder(
-                  builder: (context) {
-                    // ✅ Calcola posizione ESATTA fuori porta basandosi su startX
-                    // Estende la posizione oltre i limiti della porta
-
-                    double outsideX;
-                    double outsideY;
-
-                    // Calcola dove sarebbe nella porta
-                    final targetInGoalX =
-                        goalLeft + (selectedShot.startX * goalWidth);
-
-                    if (selectedShot.startX < 0.5) {
-                      // Tiro da SINISTRA o CENTRO-SINISTRA
-                      if (selectedShot.startX < 0.25) {
-                        // Molto a sinistra → fuori a sinistra
-                        outsideX = targetInGoalX - 80;
-                        outsideY = goalTop + 25;
-                      } else if (selectedShot.startX < 0.4) {
-                        // Sinistra moderato → fuori angolo sinistro alto
-                        outsideX = targetInGoalX - 50;
-                        outsideY = goalTop - 20;
-                      } else {
-                        // Centro-sinistra → sopra porta sinistra
-                        outsideX = targetInGoalX;
-                        outsideY = goalTop - 40;
-                      }
-                    } else if (selectedShot.startX > 0.5) {
-                      // Tiro da DESTRA o CENTRO-DESTRA
-                      if (selectedShot.startX > 0.75) {
-                        // Molto a destra → fuori a destra
-                        outsideX = targetInGoalX + 60;
-                        outsideY = goalTop + 25;
-                      } else if (selectedShot.startX > 0.6) {
-                        // Destra moderato → fuori angolo destro alto
-                        outsideX = targetInGoalX + 40;
-                        outsideY = goalTop - 20;
-                      } else {
-                        // Centro-destra → sopra porta destra
-                        outsideX = targetInGoalX;
-                        outsideY = goalTop - 40;
-                      }
-                    } else {
-                      // Tiro ESATTAMENTE centrale → sopra porta centro
-                      outsideX = goalLeft + goalWidth / 2 - 18;
-                      outsideY = goalTop - 45;
-                    }
-
-                    return Positioned(
-                      left: outsideX,
-                      top: outsideY,
-                      child: _buildImpactPoint(
-                          selectedShot.color, selectedShot.type),
-                    );
-                  },
-                ),
-
-              // ✅ BLOCCATO - Usa startX per coordinamento perfetto
-              if (selectedShot.type == 'blocked')
-                Positioned(
-                  // ✅ USA startX per orizzontale (coordinato con tiro!)
-                  left: goalLeft + (selectedShot.startX * goalWidth) - 18,
-                  // Usa goalY se presente, altrimenti centro porta
-                  top: selectedShot.goalY != null
-                      ? goalTop + (selectedShot.goalY! * goalHeight) - 18
-                      : goalTop + (goalHeight / 2) - 18,
-                  child:
-                      _buildImpactPoint(selectedShot.color, selectedShot.type),
-                ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildImpactPoint(Color color, String shotType) {
-    return Container(
-      width: 36, // ✅ Ingrandito da 28 a 36
-      height: 36,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
       decoration: BoxDecoration(
-        color: Colors.transparent,
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.black,
-          width: 3, // ✅ Bordo più spesso: da 2.5 a 3
-        ),
-      ),
-      child: shotType == 'goal' || shotType == 'on_target'
-          ? Center(
-              child: Container(
-                width: 12, // ✅ Ingrandito da 10 a 12
-                height: 12,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE53935),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            )
-          : (shotType == 'blocked'
-              ? Center(
-                  child: Container(
-                    width: 16, // ✅ Ingrandito da 12 a 16
-                    height: 3,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF757575),
-                      borderRadius: BorderRadius.circular(1),
-                    ),
-                  ),
-                )
-              : null),
+          color: bg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: dv)),
+      child: Row(children: [
+        _summaryItem(tr(context, 'Totali'), total.toString(), tx, lb, null),
+        _summaryDivider(dv),
+        _summaryItem('Goal', goals.toString(), tx, lb, const Color(0xFF4CAF50)),
+        _summaryDivider(dv),
+        _summaryItem(
+            tr(context, 'Parati'), saved.toString(), tx, lb, Color(0xFF1B5E20)),
+        _summaryDivider(dv),
+        _summaryItem(
+            tr(context, 'Fuori'), offTarget.toString(), tx, lb, Color(0xFFE53935)),
+        _summaryDivider(dv),
+        _summaryItem(
+            tr(context, 'Respinti'), blocked.toString(), tx, lb, Color(0xFFFF9800)),
+      ]),
     );
   }
 
-  Widget _buildFieldSection(ShotData selectedShot) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFF2D4A2D), width: 3),
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(14)),
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final fieldWidth = constraints.maxWidth;
-            final fieldHeight = fieldWidth * 0.75;
+  Expanded _summaryItem(
+      String label, String value, Color tx, Color lb, Color? accent) {
+    return Expanded(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+      Text(value,
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.w800, color: accent ?? tx)),
+      const SizedBox(height: 2),
+      Text(label,
+          style:
+              TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: lb)),
+    ]));
+  }
 
-            return SizedBox(
-              height: fieldHeight,
-              child: Stack(
-                children: [
-                  CustomPaint(
-                    size: Size(fieldWidth, fieldHeight),
-                    painter: FieldPainter(),
-                  ),
-                  CustomPaint(
-                    size: Size(fieldWidth, fieldHeight),
-                    painter: DashedLinePainter(
-                      shotX: selectedShot.startX,
-                      shotY: selectedShot.startY,
-                      shotType: selectedShot.type, // ✅ Passo il tipo
+  Widget _summaryDivider(Color c) => Container(width: 1, height: 30, color: c);
+
+  Widget _unifiedMap(ShotData? sel) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: LayoutBuilder(builder: (ctx, box) {
+        final w = box.maxWidth;
+        final fieldH = w * 0.78;
+        final gW = w * _goalFrameW;
+        final gL = (w - gW) / 2;
+
+        return AnimatedBuilder(
+          animation: _revealAnim,
+          builder: (context, _) {
+            final goalVis = _revealAnim.value;
+            final currentGoalH = _goalSectionH * goalVis;
+            final totalH = currentGoalH + fieldH;
+
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: SizedBox(
+                width: w,
+                height: totalH,
+                child: Stack(clipBehavior: Clip.hardEdge, children: [
+                  if (goalVis > 0)
+                    Positioned(
+                        left: 0,
+                        top: 0,
+                        width: w,
+                        height: currentGoalH,
+                        child: Opacity(
+                            opacity: goalVis,
+                            child: Container(color: const Color(0xFFEEEEEE)))),
+                  if (goalVis > 0)
+                    Positioned(
+                        left: 0,
+                        top: 0,
+                        width: w,
+                        height: currentGoalH,
+                        child: Opacity(
+                            opacity: goalVis,
+                            child: CustomPaint(
+                                size: Size(w, _goalSectionH),
+                                painter: _GoalPainter(
+                                    gL, gW, _goalFrameH, _goalFrameT, w)))),
+                  Positioned(
+                      left: 0,
+                      top: currentGoalH,
+                      width: w,
+                      height: fieldH,
+                      child: CustomPaint(
+                          size: Size(w, fieldH), painter: _FieldPainter())),
+                  if (sel != null)
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: _UnifiedLinePainter(
+                          startX: sel.startX * w,
+                          startY: currentGoalH +
+                              (0.08 + sel.startY * 0.82) * fieldH,
+                          endX: _lineEndX(sel, w, gL, gW, goalVis),
+                          endY: _lineEndY(sel, currentGoalH, fieldH, goalVis),
+                          type: sel.type,
+                          // ── Linea parte dal BORDO del cerchio del tiro ──
+                          startRadius: sel.type == 'goal'
+                              ? (30.0 + (sel.xG * 18).clamp(0.0, 12.0)) / 2
+                              : (20.0 + (sel.xG * 22).clamp(0.0, 18.0)) / 2,
+                        ),
+                      ),
                     ),
-                  ),
-                  ...widget.shots.asMap().entries.map((entry) {
-                    return _buildShotMarker(
-                      entry.value,
-                      entry.key,
-                      fieldWidth,
-                      fieldHeight,
-                    );
-                  }),
-                ],
+                  if (sel != null && sel.type != 'blocked' && goalVis > 0)
+                    _impactDot(sel, _impactPixelX(sel, w, gL, gW),
+                        _impactPixelY(sel), goalVis),
+                  ...widget.shots.asMap().entries.map(
+                      (e) => _marker(e.value, e.key, w, fieldH, currentGoalH)),
+                ]),
               ),
             );
           },
-        ),
-      ),
+        );
+      }),
     );
   }
 
-  Widget _buildShotMarker(
-      ShotData shot, int index, double fieldWidth, double fieldHeight) {
-    final isSelected = index == selectedShotIndex;
-    final size = isSelected ? 48.0 : 32.0; // ✅ Ingrandito! Era 40/26
-    final innerSize = isSelected ? 32.0 : 22.0; // ✅ Ingrandito! Era 26/18
+  double _impactPixelX(ShotData s, double w, double gL, double gW) {
+    if (s.type == 'goal' || s.type == 'on_target') {
+      final gx = (s.goalX ?? 0.5).clamp(0.0, 1.0);
+      return gL + gx * gW;
+    } else if (s.type == 'off_target') {
+      final gx = s.goalX ?? 0.5;
+      if (gx < 0) return gL - 18;
+      if (gx > 1.0) return gL + gW + 18;
+      return gL + gx.clamp(0.0, 1.0) * gW;
+    }
+    return s.startX * w;
+  }
 
-    final x = shot.startX * fieldWidth;
-    final y = shot.startY * fieldHeight;
+  double _impactPixelY(ShotData s) {
+    if (s.type == 'goal' || s.type == 'on_target') {
+      final gy = (s.goalY ?? 0.5).clamp(0.0, 1.0);
+      return _goalFrameT + gy * _goalFrameH;
+    } else if (s.type == 'off_target') {
+      final gx = s.goalX ?? 0.5;
+      if (gx < 0 || gx > 1.0) return _goalFrameT + _goalFrameH * 0.4;
+      return _goalFrameT - 14;
+    }
+    return 0;
+  }
 
+  double _lineEndX(ShotData s, double w, double gL, double gW, double goalVis) {
+    // ── La linea va SEMPRE al punto d'impatto preciso (A → B retto) ──
+    // L'animazione `goalVis` riguarda la sezione porta, non il punto B.
+    if (s.type == 'goal' || s.type == 'on_target' || s.type == 'off_target') {
+      return _impactPixelX(s, w, gL, gW);
+    }
+    // Per i tiri "blocked" la linea finisce in mezzo al campo
+    return s.startX * w + (((s.goalX ?? 0.5) - s.startX) * w * 0.3);
+  }
+
+  double _lineEndY(
+      ShotData s, double currentGoalH, double fieldH, double goalVis) {
+    // ── Stile SofaScore: la linea si ferma DENTRO il campo ──
+    // Per i tiri che vanno alla porta (goal/on_target/off_target) la linea
+    // arriva al bordo superiore del campo (sotto la linea bianca di fondo).
+    // Il dot d'impatto sulla porta rimane ISOLATO sopra, non collegato.
+    if (s.type == 'goal' || s.type == 'on_target' || s.type == 'off_target') {
+      return currentGoalH + 4; // 4px sotto il top del campo
+    }
+    // Tiri "blocked" finiscono in mezzo al campo (non arrivano alla porta)
+    return currentGoalH + fieldH * (0.15 + s.startY * 0.25);
+  }
+
+  Widget _impactDot(ShotData s, double px, double py, double opacity) {
+    final Color c;
+    if (s.type == 'goal') {
+      c = const Color(0xFF4CAF50); // verde Material (= tabella Goal)
+    } else if (s.type == 'on_target') {
+      c = const Color(0xFF1B5E20); // verde scuro (= tabella Parati)
+    } else {
+      c = const Color(0xFFE53935); // rosso (= tabella Fuori)
+    }
+    // ── Stile SofaScore: tiri fuori = solo cerchio vuoto, no X ──
     return Positioned(
-      left: x - (size / 2),
-      top: y - (size / 2),
-      child: GestureDetector(
-        onTap: () => _selectShot(index),
-        child: SizedBox(
-          width: size,
-          height: size,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Cerchio esterno (solo selezionato)
-              if (isSelected)
-                Container(
-                  width: size,
-                  height: size,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2.5),
-                  ),
-                ),
-
-              // ✅ CERCHIO ESTERNO - SEMPRE NERO!
-              Container(
-                width: innerSize,
-                height: innerSize,
-                decoration: BoxDecoration(
-                  color: Colors.transparent, // Sempre vuoto
+      left: px - 13,
+      top: py - 13,
+      child: Opacity(
+          opacity: opacity,
+          child: Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: isSelected
-                        ? Colors.white
-                        : const Color(
-                            0xFF212121), // Nero o bianco se selezionato
-                    width: 3, // ✅ Spessore aumentato da 2.5 a 3
-                  ),
-                ),
-              ),
-
-              // ✅ PALLINO ROSSO INTERNO - Solo per IN PORTA
-              if (shot.type == 'goal' || shot.type == 'on_target')
-                Container(
-                  width: isSelected ? 12 : 9, // ✅ Ingrandito da 10/7 a 12/9
-                  height: isSelected ? 12 : 9,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE53935), // ROSSO!
-                    shape: BoxShape.circle,
-                  ),
-                ),
-
-              // ✅ STANGHETTA GRIGIA - Per BLOCCATI
-              if (shot.type == 'blocked')
-                Container(
-                  width: isSelected ? 16 : 12, // ✅ Ingrandito da 12/9 a 16/12
-                  height: 3,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF757575), // GRIGIO!
-                    borderRadius: BorderRadius.circular(1),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
+                  color: s.type == 'off_target'
+                      ? Colors.transparent
+                      : c.withOpacity(0.2),
+                  border: Border.all(color: c, width: 2.5)),
+              child: s.type == 'off_target'
+                  ? null
+                  : Center(
+                      child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: c))))),
     );
   }
 
-  Widget _buildPlayerInfoCard(ShotData shot) {
+  Widget _marker(ShotData s, int i, double fw, double fh, double goalOffset) {
+    final isSel = i == _selectedIndex;
+    final x = s.startX * fw;
+    final y = goalOffset + (0.08 + s.startY * 0.82) * fh;
+    // ── Goals get a guaranteed visibility boost (min 30, max 42) ──
+    // Other shots scale with xG (20 baseline + up to 18 from xG)
+    final double base;
+    if (s.type == 'goal') {
+      base = (30.0 + (s.xG * 18).clamp(0.0, 12.0));
+    } else {
+      base = 20.0 + (s.xG * 22).clamp(0.0, 18.0);
+    }
+    final outer = isSel ? 48.0 : base;
+    return Positioned(
+      left: x - outer / 2,
+      top: y - outer / 2,
+      child: GestureDetector(
+          onTap: () => _selectShot(i),
+          behavior: HitTestBehavior.opaque,
+          child: SizedBox(
+              width: outer,
+              height: outer,
+              child: Center(child: _dot(s, isSel, base)))),
+    );
+  }
+
+  Widget _dot(ShotData s, bool sel, double base) {
+    // ── Palette allineata alla tabella di conteggio (_shotSummaryBar) ──
+    final Color col;
+    switch (s.type) {
+      case 'goal':
+        col = const Color(0xFF4CAF50); // verde Material (= tabella Goal)
+        break;
+      case 'on_target':
+        col = const Color(0xFF1B5E20); // verde scuro (= tabella Parati)
+        break;
+      case 'blocked':
+        col = const Color(0xFFFF9800); // arancio Material (= tabella Respinti)
+        break;
+      case 'off_target':
+      default:
+        col = const Color(0xFFE53935); // rosso (= tabella Fuori)
+    }
+    final sz = sel ? 38.0 : base;
+    final bw = sel ? 3.5 : 2.0;
+    final darken = HSLColor.fromColor(col)
+        .withLightness(
+            (HSLColor.fromColor(col).lightness * 0.65).clamp(0.0, 1.0))
+        .toColor();
+
+    if (s.type == 'goal') {
+      // Filled circle with soccer ball icon
+      return Container(
+          width: sz,
+          height: sz,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: col,
+              border: Border.all(color: darken, width: bw),
+              boxShadow: [
+                BoxShadow(
+                    color: col.withOpacity(sel ? 0.5 : 0.35),
+                    blurRadius: sel ? 12 : 8)
+              ]),
+          child: Center(
+              child: Icon(Icons.sports_soccer,
+                  color: Colors.white, size: sel ? 20 : sz * 0.55)));
+    } else if (s.type == 'on_target') {
+      // Bordered circle with inner filled dot (saved)
+      return Container(
+          width: sz,
+          height: sz,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              border: Border.all(color: col, width: bw),
+              boxShadow: sel
+                  ? [BoxShadow(color: col.withOpacity(0.4), blurRadius: 10)]
+                  : null),
+          child: Center(
+              child: Container(
+                  width: sel ? 14 : sz * 0.40,
+                  height: sel ? 14 : sz * 0.40,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle, color: col))));
+    } else if (s.type == 'blocked') {
+      // Bordered circle with ALWAYS-visible X
+      return Container(
+          width: sz,
+          height: sz,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              border: Border.all(color: col, width: bw),
+              boxShadow: sel
+                  ? [BoxShadow(color: col.withOpacity(0.4), blurRadius: 10)]
+                  : null),
+          child: Center(
+              child: Icon(Icons.close,
+                  color: col, size: sel ? sz * 0.55 : sz * 0.50)));
+    } else {
+      // off_target: empty bordered circle
+      return Container(
+          width: sz,
+          height: sz,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.0),
+              border: Border.all(color: col, width: bw),
+              boxShadow: sel
+                  ? [BoxShadow(color: col.withOpacity(0.3), blurRadius: 10)]
+                  : null));
+    }
+  }
+
+  Widget _legend() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        _legItem(_goalDot(), tr(context, 'Goal')),
+        const SizedBox(width: 14),
+        _legItem(_onTargetDot(), tr(context, 'In Porta')),
+        const SizedBox(width: 14),
+        _legItem(_offDot(), tr(context, tr(context, 'Fuori'))),
+        const SizedBox(width: 14),
+        _legItem(_blockedDot(), tr(context, tr(context, 'Respinto'))),
+      ]),
+    );
+  }
+
+  Widget _legItem(Widget icon, String label) =>
+      Row(mainAxisSize: MainAxisSize.min, children: [
+        icon,
+        const SizedBox(width: 5),
+        Text(label,
+            style: TextStyle(
+                fontSize: 11,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500)),
+      ]);
+
+  Widget _goalDot() => Container(
+      width: 16,
+      height: 16,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: const Color(0xFF4CAF50),
+          boxShadow: [
+            BoxShadow(
+                color: const Color(0xFF4CAF50).withOpacity(0.4),
+                blurRadius: 4)
+          ]),
+      child: const Center(
+          child: Icon(Icons.sports_soccer, color: Colors.white, size: 9)));
+
+  Widget _onTargetDot() => Container(
+      width: 16,
+      height: 16,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFF1B5E20), width: 2)),
+      child: Center(
+          child: Container(
+              width: 6,
+              height: 6,
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Color(0xFF1B5E20)))));
+
+  Widget _offDot() => Container(
+      width: 16,
+      height: 16,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: const Color(0xFFE53935), width: 2)));
+
+  Widget _blockedDot() => Container(
+      width: 16,
+      height: 16,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFFF9800), width: 2)),
+      child: const Center(
+          child: Icon(Icons.close, color: Color(0xFFFF9800), size: 10)));
+
+  Widget _playerCard(ShotData s) {
+    final dk = widget.isDark;
+    final bg = dk ? const Color(0xFF1E1E1E) : Colors.white;
+    final tx = dk ? Colors.white : const Color(0xFF1A1A1A);
+    final lb = Colors.grey[500]!;
+    final dv = dk ? Colors.white.withOpacity(0.06) : Colors.grey[200]!;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFF2A2A2A),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              _buildNavArrow(
-                  Icons.chevron_left, selectedShotIndex > 0, _previousShot),
-              const SizedBox(width: 12),
-              _buildPlayerAvatar(shot),
-              const SizedBox(width: 16),
+          color: bg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: dv),
+          boxShadow: [
+            if (!dk)
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2))
+          ]),
+      child: Column(children: [
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(children: [
+              _arrow(Icons.chevron_left,
+                  _selectedIndex != null && _selectedIndex! > 0, _prevShot, dk),
+              const SizedBox(width: 10),
+              _avatar(s, dk),
+              const SizedBox(width: 14),
               Expanded(
-                child: Text(
-                  shot.playerName,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Text(
-                "${shot.minute}'",
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 12),
-              _buildNavArrow(
-                Icons.chevron_right,
-                selectedShotIndex < widget.shots.length - 1,
-                _nextShot,
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(child: _buildStat('xG', shot.xG.toStringAsFixed(2))),
-              Expanded(
-                child: _buildStat(
-                  'xGOT',
-                  shot.xGOT?.toStringAsFixed(2) ?? '-',
-                ),
-              ),
-              Expanded(child: _buildStat('Esito', shot.esito)),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child:
-                    _buildStat('Situazione', shot.situation ?? 'Gioco aperto'),
-              ),
-              Expanded(
-                child: _buildStat(
-                    'Tipo di tiro', shot.shotType ?? 'Tiro di destro'),
-              ),
-              Expanded(
-                child: _buildStat('Zona gol', shot.goalZone ?? '-'),
-              ),
-            ],
-          ),
-        ],
-      ),
+                  child: Text(s.playerName,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: tx))),
+              Text(s.minuteDisplay,
+                  style: TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w800, color: tx)),
+              const SizedBox(width: 10),
+              _arrow(
+                  Icons.chevron_right,
+                  _selectedIndex != null &&
+                      _selectedIndex! < widget.shots.length - 1,
+                  _nextShot,
+                  dk),
+            ])),
+        const SizedBox(height: 14),
+        Container(height: 1, color: dv),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            child: Row(children: [
+              _stat('xG', s.xG.toStringAsFixed(2), tx, lb),
+              _div(dv),
+              _stat('xGOT', s.xGOT?.toStringAsFixed(2) ?? '-', tx, lb),
+              _div(dv),
+              _stat(tr(context, 'Esito'), tr(context, s.esito), tx, lb),
+            ])),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+            child: Row(children: [
+              _stat(tr(context, 'Situazione'), tr(context, s.situation ?? 'Gioco aperto'), tx, lb),
+              _div(dv),
+              _stat(tr(context, 'Tipo di tiro'), tr(context, s.shotType ?? 'Destro'), tx, lb),
+              _div(dv),
+              _stat(tr(context, 'Zona gol'), tr(context, s.goalZone ?? '-'), tx, lb),
+            ])),
+      ]),
     );
   }
 
-  Widget _buildNavArrow(IconData icon, bool enabled, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: enabled ? onTap : null,
-      child: Icon(
-        icon,
-        color: enabled ? const Color(0xFF5B9BD5) : Colors.grey[700],
-        size: 32,
-      ),
-    );
-  }
+  Widget _arrow(IconData ic, bool on, VoidCallback fn, bool dk) =>
+      GestureDetector(
+          onTap: on ? fn : null,
+          child: Icon(ic,
+              color: on
+                  ? const Color(0xFF1565C0)
+                  : (dk ? Colors.grey[800] : Colors.grey[300]),
+              size: 28));
 
-  Widget _buildPlayerAvatar(ShotData shot) {
-    return Container(
-      width: 50,
-      height: 50,
+  Widget _avatar(ShotData s, bool dk) => Container(
+      width: 44,
+      height: 44,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.grey[800],
-        border: Border.all(color: Colors.grey[600]!, width: 2),
-      ),
-      child: shot.playerPhoto.isNotEmpty
+          shape: BoxShape.circle,
+          color: dk ? Colors.grey[800] : Colors.grey[200],
+          border: Border.all(
+              color: dk ? Colors.grey[700]! : Colors.grey[300]!, width: 1.5)),
+      child: s.playerPhoto.isNotEmpty
           ? ClipOval(
-              child: Image.network(
-                shot.playerPhoto,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) =>
-                    const Icon(Icons.person, color: Colors.white, size: 28),
-              ),
-            )
-          : const Icon(Icons.person, color: Colors.white, size: 28),
-    );
-  }
+              child: Image.network(s.playerPhoto,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) =>
+                      Icon(Icons.person, color: Colors.grey[500], size: 24)))
+          : Icon(Icons.person, color: Colors.grey[500], size: 24));
 
-  Widget _buildStat(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[500],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+  Expanded _stat(String l, String v, Color tx, Color lb) => Expanded(
+          child: Column(children: [
+        Text(l,
+            style: TextStyle(
+                fontSize: 11, color: lb, fontWeight: FontWeight.w500)),
         const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
+        Text(v,
+            style:
+                TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: tx),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis),
+      ]));
 
-  Widget _buildEmptyState() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(40),
-      decoration: BoxDecoration(
-        color: const Color(0xFF2A2A2A),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.sports_soccer_outlined, size: 64, color: Colors.grey[600]),
-          const SizedBox(height: 16),
-          Text(
-            'Nessun tiro disponibile',
-            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _div(Color c) => Container(
+      width: 1,
+      height: 32,
+      margin: const EdgeInsets.symmetric(horizontal: 6),
+      color: c);
+
+  Widget _emptyState() => Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(40),
+        decoration: BoxDecoration(
+            color: widget.isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            borderRadius: BorderRadius.circular(12)),
+        child: Column(children: [
+          Icon(Icons.sports_soccer_outlined, size: 48, color: Colors.grey[500]),
+          SizedBox(height: 12),
+          Text(tr(context, 'Nessun tiro disponibile'),
+              style: TextStyle(fontSize: 14, color: Colors.grey[500])),
+        ]),
+      );
 }
 
 // ========================================
-// ✅ PAINTER: PORTA - AREA PICCOLA 90%!
+// PAINTER: PORTA + AREA PICCOLA
 // ========================================
-class GoalPainter extends CustomPainter {
-  final double goalLeft;
-  final double goalWidth;
-  final double goalHeight;
-  final double goalTop;
-  final double totalWidth;
-
-  GoalPainter({
-    required this.goalLeft,
-    required this.goalWidth,
-    required this.goalHeight,
-    required this.goalTop,
-    required this.totalWidth,
-  });
+class _GoalPainter extends CustomPainter {
+  final double gL, gW, gH, gT, tW;
+  _GoalPainter(this.gL, this.gW, this.gH, this.gT, this.tW);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final goalRight = goalLeft + goalWidth;
-    final goalBottom = goalTop + goalHeight;
+    final gR = gL + gW;
+    final gB = gT + gH;
+    final aW = tW * 0.60;
+    final aL = (tW - aW) / 2;
+    final aT = gB + 3;
 
-    // Sfondo rete
+    canvas.drawRect(Rect.fromLTRB(aL, aT, aL + aW, size.height - 6),
+        Paint()..color = const Color(0xFFE8F5E9).withOpacity(0.5));
     canvas.drawRect(
-      Rect.fromLTRB(goalLeft, goalTop, goalRight, goalBottom),
-      Paint()..color = const Color(0xFF2A2A2A),
-    );
+        Rect.fromLTRB(aL, aT, aL + aW, size.height - 6),
+        Paint()
+          ..color = Colors.white.withOpacity(0.7)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5);
+    // ── Limita la linea ai confini dell'area (no sporgenza laterale) ──
+    canvas.drawLine(
+        Offset(aL, size.height - 6),
+        Offset(aL + aW, size.height - 6),
+        Paint()
+          ..color = Colors.white.withOpacity(0.5)
+          ..strokeWidth = 1.5);
 
-    // Griglia rete
-    final netPaint = Paint()
-      ..color = Colors.white.withOpacity(0.25)
-      ..strokeWidth = 1;
+    canvas.drawRect(Rect.fromLTRB(gL + 2, gT + 2, gR - 2, gB),
+        Paint()..color = const Color(0xFFE0E0E0));
 
-    for (int i = 0; i <= 14; i++) {
-      final x = goalLeft + (i / 14) * goalWidth;
-      canvas.drawLine(Offset(x, goalTop), Offset(x, goalBottom), netPaint);
+    final np = Paint()
+      ..color = Colors.grey.withOpacity(0.25)
+      ..strokeWidth = 0.5;
+    for (int i = 1; i < 16; i++) {
+      final x = gL + (i / 16) * gW;
+      canvas.drawLine(Offset(x, gT), Offset(x, gB), np);
+    }
+    for (int i = 1; i < 6; i++) {
+      final y = gT + (i / 6) * gH;
+      canvas.drawLine(Offset(gL, y), Offset(gR, y), np);
     }
 
-    for (int i = 0; i <= 6; i++) {
-      final y = goalTop + (i / 6) * goalHeight;
-      canvas.drawLine(Offset(goalLeft, y), Offset(goalRight, y), netPaint);
-    }
-
-    // Pali DRITTI
-    final postPaint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 5
+    final pp = Paint()
+      ..color = const Color(0xFF212121)
+      ..strokeWidth = 4
       ..strokeCap = StrokeCap.square;
-
-    canvas.drawLine(
-      Offset(goalLeft, goalTop),
-      Offset(goalLeft, goalBottom + 8),
-      postPaint,
-    );
-
-    canvas.drawLine(
-      Offset(goalRight, goalTop),
-      Offset(goalRight, goalBottom + 8),
-      postPaint,
-    );
-
-    canvas.drawLine(
-      Offset(goalLeft, goalTop),
-      Offset(goalRight, goalTop),
-      postPaint,
-    );
-
-    // ✅ STRISCIA VERDE AREA PICCOLA (tutta la larghezza)
+    canvas.drawLine(Offset(gL, gT), Offset(gL, gB + 4), pp);
+    canvas.drawLine(Offset(gR, gT), Offset(gR, gB + 4), pp);
+    // ── Traversa allineata ai pali (no sporgenza) ──
+    // Usa drawRect per allineamento perfetto con i pali esterni.
     canvas.drawRect(
-      Rect.fromLTRB(0, goalBottom + 6, size.width, size.height),
-      Paint()..color = const Color(0xFF3D5A3D),
-    );
-
-    // ✅ LINEA AREA PICCOLA - 90% LARGHEZZA TOTALE (MOLTO PIÙ GRANDE!)
-    final areaWidth = totalWidth * 0.90; // 90% della larghezza totale!
-    final areaLeft = (totalWidth - areaWidth) / 2;
-
-    // ✅ La linea finisce PRIMA per lasciare più spazio verde sotto!
-    canvas.drawRect(
-      Rect.fromLTRB(areaLeft, goalBottom + 6, areaLeft + areaWidth,
-          size.height - 35), // ✅ Da -2 a -35!
-      Paint()
-        ..color = const Color(0xFF2D4A2D)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2,
-    );
+        Rect.fromLTRB(gL - 2, gT - 2.5, gR + 2, gT + 2.5),
+        Paint()..color = const Color(0xFF212121));
   }
 
   @override
@@ -676,105 +788,77 @@ class GoalPainter extends CustomPainter {
 }
 
 // ========================================
-// PAINTER: CAMPO - PORTA PIÙ PICCOLA DELL'AREA
+// PAINTER: METÀ CAMPO
 // ========================================
-class FieldPainter extends CustomPainter {
+class _FieldPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // Strisce VERTICALI
-    final grassLight = const Color(0xFF4A7C4A);
-    final grassDark = const Color(0xFF3D6B3D);
-
-    final stripeCount = 8;
-    final stripeWidth = size.width / stripeCount;
-
-    for (int i = 0; i < stripeCount; i++) {
-      canvas.drawRect(
-        Rect.fromLTWH(i * stripeWidth, 0, stripeWidth, size.height),
-        Paint()..color = i % 2 == 0 ? grassLight : grassDark,
-      );
+    const n = 8;
+    final sh = size.height / n;
+    const c1 = Color(0xFFD5ECD5);
+    const c2 = Color(0xFFC5DFC5);
+    for (int i = 0; i < n; i++) {
+      canvas.drawRect(Rect.fromLTWH(0, i * sh, size.width, sh),
+          Paint()..color = i % 2 == 0 ? c1 : c2);
     }
 
-    final linePaint = Paint()
-      ..color = const Color(0xFF2D4A2D)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    // PORTA PIÙ PICCOLA DELL'AREA PICCOLA
-    final goalPostPaint = Paint()
+    final lp = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 6
+      ..strokeWidth = 1.8;
+    canvas.drawRect(Rect.fromLTWH(1, 1, size.width - 2, size.height - 2), lp);
+
+    final pw = size.width * 0.20;
+    final pl = (size.width - pw) / 2;
+    final ph = size.height * 0.04;
+    canvas.drawLine(
+        Offset(pl, 1),
+        Offset(pl + pw, 1),
+        Paint()
+          ..color = Colors.white
+          ..strokeWidth = 3
+          ..strokeCap = StrokeCap.round);
+    final mp = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
+    canvas.drawLine(Offset(pl, 1), Offset(pl, ph), mp);
+    canvas.drawLine(Offset(pl + pw, 1), Offset(pl + pw, ph), mp);
 
-    final smallWidth = size.width * 0.30;
-    final goalWidth = size.width * 0.24;
-    final goalLeft = (size.width - goalWidth) / 2;
-    final goalRight = goalLeft + goalWidth;
-    final goalHeight = size.height * 0.05;
+    final rw = size.width * 0.60;
+    final rh = size.height * 0.36;
+    final rl = (size.width - rw) / 2;
+    canvas.drawRect(Rect.fromLTWH(rl, 0, rw, rh), lp);
 
-    canvas.drawLine(
-      Offset(goalLeft, 0),
-      Offset(goalLeft, goalHeight),
-      goalPostPaint,
-    );
+    final sw = size.width * 0.28;
+    final ssh = size.height * 0.14;
+    final sl = (size.width - sw) / 2;
+    canvas.drawRect(Rect.fromLTWH(sl, 0, sw, ssh), lp);
 
-    canvas.drawLine(
-      Offset(goalRight, 0),
-      Offset(goalRight, goalHeight),
-      goalPostPaint,
-    );
-
-    canvas.drawLine(
-      Offset(goalLeft, 0),
-      Offset(goalRight, 0),
-      Paint()
-        ..color = Colors.white
-        ..strokeWidth = 8
-        ..strokeCap = StrokeCap.round,
-    );
-
-    // Area rigore
-    final penaltyWidth = size.width * 0.65;
-    final penaltyHeight = size.height * 0.42;
-    final penaltyLeft = (size.width - penaltyWidth) / 2;
-
-    canvas.drawRect(
-      Rect.fromLTWH(penaltyLeft, 0, penaltyWidth, penaltyHeight),
-      linePaint,
-    );
-
-    // Area piccola
-    final smallHeight = size.height * 0.16;
-    final smallLeft = (size.width - smallWidth) / 2;
-
-    canvas.drawRect(
-      Rect.fromLTWH(smallLeft, 0, smallWidth, smallHeight),
-      linePaint,
-    );
-
-    // Dischetto
     canvas.drawCircle(
-      Offset(size.width / 2, penaltyHeight * 0.30),
-      3,
-      Paint()..color = const Color(0xFF2D4A2D),
-    );
+        Offset(size.width / 2, rh * 0.70), 3, Paint()..color = Colors.white);
 
-    // ✅ Mezzaluna - CONNESSA perfettamente all'area rigore
-    final arcRadius = size.width * 0.10;
+    final ar = size.width * 0.10;
     canvas.save();
-    canvas.clipRect(Rect.fromLTWH(0, penaltyHeight, size.width, size.height));
+    canvas.clipRect(Rect.fromLTWH(0, rh, size.width, size.height - rh));
     canvas.drawArc(
-      Rect.fromCircle(
-        center: Offset(
-            size.width / 2, penaltyHeight), // ✅ Centro ESATTO sulla linea
-        radius: arcRadius,
-      ),
-      0,
-      math.pi,
-      false,
-      linePaint,
-    );
+        Rect.fromCircle(center: Offset(size.width / 2, rh), radius: ar),
+        0,
+        math.pi,
+        false,
+        lp);
+    canvas.restore();
+
+    final cr = size.width * 0.11;
+    canvas.save();
+    canvas.clipRect(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawArc(
+        Rect.fromCircle(
+            center: Offset(size.width / 2, size.height), radius: cr),
+        math.pi,
+        math.pi,
+        false,
+        lp);
     canvas.restore();
   }
 
@@ -783,117 +867,74 @@ class FieldPainter extends CustomPainter {
 }
 
 // ========================================
-// ✅ PAINTER: LINEA TRATTEGGIATA - COORDINAMENTO PERFETTO!
+// PAINTER: LINEA TRATTEGGIATA UNIFICATA
 // ========================================
-class DashedLinePainter extends CustomPainter {
-  final double shotX;
-  final double shotY;
-  final String shotType;
+class _UnifiedLinePainter extends CustomPainter {
+  final double startX, startY, endX, endY;
+  final String type;
+  final double startRadius;
 
-  DashedLinePainter({
-    required this.shotX,
-    required this.shotY,
-    required this.shotType,
+  _UnifiedLinePainter({
+    required this.startX,
+    required this.startY,
+    required this.endX,
+    required this.endY,
+    required this.type,
+    this.startRadius = 0,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.6)
-      ..strokeWidth = 2;
+    final p = Paint()
+      ..color = const Color(0xFF212121).withOpacity(0.65)
+      ..strokeWidth = 2.5
+      ..strokeCap = StrokeCap.round;
 
-    final startX = shotX * size.width;
-    final startY = shotY * size.height;
+    var sX = startX;
+    var sY = startY;
+    final rawDx = endX - startX;
+    final rawDy = endY - startY;
+    final rawDist = math.sqrt(rawDx * rawDx + rawDy * rawDy);
+    if (rawDist < 1) return;
 
-    // ✅ COORDINAMENTO PERFETTO per TUTTI i tipi!
-    final double endX;
-
-    if (shotType == 'goal' || shotType == 'on_target') {
-      // IN PORTA: linea va esattamente dove pallino porta sarà
-      final goalWidth = size.width * 0.55;
-      final goalLeft = (size.width - goalWidth) / 2;
-      endX = goalLeft + (shotX * goalWidth);
-    } else if (shotType == 'off_target') {
-      // FUORI: linea va verso punto esterno (stessa logica pallino)
-      final goalWidth = size.width * 0.55;
-      final goalLeft = (size.width - goalWidth) / 2;
-      final targetInGoalX = goalLeft + (shotX * goalWidth);
-
-      // Calcola dove finirà il pallino fuori
-      if (shotX < 0.5) {
-        if (shotX < 0.25) {
-          endX = targetInGoalX - 80;
-        } else if (shotX < 0.4) {
-          endX = targetInGoalX - 50;
-        } else {
-          endX = targetInGoalX;
-        }
-      } else if (shotX > 0.5) {
-        if (shotX > 0.75) {
-          endX = targetInGoalX + 60;
-        } else if (shotX > 0.6) {
-          endX = targetInGoalX + 40;
-        } else {
-          endX = targetInGoalX;
-        }
-      } else {
-        endX = size.width / 2;
-      }
-    } else {
-      // BLOCCATI: centro porta
-      final goalWidth = size.width * 0.55;
-      final goalLeft = (size.width - goalWidth) / 2;
-      endX = goalLeft + (shotX * goalWidth);
+    // ── Stile SofaScore: la linea parte dal BORDO del cerchio del tiro ──
+    if (startRadius > 0 && rawDist > startRadius + 2) {
+      sX = startX + (rawDx / rawDist) * startRadius;
+      sY = startY + (rawDy / rawDist) * startRadius;
     }
 
-    final endY = 0.0;
+    final dx = endX - sX;
+    final dy = endY - sY;
+    final dist = math.sqrt(dx * dx + dy * dy);
+    if (dist < 1) return;
 
-    final dx = endX - startX;
-    final dy = endY - startY;
-    final distance = math.sqrt(dx * dx + dy * dy);
+    const dl = 5.0;
+    const gl = 4.0;
+    var c = 0.0;
 
-    const dashLength = 6.0;
-    const gapLength = 4.0;
-    var currentDistance = 0.0;
-
-    // ✅ Per bloccati, calcola punto medio per interruzione
-    final midDistance = shotType == 'blocked' ? distance / 2 : -1;
-    final stopDistance = shotType == 'blocked' ? midDistance : distance;
-
-    while (currentDistance < stopDistance) {
-      final dashStart = currentDistance / distance;
-      final dashEnd = math.min((currentDistance + dashLength) / distance, 1.0);
-
-      // ✅ Salta il disegno vicino al punto medio per bloccati
-      final isNearMid =
-          shotType == 'blocked' && (currentDistance - midDistance).abs() < 10;
-
-      if (!isNearMid) {
+    while (c < dist) {
+      final s = c / dist;
+      final segEnd = c + dl;
+      if (segEnd >= dist) {
         canvas.drawLine(
-          Offset(startX + dx * dashStart, startY + dy * dashStart),
-          Offset(startX + dx * dashEnd, startY + dy * dashEnd),
-          paint,
-        );
+            Offset(sX + dx * s, sY + dy * s), Offset(endX, endY), p);
+        break;
       }
-
-      currentDistance += dashLength + gapLength;
+      final e = segEnd / dist;
+      canvas.drawLine(Offset(sX + dx * s, sY + dy * s),
+          Offset(sX + dx * e, sY + dy * e), p);
+      c += dl + gl;
     }
 
-    // ✅ Disegna lineetta orizzontale per bloccati (e STOP!)
-    if (shotType == 'blocked') {
-      final midX = startX + dx * 0.5;
-      final midY = startY + dy * 0.5;
-
-      final blockPaint = Paint()
-        ..color = Colors.white.withOpacity(0.8)
-        ..strokeWidth = 3
+    if (type == 'blocked') {
+      final bp = Paint()
+        ..color = const Color(0xFF212121).withOpacity(0.6)
+        ..strokeWidth = 3.0
         ..strokeCap = StrokeCap.round;
-
       canvas.drawLine(
-        Offset(midX - 8, midY),
-        Offset(midX + 8, midY),
-        blockPaint,
-      );
+          Offset(endX - 7, endY - 7), Offset(endX + 7, endY + 7), bp);
+      canvas.drawLine(
+          Offset(endX - 7, endY + 7), Offset(endX + 7, endY - 7), bp);
     }
   }
 

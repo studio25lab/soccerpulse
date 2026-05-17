@@ -1,6 +1,7 @@
 // lib/pages/players_screen.dart
 
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/player.dart';
 import 'player_profile_screen.dart';
@@ -129,7 +130,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
     return Scaffold(
       backgroundColor: isDark ? Colors.grey[900] : Colors.grey[50],
       appBar: AppBar(
-        title: const Text('Giocatori',
+        title: Text(tr(context, 'Giocatori'),
             style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         elevation: 0,
@@ -175,7 +176,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                       Icon(Icons.assistant,
                           size: 18, color: theme.primaryColor),
                       const SizedBox(width: 8),
-                      const Text('Assist'),
+                      const Text(tr(context, 'Assist')),
                     ],
                   )),
               PopupMenuItem(
@@ -213,8 +214,8 @@ class _PlayersScreenState extends State<PlayersScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showCompareSelection(),
-        icon: const Icon(Icons.compare_arrows),
-        label: const Text('Confronta'),
+        icon: Icon(Icons.compare_arrows),
+        label: Text(tr(context, 'Confronta')),
       ),
     );
   }
@@ -234,7 +235,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
       ),
       child: TextField(
         decoration: InputDecoration(
-          hintText: 'Cerca giocatore...',
+          hintText: tr(context, 'Cerca giocatore...'),
           prefixIcon: Icon(Icons.search, color: theme.primaryColor),
           suffixIcon: searchQuery.isNotEmpty
               ? IconButton(
@@ -345,8 +346,8 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 selectedBadges.clear();
                 _applyFilters();
               }),
-              icon: const Icon(Icons.clear_all, size: 18),
-              label: const Text('Cancella tutto'),
+              icon: Icon(Icons.clear_all, size: 18),
+              label: Text(tr(context, 'Cancella tutto')),
             ),
           ],
         ),
@@ -688,7 +689,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
   String _getBadgeName(String badge) {
     switch (badge) {
       case '100_appearances':
-        return '100 Presenze';
+        return tr(context, '100 Presenze');
       case '10_goals':
         return '10 Goal';
       case '5_assists':
@@ -710,18 +711,18 @@ class _PlayersScreenState extends State<PlayersScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.search_off, size: 80, color: Colors.grey[400]),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             Text(
-              'Nessun giocatore trovato',
+              tr(context, 'Nessun giocatore trovato'),
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey[600],
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Text(
-              'Prova a modificare i filtri di ricerca',
+              tr(context, 'Prova a modificare i filtri di ricerca'),
               style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             ),
             const SizedBox(height: 24),

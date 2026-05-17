@@ -10,239 +10,200 @@ import 'dart:ui' as ui;
 // ========================================
 class RealisticSoccerFieldPainter extends CustomPainter {
   final bool isDark;
+  final bool linesOnly;
 
-  RealisticSoccerFieldPainter({required this.isDark});
+  RealisticSoccerFieldPainter({required this.isDark, this.linesOnly = false});
 
   @override
   void paint(Canvas canvas, Size size) {
-    // 1. ERBA CON PATTERN STRISCE PROFESSIONALI
-    _drawEnhancedGrassPattern(canvas, size);
-
-    // 2. LINEE CAMPO DETTAGLIATE
+    if (!linesOnly) {
+      _drawEnhancedGrassPattern(canvas, size);
+    }
     _drawDetailedFieldLines(canvas, size);
-
-    // 3. OMBREGGIATURE E PROFONDITÀ
-    _drawFieldDepth(canvas, size);
+    if (!linesOnly) {
+      _drawFieldDepth(canvas, size);
+    }
   }
 
   void _drawEnhancedGrassPattern(Canvas canvas, Size size) {
-    // Colori erba più realistici
-    final darkGreen = const Color(0xFF1B5E20);
-    final lightGreen = const Color(0xFF2E7D32);
-
-    final stripeWidth = size.width / 14; // 14 strisce per più dettaglio
+    // ── Palette unificata Avanzate (= Mappa Tiri) ──
+    final darkGreen = const Color(0xFFC5DFC5);  // verde chiaro
+    final lightGreen = const Color(0xFFD5ECD5); // verde chiarissimo
+    final stripeWidth = size.width / 14;
 
     for (int i = 0; i < 14; i++) {
       final paint = Paint()
         ..color = i % 2 == 0 ? darkGreen : lightGreen
         ..style = PaintingStyle.fill;
-
       canvas.drawRect(
         Rect.fromLTWH(i * stripeWidth, 0, stripeWidth, size.height),
         paint,
       );
     }
 
-    // Overlay gradiente multiplo per profondità 3D
-    final gradients = [
-      // Gradiente dall'alto
+    // Overlay gradiente per profondità 3D
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
       Paint()
         ..shader = ui.Gradient.linear(
           Offset(size.width / 2, 0),
           Offset(size.width / 2, size.height * 0.3),
-          [
-            Colors.black.withOpacity(0.25),
-            Colors.transparent,
-          ],
+          [Colors.black.withOpacity(0.25), Colors.transparent],
         ),
-      // Gradiente centrale per cerchio di luce
+    );
+
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
       Paint()
         ..shader = ui.Gradient.radial(
           Offset(size.width / 2, size.height / 2),
           size.width * 0.4,
-          [
-            Colors.white.withOpacity(0.08),
-            Colors.transparent,
-          ],
+          [Colors.white.withOpacity(0.08), Colors.transparent],
         ),
-      // Gradiente dal basso
+    );
+
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
       Paint()
         ..shader = ui.Gradient.linear(
           Offset(size.width / 2, size.height * 0.7),
           Offset(size.width / 2, size.height),
-          [
-            Colors.transparent,
-            Colors.black.withOpacity(0.15),
-          ],
+          [Colors.transparent, Colors.black.withOpacity(0.15)],
         ),
-    ];
-
-    for (var gradientPaint in gradients) {
-      canvas.drawRect(
-        Rect.fromLTWH(0, 0, size.width, size.height),
-        gradientPaint,
-      );
-    }
+    );
   }
 
   void _drawDetailedFieldLines(Canvas canvas, Size size) {
+    // Linee bianche piene — alto contrasto su sfondo chiaro
     final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.95)
+      ..color = Colors.white
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.5
+      ..strokeWidth = 1.8
       ..strokeCap = StrokeCap.round;
 
-    // Bordo esterno con angoli arrotondati
+    const m = 15.0; // margine campo
+
+    // Bordo esterno
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(15, 15, size.width - 30, size.height - 30),
-        const Radius.circular(12),
+        Rect.fromLTWH(m, m, size.width - m * 2, size.height - m * 2),
+        const Radius.circular(4),
       ),
       linePaint,
     );
 
-    // Linea centrale con ombra
-    final centerLinePaint = Paint()
-      ..color = Colors.white.withOpacity(0.9)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.5
-      ..strokeCap = StrokeCap.round;
+    // Linea centrale
+    canvas.drawLine(Offset(size.width / 2, m),
+        Offset(size.width / 2, size.height - m), linePaint);
 
-    canvas.drawLine(
-      Offset(size.width / 2, 15),
-      Offset(size.width / 2, size.height - 15),
-      centerLinePaint,
-    );
-
-    // Cerchio centrale con ombra interna
+    // ═══ CERCHIO CENTRALE ═══
+    final centerCircleR = size.width * 0.09;
     canvas.drawCircle(
-      Offset(size.width / 2, size.height / 2),
-      50,
-      linePaint,
-    );
-
-    // Punto centrale più grande
+        Offset(size.width / 2, size.height / 2), centerCircleR, linePaint);
     canvas.drawCircle(
-      Offset(size.width / 2, size.height / 2),
-      4,
-      Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.fill,
-    );
+        Offset(size.width / 2, size.height / 2),
+        2.5,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill);
 
-    // Aree di rigore con dettagli
-    final penaltyWidth = size.width * 0.22;
-    final penaltyHeight = size.height * 0.45;
+    // ═══ AREE DI RIGORE ═══
+    // Proporzioni reali: area 16.5m su campo 105m = ~15.7% della lunghezza
+    //                    area 40.3m su campo 68m  = ~59.3% dell'altezza
+    final penW = size.width * 0.157;
+    final penH = size.height * 0.593;
+    final penY = (size.height - penH) / 2;
 
-    // Area rigore sinistra
+    canvas.drawRect(Rect.fromLTWH(m, penY, penW, penH), linePaint);
     canvas.drawRect(
-      Rect.fromLTWH(
-        15,
-        (size.height - penaltyHeight) / 2,
-        penaltyWidth,
-        penaltyHeight,
-      ),
-      linePaint,
-    );
+        Rect.fromLTWH(size.width - m - penW, penY, penW, penH), linePaint);
 
-    // Area rigore destra
+    // ═══ AREE PICCOLE ═══
+    // Proporzioni reali: 5.5m / 105m = ~5.2%, 18.3m / 68m = ~27%
+    final smallW = size.width * 0.052;
+    final smallH = size.height * 0.27;
+    final smallY = (size.height - smallH) / 2;
+
+    canvas.drawRect(Rect.fromLTWH(m, smallY, smallW, smallH), linePaint);
     canvas.drawRect(
-      Rect.fromLTWH(
-        size.width - 15 - penaltyWidth,
-        (size.height - penaltyHeight) / 2,
-        penaltyWidth,
-        penaltyHeight,
-      ),
-      linePaint,
-    );
+        Rect.fromLTWH(size.width - m - smallW, smallY, smallW, smallH),
+        linePaint);
 
-    // Aree piccole
-    final smallBoxWidth = size.width * 0.1;
-    final smallBoxHeight = size.height * 0.22;
-
-    canvas.drawRect(
-      Rect.fromLTWH(
-        15,
-        (size.height - smallBoxHeight) / 2,
-        smallBoxWidth,
-        smallBoxHeight,
-      ),
-      linePaint,
-    );
-
-    canvas.drawRect(
-      Rect.fromLTWH(
-        size.width - 15 - smallBoxWidth,
-        (size.height - smallBoxHeight) / 2,
-        smallBoxWidth,
-        smallBoxHeight,
-      ),
-      linePaint,
-    );
-
-    // Dischetti rigore più visibili
-    final penaltySpotPaint = Paint()
+    // ═══ DISCHETTI RIGORE ═══
+    // 11m dal fondo = 10.5% della lunghezza del campo
+    final spotPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
+    final spotXL = m + size.width * 0.105;
+    final spotXR = size.width - m - size.width * 0.105;
+    canvas.drawCircle(Offset(spotXL, size.height / 2), 3.5, spotPaint);
+    canvas.drawCircle(Offset(spotXR, size.height / 2), 3.5, spotPaint);
 
-    canvas.drawCircle(
-      Offset(15 + penaltyWidth * 0.6, size.height / 2),
-      4,
-      penaltySpotPaint,
-    );
+    // ═══ MEZZELUNE (penalty arcs) ═══
+    // Raggio reale: 9.15m — proporzionato al campo
+    final arcR = size.width * 0.087;
+    final penEdgeL = m + penW;
+    final penEdgeR = size.width - m - penW;
 
-    canvas.drawCircle(
-      Offset(size.width - 15 - penaltyWidth * 0.6, size.height / 2),
-      4,
-      penaltySpotPaint,
-    );
+    // Mezzaluna sinistra — clip per mostrare SOLO la parte fuori dall'area
+    final distL = penEdgeL - spotXL;
+    if (arcR > distL) {
+      final halfAngleL = math.acos((distL / arcR).clamp(-1.0, 1.0));
+      canvas.save();
+      canvas.clipRect(Rect.fromLTWH(penEdgeL, 0, size.width, size.height));
+      canvas.drawArc(
+          Rect.fromCircle(
+              center: Offset(spotXL, size.height / 2), radius: arcR),
+          -halfAngleL,
+          halfAngleL * 2,
+          false,
+          linePaint);
+      canvas.restore();
+    }
 
-    // Semicerchi area rigore
-    final arcRadius = 50.0;
+    // Mezzaluna destra
+    final distR = spotXR - penEdgeR;
+    if (arcR > distR) {
+      final halfAngleR = math.acos((distR / arcR).clamp(-1.0, 1.0));
+      canvas.save();
+      canvas.clipRect(Rect.fromLTWH(0, 0, penEdgeR, size.height));
+      canvas.drawArc(
+          Rect.fromCircle(
+              center: Offset(spotXR, size.height / 2), radius: arcR),
+          math.pi - halfAngleR,
+          halfAngleR * 2,
+          false,
+          linePaint);
+      canvas.restore();
+    }
 
-    // Sinistra
-    final leftArcRect = Rect.fromCircle(
-      center: Offset(15 + penaltyWidth * 0.6, size.height / 2),
-      radius: arcRadius,
-    );
+    // ═══ CORNER ARCS ═══
+    const cornerR = 10.0;
+    canvas.drawArc(Rect.fromCircle(center: Offset(m, m), radius: cornerR), 0,
+        math.pi / 2, false, linePaint);
     canvas.drawArc(
-      leftArcRect,
-      -math.pi / 2,
-      math.pi,
-      false,
-      linePaint,
-    );
-
-    // Destra
-    final rightArcRect = Rect.fromCircle(
-      center: Offset(size.width - 15 - penaltyWidth * 0.6, size.height / 2),
-      radius: arcRadius,
-    );
+        Rect.fromCircle(center: Offset(size.width - m, m), radius: cornerR),
+        math.pi / 2,
+        math.pi / 2,
+        false,
+        linePaint);
     canvas.drawArc(
-      rightArcRect,
-      math.pi / 2,
-      math.pi,
-      false,
-      linePaint,
-    );
+        Rect.fromCircle(center: Offset(m, size.height - m), radius: cornerR),
+        -math.pi / 2,
+        math.pi / 2,
+        false,
+        linePaint);
+    canvas.drawArc(
+        Rect.fromCircle(
+            center: Offset(size.width - m, size.height - m), radius: cornerR),
+        math.pi,
+        math.pi / 2,
+        false,
+        linePaint);
   }
 
   void _drawFieldDepth(Canvas canvas, Size size) {
-    // Ombra vignette ai bordi
-    final vignettePaint = Paint()
-      ..shader = ui.Gradient.radial(
-        Offset(size.width / 2, size.height / 2),
-        size.width * 0.7,
-        [
-          Colors.transparent,
-          Colors.black.withOpacity(0.15),
-        ],
-      );
-
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      vignettePaint,
-    );
+    // Depth overlay rimosso per coerenza con sfondo chiaro
   }
 
   @override
@@ -250,17 +211,8 @@ class RealisticSoccerFieldPainter extends CustomPainter {
 }
 
 // ========================================
-// SHOT MAP CON ANIMAZIONI
+// SHOT MAP - METÀ CAMPO CON PORTA IN ALTO
 // ========================================
-// PAINTERS CORRETTI - Da sostituire in advanced_stats_painters.dart
-// Sostituisci da riga 116 (AnimatedShotMapPainter) fino a riga 570 (fine GradientPassNetworkPainter)
-
-// ========================================
-// SHOT MAP CON METÀ CAMPO OFFENSIVA
-// ========================================
-// SHOT MAP CORRETTO - METÀ CAMPO CON PORTA IN ALTO
-// Sostituisci la classe AnimatedShotMapPainter (riga ~200-330) con questa:
-
 class AnimatedShotMapPainter extends CustomPainter {
   final bool isHome;
   final bool isDark;
@@ -274,149 +226,100 @@ class AnimatedShotMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Metà campo verticale con porta in alto
     _drawHalfFieldVertical(canvas, size);
-
-    // Tiri animati
     _drawAnimatedShots(canvas, size);
   }
 
   void _drawHalfFieldVertical(Canvas canvas, Size size) {
-    // 1. ERBA con strisce VERTICALI (metà campo)
+    // Erba con strisce
     final darkGreen = const Color(0xFF2E7D32);
     final lightGreen = const Color(0xFF43A047);
     final stripeWidth = size.width / 12;
 
     for (int i = 0; i < 12; i++) {
-      final paint = Paint()
-        ..color = i % 2 == 0 ? darkGreen : lightGreen
-        ..style = PaintingStyle.fill;
-
       canvas.drawRect(
         Rect.fromLTWH(i * stripeWidth, 0, stripeWidth, size.height),
-        paint,
+        Paint()..color = i % 2 == 0 ? darkGreen : lightGreen,
       );
     }
 
     // Gradient profondità
-    final gradientPaint = Paint()
-      ..shader = ui.Gradient.linear(
-        Offset(size.width / 2, 0),
-        Offset(size.width / 2, size.height),
-        [
-          Colors.black.withOpacity(0.2),
-          Colors.transparent,
-          Colors.black.withOpacity(0.05),
-        ],
-        [0.0, 0.3, 1.0],
-      );
-
     canvas.drawRect(
       Rect.fromLTWH(0, 0, size.width, size.height),
-      gradientPaint,
+      Paint()
+        ..shader = ui.Gradient.linear(
+          Offset(size.width / 2, 0),
+          Offset(size.width / 2, size.height),
+          [
+            Colors.black.withOpacity(0.2),
+            Colors.transparent,
+            Colors.black.withOpacity(0.05)
+          ],
+          [0.0, 0.3, 1.0],
+        ),
     );
 
-    // 2. LINEE CAMPO
     final linePaint = Paint()
       ..color = Colors.white.withOpacity(0.9)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
 
-    // Bordo campo (solo 3 lati, quello in alto è dove c'è la porta)
     // Lato sinistro
     canvas.drawLine(
-      const Offset(10, 10),
-      Offset(10, size.height - 10),
-      linePaint,
-    );
-
+        const Offset(10, 10), Offset(10, size.height - 10), linePaint);
     // Lato destro
-    canvas.drawLine(
-      Offset(size.width - 10, 10),
-      Offset(size.width - 10, size.height - 10),
-      linePaint,
-    );
-
+    canvas.drawLine(Offset(size.width - 10, 10),
+        Offset(size.width - 10, size.height - 10), linePaint);
     // Lato basso (linea centrocampo)
-    canvas.drawLine(
-      Offset(10, size.height - 10),
-      Offset(size.width - 10, size.height - 10),
-      linePaint,
-    );
+    canvas.drawLine(Offset(10, size.height - 10),
+        Offset(size.width - 10, size.height - 10), linePaint);
 
-    // 3. PORTA IN ALTO (ben visibile)
+    // Porta in alto
     final goalWidth = size.width * 0.3;
     final goalX = (size.width - goalWidth) / 2;
-    final goalDepth = 15.0;
-
-    // Pali porta (bianchi spessi)
     final goalPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
       ..strokeWidth = 5;
 
-    // Rettangolo porta
-    final goalRect = Rect.fromLTWH(goalX, 5, goalWidth, goalDepth);
-    canvas.drawRect(goalRect, goalPaint);
+    canvas.drawRect(Rect.fromLTWH(goalX, 5, goalWidth, 15), goalPaint);
 
-    // Rete porta (pattern linee)
+    // Rete porta
     final netPaint = Paint()
       ..color = Colors.white.withOpacity(0.4)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
-    // Linee verticali rete
     for (double i = 0; i <= goalWidth; i += 12) {
-      canvas.drawLine(
-        Offset(goalX + i, 5),
-        Offset(goalX + i, 20),
-        netPaint,
-      );
+      canvas.drawLine(Offset(goalX + i, 5), Offset(goalX + i, 20), netPaint);
     }
-
-    // Linee orizzontali rete
     for (double i = 5; i <= 20; i += 8) {
-      canvas.drawLine(
-        Offset(goalX, i),
-        Offset(goalX + goalWidth, i),
-        netPaint,
-      );
+      canvas.drawLine(Offset(goalX, i), Offset(goalX + goalWidth, i), netPaint);
     }
 
-    // 4. AREA DI RIGORE GRANDE
+    // Area di rigore grande
     final penaltyBoxWidth = size.width * 0.65;
     final penaltyBoxDepth = size.height * 0.22;
     final penaltyBoxX = (size.width - penaltyBoxWidth) / 2;
 
     canvas.drawRect(
-      Rect.fromLTWH(
-        penaltyBoxX,
-        10,
-        penaltyBoxWidth,
-        penaltyBoxDepth,
-      ),
+      Rect.fromLTWH(penaltyBoxX, 10, penaltyBoxWidth, penaltyBoxDepth),
       linePaint,
     );
 
-    // 5. AREA DI RIGORE PICCOLA
+    // Area di rigore piccola
     final smallBoxWidth = size.width * 0.4;
     final smallBoxDepth = size.height * 0.1;
     final smallBoxX = (size.width - smallBoxWidth) / 2;
 
     canvas.drawRect(
-      Rect.fromLTWH(
-        smallBoxX,
-        10,
-        smallBoxWidth,
-        smallBoxDepth,
-      ),
+      Rect.fromLTWH(smallBoxX, 10, smallBoxWidth, smallBoxDepth),
       linePaint,
     );
 
-    // 6. DISCHETTO DI RIGORE
+    // Dischetto di rigore
     final penaltySpotY = 10 + penaltyBoxDepth * 0.6;
-
     canvas.drawCircle(
       Offset(size.width / 2, penaltySpotY),
       4,
@@ -425,16 +328,14 @@ class AnimatedShotMapPainter extends CustomPainter {
         ..style = PaintingStyle.fill,
     );
 
-    // 7. SEMICERCHIO AREA RIGORE
+    // Semicerchio area rigore
     final arcRadius = size.width * 0.12;
-    final arcRect = Rect.fromCenter(
-      center: Offset(size.width / 2, penaltySpotY),
-      width: arcRadius * 2,
-      height: arcRadius * 2,
-    );
-
     canvas.drawArc(
-      arcRect,
+      Rect.fromCenter(
+        center: Offset(size.width / 2, penaltySpotY),
+        width: arcRadius * 2,
+        height: arcRadius * 2,
+      ),
       0,
       math.pi,
       false,
@@ -459,35 +360,30 @@ class AnimatedShotMapPainter extends CustomPainter {
       }
 
       // Glow effect
-      final glowPaint = Paint()
-        ..color = shotColor.withOpacity(0.3 * opacity)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
-
       canvas.drawCircle(
         shot['position'],
         14 * scale,
-        glowPaint,
+        Paint()
+          ..color = shotColor.withOpacity(0.3 * opacity)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
       );
 
       // Cerchio principale con gradient radiale
-      final shotPaint = Paint()
-        ..shader = ui.Gradient.radial(
-          shot['position'],
-          11 * scale,
-          [
-            shotColor.withOpacity(opacity),
-            shotColor.withOpacity(0.7 * opacity),
-          ],
-        )
-        ..style = PaintingStyle.fill;
-
       canvas.drawCircle(
         shot['position'],
         11 * scale,
-        shotPaint,
+        Paint()
+          ..shader = ui.Gradient.radial(
+            shot['position'],
+            11 * scale,
+            [
+              shotColor.withOpacity(opacity),
+              shotColor.withOpacity(0.7 * opacity),
+            ],
+          ),
       );
 
-      // Bordo bianco spesso
+      // Bordo bianco
       canvas.drawCircle(
         shot['position'],
         11 * scale,
@@ -497,7 +393,7 @@ class AnimatedShotMapPainter extends CustomPainter {
           ..strokeWidth = 2.5,
       );
 
-      // Icona goal (stella)
+      // Stella per goal
       if (shot['goal'] == true) {
         _drawGoalStar(canvas, shot['position'], scale * opacity);
       }
@@ -505,16 +401,11 @@ class AnimatedShotMapPainter extends CustomPainter {
   }
 
   void _drawGoalStar(Canvas canvas, Offset position, double scale) {
-    final starPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-
     final starPath = Path();
     for (int i = 0; i < 5; i++) {
       final angle = (i * 2 * math.pi / 5) - math.pi / 2;
       final x = position.dx + math.cos(angle) * 6 * scale;
       final y = position.dy + math.sin(angle) * 6 * scale;
-
       if (i == 0) {
         starPath.moveTo(x, y);
       } else {
@@ -522,30 +413,25 @@ class AnimatedShotMapPainter extends CustomPainter {
       }
     }
     starPath.close();
-
-    canvas.drawPath(starPath, starPaint);
+    canvas.drawPath(
+        starPath,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill);
   }
 
   List<Map<String, dynamic>> _generateMockShots(Size size) {
-    final random = math.Random(42);
+    final random = math.Random(isHome ? 42 : 99);
     final shots = <Map<String, dynamic>>[];
 
-    // Genera 15 tiri distribuiti nella metà campo offensiva
     for (int i = 0; i < 15; i++) {
-      // X: sparso su tutta la larghezza (con margini)
       final x = size.width * (0.12 + random.nextDouble() * 0.76);
-
-      // Y: dalla porta verso il centrocampo
-      // Bias verso la porta (più tiri vicino all'area)
       final yBias = math.pow(random.nextDouble(), 1.8);
       final y = size.height * 0.08 + (yBias * size.height * 0.75);
 
-      // Probabilità goal basata su distanza dalla porta
       final distanceFromGoal = y / size.height;
       final goalProb = 0.22 - (distanceFromGoal * 0.18);
       final isGoal = random.nextDouble() < goalProb;
-
-      // Probabilità in porta
       final onTargetProb = 0.55 - (distanceFromGoal * 0.25);
       final isOnTarget = isGoal || random.nextDouble() < onTargetProb;
 
@@ -561,7 +447,8 @@ class AnimatedShotMapPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(AnimatedShotMapPainter oldDelegate) {
-    return animationValue != oldDelegate.animationValue;
+    return animationValue != oldDelegate.animationValue ||
+        isHome != oldDelegate.isHome;
   }
 }
 
@@ -581,77 +468,71 @@ class GradientPassNetworkPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Campo realistico
     RealisticSoccerFieldPainter(isDark: isDark).paint(canvas, size);
-
-    // Network passaggi VISIBILE
     _drawPassNetwork(canvas, size);
   }
 
   void _drawPassNetwork(Canvas canvas, Size size) {
     final players = _generatePlayerPositions(size);
 
-    // Disegna linee passaggi PRIMA (sotto i giocatori)
+    // Linee passaggi
     for (int i = 0; i < players.length; i++) {
       for (int j = i + 1; j < players.length; j++) {
         final pos1 = players[i]['pos'] as Offset;
         final pos2 = players[j]['pos'] as Offset;
         final distance = (pos1 - pos2).distance;
 
-        // Connetti giocatori vicini
         if (distance < size.width * 0.35) {
           final passes = ((200 - distance) / 15).clamp(5, 20).toInt();
-          _drawPassLine(canvas, pos1, pos2, passes);
+          final thickness = (passes / 20 * 8).clamp(2.0, 8.0);
+          final opacity = (animationValue * 0.8).clamp(0.0, 0.8);
+
+          canvas.drawLine(
+            pos1,
+            pos2,
+            Paint()
+              ..color = Colors.white.withOpacity(0.3 * animationValue)
+              ..strokeWidth = thickness + 6
+              ..strokeCap = StrokeCap.round
+              ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
+          );
+
+          canvas.drawLine(
+            pos1,
+            pos2,
+            Paint()
+              ..color = Colors.blue[400]!.withOpacity(opacity)
+              ..strokeWidth = thickness
+              ..strokeCap = StrokeCap.round,
+          );
         }
       }
     }
 
-    // Disegna giocatori SOPRA le linee
+    // Giocatori sopra le linee
     for (var player in players) {
       _drawPlayer(canvas, player['pos'], player['number']);
     }
   }
 
-  void _drawPassLine(Canvas canvas, Offset from, Offset to, int passes) {
-    final thickness = (passes / 20 * 8).clamp(2.0, 8.0);
-    final opacity = (animationValue * 0.8).clamp(0.0, 0.8);
-
-    // Linea principale BLU BRILLANTE
-    final paint = Paint()
-      ..color = Colors.blue[400]!.withOpacity(opacity)
-      ..strokeWidth = thickness
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-
-    canvas.drawLine(from, to, paint);
-
-    // Glow effect BIANCO
-    final glowPaint = Paint()
-      ..color = Colors.white.withOpacity(0.3 * animationValue)
-      ..strokeWidth = thickness + 6
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
-
-    canvas.drawLine(from, to, glowPaint);
-  }
-
   void _drawPlayer(Canvas canvas, Offset position, int number) {
     final scale = animationValue;
+    final teamColor =
+        isHome ? const Color(0xFF2196F3) : const Color(0xFFE53935);
 
-    // Ombra NERA forte
-    final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.5 * scale)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
-    canvas.drawCircle(position + const Offset(3, 3), 22 * scale, shadowPaint);
+    // Ombra
+    canvas.drawCircle(
+      position + const Offset(3, 3),
+      22 * scale,
+      Paint()
+        ..color = Colors.black.withOpacity(0.5 * scale)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
+    );
 
-    // Cerchio giocatore BLU BRILLANTE
-    final playerPaint = Paint()
-      ..color = const Color(0xFF2196F3)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(position, 22 * scale, playerPaint);
+    // Cerchio giocatore
+    canvas.drawCircle(position, 22 * scale, Paint()..color = teamColor);
 
-    // Bordo BIANCO spesso
+    // Bordo bianco
     canvas.drawCircle(
       position,
       22 * scale,
@@ -661,7 +542,7 @@ class GradientPassNetworkPainter extends CustomPainter {
         ..strokeWidth = 3,
     );
 
-    // Numero BIANCO grande
+    // Numero
     final textPainter = TextPainter(
       text: TextSpan(
         text: number.toString(),
@@ -682,50 +563,40 @@ class GradientPassNetworkPainter extends CustomPainter {
 
   List<Map<String, dynamic>> _generatePlayerPositions(Size size) {
     final positions = <Map<String, dynamic>>[];
-
-    // Margini dal bordo
     final marginX = size.width * 0.1;
     final marginY = size.height * 0.1;
     final usableWidth = size.width - (marginX * 2);
     final usableHeight = size.height - (marginY * 2);
 
-    // FORMAZIONE 4-3-3 ben VISIBILE
-
-    // Portiere (sinistra)
+    // Portiere
     positions.add({
       'pos': Offset(marginX + usableWidth * 0.05, size.height / 2),
       'number': 1,
     });
 
-    // 4 Difensori (verticale sinistra)
+    // 4 Difensori
     for (int i = 0; i < 4; i++) {
       positions.add({
         'pos': Offset(
-          marginX + usableWidth * 0.25,
-          marginY + (i * usableHeight / 3),
-        ),
+            marginX + usableWidth * 0.25, marginY + (i * usableHeight / 3)),
         'number': 2 + i,
       });
     }
 
-    // 3 Centrocampisti (verticale centro)
+    // 3 Centrocampisti
     for (int i = 0; i < 3; i++) {
       positions.add({
-        'pos': Offset(
-          marginX + usableWidth * 0.55,
-          marginY + usableHeight * 0.15 + (i * usableHeight * 0.35),
-        ),
+        'pos': Offset(marginX + usableWidth * 0.55,
+            marginY + usableHeight * 0.15 + (i * usableHeight * 0.35)),
         'number': 6 + i,
       });
     }
 
-    // 3 Attaccanti (verticale destra)
+    // 3 Attaccanti
     for (int i = 0; i < 3; i++) {
       positions.add({
-        'pos': Offset(
-          marginX + usableWidth * 0.85,
-          marginY + usableHeight * 0.15 + (i * usableHeight * 0.35),
-        ),
+        'pos': Offset(marginX + usableWidth * 0.85,
+            marginY + usableHeight * 0.15 + (i * usableHeight * 0.35)),
         'number': 9 + i,
       });
     }
@@ -735,7 +606,8 @@ class GradientPassNetworkPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(GradientPassNetworkPainter oldDelegate) {
-    return animationValue != oldDelegate.animationValue;
+    return animationValue != oldDelegate.animationValue ||
+        isHome != oldDelegate.isHome;
   }
 }
 
@@ -755,10 +627,7 @@ class Advanced3DHeatmapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Campo realistico
     RealisticSoccerFieldPainter(isDark: isDark).paint(canvas, size);
-
-    // Heatmap con gradient 3D
     _drawHeatmap(canvas, size);
   }
 
@@ -766,15 +635,13 @@ class Advanced3DHeatmapPainter extends CustomPainter {
     final gridSize = 15;
     final cellWidth = size.width / gridSize;
     final cellHeight = size.height / gridSize;
-
-    final random = math.Random(42);
+    final random = math.Random(isHome ? 42 : 99);
 
     for (int row = 0; row < gridSize; row++) {
       for (int col = 0; col < gridSize; col++) {
         final x = col * cellWidth;
         final y = row * cellHeight;
 
-        // Genera intensità basata su posizione
         double intensity;
         if (isHome) {
           intensity = 1.0 - (col / gridSize);
@@ -782,10 +649,7 @@ class Advanced3DHeatmapPainter extends CustomPainter {
           intensity = col / gridSize;
         }
 
-        // Aggiungi variazione random
         intensity = (intensity + random.nextDouble() * 0.3).clamp(0.0, 1.0);
-
-        // Animazione fade-in
         intensity *= animationValue;
 
         if (intensity > 0.1) {
@@ -798,47 +662,44 @@ class Advanced3DHeatmapPainter extends CustomPainter {
   void _drawHeatCell(Canvas canvas, Offset position, double width,
       double height, double intensity) {
     final colors = [
-      const Color(0xFF1E88E5), // Blu
-      const Color(0xFF43A047), // Verde
-      const Color(0xFFFDD835), // Giallo
-      const Color(0xFFFF6F00), // Arancio
-      const Color(0xFFD32F2F), // Rosso
+      const Color(0xFF1E88E5),
+      const Color(0xFF43A047),
+      const Color(0xFFFDD835),
+      const Color(0xFFFF6F00),
+      const Color(0xFFD32F2F),
     ];
 
     final colorIndex = (intensity * (colors.length - 1)).floor();
     final nextColorIndex = (colorIndex + 1).clamp(0, colors.length - 1);
     final t = (intensity * (colors.length - 1)) - colorIndex;
-
     final color = Color.lerp(colors[colorIndex], colors[nextColorIndex], t)!;
-
-    // Gradient radiale per effetto 3D
-    final paint = Paint()
-      ..shader = ui.Gradient.radial(
-        position + Offset(width / 2, height / 2),
-        width / 2,
-        [
-          color.withOpacity(intensity * 0.7),
-          color.withOpacity(intensity * 0.3),
-          Colors.transparent,
-        ],
-        [0.0, 0.7, 1.0],
-      );
 
     canvas.drawCircle(
       position + Offset(width / 2, height / 2),
       width / 2,
-      paint,
+      Paint()
+        ..shader = ui.Gradient.radial(
+          position + Offset(width / 2, height / 2),
+          width / 2,
+          [
+            color.withOpacity(intensity * 0.7),
+            color.withOpacity(intensity * 0.3),
+            Colors.transparent,
+          ],
+          [0.0, 0.7, 1.0],
+        ),
     );
   }
 
   @override
   bool shouldRepaint(Advanced3DHeatmapPainter oldDelegate) {
-    return animationValue != oldDelegate.animationValue;
+    return animationValue != oldDelegate.animationValue ||
+        isHome != oldDelegate.isHome;
   }
 }
 
 // ========================================
-// DEFENSIVE ACTIONS CON ICONE MIGLIORATE
+// DEFENSIVE ACTIONS CON ICONE
 // ========================================
 class DetailedDefensiveActionsPainter extends CustomPainter {
   final bool isDark;
@@ -851,10 +712,7 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Campo realistico
     RealisticSoccerFieldPainter(isDark: isDark).paint(canvas, size);
-
-    // Azioni difensive con icone dettagliate
     _drawDefensiveActions(canvas, size);
   }
 
@@ -884,27 +742,25 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
   }
 
   void _drawTackleIcon(Canvas canvas, Offset position, double scale) {
-    // Glow rosso
-    final glowPaint = Paint()
-      ..color = Colors.red.withOpacity(0.4 * scale)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+    canvas.drawCircle(
+      position,
+      12 * scale,
+      Paint()
+        ..color = Colors.red.withOpacity(0.4 * scale)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
+    );
 
-    canvas.drawCircle(position, 12 * scale, glowPaint);
+    canvas.drawCircle(
+      position,
+      10 * scale,
+      Paint()
+        ..shader = ui.Gradient.radial(
+          position,
+          10 * scale,
+          [Colors.red.withOpacity(scale), Colors.red[700]!.withOpacity(scale)],
+        ),
+    );
 
-    // Cerchio principale con gradient
-    final circlePaint = Paint()
-      ..shader = ui.Gradient.radial(
-        position,
-        10 * scale,
-        [
-          Colors.red.withOpacity(scale),
-          Colors.red[700]!.withOpacity(scale),
-        ],
-      );
-
-    canvas.drawCircle(position, 10 * scale, circlePaint);
-
-    // Bordo bianco
     canvas.drawCircle(
       position,
       10 * scale,
@@ -914,7 +770,6 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
         ..strokeWidth = 2,
     );
 
-    // Icona X
     final iconPaint = Paint()
       ..color = Colors.white.withOpacity(scale)
       ..strokeWidth = 2
@@ -933,11 +788,6 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
   }
 
   void _drawInterceptIcon(Canvas canvas, Offset position, double scale) {
-    // Glow arancio
-    final glowPaint = Paint()
-      ..color = Colors.orange.withOpacity(0.4 * scale)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
-
     final path = Path();
     for (int i = 0; i < 3; i++) {
       final angle = (i * 2 * math.pi / 3) - math.pi / 2;
@@ -951,22 +801,26 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
     }
     path.close();
 
-    canvas.drawPath(path, glowPaint);
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = Colors.orange.withOpacity(0.4 * scale)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
+    );
 
-    // Triangolo principale con gradient
-    final trianglePaint = Paint()
-      ..shader = ui.Gradient.linear(
-        position + Offset(0, -10 * scale),
-        position + Offset(0, 10 * scale),
-        [
-          Colors.orange.withOpacity(scale),
-          Colors.orange[700]!.withOpacity(scale),
-        ],
-      );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..shader = ui.Gradient.linear(
+          position + Offset(0, -10 * scale),
+          position + Offset(0, 10 * scale),
+          [
+            Colors.orange.withOpacity(scale),
+            Colors.orange[700]!.withOpacity(scale)
+          ],
+        ),
+    );
 
-    canvas.drawPath(path, trianglePaint);
-
-    // Bordo bianco
     canvas.drawPath(
       path,
       Paint()
@@ -977,33 +831,26 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
   }
 
   void _drawClearanceIcon(Canvas canvas, Offset position, double scale) {
-    // Glow giallo
-    final glowPaint = Paint()
-      ..color = Colors.yellow.withOpacity(0.4 * scale)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
-
     canvas.drawRect(
       Rect.fromCenter(center: position, width: 20 * scale, height: 20 * scale),
-      glowPaint,
+      Paint()
+        ..color = Colors.yellow.withOpacity(0.4 * scale)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
     );
-
-    // Quadrato principale con gradient
-    final squarePaint = Paint()
-      ..shader = ui.Gradient.linear(
-        position + Offset(-10 * scale, 0),
-        position + Offset(10 * scale, 0),
-        [
-          Colors.yellow[700]!.withOpacity(scale),
-          Colors.yellow.withOpacity(scale),
-        ],
-      );
 
     canvas.drawRect(
       Rect.fromCenter(center: position, width: 16 * scale, height: 16 * scale),
-      squarePaint,
+      Paint()
+        ..shader = ui.Gradient.linear(
+          position + Offset(-10 * scale, 0),
+          position + Offset(10 * scale, 0),
+          [
+            Colors.yellow[700]!.withOpacity(scale),
+            Colors.yellow.withOpacity(scale)
+          ],
+        ),
     );
 
-    // Bordo bianco
     canvas.drawRect(
       Rect.fromCenter(center: position, width: 16 * scale, height: 16 * scale),
       Paint()
@@ -1012,7 +859,6 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
         ..strokeWidth = 2,
     );
 
-    // Freccia up
     final arrowPaint = Paint()
       ..color = Colors.white.withOpacity(scale)
       ..strokeWidth = 2

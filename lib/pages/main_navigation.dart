@@ -1,6 +1,7 @@
 // lib/pages/main_navigation.dart
 
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,11 +16,19 @@ import 'standings_screen.dart';
 import 'settings_screen.dart';
 import 'search_screen.dart';
 import 'notifications_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:soccerpulse/main.dart';
 
 class MainNavigation extends StatefulWidget {
+  static final GlobalKey<_MainNavigationState> globalKey = GlobalKey<_MainNavigationState>();
+
+  static void switchTab(int index) {
+    globalKey.currentState?._onItemTapped(index);
+  }
+
   final int initialIndex;
 
-  const MainNavigation({
+  MainNavigation({
     Key? key,
     this.initialIndex = 0,
   }) : super(key: key);
@@ -30,6 +39,7 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation>
     with TickerProviderStateMixin {
+
   final HapticService _haptic = HapticService();
   final FavoritesService _favoritesService = FavoritesService();
   final ThemeService _themeService = ThemeService();
@@ -90,7 +100,7 @@ class _MainNavigationState extends State<MainNavigation>
     if (isFirstLaunch && mounted) {
       // Show onboarding or tutorial
       await prefs.setBool('first_launch', false);
-      _showWelcomeDialog();
+      // _showWelcomeDialog(); // Disabilitato per ora
     }
   }
 
@@ -127,11 +137,11 @@ class _MainNavigationState extends State<MainNavigation>
               Navigator.pop(context);
               _showQuickTour();
             },
-            child: const Text('Tour Rapido'),
+            child: Text(tr(context, 'Tour Rapido')),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Inizia'),
+            child: Text(tr(context, 'Inizia')),
           ),
         ],
       ),
@@ -142,7 +152,7 @@ class _MainNavigationState extends State<MainNavigation>
     // Show tooltips or overlays for main features
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Swipe tra le pagine o usa la barra in basso'),
+        content: Text(tr(context, 'Swipe tra le pagine o usa la barra in basso')),
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
           label: 'OK',
@@ -160,11 +170,7 @@ class _MainNavigationState extends State<MainNavigation>
       _selectedIndex = index;
     });
 
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    // IndexedStack uses _selectedIndex directly, no controller needed
   }
 
   void _toggleFab() {
@@ -194,9 +200,9 @@ class _MainNavigationState extends State<MainNavigation>
       _lastBackPress = now;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Premi di nuovo per uscire'),
-          duration: Duration(seconds: 2),
+        SnackBar(
+          content: Text(tr(context, 'Premi di nuovo per uscire')),
+          duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -219,18 +225,13 @@ class _MainNavigationState extends State<MainNavigation>
         body: Stack(
           children: [
             // Main content
-            PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
+            IndexedStack(
+              index: _selectedIndex,
               children: _pages,
             ),
 
             // FAB Menu Overlay
-            if (_isFabExpanded)
+            if (_isFabExpanded && MainScreen.currentTabIndex == 0)
               GestureDetector(
                 onTap: _toggleFab,
                 child: Container(
@@ -274,8 +275,24 @@ class _MainNavigationState extends State<MainNavigation>
                   label: s.calendar,
                 ),
                 NavigationDestination(
-                  icon: const Icon(Icons.favorite_outline),
-                  selectedIcon: Icon(Icons.favorite, color: theme.primaryColor),
+                  icon: Builder(builder: (ctx) {
+                    final favCount = ctx.watch<FavoritesService>().totalFavorites;
+                    return Badge(
+                      isLabelVisible: favCount > 0,
+                      label: Text('$favCount', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
+                      backgroundColor: const Color(0xFFE53935),
+                      child: const Icon(Icons.favorite_outline),
+                    );
+                  }),
+                  selectedIcon: Builder(builder: (ctx) {
+                    final favCount = ctx.watch<FavoritesService>().totalFavorites;
+                    return Badge(
+                      isLabelVisible: favCount > 0,
+                      label: Text('$favCount', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
+                      backgroundColor: const Color(0xFFE53935),
+                      child: Icon(Icons.favorite, color: theme.primaryColor),
+                    );
+                  }),
                   label: s.favorites,
                 ),
                 NavigationDestination(
@@ -295,10 +312,10 @@ class _MainNavigationState extends State<MainNavigation>
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             // Expanded menu items
-            if (_isFabExpanded) ...[
+            if (_isFabExpanded && MainScreen.currentTabIndex == 0) ...[
               _buildFabMenuItem(
                 icon: Icons.search,
-                label: 'Cerca',
+                label: tr(context, 'Cerca'),
                 onTap: () {
                   _toggleFab();
                   Navigator.push(
@@ -314,7 +331,7 @@ class _MainNavigationState extends State<MainNavigation>
               const SizedBox(height: 12),
               _buildFabMenuItem(
                 icon: Icons.notifications,
-                label: 'Notifiche',
+                label: tr(context, 'Notifiche'),
                 onTap: () {
                   _toggleFab();
                   Navigator.push(
@@ -330,7 +347,7 @@ class _MainNavigationState extends State<MainNavigation>
               const SizedBox(height: 12),
               _buildFabMenuItem(
                 icon: Icons.settings,
-                label: 'Impostazioni',
+                label: tr(context, 'Impostazioni'),
                 onTap: () {
                   _toggleFab();
                   Navigator.push(
@@ -346,8 +363,8 @@ class _MainNavigationState extends State<MainNavigation>
               const SizedBox(height: 12),
             ],
 
-            // Main FAB
-            FloatingActionButton(
+            // Main FAB - only on Home tab
+            if (MainScreen.currentTabIndex == 0) FloatingActionButton(
               onPressed: _toggleFab,
               backgroundColor: theme.primaryColor,
               elevation: 8,

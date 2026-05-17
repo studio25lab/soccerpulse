@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import '../models/player.dart';
 import '../models/player_detail.dart';
 

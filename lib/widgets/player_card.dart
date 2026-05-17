@@ -19,10 +19,9 @@ class PlayerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final stats = player.statistics;
-    final goals = stats?.goals?.total ?? 0;
-    final assists = stats?.goals?.assists ?? 0;
-    final appearances = stats?.games?.appearences ?? 0;
+    final goals = player.goals ?? 0;
+    final assists = player.assists ?? 0;
+    final appearances = player.appearances ?? 0;
 
     Color rankColor = Colors.grey;
     if (rank == 1) rankColor = Colors.amber;
@@ -124,12 +123,12 @@ class PlayerCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  if (showTeam && stats?.teamName != null) ...[
+                  if (showTeam && player.teamName.isNotEmpty) ...[
                     Row(
                       children: [
-                        if (stats?.teamLogo != null) ...[
+                        if (player.teamLogo != null) ...[
                           Image.network(
-                            stats!.teamLogo!,
+                            player.teamLogo!,
                             width: 16,
                             height: 16,
                             errorBuilder: (context, error, stackTrace) => Icon(
@@ -141,7 +140,7 @@ class PlayerCard extends StatelessWidget {
                         ],
                         Expanded(
                           child: Text(
-                            stats?.teamName ?? '',
+                            player.teamName,
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey[600],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
 
 /// Modello dati per le statistiche dei passaggi
 class PassesData {
@@ -56,9 +57,9 @@ class PassesWidget extends StatelessWidget {
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Text(
-              'Passaggi',
+              tr(context, 'Passaggi'),
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -135,7 +136,7 @@ class PassesWidget extends StatelessWidget {
             child: Column(
               children: [
                 _buildBarComparison(
-                  'Passaggi precisi',
+                  tr(context, 'Passaggi precisi'),
                   homeTeam.accuratePasses,
                   awayTeam.accuratePasses,
                 ),
@@ -145,7 +146,7 @@ class PassesWidget extends StatelessWidget {
                   homeTeam.throwIns,
                   awayTeam.throwIns,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildBarComparison(
                   'Ingressi terzo offensivo',
                   homeTeam.finalThirdEntries,
@@ -251,7 +252,7 @@ class PassesWidget extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2196F3),
+                color: Color(0xFF1565C0),
               ),
             ),
           ],
@@ -272,7 +273,7 @@ class PassesWidget extends StatelessWidget {
                 Expanded(
                   flex: (awayPercentage * 100).round(),
                   child: Container(
-                    color: const Color(0xFF2196F3),
+                    color: const Color(0xFF1565C0),
                   ),
                 ),
               ],
@@ -359,7 +360,7 @@ class PassesWidget extends StatelessWidget {
                           size: const Size(70, 70),
                           painter: CircularProgressPainter(
                             percentage: awayPercentage,
-                            color: const Color(0xFF2196F3),
+                            color: const Color(0xFF1565C0),
                           ),
                         ),
                         Text(
@@ -378,7 +379,7 @@ class PassesWidget extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF2196F3),
+                      color: Color(0xFF1565C0),
                     ),
                   ),
                 ],
@@ -406,11 +407,12 @@ class FieldHeatmapPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // ✅ COLORI CON GRADIENTE FORTE E DISTINGUIBILE
-    final veryLightYellow = const Color(0xFFFFF4CC); // Giallo chiarissimo
-    final lightYellow = const Color(0xFFFFE88C); // Giallo chiaro
-    final mediumYellow = const Color(0xFFE8D464); // Giallo medio
-    final darkYellow = const Color(0xFFD4A853); // Giallo scuro
-    final veryDarkYellow = const Color(0xFFC08A2E); // Giallo molto scuro
+    // ── Palette verde unificata (= Attacco / Mappa Tiri) ──
+    final veryLightYellow = const Color(0xFFE8F5E9); // verde chiarissimo
+    final lightYellow = const Color(0xFFC8E6C9); // verde chiaro
+    final mediumYellow = const Color(0xFFA5D6A7); // verde medio chiaro
+    final darkYellow = const Color(0xFF81C784); // verde medio
+    final veryDarkYellow = const Color(0xFF66BB6A); // verde scuro
 
     // Calcola intensità con gradiente più forte
     final leftIntensity = (leftPercentage / 40.0)

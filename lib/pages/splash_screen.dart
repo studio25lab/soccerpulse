@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'main_navigation.dart';
 
@@ -20,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MainNavigation()),
+        MaterialPageRoute(builder: (context) => MainNavigation(key: MainNavigation.globalKey)),
       );
     }
   }
@@ -121,8 +122,8 @@ class _SplashScreenState extends State<SplashScreen> {
                           const AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Caricamento...',
+                    Text(
+                      tr(context, 'Caricamento...'),
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 14,

@@ -65,7 +65,10 @@ class MatchNotificationSettings {
       notifyHomeGoals: true,
       notifyAwayGoals: true,
       notifyRedCards: true,
+      notifyPenalties: true,
       notifyMatchStart: true,
+      notifyHalfTime: true,
+      notifySecondHalfStart: true,
       notifyMatchEnd: true,
       enabled: true,
     );
@@ -82,6 +85,8 @@ class MatchNotificationSettings {
       notifyShotsOnTarget: true,
       notifyCorners: true,
       notifyPenalties: true,
+      notifyFouls: true,
+      notifyOffsides: true,
       notifyMatchStart: true,
       notifyHalfTime: true,
       notifySecondHalfStart: true,
@@ -107,6 +112,22 @@ class MatchNotificationSettings {
   static MatchNotificationSettings disabled(int matchId) {
     return MatchNotificationSettings(
       matchId: matchId,
+      notifyHomeGoals: false,
+      notifyAwayGoals: false,
+      notifyYellowCards: false,
+      notifyRedCards: false,
+      notifySubstitutions: false,
+      notifyShotsOnTarget: false,
+      notifyCorners: false,
+      notifyPenalties: false,
+      notifyFouls: false,
+      notifyOffsides: false,
+      notifyMatchStart: false,
+      notifyHalfTime: false,
+      notifySecondHalfStart: false,
+      notifyMatchEnd: false,
+      notifyVarDecisions: false,
+      minuteUpdateInterval: 0,
       enabled: false,
     );
   }

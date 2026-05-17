@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'home_screen.dart';
 import 'standings_screen.dart';
 import 'calendar_screen.dart';
@@ -44,15 +45,15 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_events),
-            label: 'Classifica',
+            label: tr(context, 'Classifica'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
-            label: 'Calendario',
+            label: tr(context, 'Calendario'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.star),
-            label: 'Preferiti',
+            label: tr(context, 'Preferiti'),
           ),
         ],
       ),

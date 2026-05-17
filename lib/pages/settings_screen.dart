@@ -412,6 +412,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  String _refreshLabel(int seconds) {
+    switch (seconds) {
+      case 15: return 'Ogni 15 secondi (più veloce)';
+      case 30: return 'Ogni 30 secondi (consigliato)';
+      case 60: return 'Ogni minuto';
+      case 120: return 'Ogni 2 minuti (risparmia batteria)';
+      default: return 'Ogni $seconds secondi';
+    }
+  }
+
   void _showRefreshIntervalDialog(BuildContext context, S s) {
     showDialog(
       context: context,
@@ -421,7 +431,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [15, 30, 60, 120].map((seconds) {
             return ListTile(
-              title: Text('$seconds ${s.refreshIntervalDesc}'),
+              title: Text(_refreshLabel(seconds)),
               leading: Radio<int>(
                 value: seconds,
                 groupValue: _refreshInterval,

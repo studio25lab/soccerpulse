@@ -1,6 +1,7 @@
 // lib/pages/league_selection_screen.dart
 
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -288,18 +289,18 @@ class _LeagueSelectionScreenState extends State<LeagueSelectionScreen>
                     children: [
                       Text(
                         widget.allowMultiple
-                            ? 'Seleziona i tuoi campionati'
-                            : 'Seleziona il campionato',
+                            ? tr(context, 'Seleziona i tuoi campionati')
+                            : tr(context, 'Seleziona il campionato'),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         widget.allowMultiple
-                            ? 'Puoi selezionare più campionati'
+                            ? tr(context, 'Puoi selezionare più campionati')
                             : 'Scegli il tuo campionato preferito',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.8),
@@ -465,8 +466,8 @@ class _LeagueSelectionScreenState extends State<LeagueSelectionScreen>
                     (_selectedLeagueId != null || _selectedLeagueIds.isNotEmpty)
                         ? _saveSelection
                         : null,
-                icon: const Icon(Icons.save),
-                label: const Text('Salva Selezione'),
+                icon: Icon(Icons.save),
+                label: Text(tr(context, 'Salva Selezione')),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(

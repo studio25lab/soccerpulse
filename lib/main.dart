@@ -20,8 +20,7 @@ import 'pages/calendar_screen.dart';
 import 'pages/favorites_screen.dart';
 import 'pages/standings_screen.dart';
 import 'pages/settings_screen.dart';
-import 'pages/global_search_screen.dart';
-import 'pages/enhanced_h2h_screen.dart';
+import 'pages/search_screen.dart';
 
 // Widgets
 import 'widgets/live_notification_overlay.dart';
@@ -112,9 +111,8 @@ class SoccerPulseApp extends StatelessWidget {
           // Routes
           initialRoute: '/',
           routes: {
-            '/': (context) => const MainScreen(),
-            '/search': (context) => const GlobalSearchScreen(),
-            '/h2h': (context) => const EnhancedH2HScreen(),
+            '/': (context) => MainScreen(key: MainScreen.globalKey),
+            '/search': (context) => const SearchScreen(),
             '/settings': (context) => const SettingsScreen(),
           },
         );
@@ -123,7 +121,7 @@ class SoccerPulseApp extends StatelessWidget {
   }
 
   ThemeData _buildLightTheme() {
-    const primaryColor = Color(0xFF2E7D32); // Verde calcio
+    const primaryColor = Color(0xFF00BFA5); // Vivid Teal
     const secondaryColor = Color(0xFF66BB6A);
 
     return ThemeData(
@@ -351,6 +349,16 @@ class SoccerPulseApp extends StatelessWidget {
 
 // Main Screen con navigazione
 class MainScreen extends StatefulWidget {
+  static final GlobalKey<_MainScreenState> globalKey = GlobalKey<_MainScreenState>();
+  static int get currentTabIndex => globalKey.currentState?._currentIndex ?? 0;
+  static int? pendingStandingsTab;
+  static void switchTab(int index, {int? subTab}) {
+    pendingStandingsTab = subTab;
+    globalKey.currentState?.setState(() {
+      globalKey.currentState!._currentIndex = index;
+    });
+    globalKey.currentState?._onPageChanged(index);
+  }
   const MainScreen({Key? key}) : super(key: key);
 
   @override
@@ -373,13 +381,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     const StandingsScreen(),
   ];
 
-  // Titoli pagine
-  final List<String> _titles = [
-    'SoccerPulse',
-    'Calendario',
-    'Preferiti',
-    'Classifiche',
-  ];
+  // Titoli pagine (localizzati nel build)
+  List<String> _getTitles(BuildContext context) {
+    final s = S.of(context)!;
+    return ['SoccerPulse', s.calendar, s.favorites, s.standings];
+  }
 
   @override
   void initState() {
@@ -435,7 +441,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return LiveNotificationOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_titles[_currentIndex]),
+          title: Text(_getTitles(context)[_currentIndex]),
           actions: [
             // Icona ricerca
             IconButton(
@@ -445,32 +451,25 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const GlobalSearchScreen(),
+                    builder: (context) => const SearchScreen(),
                   ),
                 );
               },
             ),
-            // Icona confronto H2H (solo nella pagina classifiche)
-            if (_currentIndex == 3)
-              IconButton(
-                icon: const Icon(Icons.compare_arrows),
-                onPressed: () {
-                  _haptic.lightImpact();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EnhancedH2HScreen(),
-                    ),
-                  );
-                },
-              ),
-            // Icona impostazioni
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
+            GestureDetector(
+              onTap: () {
                 _haptic.lightImpact();
                 Navigator.pushNamed(context, '/settings');
               },
+              child: Container(
+                width: 32, height: 32,
+                margin: const EdgeInsets.only(right: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.person_rounded, size: 18, color: Colors.white),
+              ),
             ),
             const SizedBox(width: 8),
           ],
@@ -478,28 +477,15 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         body: Stack(
           children: [
             // Contenuto principale con PageView
-            PageView(
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
+            IndexedStack(
+              index: _currentIndex,
               children: _pages,
             ),
 
             // Quick Settings Panel (overlay)
             const QuickSettingsPanel(),
 
-            // Test button per notifiche (SOLO IN DEBUG)
-            if (!const bool.fromEnvironment('dart.vm.product'))
-              Positioned(
-                left: 16,
-                bottom: 80,
-                child: FloatingActionButton(
-                  heroTag: 'test_notification',
-                  mini: true,
-                  backgroundColor: Colors.orange,
-                  onPressed: _testNotifications,
-                  child: const Icon(Icons.bug_report, size: 20),
-                ),
-              ),
+            // Debug button removed for production
           ],
         ),
 
@@ -518,23 +504,22 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             currentIndex: _currentIndex,
             onTap: (index) {
               _haptic.lightImpact();
-              _pageController.animateToPage(
-                index,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
+              setState(() {
+                _currentIndex = index;
+              });
+              _onPageChanged(index);
             },
             items: [
               BottomNavigationBarItem(
                 icon:
                     Icon(_currentIndex == 0 ? Icons.home : Icons.home_outlined),
-                label: 'Home',
+                label: S.of(context)!.home,
               ),
               BottomNavigationBarItem(
                 icon: Icon(_currentIndex == 1
                     ? Icons.calendar_today
                     : Icons.calendar_today_outlined),
-                label: 'Calendario',
+                label: S.of(context)!.calendar,
               ),
               BottomNavigationBarItem(
                 icon: Stack(
@@ -577,13 +562,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
-                label: 'Preferiti',
+                label: S.of(context)!.favorites,
               ),
               BottomNavigationBarItem(
                 icon: Icon(_currentIndex == 3
                     ? Icons.leaderboard
                     : Icons.leaderboard_outlined),
-                label: 'Classifiche',
+                label: S.of(context)!.standings,
               ),
             ],
           )
@@ -644,5 +629,64 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         awayScore: 2,
       );
     });
+  }
+}
+
+
+// ── Smooth fade + slide-up page transition ──
+class SmoothPageRoute<T> extends MaterialPageRoute<T> {
+  SmoothPageRoute({required super.builder, super.settings});
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    final curve = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(curve),
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.06),
+          end: Offset.zero,
+        ).animate(curve),
+        child: child,
+      ),
+    );
+  }
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 350);
+}
+
+// ── Custom PageTransitionsBuilder for ThemeData ──
+class SmoothPageTransitionsBuilder extends PageTransitionsBuilder {
+  const SmoothPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final curve = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(curve),
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.04),
+          end: Offset.zero,
+        ).animate(curve),
+        child: child,
+      ),
+    );
   }
 }

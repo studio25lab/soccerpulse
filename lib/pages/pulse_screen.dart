@@ -2,6 +2,7 @@
 // Questo file non usa direttamente il modello Player quindi non richiede modifiche
 
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../api/api_service.dart';
@@ -15,7 +16,7 @@ import '../widgets/glassmorphic_card.dart';
 import '../widgets/loading_state_widget.dart';
 import '../widgets/empty_state_widget.dart';
 import '../widgets/animated_page_transition.dart';
-import 'league_selector_screen.dart';
+import 'league_selection_screen.dart';
 import 'settings_screen.dart';
 import '../generated/l10n.dart';
 
@@ -203,10 +204,10 @@ class _PulseScreenState extends State<PulseScreen>
         future: _standingsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox(
+            return SizedBox(
               height: 400,
               child: LoadingStateWidget(
-                message: 'Caricamento Pulse...',
+                message: tr(context, 'Caricamento Pulse...'),
                 style: LoadingStyle.pulse,
               ),
             );
@@ -308,7 +309,7 @@ class _PulseScreenState extends State<PulseScreen>
                 value: '$winRate%',
                 icon: Icons.trending_up,
                 color: Colors.purple,
-                subtitle: 'Leader della classifica',
+                subtitle: tr(context, 'Leader della classifica'),
               ),
             ],
           ),

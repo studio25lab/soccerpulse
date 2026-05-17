@@ -1,0 +1,6 @@
+SOCCERPULSE DATA CONSISTENCY REPORT
+============================================================
+
+
+WARNINGS (1):
+  [PLAYER] Luis Alberto: assists differs - 8 (pages/search_screen.dart) vs 1 (services/match_data_service.dart)

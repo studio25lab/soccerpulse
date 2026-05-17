@@ -787,4 +787,937 @@ class SEn extends S {
 
   @override
   String get soundEffectsDesc => 'Play sounds for events';
+
+  @override
+  String get advanced => 'Advanced';
+
+  @override
+  String get formazioni => 'Lineups';
+
+  @override
+  String get keyEvents => 'Key events';
+
+  @override
+  String get chrono => 'Chrono';
+
+  @override
+  String get offensive => 'Offensive actions';
+
+  @override
+  String get discipline => 'Discipline';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get goalNotif => 'Goal';
+
+  @override
+  String get assistNotif => 'Assist';
+
+  @override
+  String get shotsOnTargetNotif => 'Shots on target';
+
+  @override
+  String get keyPassesNotif => 'Key passes';
+
+  @override
+  String get dribblesNotif => 'Successful dribbles';
+
+  @override
+  String get offsidesNotif => 'Offsides';
+
+  @override
+  String get yellowCardNotif => 'Yellow cards';
+
+  @override
+  String get redCardNotif => 'Red cards';
+
+  @override
+  String get foulsCommittedNotif => 'Fouls committed';
+
+  @override
+  String get foulsSufferedNotif => 'Fouls suffered';
+
+  @override
+  String get substitutionNotif => 'Substitutions';
+
+  @override
+  String get goalDesc => 'Goals scored';
+
+  @override
+  String get assistDesc => 'Decisive passes';
+
+  @override
+  String get shotsOnTargetDesc => 'Shots on target';
+
+  @override
+  String get keyPassesDesc => 'Passes creating chances';
+
+  @override
+  String get dribblesDesc => 'Dribbles completed';
+
+  @override
+  String get offsidesDesc => 'Offside positions';
+
+  @override
+  String get yellowCardDesc => 'Bookings';
+
+  @override
+  String get redCardDesc => 'Sending offs';
+
+  @override
+  String get foulsCommittedDesc => 'Fouls against';
+
+  @override
+  String get foulsSufferedDesc => 'Fouls on player';
+
+  @override
+  String get substitutionDesc => 'In/out of the pitch';
+
+  @override
+  String get activateAll => 'Activate all';
+
+  @override
+  String get deactivate => 'Deactivate';
+
+  @override
+  String get notificationsActive => 'notifications active';
+
+  @override
+  String get noNotificationActive => 'No notification active';
+
+  @override
+  String get onlyForThisMatch => 'Only for this match';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get compare => 'Compare';
+
+  @override
+  String get minutesPlayedLabel => 'Minutes played';
+
+  @override
+  String get heatmap => 'Heatmap';
+
+  @override
+  String get pres => 'App.';
+
+  @override
+  String get cart => 'Cards';
+
+  @override
+  String get totalHome => 'Total';
+
+  @override
+  String get casa => 'Home';
+
+  @override
+  String get trasferta => 'Away';
+
+  @override
+  String get classifica => 'Standings';
+
+  @override
+  String get marcatori => 'Scorers';
+
+  @override
+  String get assistman => 'Assists';
+
+  @override
+  String get cleanSheet => 'Clean Sheet';
+
+  @override
+  String get cartellini => 'Cards';
+
+  @override
+  String get rendimento => 'Performance';
+
+  @override
+  String get punti => 'Points';
+
+  @override
+  String get giocate => 'Played';
+
+  @override
+  String get vittorie => 'Wins';
+
+  @override
+  String get pareggi => 'Draws';
+
+  @override
+  String get sconfitte => 'Losses';
+
+  @override
+  String get diffReti => 'Goal Diff.';
+
+  @override
+  String get partite => 'Matches';
+
+  @override
+  String get statistiche => 'Statistics';
+
+  @override
+  String get giocatori => 'Players';
+
+  @override
+  String get informazioni => 'Information';
+
+  @override
+  String get aggiungiGiocatore => 'Add Player';
+
+  @override
+  String get squadre => 'Teams';
+
+  @override
+  String get classifiche => 'Standings';
+
+  @override
+  String get gPlusA => 'G+A';
+
+  @override
+  String get cleanSheetTab => 'Clean Sheet';
+
+  @override
+  String get cartelliniTab => 'Cards';
+
+  @override
+  String get totale => 'Total';
+
+  @override
+  String get rendimentoSerieA => 'Serie A Performance';
+
+  @override
+  String get squadra => 'Team';
+
+  @override
+  String get gol => 'Goals';
+
+  @override
+  String get classificaMarcatori => 'Top Scorers';
+
+  @override
+  String get classificaAssistman => 'Top Assists';
+
+  @override
+  String get cerca => 'Search';
+
+  @override
+  String get notifiche => 'Notifications';
+
+  @override
+  String get impostazioni => 'Settings';
+
+  @override
+  String get aggiungiSquadra => 'Add Team';
+
+  @override
+  String get nessunGiocatorePreferito => 'No Favorite Players';
+
+  @override
+  String get aggiungiGiocatoriDesc => 'Add players to follow their performances';
+
+  @override
+  String get nessunDato => 'No data';
+
+  @override
+  String get posizione => 'Position';
+
+  @override
+  String get sistema => 'System';
+
+  @override
+  String get searchPlayers => 'Search player...';
+
+  @override
+  String get possessoPalla => 'Ball Possession';
+
+  @override
+  String get tiri => 'SHOTS';
+
+  @override
+  String get tiriTotali => 'Total Shots';
+
+  @override
+  String get tiriInPorta => 'Shots on Target';
+
+  @override
+  String get tiriFuori => 'Shots Off Target';
+
+  @override
+  String get passaggi => 'PASSES';
+
+  @override
+  String get passaggiTotali => 'Total Passes';
+
+  @override
+  String get passaggiPrecisi => 'Accurate Passes';
+
+  @override
+  String get passaggiChiave => 'Key Passes';
+
+  @override
+  String get crossRiusciti => 'Successful Crosses';
+
+  @override
+  String get eventiChiave => 'Key events';
+
+  @override
+  String get recenti => 'Recent';
+
+  @override
+  String get intervallo => 'HALF TIME';
+
+  @override
+  String get falloTattico => 'Tactical foul';
+
+  @override
+  String get falloSu => 'Foul on';
+
+  @override
+  String get calcioInizio => 'KICK OFF';
+
+  @override
+  String get finePartita => 'FULL TIME';
+
+  @override
+  String get dribbling => 'DRIBBLING';
+
+  @override
+  String get dribblingRiusciti => 'Successful Dribbles';
+
+  @override
+  String get dribblingTentati => 'Dribble Attempts';
+
+  @override
+  String get duelli => 'DUELS';
+
+  @override
+  String get duelliTotali => 'Total Duels';
+
+  @override
+  String get duelliVinti => 'Duels Won';
+
+  @override
+  String get duelliAerei => 'Aerial Duels';
+
+  @override
+  String get difesa => 'DEFENSE';
+
+  @override
+  String get contrasti => 'Tackles';
+
+  @override
+  String get intercettazioni => 'Interceptions';
+
+  @override
+  String get salvataggi => 'Saves';
+
+  @override
+  String get calciAngolo => 'Corners';
+
+  @override
+  String get falli => 'Fouls';
+
+  @override
+  String get fuorigioco => 'Offsides';
+
+  @override
+  String get attacco => 'Attack';
+
+  @override
+  String get possesso => 'Possession';
+
+  @override
+  String get fase => 'Phase';
+
+  @override
+  String get faseOffensiva => 'Attacking Phase';
+
+  @override
+  String get precisione => 'Accuracy';
+
+  @override
+  String get matchday => 'Matchday';
+
+  @override
+  String get palleLunghe => 'Long Balls';
+
+  @override
+  String get generali => 'GENERAL';
+
+  @override
+  String get rimesseLaterali => 'Throw-ins';
+
+  @override
+  String get contrastiTotali => 'Total Tackles';
+
+  @override
+  String get contrastiVinti => 'Tackles Won';
+
+  @override
+  String get intercetti => 'Interceptions';
+
+  @override
+  String get rinvii => 'Clearances';
+
+  @override
+  String get falliTotali => 'Total Fouls';
+
+  @override
+  String get cartelliniGialli => 'Yellow Cards';
+
+  @override
+  String get cartelliniRossi => 'Red Cards';
+
+  @override
+  String get disciplinaSection => 'DISCIPLINE';
+
+  @override
+  String get proteste => 'Protests';
+
+  @override
+  String get falloSuPlayer => 'Foul on';
+
+  @override
+  String get fuorigiocoAttivo => 'Active offside';
+
+  @override
+  String get fuorigiocoPassivo => 'Passive offside';
+
+  @override
+  String get falliLabel => 'Fouls';
+
+  @override
+  String get calciDAngolo => 'Corners';
+
+  @override
+  String get statisticheStagione => 'Season Statistics 2023/24';
+
+  @override
+  String get minuti => 'Minutes';
+
+  @override
+  String get ammonizioni => 'Bookings';
+
+  @override
+  String get mediaVoto => 'Avg Rating';
+
+  @override
+  String get attaccoSection => 'Attack';
+
+  @override
+  String get possessoSection => 'Possession';
+
+  @override
+  String get tiriSection => 'Shots';
+
+  @override
+  String get passaggiSection => 'Passes';
+
+  @override
+  String get difesaSection => 'Defense';
+
+  @override
+  String get disciplinaLabel => 'Discipline';
+
+  @override
+  String get presenze => 'Appearances';
+
+  @override
+  String get dribblingLabel => 'Dribbling';
+
+  @override
+  String get duelliLabel => 'Duels';
+
+  @override
+  String get azioniDiGioco => 'Match events';
+
+  @override
+  String get calcioPiazzato => 'Set piece';
+
+  @override
+  String get titoloPassaggi => 'Passes';
+
+  @override
+  String get titoloTiri => 'Shots';
+
+  @override
+  String get titoloAttacco => 'Attack';
+
+  @override
+  String get titoloDifesa => 'Defense';
+
+  @override
+  String get titoloPossesso => 'Possession';
+
+  @override
+  String get mappaTiri => 'Shot Map';
+
+  @override
+  String get attaccoTab => 'Attack';
+
+  @override
+  String get passaggiTab => 'Passes';
+
+  @override
+  String get difensiva => 'Defensive';
+
+  @override
+  String get grandiOccasioniRealizzate => 'Big chances scored';
+
+  @override
+  String get grandiOccasioniMancate => 'Big chances missed';
+
+  @override
+  String get tocchiAreaAvversaria => 'Touches in opponent box';
+
+  @override
+  String get falliTerzoOffensivo => 'Fouls in attacking third';
+
+  @override
+  String get attacchiPericolosi => 'Dangerous attacks';
+
+  @override
+  String get attacchiLabel => 'Attacks';
+
+  @override
+  String get retePassaggi => 'Pass network';
+
+  @override
+  String get azioniDifensive => 'Defensive actions';
+
+  @override
+  String get radarDuelli => 'Duels radar';
+
+  @override
+  String get zoneCampo => 'Field zones';
+
+  @override
+  String get palloniRecuperati => 'Ball recoveries';
+
+  @override
+  String get passaggiRiusciti => 'Successful passes';
+
+  @override
+  String get passaggiLunghi => 'Long passes';
+
+  @override
+  String get passaggiCorti => 'Short passes';
+
+  @override
+  String get crossTentati => 'Cross attempts';
+
+  @override
+  String get assist => 'Assists';
+
+  @override
+  String get tocchi => 'Touches';
+
+  @override
+  String get passaggiPrecisilabel => 'Accurate passes';
+
+  @override
+  String get passaggiProgressivi => 'Progressive passes';
+
+  @override
+  String get passaggiTerzoOffensivo => 'Passes into\nattacking third';
+
+  @override
+  String get passaggiAvanzano => 'Passes that advance play by at least 10m towards goal';
+
+  @override
+  String get passaggiTotaliLabel => 'Total passes';
+
+  @override
+  String get rimuovi => 'Remove';
+
+  @override
+  String get aggiungiGiocatoriPerSeguire => 'Add players to follow their performances';
+
+  @override
+  String get notificheAttive => 'notifications active';
+
+  @override
+  String get nessunaNotificaAttiva => 'No notification active';
+
+  @override
+  String get cartelliniGialliNotif => 'Yellow cards';
+
+  @override
+  String get ammonizioni2 => 'Bookings and second yellows';
+
+  @override
+  String get cartelliniRossiNotif => 'Red cards';
+
+  @override
+  String get espulsioniNotif => 'Straight red and second yellow';
+
+  @override
+  String get calciAngoloDett => 'Corners';
+
+  @override
+  String get cornerDesc => 'Corners taken by both teams';
+
+  @override
+  String get falliNotif => 'Fouls';
+
+  @override
+  String get falliDesc => 'Fouls committed on the pitch';
+
+  @override
+  String get partiteDelGiorno => 'Matches on';
+
+  @override
+  String get oggi => 'Today';
+
+  @override
+  String get ieri => 'Yesterday';
+
+  @override
+  String get statisticheAvanzate => 'Advanced Statistics';
+
+  @override
+  String get modulo => 'Formation';
+
+  @override
+  String get titolari => 'Starting XI';
+
+  @override
+  String get riserve => 'Substitutes';
+
+  @override
+  String get allenatore => 'Coach';
+
+  @override
+  String get sostituzione => 'Substitution';
+
+  @override
+  String get rigore => 'Penalty';
+
+  @override
+  String get secondoTempo => 'Second half';
+
+  @override
+  String get primoTempo => 'First half';
+
+  @override
+  String get supplementari => 'Extra time';
+
+  @override
+  String get vediProfilo => 'View profile';
+
+  @override
+  String get vediTutto => 'View all';
+
+  @override
+  String get giocatore => 'Player';
+
+  @override
+  String get giocata => 'Played';
+
+  @override
+  String get tutti => 'All';
+
+  @override
+  String get primoTempoShort => '1st Half';
+
+  @override
+  String get secondoTempoShort => '2nd Half';
+
+  @override
+  String get totali => 'Total';
+
+  @override
+  String get contrastiLabel => 'Tackles';
+
+  @override
+  String get intercettiLabel => 'Interceptions';
+
+  @override
+  String get vintiLabel => 'Won';
+
+  @override
+  String get topDifensori => 'Top Defenders';
+
+  @override
+  String get toccaGiocatore => 'Tap a player to filter the field';
+
+  @override
+  String get centrocampo => 'Midfield';
+
+  @override
+  String get dominioTerritoriale => 'Territorial Dominance';
+
+  @override
+  String get azioniMetaCampo => '% actions in opponent\'s half';
+
+  @override
+  String get territorio => 'Territory';
+
+  @override
+  String get inPorta => 'On Target';
+
+  @override
+  String get fuori => 'Off Target';
+
+  @override
+  String get respinto => 'Blocked';
+
+  @override
+  String get situazione => 'Situation';
+
+  @override
+  String get contropiede => 'Counter-attack';
+
+  @override
+  String get tipoDiTiro => 'Shot type';
+
+  @override
+  String get tiroDiSinistro => 'Left foot shot';
+
+  @override
+  String get tiroDiDestro => 'Right foot shot';
+
+  @override
+  String get colpoDiTesta => 'Header';
+
+  @override
+  String get esito => 'Outcome';
+
+  @override
+  String get zonaGol => 'Goal zone';
+
+  @override
+  String get inBassoSinistra => 'Bottom left';
+
+  @override
+  String get inBassoDestra => 'Bottom right';
+
+  @override
+  String get inBassoAlCentro => 'Bottom center';
+
+  @override
+  String get inAltoSinistra => 'Top left';
+
+  @override
+  String get inAltoDestra => 'Top right';
+
+  @override
+  String get inAltoAlCentro => 'Top center';
+
+  @override
+  String get alCentro => 'Center';
+
+  @override
+  String get passaggiPrecisiLabel => 'Accurate passes';
+
+  @override
+  String get passaggiChiaveLabel => 'Key passes';
+
+  @override
+  String get passaggiProgressiviLabel => 'Progressive passes';
+
+  @override
+  String get passaggiNelTerzo => 'Passes into final third';
+
+  @override
+  String get palleLungheLabel => 'Long balls';
+
+  @override
+  String get palleCorte => 'Short passes';
+
+  @override
+  String get recuperiPalla => 'Ball recoveries';
+
+  @override
+  String get salvataggiLabel => 'Saves';
+
+  @override
+  String get grandiOccRealizzate => 'Big chances scored';
+
+  @override
+  String get grandiOccMancate => 'Big chances missed';
+
+  @override
+  String get tocchiAreaAvv => 'Touches in penalty area';
+
+  @override
+  String get falliTerzoOff => 'Fouls in attacking third';
+
+  @override
+  String get attacchiPeric => 'Dangerous attacks';
+
+  @override
+  String get attacchiTot => 'Attacks';
+
+  @override
+  String get assistLabel => 'Assists';
+
+  @override
+  String get tiriLabel => 'Shots';
+
+  @override
+  String get passaggiRLabel => 'Passes';
+
+  @override
+  String get dribLabel => 'Drib';
+
+  @override
+  String get difLabel => 'Def';
+
+  @override
+  String get faseDifensiva => 'Defensive Phase';
+
+  @override
+  String get topAttaccanti => 'Top Attackers';
+
+  @override
+  String get topCentrocampisti => 'Top Midfielders';
+
+  @override
+  String get toccaPerFiltrare => 'Tap a player to filter';
+
+  @override
+  String get azioneAperta => 'Open play';
+
+  @override
+  String get calcioPiazzatoLabel => 'Set piece';
+
+  @override
+  String get reteLabel => 'Net';
+
+  @override
+  String get paratoLabel => 'Saved';
+
+  @override
+  String get traversaLabel => 'Crossbar';
+
+  @override
+  String get paloLabel => 'Post';
+
+  @override
+  String get xGLabel => 'xG';
+
+  @override
+  String get totaliCarriera => 'Career Totals';
+
+  @override
+  String get fuorigiocoLabel => 'Offsides';
+
+  @override
+  String get fuorigiocoFischiati => 'Offsides called';
+
+  @override
+  String get posizioniOffside => 'Offside positions flagged';
+
+  @override
+  String get tuttiTentativi => 'All attempts towards goal';
+
+  @override
+  String get centrocampoSX => 'Left midfield';
+
+  @override
+  String get centrocampoCSX => 'Center-left midfield';
+
+  @override
+  String get centrocampoCDX => 'Center-right midfield';
+
+  @override
+  String get centrocampoDX => 'Right midfield';
+
+  @override
+  String get contrastiVintiLabel => 'Tackles (won)';
+
+  @override
+  String get notificaFuorigioco => 'Offside notification';
+
+  @override
+  String get stagione => 'Season';
+
+  @override
+  String get carriera => 'Career';
+
+  @override
+  String get ultime5partite => 'Last 5 matches';
+
+  @override
+  String get overallFC26 => 'Overall FC26';
+
+  @override
+  String get rendimentoLabel => 'Performance';
+
+  @override
+  String get partiteGiocate => 'matches played';
+
+  @override
+  String get vittoriePerc => 'wins';
+
+  @override
+  String get golLabel => 'Goals';
+
+  @override
+  String get golFatti => 'Goals scored';
+
+  @override
+  String get golSubiti => 'Goals conceded';
+
+  @override
+  String get differenza => 'Difference';
+
+  @override
+  String get mediaGolPartita => 'Avg goals/match';
+
+  @override
+  String get puntiLabel => 'Points';
+
+  @override
+  String get totaleLabel => 'Total';
+
+  @override
+  String get puntiPartita => 'Points/match';
+
+  @override
+  String get posizioneLabel => 'Position';
+
+  @override
+  String get portiere => 'GOALKEEPER';
+
+  @override
+  String get difensore => 'DEFENDER';
+
+  @override
+  String get centrocampista => 'MIDFIELDER';
+
+  @override
+  String get attaccante => 'FORWARD';
+
+  @override
+  String get competizione => 'Competition';
+
+  @override
+  String get campionato => 'League';
+
+  @override
+  String get giornate => 'Matchdays';
+
+  @override
+  String get zonaChampions => 'Champions League zone';
+
+  @override
+  String get puntiInPartite => 'points in';
+
+  @override
+  String get golPartita => 'Goals/match';
+
+  @override
+  String get subitiPartita => 'Conceded/match';
+
+  @override
+  String get formaRecente => 'Recent Form';
+
+  @override
+  String get sede => 'Venue';
 }

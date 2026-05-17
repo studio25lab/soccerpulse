@@ -1,6 +1,7 @@
 // lib/pages/language_selection_screen.dart
 
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../generated/l10n.dart';
@@ -158,7 +159,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                       Text(
                         widget.isInitialSetup
                             ? 'Select your preferred language'
-                            : 'Seleziona la tua lingua preferita',
+                            : tr(context, 'Seleziona la tua lingua preferita'),
                         style: TextStyle(
                           fontSize: 18,
                           color: isDark ? Colors.white70 : Colors.black87,
@@ -269,7 +270,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                 // Info text
                 if (!widget.isInitialSetup)
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
                     child: Text(
                       'La modifica sarà applicata immediatamente',
                       style: TextStyle(

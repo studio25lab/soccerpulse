@@ -1,6 +1,7 @@
 // lib/widgets/player_filter_modal.dart
 
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
 
 class PlayerFilterModal extends StatefulWidget {
   final double minRating;
@@ -142,7 +143,7 @@ class _PlayerFilterModalState extends State<PlayerFilterModal> {
                     _selectedBadges.clear();
                   });
                 },
-                child: const Text('Reset'),
+                child: Text(tr(context, 'Reset')),
               ),
             ],
           ),
@@ -289,8 +290,8 @@ class _PlayerFilterModalState extends State<PlayerFilterModal> {
           children: [
             Icon(Icons.sports, color: theme.primaryColor, size: 20),
             const SizedBox(width: 8),
-            const Text(
-              'Posizione',
+            Text(
+              tr(context, 'Posizione'),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
@@ -301,7 +302,7 @@ class _PlayerFilterModalState extends State<PlayerFilterModal> {
           runSpacing: 8,
           children: [
             ChoiceChip(
-              label: const Text('Tutte'),
+              label: Text(tr(context, 'Tutte')),
               selected: _positionFilter == null,
               onSelected: (selected) => setState(() => _positionFilter = null),
               selectedColor: theme.primaryColor.withOpacity(0.3),
@@ -369,14 +370,14 @@ class _PlayerFilterModalState extends State<PlayerFilterModal> {
                       value: _minAge,
                       isExpanded: true,
                       underline: const SizedBox(),
-                      hint: const Text('Nessun limite'),
+                      hint: Text(tr(context, 'Nessun limite')),
                       items: [
                         const DropdownMenuItem(
-                            value: null, child: Text('Nessun limite')),
+                            value: null, child: Text(tr(context, 'Nessun limite'))),
                         ...List.generate(20, (i) => (i + 1) * 1 + 16)
                             .map((age) {
                           return DropdownMenuItem(
-                              value: age, child: Text('$age anni'));
+                              value: age, child: Text('$age ${tr(context, 'anni')}'));
                         }),
                       ],
                       onChanged: (value) => setState(() => _minAge = value),
@@ -402,14 +403,14 @@ class _PlayerFilterModalState extends State<PlayerFilterModal> {
                       value: _maxAge,
                       isExpanded: true,
                       underline: const SizedBox(),
-                      hint: const Text('Nessun limite'),
+                      hint: Text(tr(context, 'Nessun limite')),
                       items: [
                         const DropdownMenuItem(
-                            value: null, child: Text('Nessun limite')),
+                            value: null, child: Text(tr(context, 'Nessun limite'))),
                         ...List.generate(20, (i) => (i + 1) * 1 + 16)
                             .map((age) {
                           return DropdownMenuItem(
-                              value: age, child: Text('$age anni'));
+                              value: age, child: Text('$age ${tr(context, 'anni')}'));
                         }),
                       ],
                       onChanged: (value) => setState(() => _maxAge = value),
@@ -591,8 +592,8 @@ class _PlayerFilterModalState extends State<PlayerFilterModal> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'Annulla',
+              child: Text(
+                tr(context, 'Annulla'),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),

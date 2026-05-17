@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
 
 /// Widget heatmap completo con tutte le funzionalità avanzate
 class HeatmapWidget extends StatefulWidget {
@@ -116,7 +117,7 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
                 color: widget.isHome
-                    ? const Color(0xFF2196F3).withOpacity(0.1)
+                    ? const Color(0xFF1565C0).withOpacity(0.1)
                     : const Color(0xFFE53935).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -126,7 +127,7 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: widget.isHome
-                      ? const Color(0xFF2196F3)
+                      ? const Color(0xFF1565C0)
                       : const Color(0xFFE53935),
                 ),
               ),
@@ -138,17 +139,17 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
             icon: Icon(
               _showComparison ? Icons.view_agenda : Icons.compare,
               color:
-                  _showComparison ? const Color(0xFF2196F3) : Colors.grey[600],
+                  _showComparison ? const Color(0xFF1565C0) : Colors.grey[600],
             ),
             onPressed: () => setState(() => _showComparison = !_showComparison),
-            tooltip: _showComparison ? 'Vista singola' : 'Confronta squadre',
+            tooltip: _showComparison ? tr(context, 'Vista singola') : tr(context, 'Confronta squadre'),
           ),
           // Toggle Zone Stats
           IconButton(
             icon: Icon(
               _showZoneStats ? Icons.grid_on : Icons.grid_off,
               color:
-                  _showZoneStats ? const Color(0xFF2196F3) : Colors.grey[600],
+                  _showZoneStats ? const Color(0xFF1565C0) : Colors.grey[600],
             ),
             onPressed: () => setState(() => _showZoneStats = !_showZoneStats),
             tooltip:
@@ -166,9 +167,9 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
         children: [
           _buildPeriodChip('Tutto', 'all', Icons.timer, isDark),
           const SizedBox(width: 8),
-          _buildPeriodChip('1° Tempo', 'first_half', Icons.looks_one, isDark),
+          _buildPeriodChip(tr(context, '1° Tempo'), 'first_half', Icons.looks_one, isDark),
           const SizedBox(width: 8),
-          _buildPeriodChip('2° Tempo', 'second_half', Icons.looks_two, isDark),
+          _buildPeriodChip(tr(context, '2° Tempo'), 'second_half', Icons.looks_two, isDark),
         ],
       ),
     );
@@ -189,7 +190,7 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
         decoration: BoxDecoration(
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
+                  colors: [Color(0xFF1565C0), Color(0xFF1976D2)],
                 )
               : null,
           color: isSelected
@@ -281,7 +282,7 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2196F3).withOpacity(0.1),
+                        color: const Color(0xFF1565C0).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -289,7 +290,7 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2196F3),
+                          color: Color(0xFF1565C0),
                         ),
                       ),
                     ),
@@ -400,15 +401,15 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Intensità Possesso',
+          Text(
+            tr(context, 'Intensità Possesso'),
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           Row(
             children: [
               _buildLegendItem(
-                  0, 'Molto\nBasso', const Color(0xFF2196F3), isDark),
+                  0, 'Molto\nBasso', const Color(0xFF1565C0), isDark),
               _buildLegendItem(1, 'Basso', const Color(0xFF4CAF50), isDark),
               _buildLegendItem(2, 'Medio', const Color(0xFFFFEB3B), isDark),
               _buildLegendItem(3, 'Alto', const Color(0xFFFF9800), isDark),
@@ -477,7 +478,7 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
         children: [
           Expanded(
             child: _buildStatCard(
-              'Zona Calda',
+              tr(context, 'Zona Calda'),
               zoneData['hot']!['name']!,
               zoneData['hot']!['percent']!,
               Icons.local_fire_department,
@@ -488,11 +489,11 @@ class _HeatmapWidgetState extends State<HeatmapWidget>
           const SizedBox(width: 12),
           Expanded(
             child: _buildStatCard(
-              'Zona Fredda',
+              tr(context, 'Zona Fredda'),
               zoneData['cold']!['name']!,
               zoneData['cold']!['percent']!,
               Icons.ac_unit,
-              const Color(0xFF2196F3),
+              const Color(0xFF1565C0),
               isDark,
             ),
           ),
@@ -579,6 +580,8 @@ class AdvancedHeatmapPainter extends CustomPainter {
   final double animationValue;
   final Set<int> selectedIntensities;
   final bool isCompact;
+  final String? playerPosition; // GK, CB, CM, LW, RW, ST, etc.
+  final String? playerName;
 
   AdvancedHeatmapPainter({
     required this.isHome,
@@ -587,371 +590,288 @@ class AdvancedHeatmapPainter extends CustomPainter {
     required this.animationValue,
     required this.selectedIntensities,
     this.isCompact = false,
+    this.playerPosition,
+    this.playerName,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Sfondo campo
-    final fieldPaint = Paint()..color = const Color(0xFF1B5E20);
+    // Field background
+    final fieldPaint = Paint()..color = const Color(0xFFC5DFC5);
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fieldPaint);
 
-    // Genera punti di calore
-    final heatPoints = _generateHeatPoints(size);
-
-    // Disegna punti di calore con blur
-    for (final point in heatPoints) {
-      if (!selectedIntensities.contains(point.intensity)) continue;
-
-      final opacity = animationValue * point.opacity;
-      _drawHeatBlob(canvas, point, opacity);
-    }
-
-    // Disegna linee campo
+    // Draw field lines FIRST (under heatmap)
     _drawFieldLines(canvas, size);
 
-    // Disegna statistiche zone
-    if (showZoneStats && !isCompact) {
-      _drawZoneStatistics(canvas, size);
-    }
+    // Generate and draw smooth heatmap
+    _drawSmoothHeatmap(canvas, size);
   }
 
-  List<HeatPoint> _generateHeatPoints(Size size) {
-    final random = math.Random(isHome ? 42 : 84);
-    final points = <HeatPoint>[];
+  void _drawSmoothHeatmap(Canvas canvas, Size size) {
+    // Heatmap di SQUADRA (no playerName) → hotspot di team
+    // Heatmap di GIOCATORE → hotspot per posizione
+    final hotspots = (playerName == null || playerName!.isEmpty)
+        ? _getTeamHotspots(size)
+        : _getPositionHotspots(size);
 
-    // Numero di punti basato sul periodo
-    int numPoints = 50;
-    if (periodFilter == 'first_half') numPoints = 30;
-    if (periodFilter == 'second_half') numPoints = 25;
+    // Generate many small, soft points around hotspots
+    final seed = (playerName?.hashCode ?? (isHome ? 42 : 84)).abs();
+    final rng = math.Random(seed);
 
-    for (int i = 0; i < numPoints; i++) {
-      double x, y;
-      int intensity;
+    // Adjust point count: meno punti per heatmap squadra (evita saturazione)
+    final isTeamView = playerName == null || playerName!.isEmpty;
+    int numPoints = isTeamView ? 60 : 180;
+    if (periodFilter == 'first_half') numPoints = isTeamView ? 38 : 110;
+    if (periodFilter == 'second_half') numPoints = isTeamView ? 32 : 100;
 
-      if (isHome) {
-        // Casa: più concentrato a sinistra (attacco)
-        x = size.width * (0.1 + random.nextDouble() * 0.5);
-        y = size.height * (0.2 + random.nextDouble() * 0.6);
+    // Collect all heat points
+    final points = <_SmoothHeatPoint>[];
 
-        // Intensità maggiore a sinistra
-        if (x < size.width * 0.3) {
-          intensity = 3 + random.nextInt(2); // 3-4 (alto/molto alto)
-        } else if (x < size.width * 0.45) {
-          intensity = 2 + random.nextInt(2); // 2-3 (medio/alto)
-        } else {
-          intensity = random.nextInt(3); // 0-2 (basso/medio)
-        }
+    for (final hotspot in hotspots) {
+      final count = (numPoints * hotspot.weight).round();
+      for (int i = 0; i < count; i++) {
+        // Gaussian-like distribution using Box-Muller transform
+        final u1 = rng.nextDouble();
+        final u2 = rng.nextDouble();
+        final z0 = math.sqrt(-2 * math.log(u1 + 0.001)) * math.cos(2 * math.pi * u2);
+        final z1 = math.sqrt(-2 * math.log(u1 + 0.001)) * math.sin(2 * math.pi * u2);
+
+        final x = (hotspot.x + z0 * hotspot.spreadX).clamp(0.0, size.width);
+        final y = (hotspot.y + z1 * hotspot.spreadY).clamp(0.0, size.height);
+
+        // Distance from hotspot center affects intensity
+        final dist = math.sqrt(math.pow(x - hotspot.x, 2) + math.pow(y - hotspot.y, 2));
+        final maxDist = math.sqrt(math.pow(hotspot.spreadX * 3, 2) + math.pow(hotspot.spreadY * 3, 2));
+        final normalizedDist = (dist / maxDist).clamp(0.0, 1.0);
+
+        points.add(_SmoothHeatPoint(
+          x: x,
+          y: y,
+          radius: 25.0 + rng.nextDouble() * 30.0,
+          intensity: 1.0 - normalizedDist * 0.7,
+        ));
+      }
+    }
+
+    // Sort by intensity (draw low first, high on top)
+    points.sort((a, b) => a.intensity.compareTo(b.intensity));
+
+    // Draw with smooth blending — soglia più alta per heatmap squadra
+    final isTeamView = playerName == null || playerName!.isEmpty;
+    final alphaMax = isTeamView ? 0.55 : 0.5;
+    final alphaMul = isTeamView ? 0.45 : 0.35;
+    final minAlpha = isTeamView ? 0.10 : 0.02;
+    for (final p in points) {
+      final alpha = (p.intensity * alphaMul * animationValue).clamp(0.0, alphaMax);
+      if (alpha < minAlpha) continue;
+
+      // Color based on intensity: green → yellow → orange → red
+      final Color color;
+      if (p.intensity > 0.8) {
+        color = Color.lerp(const Color(0xFFFF6D00), const Color(0xFFD50000), (p.intensity - 0.8) * 5)!;
+      } else if (p.intensity > 0.5) {
+        color = Color.lerp(const Color(0xFFFFD600), const Color(0xFFFF6D00), (p.intensity - 0.5) * 3.3)!;
+      } else if (p.intensity > 0.25) {
+        color = Color.lerp(const Color(0xFF76FF03), const Color(0xFFFFD600), (p.intensity - 0.25) * 4)!;
       } else {
-        // Ospite: più concentrato a destra (attacco)
-        x = size.width * (0.4 + random.nextDouble() * 0.5);
-        y = size.height * (0.2 + random.nextDouble() * 0.6);
-
-        // Intensità maggiore a destra
-        if (x > size.width * 0.7) {
-          intensity = 3 + random.nextInt(2); // 3-4 (alto/molto alto)
-        } else if (x > size.width * 0.55) {
-          intensity = 2 + random.nextInt(2); // 2-3 (medio/alto)
-        } else {
-          intensity = random.nextInt(3); // 0-2 (basso/medio)
-        }
+        color = const Color(0xFF76FF03);
       }
 
-      final radius = 40.0 + random.nextDouble() * 40.0;
-      final opacity = 0.3 + random.nextDouble() * 0.4;
+      final gradient = ui.Gradient.radial(
+        Offset(p.x, p.y),
+        p.radius,
+        [
+          color.withOpacity(alpha),
+          color.withOpacity(alpha * 0.4),
+          color.withOpacity(0),
+        ],
+        [0.0, 0.45, 1.0],
+      );
 
-      points.add(HeatPoint(
-        x: x,
-        y: y,
-        radius: radius,
-        intensity: intensity,
-        opacity: opacity,
-      ));
+      canvas.drawCircle(
+        Offset(p.x, p.y),
+        p.radius,
+        Paint()
+          ..shader = gradient
+          ..blendMode = BlendMode.screen,
+      );
     }
-
-    return points;
   }
 
-  void _drawHeatBlob(Canvas canvas, HeatPoint point, double opacity) {
-    final colors = [
-      const Color(0xFF2196F3), // Blu - Molto basso
-      const Color(0xFF4CAF50), // Verde - Basso
-      const Color(0xFFFFEB3B), // Giallo - Medio
-      const Color(0xFFFF9800), // Arancione - Alto
-      const Color(0xFFF44336), // Rosso - Molto alto
+  List<_Hotspot> _getPositionHotspots(Size size) {
+    final w = size.width;
+    final h = size.height;
+
+    // Determine position from playerPosition or infer from name
+    String pos = playerPosition ?? _inferPosition();
+
+    // Flip X for away team (they attack from right)
+    double flipX(double x) => isHome ? x : w - x;
+
+    switch (pos) {
+      case 'GK':
+        return [
+          _Hotspot(flipX(w * 0.08), h * 0.5, w * 0.06, h * 0.12, 0.85),
+          _Hotspot(flipX(w * 0.15), h * 0.5, w * 0.08, h * 0.18, 0.15),
+        ];
+      case 'CB':
+      case 'RB':
+      case 'LB':
+        final yBias = pos == 'LB' ? 0.3 : pos == 'RB' ? 0.7 : 0.5;
+        return [
+          _Hotspot(flipX(w * 0.22), h * yBias, w * 0.10, h * 0.14, 0.55),
+          _Hotspot(flipX(w * 0.32), h * 0.5, w * 0.12, h * 0.20, 0.30),
+          _Hotspot(flipX(w * 0.15), h * yBias, w * 0.06, h * 0.10, 0.15),
+        ];
+      case 'CDM':
+      case 'CM':
+        return [
+          _Hotspot(flipX(w * 0.40), h * 0.5, w * 0.14, h * 0.18, 0.50),
+          _Hotspot(flipX(w * 0.30), h * 0.45, w * 0.10, h * 0.15, 0.30),
+          _Hotspot(flipX(w * 0.50), h * 0.55, w * 0.10, h * 0.15, 0.20),
+        ];
+      case 'CAM':
+      case 'LM':
+      case 'RM':
+        final yBias = pos == 'LM' ? 0.3 : pos == 'RM' ? 0.7 : 0.45;
+        return [
+          _Hotspot(flipX(w * 0.52), h * yBias, w * 0.13, h * 0.16, 0.50),
+          _Hotspot(flipX(w * 0.42), h * 0.5, w * 0.10, h * 0.18, 0.30),
+          _Hotspot(flipX(w * 0.62), h * yBias, w * 0.08, h * 0.12, 0.20),
+        ];
+      case 'LW':
+      case 'RW':
+        final yBias = pos == 'LW' ? 0.25 : 0.75;
+        return [
+          _Hotspot(flipX(w * 0.65), h * yBias, w * 0.12, h * 0.13, 0.50),
+          _Hotspot(flipX(w * 0.55), h * yBias, w * 0.10, h * 0.16, 0.25),
+          _Hotspot(flipX(w * 0.75), h * yBias * 1.1, w * 0.08, h * 0.10, 0.25),
+        ];
+      case 'ST':
+      case 'CF':
+      case 'FW':
+      default:
+        return [
+          _Hotspot(flipX(w * 0.72), h * 0.5, w * 0.12, h * 0.16, 0.50),
+          _Hotspot(flipX(w * 0.60), h * 0.45, w * 0.10, h * 0.18, 0.30),
+          _Hotspot(flipX(w * 0.80), h * 0.5, w * 0.07, h * 0.10, 0.20),
+        ];
+    }
+  }
+
+  /// Hotspot di SQUADRA — distribuzione realistica delle azioni di gioco.
+  /// Asimmetria: home attacca da sinistra a destra (caldi a destra),
+  /// away da destra a sinistra (caldi a sinistra).
+  List<_Hotspot> _getTeamHotspots(Size size) {
+    final w = size.width;
+    final h = size.height;
+    // Flip X per away
+    double fx(double x) => isHome ? x : w - x;
+    return [
+      // Difesa propria (intensità bassa, presenza minima)
+      _Hotspot(fx(w * 0.18), h * 0.50, w * 0.10, h * 0.20, 0.18),
+      // Esterno difensivo basso
+      _Hotspot(fx(w * 0.22), h * 0.30, w * 0.09, h * 0.14, 0.12),
+      _Hotspot(fx(w * 0.22), h * 0.70, w * 0.09, h * 0.14, 0.12),
+      // Centrocampo basso (cuore difensivo)
+      _Hotspot(fx(w * 0.40), h * 0.50, w * 0.13, h * 0.22, 0.45),
+      // Centrocampo alto (zona costruzione)
+      _Hotspot(fx(w * 0.55), h * 0.45, w * 0.12, h * 0.20, 0.55),
+      _Hotspot(fx(w * 0.55), h * 0.60, w * 0.10, h * 0.16, 0.40),
+      // Esterni offensivi (fasce)
+      _Hotspot(fx(w * 0.68), h * 0.25, w * 0.10, h * 0.13, 0.40),
+      _Hotspot(fx(w * 0.68), h * 0.75, w * 0.10, h * 0.13, 0.40),
+      // Trequarti (zona pericolosa, alta intensità)
+      _Hotspot(fx(w * 0.72), h * 0.50, w * 0.11, h * 0.18, 0.65),
+      // Area avversaria (bassa frequenza ma alta intensità)
+      _Hotspot(fx(w * 0.85), h * 0.50, w * 0.08, h * 0.15, 0.30),
     ];
+  }
 
-    final color = colors[point.intensity];
-
-    final gradient = ui.Gradient.radial(
-      Offset(point.x, point.y),
-      point.radius,
-      [
-        color.withOpacity(opacity),
-        color.withOpacity(opacity * 0.5),
-        color.withOpacity(0),
-      ],
-      [0.0, 0.5, 1.0],
-    );
-
-    final paint = Paint()..shader = gradient;
-    canvas.drawCircle(Offset(point.x, point.y), point.radius, paint);
+  String _inferPosition() {
+    final name = playerName?.toLowerCase() ?? '';
+    // Simple inference from well-known players
+    if (name.contains('immobile') || name.contains('giroud') || name.contains('osimhen') ||
+        name.contains('vlahovic') || name.contains('lautaro') || name.contains('zapata')) return 'ST';
+    if (name.contains('zaccagni') || name.contains('leao') || name.contains('kvara') ||
+        name.contains('anderson') || name.contains('chiesa') || name.contains('berardi')) return 'LW';
+    if (name.contains('pedro') || name.contains('dybala') || name.contains('politano') ||
+        name.contains('suso') || name.contains('di maria')) return 'RW';
+    if (name.contains('alberto') || name.contains('milinkovic') || name.contains('barella') ||
+        name.contains('tonali') || name.contains('lobotka') || name.contains('calhanoglu')) return 'CM';
+    if (name.contains('cataldi') || name.contains('bennacer') || name.contains('brozovic')) return 'CDM';
+    if (name.contains('provedel') || name.contains('maignan') || name.contains('meret') ||
+        name.contains('szczesny') || name.contains('onana') || name.contains('maximiano')) return 'GK';
+    if (name.contains('romagnoli') || name.contains('patric') || name.contains('tomori') ||
+        name.contains('bremer') || name.contains('skriniar') || name.contains('smalling')) return 'CB';
+    if (name.contains('marusic') || name.contains('calabria') || name.contains('dumfries') ||
+        name.contains('hernandez') || name.contains('hysaj') || name.contains('spinazzola')) return 'LB';
+    return 'CM'; // default
   }
 
   void _drawFieldLines(Canvas canvas, Size size) {
-    // Linee più spesse e visibili
-    final thickLinePaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = isCompact ? 3.5 : 5.0;
-
+    final w = size.width;
+    final h = size.height;
     final linePaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = isCompact ? 2.5 : 4.0;
+      ..color = Colors.white.withOpacity(0.25)
+      ..strokeWidth = 1.2
+      ..style = PaintingStyle.stroke;
 
-    // Bordo campo COMPLETO
-    final borderRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(1, 1, size.width - 2, size.height - 2),
-      const Radius.circular(8),
-    );
-    canvas.drawRRect(borderRect, thickLinePaint);
+    // Outer boundary
+    canvas.drawRect(Rect.fromLTWH(0, 0, w, h), linePaint);
 
-    // Linea centrale VERTICALE
-    canvas.drawLine(
-      Offset(size.width / 2, 1),
-      Offset(size.width / 2, size.height - 1),
-      thickLinePaint,
-    );
+    // Center line
+    canvas.drawLine(Offset(w / 2, 0), Offset(w / 2, h), linePaint);
 
-    // Cerchio centrale
-    final centerX = size.width / 2;
-    final centerY = size.height / 2;
-    final circleRadius = isCompact ? size.height * 0.15 : size.height * 0.20;
+    // Center circle
+    canvas.drawCircle(Offset(w / 2, h / 2), h * 0.15, linePaint);
 
-    canvas.drawCircle(Offset(centerX, centerY), circleRadius, linePaint);
+    // Center dot
+    canvas.drawCircle(Offset(w / 2, h / 2), 2.5,
+        Paint()..color = Colors.white.withOpacity(0.3));
 
-    // Punto centrale
-    canvas.drawCircle(
-      Offset(centerX, centerY),
-      isCompact ? 4 : 6,
-      Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.fill,
-    );
+    // Penalty areas
+    final paW = w * 0.16;
+    final paH = h * 0.55;
+    final paY = (h - paH) / 2;
+    canvas.drawRect(Rect.fromLTWH(0, paY, paW, paH), linePaint);
+    canvas.drawRect(Rect.fromLTWH(w - paW, paY, paW, paH), linePaint);
 
-    // AREE DI RIGORE - Proporzioni corrette
-    final penaltyWidth = size.width * 0.20;
-    final penaltyHeight = size.height * 0.50;
-    final penaltyY = (size.height - penaltyHeight) / 2;
+    // Goal areas
+    final gaW = w * 0.06;
+    final gaH = h * 0.3;
+    final gaY = (h - gaH) / 2;
+    canvas.drawRect(Rect.fromLTWH(0, gaY, gaW, gaH), linePaint);
+    canvas.drawRect(Rect.fromLTWH(w - gaW, gaY, gaW, gaH), linePaint);
 
-    // Area rigore SINISTRA
-    canvas.drawRect(
-      Rect.fromLTWH(1, penaltyY, penaltyWidth, penaltyHeight),
-      linePaint,
-    );
-
-    // Area rigore DESTRA
-    canvas.drawRect(
-      Rect.fromLTWH(
-        size.width - penaltyWidth - 1,
-        penaltyY,
-        penaltyWidth,
-        penaltyHeight,
-      ),
-      linePaint,
-    );
-
-    // AREA PICCOLA - Proporzioni corrette
-    final smallBoxWidth = size.width * 0.08;
-    final smallBoxHeight = size.height * 0.25;
-    final smallBoxY = (size.height - smallBoxHeight) / 2;
-
-    // Area piccola SINISTRA
-    canvas.drawRect(
-      Rect.fromLTWH(1, smallBoxY, smallBoxWidth, smallBoxHeight),
-      linePaint,
-    );
-
-    // Area piccola DESTRA
-    canvas.drawRect(
-      Rect.fromLTWH(
-        size.width - smallBoxWidth - 1,
-        smallBoxY,
-        smallBoxWidth,
-        smallBoxHeight,
-      ),
-      linePaint,
-    );
-
-    // PUNTI DI RIGORE - RIMOSSI (non necessari per heatmap)
-    // final penaltySpotX = penaltyWidth * 0.5;
-    // canvas.drawCircle(...)
-
-    // SEMICERCHI - FUORI DALL'AREA DI RIGORE (LUNETTE)
-    final arcRadius = penaltyHeight * 0.18;
-
-    // Semicerchio SINISTRO - FUORI dall'area
-    final leftArcPath = Path();
-    final leftArcCenter = Offset(penaltyWidth, centerY);
-
-    // Arco che va FUORI dall'area (da -90° a +90°, verso destra)
-    leftArcPath.addArc(
-      Rect.fromCircle(
-        center: leftArcCenter,
-        radius: arcRadius,
-      ),
-      -math.pi / 2, // Inizio a -90° (alto)
-      math.pi, // Arco di 180° verso destra (fuori)
-    );
-
-    // Disegna solo la parte che esce dall'area
-    canvas.save();
-    canvas.clipRect(Rect.fromLTWH(penaltyWidth, 0, size.width, size.height));
-    canvas.drawPath(leftArcPath, linePaint);
-    canvas.restore();
-
-    // Semicerchio DESTRO - FUORI dall'area
-    final rightArcPath = Path();
-    final rightArcCenter = Offset(size.width - penaltyWidth, centerY);
-
-    // Arco che va FUORI dall'area (da 90° a 270°, verso sinistra)
-    rightArcPath.addArc(
-      Rect.fromCircle(
-        center: rightArcCenter,
-        radius: arcRadius,
-      ),
-      math.pi / 2, // Inizio a 90° (basso)
-      math.pi, // Arco di 180° verso sinistra (fuori)
-    );
-
-    // Disegna solo la parte che esce dall'area
-    canvas.save();
-    canvas
-        .clipRect(Rect.fromLTWH(0, 0, size.width - penaltyWidth, size.height));
-    canvas.drawPath(rightArcPath, linePaint);
-    canvas.restore();
-
-    // ANGOLI DEL CAMPO (opzionale ma bello)
-    final cornerRadius = isCompact ? 6.0 : 8.0;
-
-    // Angolo in alto a sinistra
-    canvas.drawArc(
-      Rect.fromLTWH(1, 1, cornerRadius * 2, cornerRadius * 2),
-      math.pi,
-      math.pi / 2,
-      false,
-      linePaint,
-    );
-
-    // Angolo in alto a destra
-    canvas.drawArc(
-      Rect.fromLTWH(size.width - cornerRadius * 2 - 1, 1, cornerRadius * 2,
-          cornerRadius * 2),
-      -math.pi / 2,
-      math.pi / 2,
-      false,
-      linePaint,
-    );
-
-    // Angolo in basso a sinistra
-    canvas.drawArc(
-      Rect.fromLTWH(1, size.height - cornerRadius * 2 - 1, cornerRadius * 2,
-          cornerRadius * 2),
-      math.pi / 2,
-      math.pi / 2,
-      false,
-      linePaint,
-    );
-
-    // Angolo in basso a destra
-    canvas.drawArc(
-      Rect.fromLTWH(
-        size.width - cornerRadius * 2 - 1,
-        size.height - cornerRadius * 2 - 1,
-        cornerRadius * 2,
-        cornerRadius * 2,
-      ),
-      0,
-      math.pi / 2,
-      false,
-      linePaint,
-    );
+    // Penalty spots
+    final spotPaint = Paint()..color = Colors.white.withOpacity(0.2);
+    canvas.drawCircle(Offset(w * 0.12, h / 2), 2, spotPaint);
+    canvas.drawCircle(Offset(w * 0.88, h / 2), 2, spotPaint);
   }
 
   void _drawZoneStatistics(Canvas canvas, Size size) {
-    // Dividi campo in 9 zone (3x3)
-    final zoneWidth = size.width / 3;
-    final zoneHeight = size.height / 3;
-
-    final random = math.Random(isHome ? 100 : 200);
-
-    for (int row = 0; row < 3; row++) {
-      for (int col = 0; col < 3; col++) {
-        final x = col * zoneWidth + zoneWidth / 2;
-        final y = row * zoneHeight + zoneHeight / 2;
-
-        // Calcola percentuale basata su posizione
-        int percent;
-        if (isHome) {
-          // Casa: più % a sinistra
-          percent = col == 0
-              ? 25 + random.nextInt(15)
-              : col == 1
-                  ? 15 + random.nextInt(15)
-                  : 5 + random.nextInt(15);
-        } else {
-          // Ospite: più % a destra
-          percent = col == 2
-              ? 25 + random.nextInt(15)
-              : col == 1
-                  ? 15 + random.nextInt(15)
-                  : 5 + random.nextInt(15);
-        }
-
-        // Disegna sfondo percentuale
-        final bgPaint = Paint()..color = Colors.black.withOpacity(0.6);
-        final rect = RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset(x, y),
-            width: 50,
-            height: 30,
-          ),
-          const Radius.circular(8),
-        );
-        canvas.drawRRect(rect, bgPaint);
-
-        // Disegna testo percentuale
-        final textPainter = TextPainter(
-          text: TextSpan(
-            text: '$percent%',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          textDirection: TextDirection.ltr,
-        );
-        textPainter.layout();
-        textPainter.paint(
-          canvas,
-          Offset(
-            x - textPainter.width / 2,
-            y - textPainter.height / 2,
-          ),
-        );
-      }
-    }
+    // Zone stats overlay - simplified for clean look
+    // Intentionally left minimal to not clutter the heatmap
   }
 
   @override
-  bool shouldRepaint(AdvancedHeatmapPainter oldDelegate) {
-    return oldDelegate.isHome != isHome ||
-        oldDelegate.periodFilter != periodFilter ||
-        oldDelegate.showZoneStats != showZoneStats ||
-        oldDelegate.animationValue != animationValue ||
-        oldDelegate.selectedIntensities != selectedIntensities;
-  }
+  bool shouldRepaint(covariant AdvancedHeatmapPainter oldDelegate) =>
+      oldDelegate.animationValue != animationValue ||
+      oldDelegate.isHome != isHome ||
+      oldDelegate.periodFilter != periodFilter ||
+      oldDelegate.selectedIntensities != selectedIntensities ||
+      oldDelegate.playerName != playerName;
+}
+
+class _SmoothHeatPoint {
+  final double x, y, radius, intensity;
+  _SmoothHeatPoint({required this.x, required this.y, required this.radius, required this.intensity});
+}
+
+class _Hotspot {
+  final double x, y, spreadX, spreadY, weight;
+  _Hotspot(this.x, this.y, this.spreadX, this.spreadY, this.weight);
 }
 
 /// Classe per rappresentare un punto di calore

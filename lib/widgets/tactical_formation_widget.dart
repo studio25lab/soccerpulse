@@ -1,6 +1,7 @@
 // lib/widgets/tactical_formation_widget.dart
 
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/soccer_match.dart';
@@ -137,7 +138,7 @@ class _TacticalFormationWidgetState extends State<TacticalFormationWidget> {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          hintText: 'Cerca in entrambe le squadre...',
+          hintText: tr(context, 'Cerca in entrambe le squadre...'),
           hintStyle: TextStyle(fontSize: 14, color: Colors.grey[600]),
           prefixIcon: Icon(Icons.search, color: theme.primaryColor),
           suffixIcon: _searchQuery.isNotEmpty
@@ -228,9 +229,9 @@ class _TacticalFormationWidgetState extends State<TacticalFormationWidget> {
         child: Column(
           children: [
             Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
-              'Nessun giocatore trovato',
+              tr(context, 'Nessun giocatore trovato'),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -570,7 +571,7 @@ class _TacticalFormationWidgetState extends State<TacticalFormationWidget> {
               child: starters.isEmpty
                   ? Center(
                       child: Text(
-                        'Formazione non disponibile',
+                        tr(context, 'Formazione non disponibile'),
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.7),
                           fontSize: 16,
@@ -811,10 +812,10 @@ class _TacticalFormationWidgetState extends State<TacticalFormationWidget> {
     if (bench.isEmpty) {
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24),
         child: Center(
           child: Text(
-            'Nessun sostituto disponibile',
+            tr(context, 'Nessun sostituto disponibile'),
             style: TextStyle(color: Colors.grey[600], fontSize: 14),
           ),
         ),
@@ -1036,7 +1037,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                 const Icon(Icons.check_circle, color: Colors.white),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text('Notifiche salvate per ${widget.player.name}!'),
+                  child: Text('${tr(context, 'Notifiche salvate per')} ${widget.player.name}!'),
                 ),
               ],
             ),
@@ -1052,7 +1053,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Errore nel salvataggio: $e'),
+            content: Text('${tr(context, 'Errore nel salvataggio:')} $e'),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
           ),
@@ -1086,9 +1087,9 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CircularProgressIndicator(color: theme.primaryColor),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16),
                           Text(
-                            'Caricamento preferenze...',
+                            tr(context, 'Caricamento preferenze...'),
                             style: TextStyle(color: Colors.grey[600]),
                           ),
                         ],
@@ -1157,7 +1158,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                       backgroundColor: theme.primaryColor,
                       foregroundColor: Colors.white,
                     ),
-                    tooltip: 'Confronta giocatori',
+                    tooltip: tr(context, tr(context, 'Confronta giocatori')),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
@@ -1285,7 +1286,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
           ],
         ),
         labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-        tabs: const [
+        tabs: [
           Tab(text: 'Tutto'),
           Tab(text: 'Shot'),
           Tab(text: 'Pass'),
@@ -1297,7 +1298,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
             children: [
               Icon(Icons.notifications, size: 16),
               SizedBox(width: 4),
-              Text('Notifiche'),
+              Text(tr(context, 'Notifiche')),
             ],
           )),
           Tab(
@@ -1306,7 +1307,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
             children: [
               Icon(Icons.show_chart, size: 16),
               SizedBox(width: 4),
-              Text('Prestazioni'),
+              Text(tr(context, 'Prestazioni'),
             ],
           )),
           Tab(
@@ -1315,7 +1316,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
             children: [
               Icon(Icons.person, size: 16),
               SizedBox(width: 4),
-              Text('Profilo'),
+              Text(tr(context, 'Profilo')),
             ],
           )),
         ],
@@ -1341,54 +1342,54 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
         _buildStatItem('Assists', widget.player.assists?.toString() ?? '0',
             Icons.assist_walker, theme, offensivaColor),
         _buildStatItem('xA', '0.15', Icons.trending_up, theme, offensivaColor),
-        const Divider(height: 32),
+        Divider(height: 32),
         _buildStatItem(
             'Contributi difesa', '12', Icons.shield, theme, difensivaColor),
-        _buildStatItem('Contrasti (vinti)', '${widget.player.tackles ?? 0} (1)',
+        _buildStatItem(tr(context, 'Contrasti (vinti)'), '${widget.player.tackles ?? 0} (1)',
             Icons.sports_kabaddi, theme, difensivaColor),
         _buildStatItem(
-            'Intercetti',
+            tr(context, 'Intercetti'),
             widget.player.interceptions?.toString() ?? '0',
             Icons.block,
             theme,
             difensivaColor),
         _buildStatItem(
-            'Chiusure difensive', '11', Icons.lock, theme, difensivaColor),
-        _buildStatItem('Tiri respinti', '1', Icons.sports_volleyball, theme,
+            tr(context, 'Chiusure difensive'), '11', Icons.lock, theme, difensivaColor),
+        _buildStatItem(tr(context, 'Tiri respinti'), '1', Icons.sports_volleyball, theme,
             difensivaColor),
         _buildStatItem('Recuperi', '2', Icons.cached, theme, difensivaColor),
-        const Divider(height: 32),
-        _buildStatItem('Duelli a terra (vinti)', '6 (1)', Icons.sports_mma,
+        Divider(height: 32),
+        _buildStatItem(tr(context, 'Duelli a terra (vinti)'), '6 (1)', Icons.sports_mma,
             theme, duelliColor),
-        _buildStatItem('Duelli aerei (vinti)', '6 (1)', Icons.flight_takeoff,
+        _buildStatItem(tr(context, 'Duelli aerei (vinti)'), '6 (1)', Icons.flight_takeoff,
             theme, duelliColor),
-        _buildStatItem('Falli', '3', Icons.warning, theme, duelliColor),
-        _buildStatItem('Dribbling (riusciti)', '0 (0)', Icons.directions_run,
+        _buildStatItem(tr(context, 'Falli'), '3', Icons.warning, theme, duelliColor),
+        _buildStatItem(tr(context, 'Dribbling (riusciti)'), '0 (0)', Icons.directions_run,
             theme, duelliColor),
-        const Divider(height: 32),
+        Divider(height: 32),
         _buildStatItem(
-            'Passaggi (precisi)',
+            tr(context, 'Passaggi (precisi)'),
             '${widget.player.passes ?? 0} (29/35 83%)',
             Icons.sync_alt,
             theme,
             passaggiColor),
         _buildStatItem(
-            'Passaggi chiave', '0', Icons.vpn_key, theme, passaggiColor),
-        _buildStatItem('Cross (precisi)', '0 (0)', Icons.filter_tilt_shift,
+            tr(context, 'Passaggi chiave'), '0', Icons.vpn_key, theme, passaggiColor),
+        _buildStatItem(tr(context, 'Cross (precisi)'), '0 (0)', Icons.filter_tilt_shift,
             theme, passaggiColor),
-        _buildStatItem('Passaggi metà avversaria', '5/10 (50%)',
+        _buildStatItem(tr(context, 'Passaggi metà avversaria'), '5/10 (50%)',
             Icons.trending_up, theme, passaggiColor),
-        _buildStatItem('Passaggi propria metà', '24/25 (96%)',
+        _buildStatItem(tr(context, 'Passaggi propria metà'), '24/25 (96%)',
             Icons.trending_down, theme, passaggiColor),
-        const Divider(height: 32),
-        _buildStatItem('Tocchi', '54', Icons.touch_app, theme, altroColor),
+        Divider(height: 32),
+        _buildStatItem(tr(context, 'Tocchi'), '54', Icons.touch_app, theme, altroColor),
         _buildStatItem(
             'Palla persa', '7', Icons.remove_circle_outline, theme, altroColor),
-        _buildStatItem('Tiri (in porta)', '${widget.player.shots ?? 0} (0)',
+        _buildStatItem(tr(context, 'Tiri (in porta)'), '${widget.player.shots ?? 0} (0)',
             Icons.sports, theme, altroColor),
         _buildStatItem(
-            'Tiri totali', '1', Icons.sports_baseball, theme, altroColor),
-        _buildStatItem('Tiri respinti', '1', Icons.block, theme, altroColor),
+            tr(context, 'Tiri totali'), '1', Icons.sports_baseball, theme, altroColor),
+        _buildStatItem(tr(context, 'Tiri respinti'), '1', Icons.block, theme, altroColor),
       ],
     );
   }
@@ -1401,32 +1402,32 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
             Icons.sports_soccer, theme, offensivaColor),
         _buildStatItem('xG', '0.25', Icons.query_stats, theme, offensivaColor),
         _buildStatItem(
-            'Tiri totali', '1', Icons.sports_baseball, theme, offensivaColor),
+            tr(context, 'Tiri totali'), '1', Icons.sports_baseball, theme, offensivaColor),
         _buildStatItem(
-            'Tiri in porta', '0', Icons.sports, theme, offensivaColor),
+            tr(context, 'Tiri in porta'), '0', Icons.sports, theme, offensivaColor),
         _buildStatItem(
-            'Tiri respinti', '1', Icons.block, theme, offensivaColor),
+            tr(context, 'Tiri respinti'), '1', Icons.block, theme, offensivaColor),
       ],
     );
   }
 
   Widget _buildPassTab(ThemeData theme, bool isDark) {
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       children: [
-        _buildStatItem('Passaggi totali', '${widget.player.passes ?? 0}',
+        _buildStatItem(tr(context, 'Passaggi totali'), '${widget.player.passes ?? 0}',
             Icons.sync_alt, theme, passaggiColor),
-        _buildStatItem('Passaggi precisi', '29/35 (83%)', Icons.check_circle,
+        _buildStatItem(tr(context, 'Passaggi precisi'), '29/35 (83%)', Icons.check_circle,
             theme, passaggiColor),
         _buildStatItem(
-            'Passaggi chiave', '0', Icons.vpn_key, theme, passaggiColor),
+            tr(context, 'Passaggi chiave'), '0', Icons.vpn_key, theme, passaggiColor),
         _buildStatItem(
             'Cross', '0 (0)', Icons.filter_tilt_shift, theme, passaggiColor),
-        _buildStatItem('Passaggi metà avversaria', '5/10 (50%)',
+        _buildStatItem(tr(context, 'Passaggi metà avversaria'), '5/10 (50%)',
             Icons.trending_up, theme, passaggiColor),
-        _buildStatItem('Passaggi propria metà', '24/25 (96%)',
+        _buildStatItem(tr(context, 'Passaggi propria metà'), '24/25 (96%)',
             Icons.trending_down, theme, passaggiColor),
-        _buildStatItem('Passaggi lunghi', '2/3 (67%)', Icons.arrow_forward,
+        _buildStatItem(tr(context, 'Passaggi lunghi'), '2/3 (67%)', Icons.arrow_forward,
             theme, passaggiColor),
       ],
     );
@@ -1438,15 +1439,15 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
       children: [
         _buildStatItem(
             'Dribbling', '0', Icons.directions_run, theme, duelliColor),
-        _buildStatItem('Dribbling riusciti', '0 (0%)', Icons.check_circle,
+        _buildStatItem(tr(context, 'Dribbling riusciti'), '0 (0%)', Icons.check_circle,
             theme, duelliColor),
-        _buildStatItem('Tocchi', '54', Icons.touch_app, theme, duelliColor),
+        _buildStatItem(tr(context, 'Tocchi'), '54', Icons.touch_app, theme, duelliColor),
         _buildStatItem('Palla persa', '7', Icons.remove_circle_outline, theme,
             duelliColor),
         _buildStatItem(
-            'Duelli a terra', '6 (1)', Icons.sports_mma, theme, duelliColor),
+            tr(context, 'Duelli a terra'), '6 (1)', Icons.sports_mma, theme, duelliColor),
         _buildStatItem(
-            'Duelli aerei', '6 (1)', Icons.flight_takeoff, theme, duelliColor),
+            tr(context, 'Duelli aerei'), '6 (1)', Icons.flight_takeoff, theme, duelliColor),
       ],
     );
   }
@@ -1457,25 +1458,25 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
       children: [
         _buildStatItem(
             'Contributi difesa', '12', Icons.shield, theme, difensivaColor),
-        _buildStatItem('Contrasti', '${widget.player.tackles ?? 0}',
+        _buildStatItem(tr(context, 'Contrasti'), '${widget.player.tackles ?? 0}',
             Icons.sports_kabaddi, theme, difensivaColor),
-        _buildStatItem('Contrasti vinti', '1 (1)', Icons.emoji_events, theme,
+        _buildStatItem(tr(context, 'Contrasti vinti'), '1 (1)', Icons.emoji_events, theme,
             difensivaColor),
         _buildStatItem(
-            'Intercetti',
+            tr(context, 'Intercetti'),
             widget.player.interceptions?.toString() ?? '0',
             Icons.block,
             theme,
             difensivaColor),
         _buildStatItem(
-            'Chiusure difensive', '11', Icons.lock, theme, difensivaColor),
-        _buildStatItem('Tiri respinti', '1', Icons.sports_volleyball, theme,
+            tr(context, 'Chiusure difensive'), '11', Icons.lock, theme, difensivaColor),
+        _buildStatItem(tr(context, 'Tiri respinti'), '1', Icons.sports_volleyball, theme,
             difensivaColor),
         _buildStatItem('Recuperi', '2', Icons.cached, theme, difensivaColor),
-        _buildStatItem('Falli', '3', Icons.warning, theme, difensivaColor),
+        _buildStatItem(tr(context, 'Falli'), '3', Icons.warning, theme, difensivaColor),
         if (widget.player.yellowCards != null && widget.player.yellowCards! > 0)
           _buildStatItem(
-              'Cartellini gialli',
+              tr(context, 'Cartellini gialli'),
               widget.player.yellowCards.toString(),
               Icons.square,
               theme,
@@ -1512,9 +1513,9 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
             children: [
               Icon(Icons.notifications_active,
                   size: 48, color: theme.primaryColor),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Text(
-                'Notifiche Personalizzate',
+                tr(context, 'Notifiche Personalizzate'),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -1537,7 +1538,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
               ? Icons.notifications_off
               : Icons.notifications_active),
           label: Text(
-            allEnabled ? 'Disattiva tutte' : 'Attiva tutte',
+            allEnabled ? tr(context, 'Disattiva tutte') : 'Attiva tutte',
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           style: ElevatedButton.styleFrom(
@@ -1565,56 +1566,56 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
             offensivaColor,
             isDark),
         _buildNotificationToggle(
-            'Cartellino giallo',
+            tr(context, 'Cartellino giallo'),
             'Ricevi notifica per ammonizioni',
             Icons.square,
             'yellowCard',
-            const Color(0xFFFFC107),
+            Color(0xFFFFC107),
             isDark),
         _buildNotificationToggle(
-            'Cartellino rosso',
+            tr(context, 'Cartellino rosso'),
             'Ricevi notifica per espulsioni',
             Icons.square,
             'redCard',
-            const Color(0xFFE53935),
+            Color(0xFFE53935),
             isDark),
         _buildNotificationToggle(
-            'Sostituzioni',
+            tr(context, 'Sostituzioni'),
             'Ricevi notifica quando entra/esce',
             Icons.swap_horiz,
             'substitution',
-            const Color(0xFF2196F3),
+            Color(0xFF2196F3),
             isDark),
         _buildNotificationToggle(
-            'Tiri in porta',
+            tr(context, 'Tiri in porta'),
             'Ricevi notifica per tiri in porta',
             Icons.sports,
             'shots',
             passaggiColor,
             isDark),
         _buildNotificationToggle(
-            'Contrasti vinti',
+            tr(context, 'Contrasti vinti'),
             'Ricevi notifica per contrasti importanti',
             Icons.sports_kabaddi,
             'tackles',
             difensivaColor,
             isDark),
         _buildNotificationToggle(
-            'Passaggi chiave',
+            tr(context, 'Passaggi chiave'),
             'Ricevi notifica per passaggi decisivi',
             Icons.vpn_key,
             'passes',
             passaggiColor,
             isDark),
         _buildNotificationToggle(
-            'Falli commessi',
+            tr(context, 'Falli commessi'),
             'Ricevi notifica quando commette un fallo',
             Icons.warning_amber,
             'foulsCommitted',
             duelliColor,
             isDark),
         _buildNotificationToggle(
-            'Falli subiti',
+            tr(context, 'Falli subiti'),
             'Ricevi notifica quando subisce un fallo',
             Icons.personal_injury,
             'foulsSuffered',
@@ -1637,7 +1638,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
               Icon(Icons.save),
               SizedBox(width: 8),
               Text(
-                'Salva preferenze notifiche',
+                tr(context, 'Salva preferenze notifiche'),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
@@ -1671,9 +1672,9 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
             child: Column(
               children: [
                 Icon(Icons.account_circle, size: 64, color: theme.primaryColor),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Text(
-                  'Profilo Completo',
+                  tr(context, 'Profilo Completo'),
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -1689,9 +1690,9 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                 const SizedBox(height: 20),
                 ElevatedButton.icon(
                   onPressed: () => _openFullProfile(),
-                  icon: const Icon(Icons.person),
-                  label: const Text(
-                    'Vedi Profilo Completo',
+                  icon: Icon(Icons.person),
+                  label: Text(
+                    tr(context, 'Vedi Profilo Completo'),
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -1708,9 +1709,9 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           _buildQuickInfo(
-              'Informazioni',
+              tr(context, 'Informazioni'),
               [
                 {'icon': Icons.cake, 'label': 'Età', 'value': '27 anni'},
                 {'icon': Icons.height, 'label': 'Altezza', 'value': '183 cm'},
@@ -1956,7 +1957,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Goal & Assist',
+                      tr(context, 'Goal & Assist'),
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -2078,7 +2079,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Forma Recente',
+                      tr(context, 'Forma Recente'),
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -2103,17 +2104,17 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                 case 'W':
                   color = const Color(0xFF00C853);
                   icon = Icons.check_circle;
-                  label = 'V';
+                  label = formInitial(context, 'W');
                   break;
                 case 'D':
                   color = const Color(0xFFFFC107);
                   icon = Icons.remove_circle;
-                  label = 'P';
+                  label = formInitial(context, 'D');
                   break;
                 case 'L':
                   color = const Color(0xFFE53935);
                   icon = Icons.cancel;
-                  label = 'S';
+                  label = formInitial(context, 'L');
                   break;
                 default:
                   color = Colors.grey;
@@ -2295,12 +2296,12 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'vs Media Campionato',
+                      tr(context, 'vs Media Campionato'),
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'Confronto prestazioni',
+                      tr(context, 'Confronto prestazioni'),
                       style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],

@@ -1,6 +1,7 @@
 // lib/pages/head_to_head_screen.dart
 
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -102,7 +103,7 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Errore nel caricamento dei dati';
+          _errorMessage = tr(context, 'Errore nel caricamento dei dati');
           _isLoading = false;
         });
       }
@@ -121,10 +122,10 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
         slivers: [
           _buildSliverAppBar(theme, isDark, s),
           if (_isLoading)
-            const SliverFillRemaining(
+            SliverFillRemaining(
               child: Center(
                 child: LoadingStateWidget(
-                  message: 'Caricamento confronto diretto...',
+                  message: tr(context, 'Caricamento confronto diretto...'),
                   style: LoadingStyle.pulse,
                 ),
               ),
@@ -195,9 +196,9 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
                         else
                           const Icon(Icons.sports_soccer,
                               size: 80, color: Colors.white),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12),
                         Text(
-                          widget.team1Name ?? 'Squadra 1',
+                          widget.team1Name ?? tr(context, 'Squadra 1'),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -250,7 +251,7 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
                         else
                           const Icon(Icons.sports_soccer,
                               size: 80, color: Colors.white),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12),
                         Text(
                           widget.team2Name ?? 'Squadra 2',
                           style: const TextStyle(
@@ -297,7 +298,7 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Riepilogo Statistiche',
+                        tr(context, 'Riepilogo Statistiche'),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -332,20 +333,20 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
                     children: [
                       _buildStatColumn(
                         value: team1Wins.toString(),
-                        label: 'Vittorie',
-                        subtitle: widget.team1Name ?? 'Squadra 1',
+                        label: tr(context, 'Vittorie'),
+                        subtitle: widget.team1Name ?? tr(context, 'Squadra 1'),
                         color: theme.primaryColor,
                       ),
                       _buildStatColumn(
                         value: draws.toString(),
-                        label: 'Pareggi',
+                        label: tr(context, 'Pareggi'),
                         subtitle: '',
                         color: Colors.orange,
                       ),
                       _buildStatColumn(
                         value: team2Wins.toString(),
-                        label: 'Vittorie',
-                        subtitle: widget.team2Name ?? 'Squadra 2',
+                        label: tr(context, 'Vittorie'),
+                        subtitle: widget.team2Name ?? tr(context, 'Squadra 2'),
                         color: Colors.red,
                       ),
                     ],
@@ -482,7 +483,7 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Forma Recente (ultime 5)',
+                tr(context, 'Forma Recente (ultime 5)'),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -497,7 +498,7 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
                   Expanded(
                     flex: 2,
                     child: Text(
-                      widget.team1Name ?? 'Squadra 1',
+                      widget.team1Name ?? tr(context, 'Squadra 1'),
                       style: const TextStyle(fontSize: 14),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -514,7 +515,7 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
                   Expanded(
                     flex: 2,
                     child: Text(
-                      widget.team2Name ?? 'Squadra 2',
+                      widget.team2Name ?? tr(context, 'Squadra 2'),
                       style: const TextStyle(fontSize: 14),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -597,9 +598,9 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
                   size: 64,
                   color: Colors.grey[400],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Text(
-                  'Nessun confronto diretto trovato',
+                  tr(context, 'Nessun confronto diretto trovato'),
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey[600],
@@ -835,9 +836,9 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
             size: 64,
             color: Colors.red,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
-            _errorMessage ?? 'Errore sconosciuto',
+            _errorMessage ?? tr(context, 'Errore sconosciuto'),
             style: const TextStyle(fontSize: 16),
             textAlign: TextAlign.center,
           ),

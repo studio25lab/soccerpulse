@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:math' as math;
@@ -6,10 +7,12 @@ import '../models/player_detail.dart';
 
 class PlayerDetailScreen extends StatefulWidget {
   final PlayerDetail player;
+  final bool isLive;
 
   const PlayerDetailScreen({
     Key? key,
     required this.player,
+    this.isLive = false,
   }) : super(key: key);
 
   @override
@@ -19,6 +22,14 @@ class PlayerDetailScreen extends StatefulWidget {
 class _PlayerDetailScreenState extends State<PlayerDetailScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
+  // Heatmap & Pass Map expand state
+  bool _heatmapExpanded = false;
+  bool _passMapExpanded = false;
+
+  // Pass Map filters
+  String _selectedPassType = 'Pass';
+  String _selectedAccuracy = 'Tutti i passaggi';
 
   @override
   void initState() {
@@ -84,15 +95,46 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
                 onPressed: () => Navigator.pop(context),
               ),
               const Spacer(),
+              if (widget.isLive)
+                Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      const Text(
+                        'LIVE',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.compare_arrows,
+                  icon: Icon(Icons.compare_arrows,
                       color: Colors.white, size: 28),
-                  tooltip: 'Confronta giocatori',
+                  tooltip: tr(context, tr(context, 'Confronta giocatori')),
                   onPressed: () {
                     _showPlayerComparisonDialog(context);
                   },
@@ -207,11 +249,11 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildStatBubble('Partite', widget.player.matches.toString()),
+              _buildStatBubble(tr(context, 'Partite'), widget.player.matches.toString()),
               _buildStatBubble('Gol', widget.player.goals.toString()),
               _buildStatBubble('Assist', widget.player.assists.toString()),
               _buildStatBubble(
@@ -261,9 +303,9 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
         labelColor: widget.player.teamColor,
         unselectedLabelColor: Colors.grey,
         indicatorColor: widget.player.teamColor,
-        tabs: const [
+        tabs: [
           Tab(text: 'Panoramica'),
-          Tab(text: 'Statistiche'),
+          Tab(text: tr(context, 'Statistiche')),
           Tab(text: 'Info'),
         ],
       ),
@@ -281,9 +323,426 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
           _buildRecentFormSection(theme, isDark),
           const SizedBox(height: 24),
           _buildSkillsRadarSection(theme, isDark),
+          const SizedBox(height: 24),
+
+          // NEW: Heatmap Section
+          _buildHeatmapSection(isDark),
+          const SizedBox(height: 24),
+
+          // NEW: Pass Map Section
+          _buildPassMapSection(isDark),
         ],
       ),
     );
+  }
+
+  // NEW: Heatmap Section
+  Widget _buildHeatmapSection(bool isDark) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[850] : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              setState(() {
+                _heatmapExpanded = !_heatmapExpanded;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: widget.player.teamColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Image.asset(
+                      'assets/icons/field_icon.png',
+                      color: widget.player.teamColor,
+                      errorBuilder: (_, __, ___) => Icon(
+                        Icons.grid_on,
+                        color: widget.player.teamColor,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      tr(context, 'Mappa di calore della partita'),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    _heatmapExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_heatmapExpanded) ...[
+            Divider(height: 1, color: Colors.grey.withOpacity(0.2)),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  // Direction indicator (like in screenshot)
+                  Row(
+                    children: [
+                      const Spacer(),
+                      Icon(Icons.arrow_back, size: 32, color: Colors.grey[600]),
+                      const Spacer(),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // Heatmap
+                  AspectRatio(
+                    aspectRatio: 1.4,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CustomPaint(
+                          painter: HeatmapPainter(
+                            positions: widget.player.heatmapPositions ??
+                                _generateMockHeatmapPositions(),
+                            isDark: isDark,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // NEW: Pass Map Section
+  Widget _buildPassMapSection(bool isDark) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[850] : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              setState(() {
+                _passMapExpanded = !_passMapExpanded;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: widget.player.teamColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.show_chart,
+                      color: widget.player.teamColor,
+                      size: 20,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      tr(context, 'Statistiche'),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    _passMapExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_passMapExpanded) ...[
+            Divider(height: 1, color: Colors.grey.withOpacity(0.2)),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  // Type filters (Shot, Pass, Drib, Def)
+                  Row(
+                    children: [
+                      _buildPassTypeChip('Shot', isDark),
+                      const SizedBox(width: 8),
+                      _buildPassTypeChip('Pass', isDark),
+                      const SizedBox(width: 8),
+                      _buildPassTypeChip('Drib', isDark),
+                      const SizedBox(width: 8),
+                      _buildPassTypeChip('Def', isDark),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Accuracy filters
+                  Row(
+                    children: [
+                      _buildAccuracyChip('Tutti i passaggi', isDark),
+                      const SizedBox(width: 8),
+                      _buildAccuracyChip('Accurato', isDark),
+                      const SizedBox(width: 8),
+                      _buildAccuracyChip('Non accurato', isDark),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Pass Map
+                  AspectRatio(
+                    aspectRatio: 1.4,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CustomPaint(
+                          painter: PassMapPainter(
+                            passes: _getFilteredPasses(),
+                            isDark: isDark,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Pass statistics
+                  _buildPassStatistics(isDark),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPassTypeChip(String label, bool isDark) {
+    final isSelected = _selectedPassType == label;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedPassType = label;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? widget.player.teamColor
+                : (isDark ? Colors.grey[800] : Colors.grey[200]),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: isSelected ? Colors.white : Colors.grey[600],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAccuracyChip(String label, bool isDark) {
+    final isSelected = _selectedAccuracy == label;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedAccuracy = label;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? widget.player.teamColor
+                : (isDark ? Colors.grey[800] : Colors.grey[200]),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: isSelected ? Colors.white : Colors.grey[600],
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPassStatistics(bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[800] : Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildPassStatItem(
+                  'Assists', widget.player.assists.toString(), isDark),
+              _buildPassStatItem(
+                  tr(context, 'Assist previsti (xA)'),
+                  widget.player.expectedAssists?.toStringAsFixed(2) ?? '0.00',
+                  isDark),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildPassStatItem('Grandi occasioni create',
+                  widget.player.bigChancesCreated?.toString() ?? '0', isDark),
+              _buildPassStatItem(tr(context, 'Passaggi chiave'),
+                  widget.player.keyPasses?.toString() ?? '0', isDark),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildPassStatItem(
+                    'Cross (prec.)',
+                    '${widget.player.totalCrosses ?? 0} (${widget.player.accurateCrosses ?? 0})',
+                    isDark),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPassStatItem(String label, String value, bool isDark) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<PassData> _getFilteredPasses() {
+    final allPasses = widget.player.passes ?? _generateMockPasses();
+
+    var filtered = allPasses;
+
+    // Filter by accuracy
+    if (_selectedAccuracy == 'Accurato') {
+      filtered = filtered.where((p) => p.isAccurate).toList();
+    } else if (_selectedAccuracy == 'Non accurato') {
+      filtered = filtered.where((p) => !p.isAccurate).toList();
+    }
+
+    return filtered;
+  }
+
+  List<PassData> _generateMockPasses() {
+    final random = math.Random(42);
+    return List.generate(35, (index) {
+      final fromX = 0.2 + random.nextDouble() * 0.6;
+      final fromY = 0.2 + random.nextDouble() * 0.6;
+      final toX = (fromX + (random.nextDouble() - 0.5) * 0.4).clamp(0.1, 0.9);
+      final toY = (fromY + (random.nextDouble() - 0.5) * 0.4).clamp(0.1, 0.9);
+      final isAccurate = random.nextDouble() > 0.2;
+
+      return PassData(
+        from: Offset(fromX, fromY),
+        to: Offset(toX, toY),
+        isAccurate: isAccurate,
+      );
+    });
+  }
+
+  List<Offset> _generateMockHeatmapPositions() {
+    final random = math.Random(42);
+    return List.generate(180, (index) {
+      final x = 0.25 + random.nextDouble() * 0.5;
+      final y = 0.2 + random.nextDouble() * 0.6;
+      return Offset(x, y);
+    });
   }
 
   Widget _buildPerformanceSection(ThemeData theme, bool isDark) {
@@ -313,11 +772,11 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           _buildPerformanceBar(
-              'Precisione passaggi', widget.player.passingAccuracy, '%'),
-          const SizedBox(height: 16),
-          _buildPerformanceBar('Tiri per goal', widget.player.shotsPerGoal, ''),
+              tr(context, 'Precisione passaggi'), widget.player.passingAccuracy, '%'),
+          SizedBox(height: 16),
+          _buildPerformanceBar(tr(context, 'Tiri per goal'), widget.player.shotsPerGoal, ''),
           const SizedBox(height: 16),
           _buildPerformanceBar('Minuti per goal',
               widget.player.minutesPerGoal.toStringAsFixed(1), ''),
@@ -387,9 +846,9 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
           Row(
             children: [
               Icon(Icons.bar_chart, color: widget.player.teamColor),
-              const SizedBox(width: 8),
-              const Text(
-                'Forma Recente',
+              SizedBox(width: 8),
+              Text(
+                tr(context, 'Forma Recente'),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
@@ -467,8 +926,6 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
 
   Widget _buildRatingsChart() {
     final ratings = widget.player.recentRatings;
-    final maxRating = ratings.isNotEmpty ? ratings.reduce(math.max) : 10.0;
-    final minRating = ratings.isNotEmpty ? ratings.reduce(math.min) : 0.0;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -480,7 +937,6 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: ratings.asMap().entries.map((entry) {
-            final index = entry.key;
             final rating = entry.value;
             final normalizedHeight = ((rating - 5) / 5).clamp(0.0, 1.0);
             final barHeight = 20 + (normalizedHeight * 60);
@@ -559,9 +1015,9 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
           Row(
             children: [
               Icon(Icons.stars, color: widget.player.teamColor),
-              const SizedBox(width: 8),
-              const Text(
-                'Abilità',
+              SizedBox(width: 8),
+              Text(
+                tr(context, 'Abilità'),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
@@ -595,23 +1051,23 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
             [
               _buildStatRow('Gol', widget.player.goals.toString()),
               _buildStatRow('Assist', widget.player.assists.toString()),
-              _buildStatRow('Tiri', widget.player.shots.toString()),
+              _buildStatRow(tr(context, 'Tiri'), widget.player.shots.toString()),
               _buildStatRow(
-                  'Tiri in porta', widget.player.shotsOnTarget.toString()),
+                  tr(context, 'Tiri in porta'), widget.player.shotsOnTarget.toString()),
               _buildStatRow('Dribbling', widget.player.dribbles.toString()),
-              _buildStatRow('Gol decisivi',
+              _buildStatRow(tr(context, 'Gol decisivi'),
                   widget.player.decisiveGoals?.toString() ?? '0'),
             ],
             isDark,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           _buildStatsCard(
-            'Difesa',
+            tr(context, 'Difesa'),
             [
-              _buildStatRow('Contrasti', widget.player.tackles.toString()),
+              _buildStatRow(tr(context, 'Contrasti'), widget.player.tackles.toString()),
               _buildStatRow(
-                  'Intercetti', widget.player.interceptions.toString()),
-              _buildStatRow('Duelli vinti', widget.player.duelsWon.toString()),
+                  tr(context, 'Intercetti'), widget.player.interceptions.toString()),
+              _buildStatRow(tr(context, 'Duelli vinti'), widget.player.duelsWon.toString()),
               if (widget.player.saves > 0)
                 _buildStatRow('Parate', widget.player.saves.toString()),
             ],
@@ -622,10 +1078,10 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
             'Disciplina',
             [
               _buildStatRow(
-                  'Cartellini gialli', widget.player.yellowCards.toString()),
+                  tr(context, 'Cartellini gialli'), widget.player.yellowCards.toString()),
               _buildStatRow(
-                  'Cartellini rossi', widget.player.redCards.toString()),
-              _buildStatRow('Falli commessi', widget.player.fouls.toString()),
+                  tr(context, 'Cartellini rossi'), widget.player.redCards.toString()),
+              _buildStatRow(tr(context, 'Falli commessi'), widget.player.fouls.toString()),
             ],
             isDark,
           ),
@@ -684,18 +1140,18 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
 
   Widget _buildInfoTab(ThemeData theme, bool isDark) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: Column(
         children: [
           _buildInfoCard(
-            'Informazioni Personali',
+            tr(context, 'Informazioni Personali'),
             [
               _buildInfoRow('Data di nascita', widget.player.birthDate),
               _buildInfoRow('Età', '${widget.player.age} anni'),
               _buildInfoRow('Nazionalità', widget.player.nationality),
               _buildInfoRow('Altezza', '${widget.player.height} cm'),
               _buildInfoRow('Peso', '${widget.player.weight} kg'),
-              _buildInfoRow('Piede preferito', widget.player.preferredFoot),
+              _buildInfoRow(tr(context, 'Piede preferito'), tr(context, widget.player.preferredFoot)),
             ],
             isDark,
           ),
@@ -767,8 +1223,8 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Carriera',
+          Text(
+            tr(context, 'Carriera'),
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
@@ -795,7 +1251,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          career['years'] as String,
+                          (career['years'] as String).replaceAll('Presente', tr(context, 'Presente')),
                           style:
                               const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
@@ -803,7 +1259,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
                     ),
                   ),
                   Text(
-                    '${career['matches']} partite, ${career['goals']} gol',
+                    '${career['matches']} ${tr(context, 'partite')}, ${career['goals']} ${tr(context, 'gol')}',
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
@@ -909,11 +1365,11 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
         averageRating: 6.5 + random.nextDouble() * 1.5,
         decisiveGoals: random.nextInt(5),
         skills: {
-          'Velocità': 50.0 + random.nextDouble() * 40,
+          tr(context, 'Velocità'): 50.0 + random.nextDouble() * 40,
           'Tiro': 50.0 + random.nextDouble() * 40,
-          'Passaggio': 50.0 + random.nextDouble() * 40,
+          tr(context, 'Passaggio'): 50.0 + random.nextDouble() * 40,
           'Dribbling': 50.0 + random.nextDouble() * 40,
-          'Difesa': 30.0 + random.nextDouble() * 50,
+          tr(context, 'Difesa'): 30.0 + random.nextDouble() * 50,
           'Fisico': 50.0 + random.nextDouble() * 40,
         },
         passingAccuracy: 70 + random.nextDouble() * 20,
@@ -937,9 +1393,377 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen>
     });
   }
 }
-// CONTINUA DA PARTE 1...
-// Questo file va DOPO la PARTE 1
 
+// Custom Painters
+class HeatmapPainter extends CustomPainter {
+  final List<Offset> positions;
+  final bool isDark;
+
+  HeatmapPainter({required this.positions, required this.isDark});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Draw field
+    final fieldPaint = Paint()
+      ..color = const Color(0xFF3B7544)
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fieldPaint);
+
+    // Draw field lines
+    final linePaint = Paint()
+      ..color = Colors.white.withOpacity(0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    // Outer border
+    canvas.drawRect(
+      Rect.fromLTWH(2, 2, size.width - 4, size.height - 4),
+      linePaint,
+    );
+
+    // Center line
+    canvas.drawLine(
+      Offset(size.width / 2, 0),
+      Offset(size.width / 2, size.height),
+      linePaint,
+    );
+
+    // Center circle
+    canvas.drawCircle(
+      Offset(size.width / 2, size.height / 2),
+      size.width * 0.08,
+      linePaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width / 2, size.height / 2),
+      2,
+      Paint()..color = Colors.white.withOpacity(0.5),
+    );
+
+    // Penalty areas
+    final penaltyWidth = size.width * 0.14;
+    final penaltyHeight = size.height * 0.35;
+    canvas.drawRect(
+      Rect.fromLTWH(
+          2, (size.height - penaltyHeight) / 2, penaltyWidth, penaltyHeight),
+      linePaint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(size.width - penaltyWidth - 2,
+          (size.height - penaltyHeight) / 2, penaltyWidth, penaltyHeight),
+      linePaint,
+    );
+
+    // 6-yard boxes
+    final sixYardWidth = size.width * 0.06;
+    final sixYardHeight = size.height * 0.18;
+    canvas.drawRect(
+      Rect.fromLTWH(
+          2, (size.height - sixYardHeight) / 2, sixYardWidth, sixYardHeight),
+      linePaint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(size.width - sixYardWidth - 2,
+          (size.height - sixYardHeight) / 2, sixYardWidth, sixYardHeight),
+      linePaint,
+    );
+
+    // Goal areas (dark rectangles)
+    final goalPaint = Paint()..color = const Color(0xFF2B5A34);
+    final goalWidth = 4.0;
+    final goalHeight = size.height * 0.12;
+    canvas.drawRect(
+      Rect.fromLTWH(0, (size.height - goalHeight) / 2, goalWidth, goalHeight),
+      goalPaint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(size.width - goalWidth, (size.height - goalHeight) / 2,
+          goalWidth, goalHeight),
+      goalPaint,
+    );
+
+    // Create heatmap grid
+    final gridSize = 28;
+    final cellWidth = size.width / gridSize;
+    final cellHeight = size.height / gridSize;
+    final heatGrid = List.generate(gridSize, (_) => List.filled(gridSize, 0));
+
+    // Count positions
+    for (final pos in positions) {
+      final x = (pos.dx * gridSize).floor().clamp(0, gridSize - 1);
+      final y = (pos.dy * gridSize).floor().clamp(0, gridSize - 1);
+      heatGrid[x][y]++;
+    }
+
+    // Find max count
+    int maxCount = 1;
+    for (final row in heatGrid) {
+      for (final count in row) {
+        if (count > maxCount) maxCount = count;
+      }
+    }
+
+    // Draw heatmap with blur
+    for (int x = 0; x < gridSize; x++) {
+      for (int y = 0; y < gridSize; y++) {
+        final count = heatGrid[x][y];
+        if (count > 0) {
+          final intensity = count / maxCount;
+          final color = _getHeatColor(intensity);
+
+          final rect = Rect.fromLTWH(
+            x * cellWidth,
+            y * cellHeight,
+            cellWidth,
+            cellHeight,
+          );
+
+          final heatPaint = Paint()
+            ..color = color
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+
+          canvas.drawRect(rect, heatPaint);
+        }
+      }
+    }
+  }
+
+  Color _getHeatColor(double intensity) {
+    // Gradiente giallo-arancione come screenshot
+    if (intensity < 0.2) return const Color(0xFF4CAF50).withOpacity(0.2);
+    if (intensity < 0.4) return const Color(0xFFCDDC39).withOpacity(0.4);
+    if (intensity < 0.6) return const Color(0xFFFFEB3B).withOpacity(0.6);
+    if (intensity < 0.8) return const Color(0xFFFF9800).withOpacity(0.75);
+    return const Color(0xFFFF5722).withOpacity(0.85);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class PassMapPainter extends CustomPainter {
+  final List<PassData> passes;
+  final bool isDark;
+
+  PassMapPainter({required this.passes, required this.isDark});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Draw field (same as heatmap)
+    final fieldPaint = Paint()
+      ..color = const Color(0xFF3B7544)
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fieldPaint);
+
+    // Draw field lines
+    final linePaint = Paint()
+      ..color = Colors.white.withOpacity(0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    canvas.drawRect(
+      Rect.fromLTWH(2, 2, size.width - 4, size.height - 4),
+      linePaint,
+    );
+
+    canvas.drawLine(
+      Offset(size.width / 2, 0),
+      Offset(size.width / 2, size.height),
+      linePaint,
+    );
+
+    canvas.drawCircle(
+      Offset(size.width / 2, size.height / 2),
+      size.width * 0.08,
+      linePaint,
+    );
+
+    // Penalty areas
+    final penaltyWidth = size.width * 0.14;
+    final penaltyHeight = size.height * 0.35;
+    canvas.drawRect(
+      Rect.fromLTWH(
+          2, (size.height - penaltyHeight) / 2, penaltyWidth, penaltyHeight),
+      linePaint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(size.width - penaltyWidth - 2,
+          (size.height - penaltyHeight) / 2, penaltyWidth, penaltyHeight),
+      linePaint,
+    );
+
+    // Draw passes
+    for (final pass in passes) {
+      final from =
+          Offset(pass.from.dx * size.width, pass.from.dy * size.height);
+      final to = Offset(pass.to.dx * size.width, pass.to.dy * size.height);
+
+      final passPaint = Paint()
+        ..color = pass.isAccurate
+            ? const Color(0xFF4CAF50).withOpacity(0.8)
+            : const Color(0xFFE53935).withOpacity(0.7)
+        ..strokeWidth = pass.isAccurate ? 2 : 1.5
+        ..style = PaintingStyle.stroke;
+
+      // Draw arrow line
+      canvas.drawLine(from, to, passPaint);
+
+      // Draw arrowhead
+      final angle = math.atan2(to.dy - from.dy, to.dx - from.dx);
+      final arrowSize = 7.0;
+      final path = Path()
+        ..moveTo(to.dx, to.dy)
+        ..lineTo(
+          to.dx - arrowSize * math.cos(angle - math.pi / 6),
+          to.dy - arrowSize * math.sin(angle - math.pi / 6),
+        )
+        ..moveTo(to.dx, to.dy)
+        ..lineTo(
+          to.dx - arrowSize * math.cos(angle + math.pi / 6),
+          to.dy - arrowSize * math.sin(angle + math.pi / 6),
+        );
+      canvas.drawPath(path, passPaint);
+
+      // Draw endpoint dot
+      canvas.drawCircle(
+          to,
+          3.5,
+          Paint()
+            ..color = pass.isAccurate
+                ? const Color(0xFF4CAF50)
+                : const Color(0xFFE53935));
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+// PARTE 2 - Da appendere dopo la PARTE 1
+// Questo codice va DOPO l'ultima riga della PARTE 1
+
+class RadarChartPainter extends CustomPainter {
+  final Map<String, double> skills;
+  final Color color;
+
+  RadarChartPainter({
+    required this.skills,
+    required this.color,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = math.min(size.width, size.height) / 2 - 40;
+    final skillNames = skills.keys.toList();
+    final skillValues = skills.values.toList();
+    final angleStep = (2 * math.pi) / skillNames.length;
+
+    final gridPaint = Paint()
+      ..color = Colors.grey.withOpacity(0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+
+    for (int i = 1; i <= 5; i++) {
+      final levelRadius = radius * (i / 5);
+      final path = Path();
+
+      for (int j = 0; j < skillNames.length; j++) {
+        final angle = j * angleStep - math.pi / 2;
+        final x = center.dx + levelRadius * math.cos(angle);
+        final y = center.dy + levelRadius * math.sin(angle);
+
+        if (j == 0) {
+          path.moveTo(x, y);
+        } else {
+          path.lineTo(x, y);
+        }
+      }
+      path.close();
+      canvas.drawPath(path, gridPaint);
+    }
+
+    for (int i = 0; i < skillNames.length; i++) {
+      final angle = i * angleStep - math.pi / 2;
+      final x = center.dx + radius * math.cos(angle);
+      final y = center.dy + radius * math.sin(angle);
+      canvas.drawLine(center, Offset(x, y), gridPaint);
+    }
+
+    final skillPath = Path();
+    for (int i = 0; i < skillNames.length; i++) {
+      final angle = i * angleStep - math.pi / 2;
+      final value = skillValues[i] / 100;
+      final x = center.dx + radius * value * math.cos(angle);
+      final y = center.dy + radius * value * math.sin(angle);
+
+      if (i == 0) {
+        skillPath.moveTo(x, y);
+      } else {
+        skillPath.lineTo(x, y);
+      }
+    }
+    skillPath.close();
+
+    final fillPaint = Paint()
+      ..color = color.withOpacity(0.3)
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(skillPath, fillPaint);
+
+    final strokePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    canvas.drawPath(skillPath, strokePaint);
+
+    for (int i = 0; i < skillNames.length; i++) {
+      final angle = i * angleStep - math.pi / 2;
+      final value = skillValues[i] / 100;
+      final x = center.dx + radius * value * math.cos(angle);
+      final y = center.dy + radius * value * math.sin(angle);
+
+      canvas.drawCircle(
+        Offset(x, y),
+        4,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill,
+      );
+    }
+
+    final textStyle = TextStyle(
+      color: Colors.grey[700],
+      fontSize: 12,
+      fontWeight: FontWeight.bold,
+    );
+
+    for (int i = 0; i < skillNames.length; i++) {
+      final angle = i * angleStep - math.pi / 2;
+      final labelRadius = radius + 25;
+      final x = center.dx + labelRadius * math.cos(angle);
+      final y = center.dy + labelRadius * math.sin(angle);
+
+      final textSpan = TextSpan(
+        text: skillNames[i],
+        style: textStyle,
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(x - textPainter.width / 2, y - textPainter.height / 2),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// COMPARISON DIALOG
 class _PlayerComparisonDialog extends StatefulWidget {
   final PlayerDetail currentPlayer;
   final List<PlayerDetail> suggestedPlayers;
@@ -1041,10 +1865,10 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
                   child: Icon(Icons.compare_arrows,
                       color: widget.currentPlayer.teamColor, size: 24),
                 ),
-                const SizedBox(width: 12),
-                const Expanded(
+                SizedBox(width: 12),
+                Expanded(
                   child: Text(
-                    'Confronta Giocatori',
+                    tr(context, 'Confronta Giocatori'),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -1130,7 +1954,7 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
                     color: widget.currentPlayer.teamColor,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.check, color: Colors.white, size: 14),
@@ -1169,7 +1993,7 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
                   color: widget.isDark ? Colors.white : Colors.black,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Cerca giocatore per nome o squadra...',
+                  hintText: tr(context, 'Cerca giocatore per nome o squadra...'),
                   hintStyle: TextStyle(color: Colors.grey[500]),
                   prefixIcon: Icon(
                     Icons.search,
@@ -1219,9 +2043,9 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
-              'Nessun giocatore trovato',
+              tr(context, 'Nessun giocatore trovato'),
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey[600],
@@ -1278,9 +2102,9 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
             children: [
               Icon(Icons.local_fire_department,
                   color: Colors.orange[400], size: 20),
-              const SizedBox(width: 8),
-              const Text(
-                'Giocatori Suggeriti',
+              SizedBox(width: 8),
+              Text(
+                tr(context, 'Giocatori Suggeriti'),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -1668,9 +2492,8 @@ class _PlayerComparisonDialogState extends State<_PlayerComparisonDialog> {
     }).toList();
   }
 }
-// CONTINUA DA PARTE 2a...
-// Questa è la PARTE FINALE
 
+// PLAYER COMPARISON SCREEN
 class PlayerComparisonScreen extends StatelessWidget {
   final PlayerDetail player1;
   final PlayerDetail player2;
@@ -1696,7 +2519,7 @@ class PlayerComparisonScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Confronto Giocatori',
+          tr(context, 'Confronto Giocatori'),
           style: TextStyle(
             color: isDark ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
@@ -1712,7 +2535,7 @@ class PlayerComparisonScreen extends StatelessWidget {
             const SizedBox(height: 24),
             _buildRadarComparison(isDark),
             const SizedBox(height: 24),
-            _buildStatsComparison(isDark),
+            _buildStatsComparison(context, isDark),
             const SizedBox(height: 24),
             _buildFormComparison(isDark),
           ],
@@ -1881,7 +2704,7 @@ class PlayerComparisonScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
+          Text(
             'Confronto Abilità',
             style: TextStyle(
               fontSize: 18,
@@ -1942,7 +2765,7 @@ class PlayerComparisonScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsComparison(bool isDark) {
+  Widget _buildStatsComparison(BuildContext context, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -1958,28 +2781,28 @@ class PlayerComparisonScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
-            'Statistiche Stagionali',
+          Text(
+            tr(context, 'Statistiche Stagionali'),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 20),
-          _buildComparisonBar('Partite', player1.matches, player2.matches),
-          _buildComparisonBar('Gol', player1.goals, player2.goals),
-          _buildComparisonBar('Assist', player1.assists, player2.assists),
-          _buildComparisonBar('Tiri', player1.shots, player2.shots),
-          _buildComparisonBar('Dribbling', player1.dribbles, player2.dribbles),
-          _buildComparisonBar('Contrasti', player1.tackles, player2.tackles),
-          _buildComparisonBar(
-              'Duelli Vinti', player1.duelsWon, player2.duelsWon),
+          _buildComparisonBar(context, tr(context, 'Partite'), player1.matches, player2.matches),
+          _buildComparisonBar(context, tr(context, 'Gol'), player1.goals, player2.goals),
+          _buildComparisonBar(context, tr(context, 'Assist'), player1.assists, player2.assists),
+          _buildComparisonBar(context, tr(context, 'Tiri'), player1.shots, player2.shots),
+          _buildComparisonBar(context, tr(context, 'Dribbling'), player1.dribbles, player2.dribbles),
+          _buildComparisonBar(context, tr(context, 'Contrasti'), player1.tackles, player2.tackles),
+          _buildComparisonBar(context, 
+              tr(context, 'Duelli Vinti'), player1.duelsWon, player2.duelsWon),
         ],
       ),
     );
   }
 
-  Widget _buildComparisonBar(String label, int value1, int value2) {
+  Widget _buildComparisonBar(BuildContext context, String label, int value1, int value2) {
     final maxValue = math.max(value1, value2);
     final ratio1 = maxValue > 0 ? value1 / maxValue : 0.0;
     final ratio2 = maxValue > 0 ? value2 / maxValue : 0.0;
@@ -2098,7 +2921,7 @@ class PlayerComparisonScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
+          Text(
             'Forma Recente',
             style: TextStyle(
               fontSize: 18,
@@ -2235,6 +3058,7 @@ class PlayerComparisonScreen extends StatelessWidget {
   }
 }
 
+// COMPARISON RADAR CHART PAINTER
 class ComparisonRadarChartPainter extends CustomPainter {
   final Map<String, double> skills1;
   final Map<String, double> skills2;
@@ -2359,128 +3183,6 @@ class ComparisonRadarChartPainter extends CustomPainter {
         Paint()
           ..color = color
           ..style = PaintingStyle.fill,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class RadarChartPainter extends CustomPainter {
-  final Map<String, double> skills;
-  final Color color;
-
-  RadarChartPainter({
-    required this.skills,
-    required this.color,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = math.min(size.width, size.height) / 2 - 40;
-    final skillNames = skills.keys.toList();
-    final skillValues = skills.values.toList();
-    final angleStep = (2 * math.pi) / skillNames.length;
-
-    final gridPaint = Paint()
-      ..color = Colors.grey.withOpacity(0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    for (int i = 1; i <= 5; i++) {
-      final levelRadius = radius * (i / 5);
-      final path = Path();
-
-      for (int j = 0; j < skillNames.length; j++) {
-        final angle = j * angleStep - math.pi / 2;
-        final x = center.dx + levelRadius * math.cos(angle);
-        final y = center.dy + levelRadius * math.sin(angle);
-
-        if (j == 0) {
-          path.moveTo(x, y);
-        } else {
-          path.lineTo(x, y);
-        }
-      }
-      path.close();
-      canvas.drawPath(path, gridPaint);
-    }
-
-    for (int i = 0; i < skillNames.length; i++) {
-      final angle = i * angleStep - math.pi / 2;
-      final x = center.dx + radius * math.cos(angle);
-      final y = center.dy + radius * math.sin(angle);
-      canvas.drawLine(center, Offset(x, y), gridPaint);
-    }
-
-    final skillPath = Path();
-    for (int i = 0; i < skillNames.length; i++) {
-      final angle = i * angleStep - math.pi / 2;
-      final value = skillValues[i] / 100;
-      final x = center.dx + radius * value * math.cos(angle);
-      final y = center.dy + radius * value * math.sin(angle);
-
-      if (i == 0) {
-        skillPath.moveTo(x, y);
-      } else {
-        skillPath.lineTo(x, y);
-      }
-    }
-    skillPath.close();
-
-    final fillPaint = Paint()
-      ..color = color.withOpacity(0.3)
-      ..style = PaintingStyle.fill;
-    canvas.drawPath(skillPath, fillPaint);
-
-    final strokePaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    canvas.drawPath(skillPath, strokePaint);
-
-    for (int i = 0; i < skillNames.length; i++) {
-      final angle = i * angleStep - math.pi / 2;
-      final value = skillValues[i] / 100;
-      final x = center.dx + radius * value * math.cos(angle);
-      final y = center.dy + radius * value * math.sin(angle);
-
-      canvas.drawCircle(
-        Offset(x, y),
-        4,
-        Paint()
-          ..color = color
-          ..style = PaintingStyle.fill,
-      );
-    }
-
-    final textStyle = TextStyle(
-      color: Colors.grey[700],
-      fontSize: 12,
-      fontWeight: FontWeight.bold,
-    );
-
-    for (int i = 0; i < skillNames.length; i++) {
-      final angle = i * angleStep - math.pi / 2;
-      final labelRadius = radius + 25;
-      final x = center.dx + labelRadius * math.cos(angle);
-      final y = center.dy + labelRadius * math.sin(angle);
-
-      final textSpan = TextSpan(
-        text: skillNames[i],
-        style: textStyle,
-      );
-      final textPainter = TextPainter(
-        text: textSpan,
-        textDirection: TextDirection.ltr,
-        textAlign: TextAlign.center,
-      );
-      textPainter.layout();
-      textPainter.paint(
-        canvas,
-        Offset(x - textPainter.width / 2, y - textPainter.height / 2),
       );
     }
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:soccerpulse/utils/l10n_helper.dart';
 
 class TeamFormWidget extends StatelessWidget {
   final String teamName;
@@ -185,7 +186,7 @@ class TeamFormWidget extends StatelessWidget {
   String _getFormText(int score, BuildContext context) {
     if (score >= 12) return 'Eccellente';
     if (score >= 8) return 'Buona';
-    if (score >= 5) return 'Nella Media';
+    if (score >= 5) return tr(context, 'Nella Media');
     return 'Scarsa';
   }
 

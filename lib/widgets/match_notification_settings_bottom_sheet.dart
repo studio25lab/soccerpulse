@@ -1,6 +1,7 @@
 // lib/widgets/match_notification_settings_bottom_sheet.dart
 
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../models/match_notification_settings.dart';
@@ -160,8 +161,8 @@ class _MatchNotificationSettingsBottomSheetState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Notifiche Partita',
+                Text(
+                  tr(context, 'Notifiche Partita'),
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -197,7 +198,7 @@ class _MatchNotificationSettingsBottomSheetState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Configurazioni Rapide',
+          tr(context, 'Configurazioni Rapide'),
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -209,7 +210,7 @@ class _MatchNotificationSettingsBottomSheetState
           children: [
             Expanded(
               child: _buildPresetButton(
-                'Solo Goal',
+                tr(context, 'Solo Goal'),
                 Icons.sports_soccer,
                 () => _applyPreset('goals'),
                 theme,
@@ -218,7 +219,7 @@ class _MatchNotificationSettingsBottomSheetState
             const SizedBox(width: 8),
             Expanded(
               child: _buildPresetButton(
-                'Minimo',
+                tr(context, 'Minimo'),
                 Icons.notifications_none,
                 () => _applyPreset('minimal'),
                 theme,
@@ -231,7 +232,7 @@ class _MatchNotificationSettingsBottomSheetState
           children: [
             Expanded(
               child: _buildPresetButton(
-                'Completo',
+                tr(context, 'Completo'),
                 Icons.notifications_active,
                 () => _applyPreset('complete'),
                 theme,
@@ -240,7 +241,7 @@ class _MatchNotificationSettingsBottomSheetState
             const SizedBox(width: 8),
             Expanded(
               child: _buildPresetButton(
-                'Disattiva',
+                tr(context, 'Disattiva tutto'),
                 Icons.notifications_off,
                 () => _applyPreset('disabled'),
                 theme,
@@ -316,7 +317,7 @@ class _MatchNotificationSettingsBottomSheetState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Notifiche Partita',
+                    tr(context, 'Notifiche Partita'),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: isDark ? Colors.white : Colors.black87,
@@ -324,8 +325,8 @@ class _MatchNotificationSettingsBottomSheetState
                   ),
                   Text(
                     _settings.enabled
-                        ? '${_settings.activeNotificationsCount} eventi attivi'
-                        : 'Disattivate',
+                        ? '${_settings.activeNotificationsCount} ${tr(context, 'eventi attivi')}'
+                        : tr(context, 'Disattivate'),
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
@@ -350,13 +351,13 @@ class _MatchNotificationSettingsBottomSheetState
 
   Widget _buildGoalNotificationsSection(ThemeData theme, bool isDark) {
     return _buildSection(
-      'Goal',
+      tr(context, 'Goal'),
       Icons.sports_soccer,
       theme,
       isDark,
       [
         _buildSwitchTile(
-          'Goal Squadra Casa',
+          tr(context, 'Goal Squadra Casa'),
           '${widget.match.homeTeamName}',
           _settings.notifyHomeGoals,
           (value) => _updateSettings(
@@ -367,7 +368,7 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Goal Squadra Trasferta',
+          tr(context, 'Goal Squadra Trasferta'),
           '${widget.match.awayTeamName}',
           _settings.notifyAwayGoals,
           (value) => _updateSettings(
@@ -383,14 +384,14 @@ class _MatchNotificationSettingsBottomSheetState
 
   Widget _buildCardNotificationsSection(ThemeData theme, bool isDark) {
     return _buildSection(
-      'Cartellini',
+      tr(context, 'Cartellini'),
       Icons.style,
       theme,
       isDark,
       [
         _buildSwitchTile(
-          'Cartellini Gialli',
-          'Ammonizioni durante la partita',
+          tr(context, 'Cartellini Gialli'),
+          tr(context, 'Ammonizioni durante la partita'),
           _settings.notifyYellowCards,
           (value) => _updateSettings(
             _settings.copyWith(notifyYellowCards: value),
@@ -402,8 +403,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Cartellini Rossi',
-          'Espulsioni durante la partita',
+          tr(context, 'Cartellini Rossi'),
+          tr(context, 'Espulsioni durante la partita'),
           _settings.notifyRedCards,
           (value) => _updateSettings(
             _settings.copyWith(notifyRedCards: value),
@@ -420,14 +421,14 @@ class _MatchNotificationSettingsBottomSheetState
 
   Widget _buildGameActionsSection(ThemeData theme, bool isDark) {
     return _buildSection(
-      'Azioni di Gioco',
+      tr(context, 'Azioni di Gioco'),
       Icons.sports,
       theme,
       isDark,
       [
         _buildSwitchTile(
-          'Sostituzioni',
-          'Cambi giocatori',
+          tr(context, 'Sostituzioni'),
+          tr(context, 'Cambi giocatori'),
           _settings.notifySubstitutions,
           (value) => _updateSettings(
             _settings.copyWith(notifySubstitutions: value),
@@ -437,8 +438,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Tiri in Porta',
-          'Tiri nello specchio della porta',
+          tr(context, 'Tiri in Porta'),
+          tr(context, 'Tiri nello specchio della porta'),
           _settings.notifyShotsOnTarget,
           (value) => _updateSettings(
             _settings.copyWith(notifyShotsOnTarget: value),
@@ -448,8 +449,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Calci d\'Angolo',
-          'Corner assegnati',
+          tr(context, 'Calci d\'Angolo'),
+          tr(context, 'Corner assegnati'),
           _settings.notifyCorners,
           (value) => _updateSettings(
             _settings.copyWith(notifyCorners: value),
@@ -459,8 +460,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Rigori',
-          'Calci di rigore assegnati',
+          tr(context, 'Rigori'),
+          tr(context, 'Calci di rigore assegnati'),
           _settings.notifyPenalties,
           (value) => _updateSettings(
             _settings.copyWith(notifyPenalties: value),
@@ -470,8 +471,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Falli',
-          'Falli commessi durante la partita',
+          tr(context, 'Falli'),
+          tr(context, 'Falli commessi durante la partita'),
           _settings.notifyFouls,
           (value) => _updateSettings(
             _settings.copyWith(notifyFouls: value),
@@ -483,8 +484,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Fuorigioco',
-          'Posizioni di fuorigioco',
+          tr(context, 'Fuorigioco'),
+          tr(context, 'Posizioni di fuorigioco'),
           _settings.notifyOffsides,
           (value) => _updateSettings(
             _settings.copyWith(notifyOffsides: value),
@@ -496,8 +497,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Decisioni VAR',
-          'Review e decisioni arbitrali',
+          tr(context, 'Decisioni VAR'),
+          tr(context, 'Review e decisioni arbitrali'),
           _settings.notifyVarDecisions,
           (value) => _updateSettings(
             _settings.copyWith(notifyVarDecisions: value),
@@ -512,14 +513,14 @@ class _MatchNotificationSettingsBottomSheetState
 
   Widget _buildMatchEventsSection(ThemeData theme, bool isDark) {
     return _buildSection(
-      'Eventi Partita',
+      tr(context, 'Eventi Partita'),
       Icons.event,
       theme,
       isDark,
       [
         _buildSwitchTile(
-          'Inizio Partita',
-          'Fischio d\'inizio',
+          tr(context, 'Inizio Partita'),
+          tr(context, 'Fischio d\'inizio'),
           _settings.notifyMatchStart,
           (value) => _updateSettings(
             _settings.copyWith(notifyMatchStart: value),
@@ -529,8 +530,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Fine Primo Tempo',
-          'Intervallo',
+          tr(context, 'Fine Primo Tempo'),
+          tr(context, 'Intervallo'),
           _settings.notifyHalfTime,
           (value) => _updateSettings(
             _settings.copyWith(notifyHalfTime: value),
@@ -540,8 +541,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Inizio Secondo Tempo',
-          'Ripresa del gioco',
+          tr(context, 'Inizio Secondo Tempo'),
+          tr(context, 'Ripresa del gioco'),
           _settings.notifySecondHalfStart,
           (value) => _updateSettings(
             _settings.copyWith(notifySecondHalfStart: value),
@@ -551,8 +552,8 @@ class _MatchNotificationSettingsBottomSheetState
           enabled: _settings.enabled,
         ),
         _buildSwitchTile(
-          'Fine Partita',
-          'Fischio finale',
+          tr(context, 'Fine Partita'),
+          tr(context, 'Fischio finale'),
           _settings.notifyMatchEnd,
           (value) => _updateSettings(
             _settings.copyWith(notifyMatchEnd: value),
@@ -578,7 +579,7 @@ class _MatchNotificationSettingsBottomSheetState
                 const SizedBox(width: 12),
                 const Expanded(
                   child: Text(
-                    'Aggiornamenti Periodici',
+                    tr(context, 'Aggiornamenti Periodici'),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
@@ -589,7 +590,7 @@ class _MatchNotificationSettingsBottomSheetState
             ),
             const SizedBox(height: 12),
             Text(
-              'Ricevi aggiornamenti ogni X minuti',
+              tr(context, 'Ricevi aggiornamenti ogni X minuti'),
               style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             ),
             const SizedBox(height: 12),
@@ -736,8 +737,8 @@ class _MatchNotificationSettingsBottomSheetState
               children: [
                 Text(
                   _settings.enabled
-                      ? '${_settings.activeNotificationsCount} eventi attivi'
-                      : 'Notifiche disattivate',
+                      ? '${_settings.activeNotificationsCount} ${tr(context, 'eventi attivi')}'
+                      : tr(context, 'Notifiche disattivate'),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -745,7 +746,7 @@ class _MatchNotificationSettingsBottomSheetState
                   ),
                 ),
                 Text(
-                  'Le impostazioni sono salvate automaticamente',
+                  tr(context, 'Le impostazioni sono salvate automaticamente'),
                   style: TextStyle(
                     fontSize: 11,
                     color: Colors.grey[600],
@@ -763,7 +764,7 @@ class _MatchNotificationSettingsBottomSheetState
               backgroundColor: theme.primaryColor,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: const Text('Fatto'),
+            child: Text(tr(context, 'Fatto')),
           ),
         ],
       ),
@@ -778,7 +779,7 @@ class _MatchNotificationSettingsBottomSheetState
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Preset "$presetName" applicato'),
+        content: Text('${tr(context, 'Preset')} "$presetName" ${tr(context, 'applicato')}'),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),

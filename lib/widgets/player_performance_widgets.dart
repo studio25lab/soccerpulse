@@ -2,6 +2,7 @@
 // lib/widgets/player_performance_widgets.dart
 
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
 import 'dart:math' as math;
 
 // ========================================
@@ -523,7 +524,7 @@ class _MatchTimelineWidgetState extends State<MatchTimelineWidget>
                       ),
                     ),
                     Text(
-                      '5 eventi chiave',
+                      tr(context, '5 eventi chiave'),
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey[600],

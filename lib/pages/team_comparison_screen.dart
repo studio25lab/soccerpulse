@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:math' as math;
 import '../models/soccer_match.dart';
@@ -86,9 +87,9 @@ class _TeamComparisonScreenState extends State<TeamComparisonScreen>
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () => Navigator.pop(context),
               ),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'Confronto Squadre',
+                  tr(context, 'Confronto Squadre'),
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -189,8 +190,8 @@ class _TeamComparisonScreenState extends State<TeamComparisonScreen>
         unselectedLabelColor: Colors.grey,
         indicatorColor: theme.primaryColor,
         indicatorWeight: 3,
-        tabs: const [
-          Tab(text: 'Statistiche'),
+        tabs: [
+          Tab(text: tr(context, 'Statistiche')),
           Tab(text: 'Forma'),
           Tab(text: 'Testa a Testa'),
         ],
@@ -418,8 +419,8 @@ class _TeamComparisonScreenState extends State<TeamComparisonScreen>
       ),
       child: Column(
         children: [
-          const Text(
-            'Confronto Statistiche',
+          Text(
+            tr(context, 'Confronto Statistiche'),
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
@@ -434,10 +435,10 @@ class _TeamComparisonScreenState extends State<TeamComparisonScreen>
                 getTitle: (index, angle) {
                   final titles = [
                     'Attacco',
-                    'Difesa',
+                    tr(context, 'Difesa'),
                     'Possesso',
                     'Disciplina',
-                    'Precisione'
+                    tr(context, 'Precisione')
                   ];
                   return RadarChartTitle(text: titles[index]);
                 },
@@ -543,7 +544,7 @@ class _TeamComparisonScreenState extends State<TeamComparisonScreen>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildH2HStat('4', 'Vittorie\n${widget.homeTeamName}'),
-              _buildH2HStat('2', 'Pareggi'),
+              _buildH2HStat('2', tr(context, 'Pareggi')),
               _buildH2HStat('4', 'Vittorie\n${widget.awayTeamName}'),
             ],
           ),
@@ -589,7 +590,7 @@ class _TeamComparisonScreenState extends State<TeamComparisonScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Ultimi Risultati',
+          tr(context, 'Ultimi Risultati'),
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),

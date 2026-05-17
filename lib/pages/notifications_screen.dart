@@ -1,6 +1,7 @@
 // lib/pages/notifications_screen.dart
 
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import '../generated/l10n.dart';
@@ -23,7 +24,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       'id': 1,
       'type': 'goal',
       'title': 'GOL! Inter 1-0 Milan',
-      'message': 'Lautaro Martinez ha segnato al 23\'',
+      'message': 'GOAL_NOTIFICATION:Lautaro Martinez:23',
       'time': DateTime.now().subtract(const Duration(minutes: 5)),
       'read': false,
       'icon': Icons.sports_soccer,
@@ -32,8 +33,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     {
       'id': 2,
       'type': 'match_start',
-      'title': 'Partita iniziata',
-      'message': 'Juventus vs Roma è iniziata',
+      'title': 'MATCH_STARTED',
+      'message': 'MATCH_STARTED_MSG:Juventus vs Roma',
       'time': DateTime.now().subtract(const Duration(hours: 1)),
       'read': false,
       'icon': Icons.play_arrow,
@@ -42,14 +43,49 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     {
       'id': 3,
       'type': 'match_reminder',
-      'title': 'Promemoria partita',
-      'message': 'Napoli vs Lazio inizia tra 30 minuti',
+      'title': 'MATCH_REMINDER',
+      'message': 'MATCH_REMINDER_MSG:Napoli vs Lazio',
       'time': DateTime.now().subtract(const Duration(hours: 2)),
       'read': true,
       'icon': Icons.alarm,
       'color': Colors.orange,
     },
   ];
+
+  
+  String _localizeNotifText(BuildContext context, String text) {
+    final isEn = Localizations.localeOf(context).languageCode == 'en';
+    if (!isEn) {
+      // Decode back to Italian for display
+      if (text == 'MATCH_STARTED') return 'Partita iniziata';
+      if (text == 'MATCH_REMINDER') return 'Promemoria partita';
+      if (text.startsWith('GOAL_NOTIFICATION:')) {
+        final parts = text.split(':');
+        return '${parts[1]} ha segnato al ${parts[2]}\'';
+      }
+      if (text.startsWith('MATCH_STARTED_MSG:')) {
+        return '${text.split(':')[1]} è iniziata';
+      }
+      if (text.startsWith('MATCH_REMINDER_MSG:')) {
+        return '${text.split(':')[1]} inizia tra 30 minuti';
+      }
+      return text;
+    }
+    // English
+    if (text == 'MATCH_STARTED') return 'Match started';
+    if (text == 'MATCH_REMINDER') return 'Match reminder';
+    if (text.startsWith('GOAL_NOTIFICATION:')) {
+      final parts = text.split(':');
+      return '${parts[1]} scored at ${parts[2]}\'';
+    }
+    if (text.startsWith('MATCH_STARTED_MSG:')) {
+      return '${text.split(':')[1]} has started';
+    }
+    if (text.startsWith('MATCH_REMINDER_MSG:')) {
+      return '${text.split(':')[1]} starts in 30 minutes';
+    }
+    return text;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,15 +96,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return Scaffold(
       backgroundColor: isDark ? Colors.grey[900] : Colors.grey[50],
       appBar: AppBar(
-        title: const Text('Notifiche'),
+        title: Text(tr(context, 'Notifiche')),
         backgroundColor: isDark ? Colors.grey[900] : theme.primaryColor,
         elevation: 0,
         actions: [
           if (_notifications.any((n) => !n['read']))
             TextButton(
               onPressed: _markAllAsRead,
-              child: const Text(
-                'Segna tutte come lette',
+              child: Text(
+                tr(context, 'Segna tutte come lette'),
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -198,7 +234,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
           const SizedBox(height: 16),
           Text(
-            'Nessuna notifica',
+            tr(context, 'Nessuna notifica'),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -207,7 +243,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Le notifiche appariranno qui',
+            tr(context, 'Le notifiche appariranno qui'),
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[600],

@@ -2,6 +2,7 @@
 // lib/widgets/deep_stats_widgets.dart
 
 import 'package:flutter/material.dart';
+import '../../utils/l10n_helper.dart';
 import 'dart:math' as math;
 
 class DeepStatsSection extends StatelessWidget {
@@ -294,7 +295,7 @@ class DeepStatsSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Assist Effettivi',
+                      tr(context, 'Assist Effettivi'),
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.white70,
@@ -374,9 +375,9 @@ class DeepStatsSection extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.grid_on, color: Colors.blue[700]),
-              const SizedBox(width: 8),
-              const Text(
-                'Precisione Passaggi per Zona',
+              SizedBox(width: 8),
+              Text(
+                tr(context, 'Precisione Passaggi per Zona'),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -427,9 +428,9 @@ class DeepStatsSection extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.shield, color: Colors.red[700]),
-              const SizedBox(width: 8),
-              const Text(
-                'Mappa Azioni Difensive',
+              SizedBox(width: 8),
+              Text(
+                tr(context, 'Mappa Azioni Difensive'),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -450,7 +451,7 @@ class DeepStatsSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildDefensiveStat('Tackle', 12, Icons.sports_kabaddi),
-              _buildDefensiveStat('Intercetti', 8, Icons.block),
+              _buildDefensiveStat(tr(context, 'Intercetti'), 8, Icons.block),
               _buildDefensiveStat('Clearance', 5, Icons.clear_all),
             ],
           ),
