@@ -60,6 +60,9 @@ String _localizeTeam(BuildContext context, String? text) {
     'Diff. Reti': 'Goal Diff.', 'Andamento Stagionale': 'Season trend',
     'Informazioni Club': 'Club info', 'Fondazione': 'Founded',
     'Allenatore': 'Coach', 'Italia': 'Italy',
+    'Ultime 5 partite': 'Last 5 matches',
+    'Prossime Partite': 'Upcoming matches',
+    'Risultati': 'Results',
   };
   return map[text] ?? text;
 }
@@ -1599,7 +1602,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               final fi = entry.key;
               final c = entry.value;
               final color = c == 'W' ? const Color(0xFF4CAF50) : c == 'D' ? const Color(0xFFF9A825) : const Color(0xFFE53935);
-              final label = c == 'W' ? 'V' : c == 'D' ? 'P' : 'S';
+              final label = formInitial(context, c);
               return GestureDetector(
                 onTap: () => _navigateToFormMatch(context, widget.teamStanding.teamName, c, fi),
                 child: Tooltip(
@@ -1665,7 +1668,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                         color: _roleColor(role).withOpacity(isDark ? 0.15 : 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: Text(role.toUpperCase(),
+                      child: Text(_localizeTeam(context, role.toUpperCase()),
                           style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, 
                               color: _roleColor(role), letterSpacing: 0.5)),
                     ),
