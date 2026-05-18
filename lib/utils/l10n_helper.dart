@@ -2,6 +2,28 @@
 import 'package:flutter/widgets.dart';
 
 /// Universal translation helper for hardcoded Italian strings
+// Traduce prefissi giorni IT in EN per stringhe tipo "Dom 16 Mar" -> "Sun 16 Mar"
+String localizeDayPrefix(BuildContext context, String date) {
+  final isEn = Localizations.localeOf(context).languageCode == 'en';
+  if (!isEn) return date;
+  const map = {
+    'Lun ': 'Mon ', 'Mar ': 'Tue ', 'Mer ': 'Wed ', 'Gio ': 'Thu ',
+    'Ven ': 'Fri ', 'Sab ': 'Sat ', 'Dom ': 'Sun ',
+    'Ier ': 'Yes ', 'Oggi': 'Today', 'Domani': 'Tomorrow',
+  };
+  String result = date;
+  for (final e in map.entries) {
+    if (result.startsWith(e.key)) {
+      result = e.value + result.substring(e.key.length);
+      break;
+    }
+  }
+  // Per 'Oggi' (no spazio) usa replace per intero
+  if (result == 'Oggi') result = 'Today';
+  if (result == 'Domani') result = 'Tomorrow';
+  return result;
+}
+
 String tr(BuildContext context, String text) {
   final isEn = Localizations.localeOf(context).languageCode == 'en';
   if (!isEn) return text;

@@ -585,9 +585,10 @@ class _FavoritesScreenState extends State<FavoritesScreen>
   }
 
   String _shortDate(String date) {
+    final localized = localizeDayPrefix(context, date);
     // Accorcia "Dom 16 .." → "Dom 16"
-    if (date.length > 7) return date.substring(0, 6).trim();
-    return date;
+    if (localized.length > 7) return localized.substring(0, 6).trim();
+    return localized;
   }
   // ═══════════════════════════════════════════════════════════
   //  MATCH CARD — stile Home screen
