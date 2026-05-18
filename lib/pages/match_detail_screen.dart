@@ -2082,7 +2082,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             awayColor: awayColor,
             stats: [
               _StatItem(S.of(context)!.contrastiTotali, _homeDefensiveStats.tacklesTotal, _awayDefensiveStats.tacklesTotal),
-              _StatItem(_localizeShotData(context, tr(context, 'Contrasti vinti')), _homeDefensiveStats.tacklesWon, _awayDefensiveStats.tacklesWon),
+              _StatItem(_localizeShotData(context, 'Contrasti vinti'), _homeDefensiveStats.tacklesWon, _awayDefensiveStats.tacklesWon),
               _StatItem(S.of(context)!.intercetti, _homeDefensiveStats.interceptions, _awayDefensiveStats.interceptions),
               _StatItem(_localizeShotData(context, 'Rinvii'), _homeDefensiveStats.rinvii, _awayDefensiveStats.rinvii),
             ],
@@ -2898,7 +2898,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       _AttackStat(S.of(context)!.grandiOccasioniMancate, hOnTarget, aOnTarget, false),
       _AttackStat(_localizeShotData(context, 'Tocchi area avversaria'), hTouches, aTouches, true),
       _AttackStat(
-          _localizeShotData(context, tr(context, 'Falli avversari nel terzo offensivo')), hOffFouls, aOffFouls, true),
+          _localizeShotData(context, 'Falli avversari nel terzo offensivo'), hOffFouls, aOffFouls, true),
       _AttackStat(tr(context, 'Fuorigioco'), hOffsides, aOffsides, false),
       _AttackStat(_localizeShotData(context, 'Attacchi pericolosi'), hDangerous, aDangerous, true),
       _AttackStat(_localizeShotData(context, 'Attacchi'), hAttacks, aAttacks, true),
@@ -4771,14 +4771,14 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: cardBorder)),
         child: Column(children: [
-          Text(_localizeShotData(context, tr(context, 'Confronto con avversario')),
+          Text(_localizeShotData(context, 'Confronto con avversario'),
               style: TextStyle(
                   fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
           SizedBox(height: 18),
-          _heatmapMetricVs(Icons.sports_soccer, _localizeShotData(context, tr(context, 'Tiri totali')), shots, oppShots,
+          _heatmapMetricVs(Icons.sports_soccer, _localizeShotData(context, 'Tiri totali'), shots, oppShots,
               teamColor, oppColor, tx, lb),
           SizedBox(height: 16),
-          _heatmapMetricVs(Icons.gps_fixed, _localizeShotData(context, tr(context, 'Tiri in porta')), shotsOnTarget,
+          _heatmapMetricVs(Icons.gps_fixed, _localizeShotData(context, 'Tiri in porta'), shotsOnTarget,
               oppShotsOnTarget, teamColor, oppColor, tx, lb),
           const SizedBox(height: 16),
           _heatmapMetricVs(Icons.swap_calls, '${S.of(context)!.passaggiSection} ($accPct%)', accPasses,
@@ -7246,9 +7246,9 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                   Padding(
                     padding: EdgeInsets.fromLTRB(16, 0, 16, 14),
                     child: Row(children: [
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, tr(context, 'Gol Fatti')), '${data['seasonGoalsFor']}', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(_localizeShotData(context, 'Gol Fatti'), '${data['seasonGoalsFor']}', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, tr(context, 'Gol Subiti')), '${data['seasonGoalsAgainst']}', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(_localizeShotData(context, 'Gol Subiti'), '${data['seasonGoalsAgainst']}', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
                       Expanded(child: _coachInfoTile(_localizeShotData(context, 'Clean Sheet'), '${stats['cleanSheets']}', tx, lb, isDark)),
                     ]),
@@ -7280,7 +7280,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                     child: Row(children: [
                       Expanded(child: _coachInfoTile(_localizeShotData(context, 'Partite'), '${stats['matches']}', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, tr(context, '% Vittorie')), '${stats['winRate']}%', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(_localizeShotData(context, '% Vittorie'), '${stats['winRate']}%', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
                       Expanded(child: _coachInfoTile(_localizeShotData(context, 'Gol/Partita'), '${stats['avgGoals']}', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
@@ -8235,8 +8235,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                             _buildStatRow(tr(context, 'Assist previsti (xA)'),
                                 player.xA.toStringAsFixed(2), tx, lb, divider),
                           _buildStatRow(
-                              _localizeShotData(context, tr(context, 'Tiri totali')), '${player.shots}', tx, lb, divider),
-                          _buildStatRow(_localizeShotData(context, tr(context, 'Tiri in porta')), '${player.shotsOnTarget}', tx,
+                              _localizeShotData(context, 'Tiri totali'), '${player.shots}', tx, lb, divider),
+                          _buildStatRow(_localizeShotData(context, 'Tiri in porta'), '${player.shotsOnTarget}', tx,
                               lb, divider),
                           if (player.keyPasses > 0)
                             _buildStatRow(S.of(context)!.passaggiChiave, '${player.keyPasses}', tx,
@@ -8301,7 +8301,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                           _buildStatRow(S.of(context)!.tocchi, '${player.touches}', tx, lb, divider),
                           if (player.foulsWon > 0)
                             _buildStatRow(
-                                _localizeShotData(context, tr(context, 'Falli subiti')), '${player.foulsWon}', tx, lb, divider),
+                                _localizeShotData(context, 'Falli subiti'), '${player.foulsWon}', tx, lb, divider),
                           if (player.ballsLost > 0)
                             _buildStatRow(
                                 _localizeShotData(context, 'Palla persa'), '${player.ballsLost}', tx, lb, divider),
@@ -8325,7 +8325,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                               Color(0xFFE65100), sectionBg),
                           if (player.tackles > 0)
                             _buildStatRow(
-                                _localizeShotData(context, tr(context, 'Contrasti vinti')),
+                                _localizeShotData(context, 'Contrasti vinti'),
                                 '${player.tackles} (${player.tacklesWon})',
                                 tx, lb, divider),
                           if (player.interceptions > 0)
@@ -8354,7 +8354,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                                 tr(context, 'Falli commessi'), '${player.fouls}', tx, lb, divider),
                           if (player.foulsWon > 0)
                             _buildStatRow(
-                                _localizeShotData(context, tr(context, 'Falli subiti')), '${player.foulsWon}', tx, lb, divider),
+                                _localizeShotData(context, 'Falli subiti'), '${player.foulsWon}', tx, lb, divider),
                           if (player.yellowCards > 0)
                             _buildStatRow(
                                 S.of(context)!.ammonizioni, '${player.yellowCards}', tx, lb, divider,
@@ -10886,7 +10886,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                           _notifTile(
                             key: 'shotsOnTarget',
                             icon: Icons.gps_not_fixed,
-                            title: _localizeShotData(context, tr(context, 'Tiri in porta')),
+                            title: _localizeShotData(context, 'Tiri in porta'),
                             subtitle: 'Tiri nello specchio della porta',
                             color: const Color(0xFFFF7043),
                             isDark: isDark,
@@ -12439,6 +12439,7 @@ String _localizeShotData(BuildContext context, String? text) {
     'Rinvio': 'Clearance',
     'Scivolata': 'Sliding tackle',
     'Statistiche Stagione 2023/24': 'Season Statistics 2023/24',
+    'Carriera': 'Career',
     'Tackle laterale': 'Side tackle',
     'Tiri in porta': 'Shots on target',
     'Tiri totali': 'Total shots',
@@ -12752,7 +12753,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen>
                           _pNotifTile(
                             key: 'shots',
                             icon: Icons.gps_not_fixed,
-                            title: _localizeShotData(context, tr(context, 'Tiri totali')),
+                            title: _localizeShotData(context, 'Tiri totali'),
                             subtitle: _localizeShotData(context, 'Tutti i tentativi verso la porta'),
                             color: const Color(0xFF42A5F5),
                             isDark: isDark,
@@ -12761,7 +12762,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen>
                           _pNotifTile(
                             key: 'shotsOnTarget',
                             icon: Icons.gps_fixed,
-                            title: _localizeShotData(context, tr(context, 'Tiri in porta')),
+                            title: _localizeShotData(context, 'Tiri in porta'),
                             subtitle: 'Tiri nello specchio della porta',
                             color: const Color(0xFF2196F3),
                             isDark: isDark,
@@ -13705,8 +13706,8 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen>
                   const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
               tabs: [
                 Tab(text: _localizeShotData(context, 'Stagione')),
-                Tab(text: _localizeShotData(context, tr(context, 'Carriera'))),
-                Tab(text: _localizeShotData(context, tr(context, 'Partite'))),
+                Tab(text: _localizeShotData(context, 'Carriera')),
+                Tab(text: _localizeShotData(context, 'Partite')),
                 if (!isCoach) Tab(text: 'Overall FC26'),
               ],
             ),
@@ -15963,9 +15964,9 @@ class CoachProfileScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     Row(children: [
-                      _infoTile(_localizeShotData(context, tr(context, 'Gol Fatti')), '${data['seasonGoalsFor']}', tx, lb),
+                      _infoTile(_localizeShotData(context, 'Gol Fatti'), '${data['seasonGoalsFor']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),
-                      _infoTile(_localizeShotData(context, tr(context, 'Gol Subiti')), '${data['seasonGoalsAgainst']}', tx, lb),
+                      _infoTile(_localizeShotData(context, 'Gol Subiti'), '${data['seasonGoalsAgainst']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),
                       _infoTile(_localizeShotData(context, 'Clean Sheet'), '${stats['cleanSheets']}', tx, lb),
                     ]),
@@ -15983,7 +15984,7 @@ class CoachProfileScreen extends StatelessWidget {
                     Row(children: [
                       _infoTile(_localizeShotData(context, 'Partite'), '${stats['matches']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),
-                      _infoTile(_localizeShotData(context, tr(context, '% Vittorie')), '${stats['winRate']}%', tx, lb),
+                      _infoTile(_localizeShotData(context, '% Vittorie'), '${stats['winRate']}%', tx, lb),
                       Container(width: 1, height: 30, color: divider),
                       _infoTile(_localizeShotData(context, 'Gol/Partita'), '${stats['avgGoals']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),
@@ -16475,8 +16476,8 @@ class _PlayerComparisonColumnState extends State<_PlayerComparisonColumn> {
           _row('xG', p.xG.toStringAsFixed(2), tx, lb, divider),
           _row(tr(context, 'Assist'), '${p.assists}', tx, lb, divider, highlight: p.assists > 0),
           _row('xA', p.xA.toStringAsFixed(2), tx, lb, divider),
-          _row(_localizeShotData(context, tr(context, 'Tiri totali')), '${p.shots}', tx, lb, divider),
-          _row(_localizeShotData(context, tr(context, 'Tiri in porta')), '${p.shotsOnTarget}', tx, lb, divider),
+          _row(_localizeShotData(context, 'Tiri totali'), '${p.shots}', tx, lb, divider),
+          _row(_localizeShotData(context, 'Tiri in porta'), '${p.shotsOnTarget}', tx, lb, divider),
           _row(tr(context, 'Pass. chiave'), '${p.keyPasses}', tx, lb, divider),
           if (p.offsides > 0) _row(_localizeShotData(context, 'Fuorigioco'), '${p.offsides}', tx, lb, divider),
         ],
@@ -16511,7 +16512,7 @@ class _PlayerComparisonColumnState extends State<_PlayerComparisonColumn> {
           _header(S.of(context)!.dribblingLabel, Icons.directions_run_rounded, Color(0xFF7B1FA2), sectionBg),
           if (p.dribbles > 0) _row(S.of(context)!.dribblingLabel, '${p.dribblesSuccessful}/${p.dribbles}', tx, lb, divider),
           _row(S.of(context)!.tocchi, '${p.touches}', tx, lb, divider),
-          if (p.foulsWon > 0) _row(_localizeShotData(context, tr(context, 'Falli subiti')), '${p.foulsWon}', tx, lb, divider),
+          if (p.foulsWon > 0) _row(_localizeShotData(context, 'Falli subiti'), '${p.foulsWon}', tx, lb, divider),
           if (p.ballsLost > 0) _row(tr(context, 'Palle perse'), '${p.ballsLost}', tx, lb, divider),
           if (p.offsides > 0) _row(_localizeShotData(context, 'Fuorigioco'), '${p.offsides}', tx, lb, divider),
         ],
@@ -16538,7 +16539,7 @@ class _PlayerComparisonColumnState extends State<_PlayerComparisonColumn> {
           SizedBox(height: 6),
           _header(S.of(context)!.disciplinaLabel, Icons.style_rounded, Color(0xFFC62828), sectionBg),
           _row(S.of(context)!.falliLabel, '${p.fouls}', tx, lb, divider),
-          _row(_localizeShotData(context, tr(context, 'Falli subiti')), '${p.foulsWon}', tx, lb, divider),
+          _row(_localizeShotData(context, 'Falli subiti'), '${p.foulsWon}', tx, lb, divider),
           _row(tr(context, 'Gialli'), '${p.yellowCards}', tx, lb, divider,
               valueColor: p.yellowCards > 0 ? const Color(0xFFFDD835) : null),
           _row(tr(context, 'Rossi'), '${p.redCards}', tx, lb, divider,
