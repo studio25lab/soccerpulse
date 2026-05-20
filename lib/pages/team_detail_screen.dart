@@ -82,7 +82,7 @@ class TeamDetailScreen extends StatefulWidget {
 class _TeamDetailScreenState extends State<TeamDetailScreen>
     with SingleTickerProviderStateMixin {
   final ApiService _apiService = ApiService();
-  final FavoritesService _favoritesService = FavoritesService();
+  late final FavoritesService _favoritesService;
   final HapticService _haptic = HapticService();
 
   late TabController _tabController;
@@ -96,6 +96,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
   @override
   void initState() {
     super.initState();
+    _favoritesService = context.read<FavoritesService>();
     _tabController = TabController(length: 4, vsync: this);
     _loadTeamData();
   }
@@ -301,10 +302,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                 icon: const Icon(Icons.home_rounded, size: 22),
                 tooltip: 'Home',
                 onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => MainScreen(key: MainScreen.globalKey)),
-                    (route) => false,
-                  );
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
               IconButton(
@@ -314,7 +312,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                 ),
                 onPressed: () {
                   _haptic.lightImpact();
-                  _favoritesService.toggleTeamFavorite(widget.teamStanding.teamId);
+              _favoritesService.toggleTeamFavorite(widget.teamStanding.teamId);
                   setState(() {});
                 },
               ),

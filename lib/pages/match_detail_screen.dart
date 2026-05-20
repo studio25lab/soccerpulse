@@ -12471,7 +12471,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen>
   bool get isCoach => widget.player.position == 'ALL';
   int get _tabCount => isCoach ? 3 : 4;
   final HapticService _playerHaptic = HapticService();
-  final FavoritesService _favoritesService = FavoritesService();
+  late final FavoritesService _favoritesService;
 
   // ── Player Notification Service ──
   final PlayerNotificationPreferencesService _playerNotifService =
@@ -12550,6 +12550,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen>
   @override
   void initState() {
     super.initState();
+    _favoritesService = context.read<FavoritesService>();
     _tabController = TabController(length: _tabCount, vsync: this);
     // Carica impostazioni notifiche giocatore dal service
     _playerNotifSettings = _playerNotifService.getSettingsForPlayer(

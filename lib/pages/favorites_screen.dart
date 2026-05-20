@@ -49,11 +49,17 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _favoritesService = context.read<FavoritesService>();
+    _favoritesService.addListener(_onFavoritesChanged);
     _loadFavorites();
+  }
+
+  void _onFavoritesChanged() {
+    if (mounted) _loadFavorites();
   }
 
   @override
   void dispose() {
+    _favoritesService.removeListener(_onFavoritesChanged);
     _tabController.dispose();
     super.dispose();
   }
@@ -62,26 +68,29 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     setState(() => _isLoading = true);
     _favoriteTeams.clear();
     for (int teamId in _favoritesService.favoriteTeamIds) {
-      if (teamId > 0 && teamId <= _serieATeams.length) {
-        final t = _serieATeams[teamId - 1];
-        final gf = (t['gf'] ?? 0) as int;
-        final ga = (t['ga'] ?? 0) as int;
-        _favoriteTeams.add(TeamStanding(
-          teamId: teamId,
-          teamName: t['name'] as String,
-          teamLogo: t['logo'] as String?,
-          position: (t['pos'] ?? teamId) as int,
-          points: (t['pts'] ?? 0) as int,
-          played: (t['p'] ?? 0) as int,
-          wins: (t['w'] ?? 0) as int,
-          draws: (t['d'] ?? 0) as int,
-          losses: (t['l'] ?? 0) as int,
-          goalsFor: gf, goalsAgainst: ga, goalsDiff: gf - ga,
-          form: 'WDWWL', description: '', leagueId: 135,
-          home: TeamStats(played: 0, win: 0, draw: 0, lose: 0, goalsFor: 0, goalsAgainst: 0),
-          away: TeamStats(played: 0, win: 0, draw: 0, lose: 0, goalsFor: 0, goalsAgainst: 0),
-        ));
-      }
+      // Match per id (i mock hanno 'id' esplicito = teamId API)
+      final t = _serieATeams.firstWhere(
+        (e) => (e['id'] as int?) == teamId,
+        orElse: () => const <String, dynamic>{},
+      );
+      if (t.isEmpty) continue;
+      final gf = (t['gf'] ?? 0) as int;
+      final ga = (t['ga'] ?? 0) as int;
+      _favoriteTeams.add(TeamStanding(
+        teamId: teamId,
+        teamName: t['name'] as String,
+        teamLogo: t['logo'] as String?,
+        position: (t['pos'] ?? 0) as int,
+        points: (t['pts'] ?? 0) as int,
+        played: (t['p'] ?? 0) as int,
+        wins: (t['w'] ?? 0) as int,
+        draws: (t['d'] ?? 0) as int,
+        losses: (t['l'] ?? 0) as int,
+        goalsFor: gf, goalsAgainst: ga, goalsDiff: gf - ga,
+        form: 'WDWWL', description: '', leagueId: 135,
+        home: TeamStats(played: 0, win: 0, draw: 0, lose: 0, goalsFor: 0, goalsAgainst: 0),
+        away: TeamStats(played: 0, win: 0, draw: 0, lose: 0, goalsFor: 0, goalsAgainst: 0),
+      ));
     }
     setState(() => _isLoading = false);
   }
@@ -2326,26 +2335,26 @@ class _FavoritesScreenState extends State<FavoritesScreen>
 
   // ── Serie A Teams ──
   static const List<Map<String, dynamic>> _serieATeams = [
-    {'name': 'Napoli', 'logo': 'https://media.api-sports.io/football/teams/492.png', 'city': 'Napoli', 'pos': 1, 'pts': 90, 'p': 38, 'w': 28, 'd': 6, 'l': 4, 'gf': 77, 'ga': 28},
-    {'name': 'Inter', 'logo': 'https://media.api-sports.io/football/teams/505.png', 'city': 'Milano', 'pos': 3, 'pts': 72, 'p': 38, 'w': 21, 'd': 9, 'l': 8, 'gf': 71, 'ga': 40},
-    {'name': 'Milan', 'logo': 'https://media.api-sports.io/football/teams/489.png', 'city': 'Milano', 'pos': 4, 'pts': 70, 'p': 38, 'w': 20, 'd': 10, 'l': 8, 'gf': 64, 'ga': 43},
-    {'name': 'Juventus', 'logo': 'https://media.api-sports.io/football/teams/496.png', 'city': 'Torino', 'pos': 7, 'pts': 62, 'p': 38, 'w': 17, 'd': 11, 'l': 10, 'gf': 56, 'ga': 40},
-    {'name': 'Lazio', 'logo': 'https://media.api-sports.io/football/teams/487.png', 'city': 'Roma', 'pos': 2, 'pts': 74, 'p': 38, 'w': 22, 'd': 8, 'l': 8, 'gf': 60, 'ga': 33},
-    {'name': 'Roma', 'logo': 'https://media.api-sports.io/football/teams/497.png', 'city': 'Roma', 'pos': 6, 'pts': 63, 'p': 38, 'w': 18, 'd': 9, 'l': 11, 'gf': 51, 'ga': 39},
-    {'name': 'Atalanta', 'logo': 'https://media.api-sports.io/football/teams/499.png', 'city': 'Bergamo', 'pos': 5, 'pts': 64, 'p': 38, 'w': 19, 'd': 7, 'l': 12, 'gf': 59, 'ga': 43},
-    {'name': 'Fiorentina', 'logo': 'https://media.api-sports.io/football/teams/502.png', 'city': 'Firenze', 'pos': 8, 'pts': 55, 'p': 38, 'w': 15, 'd': 10, 'l': 13, 'gf': 46, 'ga': 42},
-    {'name': 'Bologna', 'logo': 'https://media.api-sports.io/football/teams/500.png', 'city': 'Bologna', 'pos': 9, 'pts': 52, 'p': 38, 'w': 14, 'd': 10, 'l': 14, 'gf': 46, 'ga': 48},
-    {'name': 'Torino', 'logo': 'https://media.api-sports.io/football/teams/503.png', 'city': 'Torino', 'pos': 10, 'pts': 49, 'p': 38, 'w': 13, 'd': 10, 'l': 15, 'gf': 37, 'ga': 40},
-    {'name': 'Monza', 'logo': 'https://media.api-sports.io/football/teams/1579.png', 'city': 'Monza', 'pos': 11, 'pts': 46, 'p': 38, 'w': 11, 'd': 13, 'l': 14, 'gf': 41, 'ga': 48},
-    {'name': 'Udinese', 'logo': 'https://media.api-sports.io/football/teams/494.png', 'city': 'Udine', 'pos': 12, 'pts': 43, 'p': 38, 'w': 11, 'd': 10, 'l': 17, 'gf': 43, 'ga': 52},
-    {'name': 'Sassuolo', 'logo': 'https://media.api-sports.io/football/teams/488.png', 'city': 'Sassuolo', 'pos': 13, 'pts': 42, 'p': 38, 'w': 11, 'd': 9, 'l': 18, 'gf': 45, 'ga': 56},
-    {'name': 'Empoli', 'logo': 'https://media.api-sports.io/football/teams/511.png', 'city': 'Empoli', 'pos': 14, 'pts': 40, 'p': 38, 'w': 9, 'd': 13, 'l': 16, 'gf': 35, 'ga': 49},
-    {'name': 'Salernitana', 'logo': 'https://media.api-sports.io/football/teams/514.png', 'city': 'Salerno', 'pos': 15, 'pts': 39, 'p': 38, 'w': 10, 'd': 9, 'l': 19, 'gf': 42, 'ga': 58},
-    {'name': 'Lecce', 'logo': 'https://media.api-sports.io/football/teams/867.png', 'city': 'Lecce', 'pos': 16, 'pts': 38, 'p': 38, 'w': 9, 'd': 11, 'l': 18, 'gf': 31, 'ga': 48},
-    {'name': 'Verona', 'logo': 'https://media.api-sports.io/football/teams/504.png', 'city': 'Verona', 'pos': 17, 'pts': 36, 'p': 38, 'w': 8, 'd': 12, 'l': 18, 'gf': 35, 'ga': 52},
-    {'name': 'Cagliari', 'logo': 'https://media.api-sports.io/football/teams/490.png', 'city': 'Cagliari', 'pos': 18, 'pts': 34, 'p': 38, 'w': 8, 'd': 10, 'l': 20, 'gf': 30, 'ga': 54},
-    {'name': 'Frosinone', 'logo': 'https://media.api-sports.io/football/teams/512.png', 'city': 'Frosinone', 'pos': 19, 'pts': 28, 'p': 38, 'w': 6, 'd': 10, 'l': 22, 'gf': 34, 'ga': 66},
-    {'name': 'Genoa', 'logo': 'https://media.api-sports.io/football/teams/495.png', 'city': 'Genova', 'pos': 20, 'pts': 26, 'p': 38, 'w': 5, 'd': 11, 'l': 22, 'gf': 30, 'ga': 60},
+    {'name': 'Napoli', 'id': 492, 'logo': 'https://media.api-sports.io/football/teams/492.png', 'city': 'Napoli', 'pos': 1, 'pts': 90, 'p': 38, 'w': 28, 'd': 6, 'l': 4, 'gf': 77, 'ga': 28},
+    {'name': 'Inter', 'id': 505, 'logo': 'https://media.api-sports.io/football/teams/505.png', 'city': 'Milano', 'pos': 3, 'pts': 72, 'p': 38, 'w': 21, 'd': 9, 'l': 8, 'gf': 71, 'ga': 40},
+    {'name': 'Milan', 'id': 489, 'logo': 'https://media.api-sports.io/football/teams/489.png', 'city': 'Milano', 'pos': 4, 'pts': 70, 'p': 38, 'w': 20, 'd': 10, 'l': 8, 'gf': 64, 'ga': 43},
+    {'name': 'Juventus', 'id': 496, 'logo': 'https://media.api-sports.io/football/teams/496.png', 'city': 'Torino', 'pos': 7, 'pts': 62, 'p': 38, 'w': 17, 'd': 11, 'l': 10, 'gf': 56, 'ga': 40},
+    {'name': 'Lazio', 'id': 487, 'logo': 'https://media.api-sports.io/football/teams/487.png', 'city': 'Roma', 'pos': 2, 'pts': 74, 'p': 38, 'w': 22, 'd': 8, 'l': 8, 'gf': 60, 'ga': 33},
+    {'name': 'Roma', 'id': 497, 'logo': 'https://media.api-sports.io/football/teams/497.png', 'city': 'Roma', 'pos': 6, 'pts': 63, 'p': 38, 'w': 18, 'd': 9, 'l': 11, 'gf': 51, 'ga': 39},
+    {'name': 'Atalanta', 'id': 499, 'logo': 'https://media.api-sports.io/football/teams/499.png', 'city': 'Bergamo', 'pos': 5, 'pts': 64, 'p': 38, 'w': 19, 'd': 7, 'l': 12, 'gf': 59, 'ga': 43},
+    {'name': 'Fiorentina', 'id': 502, 'logo': 'https://media.api-sports.io/football/teams/502.png', 'city': 'Firenze', 'pos': 8, 'pts': 55, 'p': 38, 'w': 15, 'd': 10, 'l': 13, 'gf': 46, 'ga': 42},
+    {'name': 'Bologna', 'id': 500, 'logo': 'https://media.api-sports.io/football/teams/500.png', 'city': 'Bologna', 'pos': 9, 'pts': 52, 'p': 38, 'w': 14, 'd': 10, 'l': 14, 'gf': 46, 'ga': 48},
+    {'name': 'Torino', 'id': 503, 'logo': 'https://media.api-sports.io/football/teams/503.png', 'city': 'Torino', 'pos': 10, 'pts': 49, 'p': 38, 'w': 13, 'd': 10, 'l': 15, 'gf': 37, 'ga': 40},
+    {'name': 'Monza', 'id': 1579, 'logo': 'https://media.api-sports.io/football/teams/1579.png', 'city': 'Monza', 'pos': 11, 'pts': 46, 'p': 38, 'w': 11, 'd': 13, 'l': 14, 'gf': 41, 'ga': 48},
+    {'name': 'Udinese', 'id': 494, 'logo': 'https://media.api-sports.io/football/teams/494.png', 'city': 'Udine', 'pos': 12, 'pts': 43, 'p': 38, 'w': 11, 'd': 10, 'l': 17, 'gf': 43, 'ga': 52},
+    {'name': 'Sassuolo', 'id': 488, 'logo': 'https://media.api-sports.io/football/teams/488.png', 'city': 'Sassuolo', 'pos': 13, 'pts': 42, 'p': 38, 'w': 11, 'd': 9, 'l': 18, 'gf': 45, 'ga': 56},
+    {'name': 'Empoli', 'id': 511, 'logo': 'https://media.api-sports.io/football/teams/511.png', 'city': 'Empoli', 'pos': 14, 'pts': 40, 'p': 38, 'w': 9, 'd': 13, 'l': 16, 'gf': 35, 'ga': 49},
+    {'name': 'Salernitana', 'id': 514, 'logo': 'https://media.api-sports.io/football/teams/514.png', 'city': 'Salerno', 'pos': 15, 'pts': 39, 'p': 38, 'w': 10, 'd': 9, 'l': 19, 'gf': 42, 'ga': 58},
+    {'name': 'Lecce', 'id': 867, 'logo': 'https://media.api-sports.io/football/teams/867.png', 'city': 'Lecce', 'pos': 16, 'pts': 38, 'p': 38, 'w': 9, 'd': 11, 'l': 18, 'gf': 31, 'ga': 48},
+    {'name': 'Verona', 'id': 504, 'logo': 'https://media.api-sports.io/football/teams/504.png', 'city': 'Verona', 'pos': 17, 'pts': 36, 'p': 38, 'w': 8, 'd': 12, 'l': 18, 'gf': 35, 'ga': 52},
+    {'name': 'Cagliari', 'id': 490, 'logo': 'https://media.api-sports.io/football/teams/490.png', 'city': 'Cagliari', 'pos': 18, 'pts': 34, 'p': 38, 'w': 8, 'd': 10, 'l': 20, 'gf': 30, 'ga': 54},
+    {'name': 'Frosinone', 'id': 512, 'logo': 'https://media.api-sports.io/football/teams/512.png', 'city': 'Frosinone', 'pos': 19, 'pts': 28, 'p': 38, 'w': 6, 'd': 10, 'l': 22, 'gf': 34, 'ga': 66},
+    {'name': 'Genoa', 'id': 495, 'logo': 'https://media.api-sports.io/football/teams/495.png', 'city': 'Genova', 'pos': 20, 'pts': 26, 'p': 38, 'w': 5, 'd': 11, 'l': 22, 'gf': 30, 'ga': 60},
   ];
 
   void _showTeamPicker(ThemeData theme, bool isDark) {
@@ -2394,12 +2403,13 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                 itemCount: _serieATeams.length,
                 itemBuilder: (ctx, i) {
                   final team = _serieATeams[i];
-                  final isFav = _favoritesService.isTeamFavorite(i + 1);
+                  final teamId = team['id'] as int;
+                  final isFav = _favoritesService.isTeamFavorite(teamId);
                   return InkWell(
                     onTap: () {
                       _haptic.lightImpact();
                       setSheetState(() {
-                        _favoritesService.toggleTeamFavorite(i + 1);
+                        _favoritesService.toggleTeamFavorite(teamId);
                       });
                       _loadFavorites();
                     },

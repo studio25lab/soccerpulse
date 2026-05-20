@@ -41,7 +41,7 @@ class _MainNavigationState extends State<MainNavigation>
     with TickerProviderStateMixin {
 
   final HapticService _haptic = HapticService();
-  final FavoritesService _favoritesService = FavoritesService();
+  late final FavoritesService _favoritesService;
   final ThemeService _themeService = ThemeService();
 
   late int _selectedIndex;
@@ -65,6 +65,7 @@ class _MainNavigationState extends State<MainNavigation>
   @override
   void initState() {
     super.initState();
+    _favoritesService = context.read<FavoritesService>();
     _selectedIndex = widget.initialIndex;
     _pageController = PageController(initialPage: _selectedIndex);
     _initAnimations();
