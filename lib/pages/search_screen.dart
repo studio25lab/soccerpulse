@@ -13,6 +13,7 @@ import '../api/api_service.dart';
 import '../services/haptic_service.dart';
 import '../generated/l10n.dart';
 import 'match_detail_screen.dart';
+import 'match_player_profile_screen.dart'; // [FAV-extract4]
 import 'team_detail_screen.dart';
 import '../main.dart';
 import '../services/favorites_service.dart';
@@ -846,7 +847,7 @@ class _SearchScreenState extends State<SearchScreen>
                 case 'Atalanta': tc = const Color(0xFF1B3B6F); break;
                 default: tc = const Color(0xFF2196F3); break;
               }
-              Navigator.push(context, MaterialPageRoute(builder: (_) => PlayerProfileScreen(player: llp, teamName: p.teamName, teamColor: tc)));
+              Navigator.push(context, MaterialPageRoute(builder: (_) => MatchPlayerProfileScreen(player: llp, teamName: p.teamName, teamColor: tc)));
             } else if (type == 'match') {
               final m = s['data'] as SoccerMatch;
               Navigator.push(context, MaterialPageRoute(builder: (_) => MatchDetailScreen(match: m)));
@@ -1303,7 +1304,7 @@ class _SearchScreenState extends State<SearchScreen>
                   assists: (p['assists'] as int),
                 );
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => PlayerProfileScreen(
+                  builder: (_) => MatchPlayerProfileScreen(
                     player: llp, teamName: team, teamColor: teamColor,
                   ),
                 ));
@@ -1727,7 +1728,7 @@ class _SearchScreenState extends State<SearchScreen>
                 assists: p.assists ?? 0,
               );
               Navigator.push(context, MaterialPageRoute(
-                builder: (_) => PlayerProfileScreen(
+                builder: (_) => MatchPlayerProfileScreen(
                   player: llp,
                   teamName: p.teamName,
                   teamColor: const Color(0xFF2196F3),

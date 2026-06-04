@@ -16,6 +16,7 @@ import '../generated/l10n.dart';
 import '../widgets/glassmorphic_card.dart';
 import '../widgets/match_card.dart';
 import 'match_detail_screen.dart';
+import 'match_player_profile_screen.dart'; // [FAV-extract4]
 import 'main_navigation.dart';
 import 'team_detail_screen.dart';
 import 'player_detail_screen.dart';
@@ -1583,7 +1584,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
           passesCompleted: 0,
         );
         Navigator.push(context, MaterialPageRoute(
-          builder: (_) => PlayerProfileScreen(
+          builder: (_) => MatchPlayerProfileScreen(
             player: llp,
             teamName: p['team'] as String,
             teamColor: _teamColor(p['teamId'] as int),

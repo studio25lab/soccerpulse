@@ -15,6 +15,7 @@ import 'team_detail_screen.dart';
 import 'settings_screen.dart';
 import '../main.dart';
 import 'match_detail_screen.dart';
+import 'match_player_profile_screen.dart'; // [FAV-extract4]
 import 'package:soccerpulse/models/local_match_models.dart';
 
 class StandingsScreen extends StatefulWidget {
@@ -800,7 +801,7 @@ class _StandingsScreenState extends State<StandingsScreen>
       default: teamColor = const Color(0xFF2196F3); break;
     }
     Navigator.push(context, MaterialPageRoute(
-      builder: (_) => PlayerProfileScreen(
+      builder: (_) => MatchPlayerProfileScreen(
         player: llp,
         teamName: team,
         teamColor: teamColor,

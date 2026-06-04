@@ -28,6 +28,7 @@ import '../services/favorites_service.dart';
 import '../services/match_data_service.dart';
 import '../models/match_data.dart' hide ShotData;
 import 'player_match_stats_screen.dart';
+import 'match_player_profile_screen.dart';
 import 'player_finished_match_screen.dart';
 import '../painters/advanced_stats_painters.dart';
 import '../widgets/interactive_shot_map_widget.dart';
@@ -1811,7 +1812,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     // ── Italian token in italian: pass-through; in english: localize ──
     if (!isEn) return detail;
     if (detail.startsWith('Assist:')) return detail;
-    return _localizeShotData(context, detail);
+    return localizeShotData(context, detail);
   }
   void _navigateToTeamDetail(int teamId, String teamName, String? teamLogo) async {
     _haptic.lightImpact();
@@ -2090,9 +2091,9 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             awayColor: awayColor,
             stats: [
               _StatItem(S.of(context)!.contrastiTotali, _homeDefensiveStats.tacklesTotal, _awayDefensiveStats.tacklesTotal),
-              _StatItem(_localizeShotData(context, 'Contrasti vinti'), _homeDefensiveStats.tacklesWon, _awayDefensiveStats.tacklesWon),
+              _StatItem(localizeShotData(context, 'Contrasti vinti'), _homeDefensiveStats.tacklesWon, _awayDefensiveStats.tacklesWon),
               _StatItem(S.of(context)!.intercetti, _homeDefensiveStats.interceptions, _awayDefensiveStats.interceptions),
-              _StatItem(_localizeShotData(context, 'Rinvii'), _homeDefensiveStats.rinvii, _awayDefensiveStats.rinvii),
+              _StatItem(localizeShotData(context, 'Rinvii'), _homeDefensiveStats.rinvii, _awayDefensiveStats.rinvii),
             ],
           ),
           const SizedBox(height: 14),
@@ -2661,7 +2662,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             if (showTutti) ...[
-              tab(_localizeShotData(context, 'Tutti'), null),
+              tab(localizeShotData(context, 'Tutti'), null),
               const SizedBox(width: 4),
             ],
             tab(widget.match.homeTeamName, true),
@@ -2721,7 +2722,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             borderRadius: BorderRadius.circular(22),
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            chip(_localizeShotData(context, 'Tutti'), 0),
+            chip(localizeShotData(context, 'Tutti'), 0),
             const SizedBox(width: 4),
             chip(tr(context, '1° Tempo'), 1),
             const SizedBox(width: 4),
@@ -2904,12 +2905,12 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     final stats = [
       _AttackStat(S.of(context)!.grandiOccasioniRealizzate, hGoals, aGoals, true),
       _AttackStat(S.of(context)!.grandiOccasioniMancate, hOnTarget, aOnTarget, false),
-      _AttackStat(_localizeShotData(context, 'Tocchi area avversaria'), hTouches, aTouches, true),
+      _AttackStat(localizeShotData(context, 'Tocchi area avversaria'), hTouches, aTouches, true),
       _AttackStat(
-          _localizeShotData(context, 'Falli avversari nel terzo offensivo'), hOffFouls, aOffFouls, true),
+          localizeShotData(context, 'Falli avversari nel terzo offensivo'), hOffFouls, aOffFouls, true),
       _AttackStat(tr(context, 'Fuorigioco'), hOffsides, aOffsides, false),
-      _AttackStat(_localizeShotData(context, 'Attacchi pericolosi'), hDangerous, aDangerous, true),
-      _AttackStat(_localizeShotData(context, 'Attacchi'), hAttacks, aAttacks, true),
+      _AttackStat(localizeShotData(context, 'Attacchi pericolosi'), hDangerous, aDangerous, true),
+      _AttackStat(localizeShotData(context, 'Attacchi'), hAttacks, aAttacks, true),
     ];
 
     // ══════ CONCENTRATION ZONES from momentum (per team) ══════
@@ -3023,12 +3024,12 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(_localizeShotData(context, 'Più bassa concentrazione'),
+                  Text(localizeShotData(context, 'Più bassa concentrazione'),
                       style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           color: lb)),
-                  Text(_localizeShotData(context, 'Più alta concentrazione'),
+                  Text(localizeShotData(context, 'Più alta concentrazione'),
                       style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -3317,7 +3318,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
               lb),
           const SizedBox(height: 24),
           _passCircularRow(
-              _localizeShotData(context, 'Palle lunghe'),
+              localizeShotData(context, 'Palle lunghe'),
               _homeLongBallsOk,
               _homeLongBallsTotal,
               _awayLongBallsOk,
@@ -3327,7 +3328,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
               tx,
               lb),
           const SizedBox(height: 24),
-          _passCircularRow(_localizeShotData(context, 'Cross'), _homeCrossOk, _homeCrossTotal, _awayCrossOk,
+          _passCircularRow(localizeShotData(context, 'Cross'), _homeCrossOk, _homeCrossTotal, _awayCrossOk,
               _awayCrossTotal, homeColor, awayColor, tx, lb),
         ]),
       ),
@@ -3659,10 +3660,10 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
           _passCircularRow(S.of(context)!.passaggiTerzoOffensivo, ftP, ftT, oppFtP,
               oppFtT, teamColor, oppColor, tx, lb),
           const SizedBox(height: 24),
-          _passCircularRow(_localizeShotData(context, 'Palle lunghe'), lbOk, lbTot, oppLbOk, oppLbTot,
+          _passCircularRow(localizeShotData(context, 'Palle lunghe'), lbOk, lbTot, oppLbOk, oppLbTot,
               teamColor, oppColor, tx, lb),
           const SizedBox(height: 24),
-          _passCircularRow(_localizeShotData(context, 'Cross'), crOk, crTot, oppCrOk, oppCrTot, teamColor,
+          _passCircularRow(localizeShotData(context, 'Cross'), crOk, crTot, oppCrOk, oppCrTot, teamColor,
               oppColor, tx, lb),
         ]),
       ),
@@ -4228,7 +4229,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                         ]
                       : null,
                 ),
-                child: Text(_localizeShotData(context, 'Tutti'),
+                child: Text(localizeShotData(context, 'Tutti'),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 14,
@@ -4314,7 +4315,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
 
         // ═══ FILTRO TEMPO ═══
         Row(children: [
-          _heatmapTimeChip(_localizeShotData(context, 'Tutti'), 0, isDark, tx, lb),
+          _heatmapTimeChip(localizeShotData(context, 'Tutti'), 0, isDark, tx, lb),
           const SizedBox(width: 8),
           _heatmapTimeChip(tr(context, '1° Tempo'), 1, isDark, tx, lb),
           const SizedBox(width: 8),
@@ -4552,11 +4553,11 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: cardBorder)),
         child: Column(children: [
-          Text(_localizeShotData(context, 'Dominio Territoriale'),
+          Text(localizeShotData(context, 'Dominio Territoriale'),
               style: TextStyle(
                   fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
           const SizedBox(height: 4),
-          Text(_localizeShotData(context, '% azioni nella metà campo avversaria'),
+          Text(localizeShotData(context, '% azioni nella metà campo avversaria'),
               style: TextStyle(fontSize: 11, color: lb)),
           const SizedBox(height: 14),
           _heatmapCompBar(tr(context, 'Territorio'), _homeTerritory, _awayTerritory,
@@ -4708,7 +4709,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                     : Colors.black.withOpacity(0.04)),
             Expanded(
                 child: Column(children: [
-              Text(_localizeShotData(context, 'Territorio'),
+              Text(localizeShotData(context, 'Territorio'),
                   style: TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w600, color: lb)),
               const SizedBox(height: 10),
@@ -4779,14 +4780,14 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: cardBorder)),
         child: Column(children: [
-          Text(_localizeShotData(context, 'Confronto con avversario'),
+          Text(localizeShotData(context, 'Confronto con avversario'),
               style: TextStyle(
                   fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
           SizedBox(height: 18),
-          _heatmapMetricVs(Icons.sports_soccer, _localizeShotData(context, 'Tiri totali'), shots, oppShots,
+          _heatmapMetricVs(Icons.sports_soccer, localizeShotData(context, 'Tiri totali'), shots, oppShots,
               teamColor, oppColor, tx, lb),
           SizedBox(height: 16),
-          _heatmapMetricVs(Icons.gps_fixed, _localizeShotData(context, 'Tiri in porta'), shotsOnTarget,
+          _heatmapMetricVs(Icons.gps_fixed, localizeShotData(context, 'Tiri in porta'), shotsOnTarget,
               oppShotsOnTarget, teamColor, oppColor, tx, lb),
           const SizedBox(height: 16),
           _heatmapMetricVs(Icons.swap_calls, '${S.of(context)!.passaggiSection} ($accPct%)', accPasses,
@@ -4884,7 +4885,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       case 'heatmap':
         legendItems = [
           {'color': const Color(0xFF81C784), 'label': tr(context, 'Bassa')},
-          {'color': const Color(0xFFFFEE58), 'label': _localizeShotData(context, 'Media')},
+          {'color': const Color(0xFFFFEE58), 'label': localizeShotData(context, 'Media')},
           {'color': const Color(0xFFF44336), 'label': tr(context, 'Alta')}
         ];
         break;
@@ -5519,7 +5520,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                     setSheetState(() {});
                   },
                   child:
-                      Text(_localizeShotData(context, 'Tutti'), style: TextStyle(fontSize: 12, color: lb)),
+                      Text(localizeShotData(context, 'Tutti'), style: TextStyle(fontSize: 12, color: lb)),
                 ),
               ]),
               const SizedBox(height: 8),
@@ -6940,7 +6941,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(_localizeShotData(context, _localizeShotData(context, 'Allenatore')),
+                      Text(localizeShotData(context, localizeShotData(context, 'Allenatore')),
                           style: TextStyle(
                               fontSize: 11,
                               color: lb,
@@ -6961,7 +6962,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             // ── PANCHINA ──
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(_localizeShotData(context, 'Panchina'),
+              child: Text(localizeShotData(context, 'Panchina'),
                   style: TextStyle(
                       fontSize: 15, fontWeight: FontWeight.w800, color: tx)),
             ),
@@ -7254,11 +7255,11 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                   Padding(
                     padding: EdgeInsets.fromLTRB(16, 0, 16, 14),
                     child: Row(children: [
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, 'Gol Fatti'), '${data['seasonGoalsFor']}', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(localizeShotData(context, 'Gol Fatti'), '${data['seasonGoalsFor']}', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, 'Gol Subiti'), '${data['seasonGoalsAgainst']}', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(localizeShotData(context, 'Gol Subiti'), '${data['seasonGoalsAgainst']}', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, 'Clean Sheet'), '${stats['cleanSheets']}', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(localizeShotData(context, 'Clean Sheet'), '${stats['cleanSheets']}', tx, lb, isDark)),
                     ]),
                   ),
                 ]),
@@ -7286,13 +7287,13 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                   Padding(
                     padding: EdgeInsets.fromLTRB(16, 0, 16, 14),
                     child: Row(children: [
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, 'Partite'), '${stats['matches']}', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(localizeShotData(context, 'Partite'), '${stats['matches']}', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, '% Vittorie'), '${stats['winRate']}%', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(localizeShotData(context, '% Vittorie'), '${stats['winRate']}%', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, 'Gol/Partita'), '${stats['avgGoals']}', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(localizeShotData(context, 'Gol/Partita'), '${stats['avgGoals']}', tx, lb, isDark)),
                       Container(width: 1, height: 30, color: divider),
-                      Expanded(child: _coachInfoTile(_localizeShotData(context, 'Punti/Partita'), '${stats['avgPoints']}', tx, lb, isDark)),
+                      Expanded(child: _coachInfoTile(localizeShotData(context, 'Punti/Partita'), '${stats['avgPoints']}', tx, lb, isDark)),
                     ]),
                   ),
                 ]),
@@ -7325,7 +7326,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                   child: Row(children: [
                     Icon(Icons.person_search_rounded, size: 18, color: teamColor),
                     SizedBox(width: 12),
-                    Text(_localizeShotData(context, 'Vedi profilo completo'),
+                    Text(localizeShotData(context, 'Vedi profilo completo'),
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: teamColor)),
                     const Spacer(),
                     Icon(Icons.chevron_right_rounded, size: 20, color: teamColor.withOpacity(0.6)),
@@ -7481,8 +7482,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     final categories = {
       'Gol & Tiri': {
         'goals': [S.of(context)!.gol, 'Notifica quando segna', Icons.sports_soccer],
-        'shotsOnTarget': [_localizeShotData(context, 'Tiri in porta'), tr(context, 'Notifica tiri in porta'), Icons.gps_fixed],
-        'shotsOffTarget': [_localizeShotData(context, 'Tiri totali'), tr(context, 'Notifica tutti i tiri'), Icons.gps_not_fixed],
+        'shotsOnTarget': [localizeShotData(context, 'Tiri in porta'), tr(context, 'Notifica tiri in porta'), Icons.gps_fixed],
+        'shotsOffTarget': [localizeShotData(context, 'Tiri totali'), tr(context, 'Notifica tutti i tiri'), Icons.gps_not_fixed],
       },
       S.of(context)!.disciplinaLabel: {
         'yellowCard': ['Cartellino giallo', 'Notifica ammonizione', Icons.square],
@@ -8032,7 +8033,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             // Profilo completo
             Expanded(child: GestureDetector(
               onTap: () {
-                final nav = Navigator.of(context); nav.pop(); Future.delayed(const Duration(milliseconds: 300), () { nav.push(MaterialPageRoute(builder: (_) => PlayerProfileScreen(player: player, teamName: _showHomeLineup ? widget.match.homeTeamName : widget.match.awayTeamName, teamColor: teamColor))); });
+                final nav = Navigator.of(context); nav.pop(); Future.delayed(const Duration(milliseconds: 300), () { nav.push(MaterialPageRoute(builder: (_) => MatchPlayerProfileScreen(player: player, teamName: _showHomeLineup ? widget.match.homeTeamName : widget.match.awayTeamName, teamColor: teamColor))); });
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -8243,15 +8244,15 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                             _buildStatRow(tr(context, 'Assist previsti (xA)'),
                                 player.xA.toStringAsFixed(2), tx, lb, divider),
                           _buildStatRow(
-                              _localizeShotData(context, 'Tiri totali'), '${player.shots}', tx, lb, divider),
-                          _buildStatRow(_localizeShotData(context, 'Tiri in porta'), '${player.shotsOnTarget}', tx,
+                              localizeShotData(context, 'Tiri totali'), '${player.shots}', tx, lb, divider),
+                          _buildStatRow(localizeShotData(context, 'Tiri in porta'), '${player.shotsOnTarget}', tx,
                               lb, divider),
                           if (player.keyPasses > 0)
                             _buildStatRow(S.of(context)!.passaggiChiave, '${player.keyPasses}', tx,
                                 lb, divider),
                           if (player.offsides > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Fuorigioco'), '${player.offsides}', tx, lb, divider),
+                                localizeShotData(context, 'Fuorigioco'), '${player.offsides}', tx, lb, divider),
                         ],
 
                         // ════════════════════════════
@@ -8281,7 +8282,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                               tx, lb, divider),
                           if (player.crosses > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Cross (precisi)'),
+                                localizeShotData(context, 'Cross (precisi)'),
                                 '${player.crosses} (${player.crossesCompleted})',
                                 tx, lb, divider),
                           if (player.keyPasses > 0)
@@ -8289,7 +8290,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                                 lb, divider),
                           if (player.ballsLost > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Palla persa'), '${player.ballsLost}', tx, lb, divider),
+                                localizeShotData(context, 'Palla persa'), '${player.ballsLost}', tx, lb, divider),
                         ],
 
                         // ════════════════════════════
@@ -8303,19 +8304,19 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                               sectionBg),
                           if (player.dribbles > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Dribbling (riusciti)'),
+                                localizeShotData(context, 'Dribbling (riusciti)'),
                                 '${player.dribbles} (${player.dribblesSuccessful})',
                                 tx, lb, divider),
                           _buildStatRow(S.of(context)!.tocchi, '${player.touches}', tx, lb, divider),
                           if (player.foulsWon > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Falli subiti'), '${player.foulsWon}', tx, lb, divider),
+                                localizeShotData(context, 'Falli subiti'), '${player.foulsWon}', tx, lb, divider),
                           if (player.ballsLost > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Palla persa'), '${player.ballsLost}', tx, lb, divider),
+                                localizeShotData(context, 'Palla persa'), '${player.ballsLost}', tx, lb, divider),
                           if (player.offsides > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Fuorigioco'), '${player.offsides}', tx, lb, divider),
+                                localizeShotData(context, 'Fuorigioco'), '${player.offsides}', tx, lb, divider),
                         ],
 
                         // ════════════════════════════
@@ -8333,18 +8334,18 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                               Color(0xFFE65100), sectionBg),
                           if (player.tackles > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Contrasti vinti'),
+                                localizeShotData(context, 'Contrasti vinti'),
                                 '${player.tackles} (${player.tacklesWon})',
                                 tx, lb, divider),
                           if (player.interceptions > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Intercetti'), '${player.interceptions}', tx, lb, divider),
+                                localizeShotData(context, 'Intercetti'), '${player.interceptions}', tx, lb, divider),
                           if (player.clearances > 0)
-                            _buildStatRow(_localizeShotData(context, 'Chiusure difensive'), '${player.clearances}',
+                            _buildStatRow(localizeShotData(context, 'Chiusure difensive'), '${player.clearances}',
                                 tx, lb, divider),
                           if (player.recoveries > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Recuperi'), '${player.recoveries}', tx, lb, divider),
+                                localizeShotData(context, 'Recuperi'), '${player.recoveries}', tx, lb, divider),
                           if (player.duelsTotal > 0)
                             _buildStatRow(
                                 'Duelli a terra (vinti)',
@@ -8362,7 +8363,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                                 tr(context, 'Falli commessi'), '${player.fouls}', tx, lb, divider),
                           if (player.foulsWon > 0)
                             _buildStatRow(
-                                _localizeShotData(context, 'Falli subiti'), '${player.foulsWon}', tx, lb, divider),
+                                localizeShotData(context, 'Falli subiti'), '${player.foulsWon}', tx, lb, divider),
                           if (player.yellowCards > 0)
                             _buildStatRow(
                                 S.of(context)!.ammonizioni, '${player.yellowCards}', tx, lb, divider,
@@ -8663,7 +8664,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             _showPlayerMatchStats(player, teamColor, isDark, allPlayers: allPlayers);
           } else {
             final teamName = _showHomeLineup ? widget.match.homeTeamName : widget.match.awayTeamName;
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlayerProfileScreen(player: player, teamName: teamName, teamColor: teamColor)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => MatchPlayerProfileScreen(player: player, teamName: teamName, teamColor: teamColor)));
           }
         },
 
@@ -9135,7 +9136,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => PlayerProfileScreen(
+          builder: (_) => MatchPlayerProfileScreen(
             player: LocalLineupPlayer(name: name, number: number, position: ''),
             teamName: '',
             teamColor: color,
@@ -9202,7 +9203,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
           onTap: () {
             final coachName = _getCoachName(teamName);
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => PlayerProfileScreen(
+              builder: (_) => MatchPlayerProfileScreen(
                 player: LocalLineupPlayer(name: coachName, number: 0, position: 'ALL'),
                 teamName: teamName,
                 teamColor: color,
@@ -9244,7 +9245,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             onTap: () {
               final playerName = p['name'] as String;
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => PlayerProfileScreen(
+                builder: (_) => MatchPlayerProfileScreen(
                   player: LocalLineupPlayer(name: playerName, number: p['number'] as int, position: ''),
                   teamName: teamName,
                   teamColor: color,
@@ -10468,27 +10469,27 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         // ── Dettagli Partita ──
         _infoSection(
           icon: Icons.sports_soccer_rounded,
-          title: _localizeShotData(context, _localizeShotData(context, 'DETTAGLI PARTITA')),
+          title: localizeShotData(context, localizeShotData(context, 'DETTAGLI PARTITA')),
           isDark: isDark, cardBg: cardBg, tx: tx, lb: lb, divider: divider,
           children: [
-            _infoRow(_localizeShotData(context, 'Competizione'), widget.match.leagueName ?? 'Serie A', tx, lb, divider),
-            _infoRow(_localizeShotData(context, 'Giornata'), widget.match.round ?? 'Giornata 27', tx, lb, divider),
-            _infoRow(_localizeShotData(context, 'Data'), widget.match.date.toString().substring(0, 10), tx, lb, divider),
-            _infoRow(_localizeShotData(context, 'Orario'), widget.match.time, tx, lb, divider),
-            _infoRow(_localizeShotData(context, 'Stato'), _localizeShotData(context, 'Terminata (FT)'), tx, lb, null),
+            _infoRow(localizeShotData(context, 'Competizione'), widget.match.leagueName ?? 'Serie A', tx, lb, divider),
+            _infoRow(localizeShotData(context, 'Giornata'), widget.match.round ?? 'Giornata 27', tx, lb, divider),
+            _infoRow(localizeShotData(context, 'Data'), widget.match.date.toString().substring(0, 10), tx, lb, divider),
+            _infoRow(localizeShotData(context, 'Orario'), widget.match.time, tx, lb, divider),
+            _infoRow(localizeShotData(context, 'Stato'), localizeShotData(context, 'Terminata (FT)'), tx, lb, null),
           ],
         ),
         const SizedBox(height: 14),
         // ── Sede ──
         _infoSection(
           icon: Icons.stadium_rounded,
-          title: _localizeShotData(context, _localizeShotData(context, 'SEDE')),
+          title: localizeShotData(context, localizeShotData(context, 'SEDE')),
           isDark: isDark, cardBg: cardBg, tx: tx, lb: lb, divider: divider,
           children: [
-            _infoRow(_localizeShotData(context, 'Stadio'), widget.match.venue.isNotEmpty ? widget.match.venue : 'Stadio Olimpico', tx, lb, divider),
-            _infoRow(_localizeShotData(context, 'Città'), 'Roma', tx, lb, divider),
-            _infoRow(_localizeShotData(context, 'Capienza'), '72,698', tx, lb, divider),
-            _infoRow(_localizeShotData(context, 'Spettatori'), '58,420', tx, lb, divider),
+            _infoRow(localizeShotData(context, 'Stadio'), widget.match.venue.isNotEmpty ? widget.match.venue : 'Stadio Olimpico', tx, lb, divider),
+            _infoRow(localizeShotData(context, 'Città'), 'Roma', tx, lb, divider),
+            _infoRow(localizeShotData(context, 'Capienza'), '72,698', tx, lb, divider),
+            _infoRow(localizeShotData(context, 'Spettatori'), '58,420', tx, lb, divider),
             _infoRow(tr(context, 'Superficie'), tr(context, 'Erba naturale'), tx, lb, null),
           ],
         ),
@@ -10496,10 +10497,10 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         // ── Arbitro ──
         _infoSection(
           icon: Icons.sports_rounded,
-          title: _localizeShotData(context, _localizeShotData(context, 'ARBITRO')),
+          title: localizeShotData(context, localizeShotData(context, 'ARBITRO')),
           isDark: isDark, cardBg: cardBg, tx: tx, lb: lb, divider: divider,
           children: [
-            _infoRow(_localizeShotData(context, 'Arbitro'), widget.match.referee ?? 'Daniele Orsato', tx, lb, divider),
+            _infoRow(localizeShotData(context, 'Arbitro'), widget.match.referee ?? 'Daniele Orsato', tx, lb, divider),
             _infoRow(tr(context, 'Assistente 1'), 'Carbone', tx, lb, divider),
             _infoRow(tr(context, 'Assistente 2'), 'Giallatini', tx, lb, divider),
             _infoRow(tr(context, 'IV Uomo'), 'Rapuano', tx, lb, divider),
@@ -12192,2972 +12193,8 @@ Map<String, dynamic>? getPlayerSeasonData(String name) {
   return null;
 }
 
-String _localizeShotData(BuildContext context, String? text) {
-    if (text == null) return '';
-    final isEn = Localizations.localeOf(context).languageCode == 'en';
-    if (!isEn) return text;
-    const map = {
-      'Gioco aperto': 'Open play', 'Contropiede': 'Counter-attack',
-      'Calcio di punizione': 'Free kick', 'Calcio piazzato': 'Set piece',
-      'Rigore': 'Penalty', 'Tiro di destro': 'Right foot shot',
-      'Tiro di sinistro': 'Left foot shot', 'Colpo di testa': 'Header',
-      'In basso a destra': 'Bottom right', 'In basso a sinistra': 'Bottom left',
-      'In basso al centro': 'Bottom center', 'In alto a destra': 'Top right',
-      'In alto a sinistra': 'Top left', 'In alto al centro': 'Top center',
-      'Centro': 'Center', 'Centro destra': 'Center right',
-      'Centro sinistra': 'Center left', 'Al centro': 'Center',
-      'Parata': 'Saved', 'Parato': 'Saved', 'Traversa': 'Crossbar',
-      'Palo': 'Post', 'Fuori': 'Off target', 'Gol': 'Goal',
-      'In Porta': 'On target', 'Respinto': 'Blocked',
-      'Situazione': 'Situation', 'Tipo di tiro': 'Shot type',
-      'Esito': 'Outcome', 'Zona gol': 'Goal zone',
-      'Centrocampo SX': 'Left midfield', 'Centrocampo CSX': 'Center-left midfield',
-      'Centrocampo CDX': 'Center-right midfield', 'Centrocampo DX': 'Right midfield',
-      'Centrocampo': 'Midfield', 'Difesa': 'Defense', 'Attacco': 'Attack',
-      'Dominio Territoriale': 'Territorial Dominance',
-      '% azioni nella meta campo avversaria': '% actions in opponent half',
-      'Territorio': 'Territory', 'Contrasti vinti': 'Tackles won',
-      'Contrasti': 'Tackles', 'Intercetti': 'Interceptions', 'Rinvii': 'Clearances',
-      'Vinti': 'Won', 'Totali': 'Total', 'Tutti': 'All',
-      '1\u00b0 Tempo': '1st Half', '2\u00b0 Tempo': '2nd Half',
-      'Top difensori': 'Top Defenders', 'Top attaccanti': 'Top Attackers',
-      'Top centrocampisti': 'Top Midfielders',
-      'Tocca un giocatore per filtrare il campo': 'Tap a player to filter the field',
-      'Tocca un giocatore per filtrare': 'Tap a player to filter',
-      'Tutti i tentativi verso la porta': 'All attempts towards goal',
-      'Fuorigioco': 'Offsides', 'Contrasti (vinti)': 'Tackles (won)',
-      'Passaggi precisi': 'Accurate passes', 'Passaggi chiave': 'Key passes',
-      'Passaggi progressivi': 'Progressive passes', 'Palle lunghe': 'Long balls',
-      'Recuperi palla': 'Ball recoveries', 'Salvataggi': 'Saves',
-      'Fase Offensiva': 'Attacking Phase', 'Fase Difensiva': 'Defensive Phase',
-      'Grandi occasioni realizzate': 'Big chances scored',
-      'Grandi occasioni mancate': 'Big chances missed',
-      'Attacchi pericolosi': 'Dangerous attacks', 'Attacchi': 'Attacks',
-      'Falli avversari nel terzo offensivo': 'Fouls in attacking third',
-      'Notifica fuorigioco': 'Offside notification',
-      'Falli': 'Fouls', 'Cartellini Gialli': 'Yellow Cards',
-      'Cartellini Rossi': 'Red Cards', 'Dribbling': 'Dribbling',
-      'Duelli': 'Duels', 'Tocchi': 'Touches', 'Presenze': 'Appearances',
-      'Minuti': 'Minutes', 'Assist': 'Assists',
-      'Modulo': 'Formation',
-      'Posizioni': 'Positions',
-      'Partite': 'Matches',
-      'Gol/Partita': 'Goals/Match',
-      'Punti/Partita': 'Points/Match',
-      'Piede preferito': 'Preferred foot',
-      'Destro': 'Right',
-      'Sinistro': 'Left',
-      'Stagione': 'Season',
-      'Cambio': 'Substitution',
-      'giocatori': 'players',
-      'Difensore': 'Defender',
-      'Portiere': 'Goalkeeper',
-      'Centrocampista': 'Midfielder',
-      'Attaccante': 'Forward',
-      'Pres.': 'Apps',
-      'Media': 'Avg',
-      'Cart.': 'Cards',
-      'Ultime 5 partite': 'Last 5 matches',
-      'Dettaglio statistiche': 'Statistics detail',
-      'DETTAGLI PARTITA': 'MATCH DETAILS', 'Competizione': 'Competition',
-      'Giornata': 'Matchday', 'Data': 'Date', 'Orario': 'Time',
-      'Stato': 'Status', 'Terminata (FT)': 'Finished (FT)',
-      'SEDE': 'VENUE', 'Stadio': 'Stadium', 'Città': 'City',
-      'Capienza': 'Capacity', 'Spettatori': 'Attendance',
-      'Arbitro': 'Referee', 'ARBITRO': 'REFEREE',
-      'FORMAZIONI': 'LINEUPS', 'Titolari': 'Starting XI', 'Riserve': 'Substitutes',
-      'Allenatore': 'Coach', 'Nessun dato disponibile': 'No data available',
-      'Media voto': 'Avg Rating', 'Minuti giocati': 'Minutes played',
-      'Profilo': 'Profile', 'Confronta': 'Compare',
-    '% Vittorie': 'Win %',
-    'Anticipo': 'Anticipation',
-    'Chiusure difensive': 'Defensive clearances',
-    'Confronto con avversario': 'Comparison with opponent',
-    'Contrasto': 'Challenge',
-    'Cross (precisi)': 'Crosses (accurate)',
-    'Di piede': 'Standing tackle',
-    'Falli subiti': 'Fouls suffered',
-    'Gol Fatti': 'Goals Scored',
-    'Gol Subiti': 'Goals Conceded',
-    'In piedi': 'Standing',
-    'Intercetto': 'Interception',
-    'Panchina': 'Bench',
-    'Parati': 'Saved',
-    'Più alta concentrazione': 'Highest concentration',
-    'Più bassa concentrazione': 'Lowest concentration',
-    'Rinvio': 'Clearance',
-    'Scivolata': 'Sliding tackle',
-    'Statistiche Stagione 2023/24': 'Season Statistics 2023/24',
-    'Carriera': 'Career',
-    'Tackle laterale': 'Side tackle',
-    'Tiri in porta': 'Shots on target',
-    'Tiri totali': 'Total shots',
-    'Tocchi area avversaria': 'Touches in penalty area',
-    'Vedi profilo completo': 'View full profile',
-    };
-    return map[text] ?? text;
-  }
 
-class PlayerProfileScreen extends StatefulWidget {
-  final LocalLineupPlayer player;
-  final String teamName;
-  final Color teamColor;
-
-  const PlayerProfileScreen({
-    Key? key,
-    required this.player,
-    required this.teamName,
-    required this.teamColor,
-  }) : super(key: key);
-
-  @override
-  State<PlayerProfileScreen> createState() => _PlayerProfileScreenState();
-}
-
-class _PlayerProfileScreenState extends State<PlayerProfileScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  bool get isCoach => widget.player.position == 'ALL';
-  int get _tabCount => isCoach ? 3 : 4;
-  final HapticService _playerHaptic = HapticService();
-  late final FavoritesService _favoritesService;
-
-  // ── Player Notification Service ──
-  final PlayerNotificationPreferencesService _playerNotifService =
-      PlayerNotificationPreferencesService();
-  late PlayerNotificationSettings _playerNotifSettings;
-  Map<String, bool> get _playerNotifPrefs => _playerNotifSettingsToMap();
-  bool get _playerNotifEnabled => _playerNotifSettings.hasActiveNotifications;
-
-  Map<String, bool> _playerNotifSettingsToMap() {
-    return {
-      'goals': _playerNotifSettings.notifyGoals,
-      'yellowCards': _playerNotifSettings.notifyYellowCard,
-      'redCards': _playerNotifSettings.notifyRedCard,
-      'foulsCommitted': _playerNotifSettings.notifyFoulCommitted,
-      'foulsSuffered': _playerNotifSettings.notifyFoulSuffered,
-      'shots': _playerNotifSettings.notifyShotsOffTarget,
-      'shotsOnTarget': _playerNotifSettings.notifyShotsOnTarget,
-      'offsides': _playerNotifSettings.notifyOffsides,
-      'fantaRatingHT': _playerNotifSettings.notifyKeyPasses,
-      'fantaRatingFT': _playerNotifSettings.notifyDribblesSuccessful,
-    };
-  }
-
-  void _updatePlayerNotifFromKey(String key, bool value) {
-    switch (key) {
-      case 'goals':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyGoals: value);
-        break;
-      case 'yellowCards':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyYellowCard: value);
-        break;
-      case 'redCards':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyRedCard: value);
-        break;
-      case 'foulsCommitted':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyFoulCommitted: value);
-        break;
-      case 'foulsSuffered':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyFoulSuffered: value);
-        break;
-      case 'shots':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyShotsOffTarget: value);
-        break;
-      case 'shotsOnTarget':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyShotsOnTarget: value);
-        break;
-      case 'offsides':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyOffsides: value);
-        break;
-      case 'fantaRatingHT':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyKeyPasses: value);
-        break;
-      case 'fantaRatingFT':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyDribblesSuccessful: value);
-        break;
-    }
-    _playerNotifService.saveSettingsForPlayer(_playerNotifSettings);
-  }
-
-  void _setAllPlayerNotif(bool value) {
-    _playerNotifSettings = _playerNotifSettings.copyWith(
-      notifyGoals: value,
-      notifyYellowCard: value,
-      notifyRedCard: value,
-      notifyFoulCommitted: value,
-      notifyFoulSuffered: value,
-      notifyShotsOnTarget: value,
-      notifyShotsOffTarget: value,
-      notifyOffsides: value,
-      notifyKeyPasses: value,
-      notifyDribblesSuccessful: value,
-    );
-    _playerNotifService.saveSettingsForPlayer(_playerNotifSettings);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _favoritesService = context.read<FavoritesService>();
-    _tabController = TabController(length: _tabCount, vsync: this);
-    // Carica impostazioni notifiche giocatore dal service
-    _playerNotifSettings = _playerNotifService.getSettingsForPlayer(
-      widget.player.number,
-      widget.player.name,
-    );
-    _playerNotifService.loadSettings().then((_) {
-      if (mounted) {
-        setState(() {
-          _playerNotifSettings = _playerNotifService.getSettingsForPlayer(
-            widget.player.number,
-            widget.player.name,
-          );
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  // ── Player Notification Settings Bottom Sheet ──
-  void _showPlayerNotificationDialog() {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final p = widget.player;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            final allOn = _playerNotifPrefs.values.every((v) => v);
-            final anyOn = _playerNotifPrefs.values.any((v) => v);
-            final activeCount =
-                _playerNotifPrefs.values.where((v) => v).length;
-
-            return Container(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.82,
-              ),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1A1A2E) : Colors.white,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 20,
-                    offset: const Offset(0, -5),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Handle bar
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: isDark ? Colors.white24 : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-
-                  // Header with player info
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-                    child: Row(
-                      children: [
-                        // Player number
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: widget.teamColor.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: widget.teamColor.withOpacity(0.3),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${p.number}',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: widget.teamColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Notifiche ${p.name} (Stagione)',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800,
-                                  color: isDark ? Colors.white : Colors.black87,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                anyOn
-                                    ? '$activeCount/${_playerNotifPrefs.length} attive'
-                                    : tr(context, 'Nessuna notifica attiva'),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: isDark
-                                      ? Colors.white54
-                                      : Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Toggle all
-                        GestureDetector(
-                          onTap: () {
-                            _playerHaptic.lightImpact();
-                            final newVal = !allOn;
-                            setSheetState(() {
-                              _setAllPlayerNotif(newVal);
-                              for (final k in _playerNotifSettingsToMap().keys) {
-                                // Map is now a getter, no-op here
-                              }
-                            });
-                            setState(() {});
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 7),
-                            decoration: BoxDecoration(
-                              color: allOn
-                                  ? widget.teamColor
-                                  : isDark
-                                      ? Colors.white10
-                                      : Colors.grey[100],
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: allOn
-                                    ? widget.teamColor
-                                    : isDark
-                                        ? Colors.white24
-                                        : Colors.grey[300]!,
-                              ),
-                            ),
-                            child: Text(
-                              allOn ? S.of(context)!.deactivate : S.of(context)!.activateAll,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: allOn
-                                    ? Colors.white
-                                    : isDark
-                                        ? Colors.white70
-                                        : Colors.grey[700],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Divider(
-                      color: isDark ? Colors.white12 : Colors.grey[200],
-                      height: 1),
-
-                  // Scrollable tiles
-                  Flexible(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // ── AZIONI OFFENSIVE ──
-                          _pNotifSection(tr(context, 'Azioni offensive'),
-                              Icons.sports_soccer, isDark),
-                          _pNotifTile(
-                            key: 'goals',
-                            icon: Icons.sports_soccer,
-                            title: 'Goal',
-                            subtitle:
-                                'Notifica quando ${p.name} segna un goal',
-                            color: const Color(0xFF4CAF50),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-                          _pNotifTile(
-                            key: 'shots',
-                            icon: Icons.gps_not_fixed,
-                            title: _localizeShotData(context, 'Tiri totali'),
-                            subtitle: _localizeShotData(context, 'Tutti i tentativi verso la porta'),
-                            color: const Color(0xFF42A5F5),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-                          _pNotifTile(
-                            key: 'shotsOnTarget',
-                            icon: Icons.gps_fixed,
-                            title: _localizeShotData(context, 'Tiri in porta'),
-                            subtitle: 'Tiri nello specchio della porta',
-                            color: const Color(0xFF2196F3),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-                          _pNotifTile(
-                            key: 'offsides',
-                            icon: Icons.front_hand,
-                            title: tr(context, 'Fuorigioco'),
-                            subtitle: 'Quando viene segnalato in offside',
-                            color: const Color(0xFF7E57C2),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          // ── DISCIPLINA ──
-                          _pNotifSection(S.of(context)!.disciplinaLabel, Icons.style, isDark),
-                          _pNotifTile(
-                            key: 'yellowCards',
-                            icon: Icons.square_rounded,
-                            title: 'Cartellino giallo',
-                            subtitle: 'Ammonizioni e doppi gialli',
-                            color: const Color(0xFFFFCA28),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-                          _pNotifTile(
-                            key: 'redCards',
-                            icon: Icons.square_rounded,
-                            title: 'Cartellino rosso',
-                            subtitle: 'Espulsioni dirette o per doppio giallo',
-                            color: const Color(0xFFE53935),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-                          _pNotifTile(
-                            key: 'foulsCommitted',
-                            icon: Icons.warning_amber,
-                            title: tr(context, 'Falli commessi'),
-                            subtitle: 'Falli fatti dal giocatore',
-                            color: const Color(0xFFFF7043),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-                          _pNotifTile(
-                            key: 'foulsSuffered',
-                            icon: Icons.personal_injury,
-                            title: tr(context, 'Falli subiti'),
-                            subtitle: 'Falli subiti dal giocatore',
-                            color: const Color(0xFF8D6E63),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          // ── FANTACALCIO ──
-                          _pNotifSection(
-                              'Fantacalcio', Icons.star_rate, isDark),
-                          _pNotifTile(
-                            key: 'fantaRatingHT',
-                            icon: Icons.star_half,
-                            title: 'Voto fine 1° tempo',
-                            subtitle:
-                                'Voto parziale fantacalcio all\'intervallo',
-                            color: const Color(0xFFAB47BC),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-                          _pNotifTile(
-                            key: 'fantaRatingFT',
-                            icon: Icons.star,
-                            title: 'Voto finale',
-                            subtitle:
-                                'Voto definitivo fantacalcio a fine partita',
-                            color: const Color(0xFF9C27B0),
-                            isDark: isDark,
-                            setSheetState: setSheetState,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _pNotifSection(String title, IconData icon, bool isDark) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8, top: 4),
-      child: Row(children: [
-        Icon(icon,
-            size: 16,
-            color: isDark ? Colors.white38 : Colors.grey[500]),
-        const SizedBox(width: 8),
-        Text(title,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.8,
-              color: isDark ? Colors.white38 : Colors.grey[500],
-            )),
-      ]),
-    );
-  }
-
-  Widget _pNotifTile({
-    required String key,
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-    required bool isDark,
-    required StateSetter setSheetState,
-  }) {
-    final isOn = _playerNotifPrefs[key] ?? false;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(14),
-          onTap: () {
-            _playerHaptic.lightImpact();
-            setSheetState(() {
-              _updatePlayerNotifFromKey(key, !isOn);
-            });
-            setState(() {});
-          },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            decoration: BoxDecoration(
-              color: isOn
-                  ? color.withOpacity(isDark ? 0.12 : 0.06)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: isOn
-                    ? color.withOpacity(isDark ? 0.3 : 0.2)
-                    : isDark
-                        ? Colors.white10
-                        : Colors.grey[200]!,
-                width: isOn ? 1.5 : 1,
-              ),
-            ),
-            child: Row(children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: color.withOpacity(isOn ? 0.15 : 0.08),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(icon,
-                    size: 20,
-                    color: isOn
-                        ? color
-                        : isDark
-                            ? Colors.white30
-                            : Colors.grey[400]),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: isOn
-                              ? (isDark ? Colors.white : Colors.black87)
-                              : (isDark
-                                  ? Colors.white54
-                                  : Colors.grey[500]),
-                        )),
-                    const SizedBox(height: 2),
-                    Text(subtitle,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color:
-                              isDark ? Colors.white30 : Colors.grey[400],
-                        )),
-                  ],
-                ),
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                width: 44,
-                height: 26,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(13),
-                  color: isOn
-                      ? color
-                      : isDark
-                          ? Colors.white12
-                          : Colors.grey[300],
-                ),
-                child: AnimatedAlign(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeInOut,
-                  alignment:
-                      isOn ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    width: 22,
-                    height: 22,
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 4,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ]),
-          ),
-        ),
-      ),
-    );
-  }
-
-    // ── Dati reali giocatori stagione 2022-23 ──
-  Map<String, dynamic> _getSeasonData() {
-    final p = widget.player;
-    final data = _getPlayerRealData(p.name);
-    if (data != null) return data;
-    // Fallback generico per giocatori non mappati
-    return {
-      'appearances': 15 + (p.number % 10),
-      'goals': 0,
-      'assists': 0,
-      'yellowCards': p.yellowCards > 0 ? p.yellowCards : (p.number % 3),
-      'redCards': 0,
-      'avgRating': p.rating > 0 ? p.rating : 6.5,
-      'minutesPlayed': (15 + (p.number % 10)) * 75,
-      'recentRatings': [6.5, 6.8, 6.2, 7.0, 6.4],
-      'recentForm': ['D', 'W', 'L', 'W', 'D'],
-      'skills': {'VEL': 65.0, 'TIR': 65.0, 'PAS': 65.0, 'DRI': 65.0, 'DIF': 65.0, 'FIS': 65.0},
-      'birthDate': '01/01/1995',
-      'age': 28,
-      'nationality': '🏳️ N/D',
-      'height': 180,
-      'weight': 75,
-      'foot': 'Destro',
-      'career': [{'team': widget.teamName, 'years': '2022 - Presente', 'apps': '${15 + (p.number % 10)}', 'goals': '0'}],
-    };
-  }
-
-  Map<String, dynamic>? _getPlayerRealData(String name) {
-    final Map<String, Map<String, dynamic>> db = {
-      // ═══════════════════════════════════════
-      //  LAZIO
-      // ═══════════════════════════════════════
-      'Immobile': {
-        'birthDate': '20/02/1990', 'age': 33, 'nationality': '🇮🇹 Italia',
-        'height': 185, 'weight': 85, 'foot': 'Destro',
-        'appearances': 31, 'goals': 12, 'assists': 3, 'yellowCards': 4, 'redCards': 0,
-        'avgRating': 7.12,
-        'overall': 82, 'minutesPlayed': 2645,
-        'recentRatings': [7.5, 6.8, 7.2, 8.1, 7.0],
-        'recentForm': ['W', 'D', 'W', 'W', 'W'],
-        'skills': {'VEL': 82.0, 'TIR': 83.0, 'PAS': 67.0, 'DRI': 78.0, 'DIF': 39.0, 'FIS': 73.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2016 - 2024', 'apps': '278', 'goals': '196'},
-          {'team': 'Siviglia', 'years': '2015 - 2016', 'apps': '14', 'goals': '4'},
-          {'team': 'Torino', 'years': '2013 - 2015', 'apps': '33', 'goals': '22'},
-          {'team': 'Borussia Dortmund', 'years': '2014 - 2015', 'apps': '24', 'goals': '3'},
-          {'team': 'Genoa', 'years': '2012 - 2013', 'apps': '33', 'goals': '5'},
-          {'team': 'Pescara', 'years': '2011 - 2012', 'apps': '37', 'goals': '28'},
-        ],
-      },
-      'Zaccagni': {
-        'birthDate': '25/06/1995', 'age': 28, 'nationality': '🇮🇹 Italia',
-        'height': 177, 'weight': 70, 'foot': 'Destro',
-        'appearances': 34, 'goals': 10, 'assists': 7, 'yellowCards': 5, 'redCards': 0,
-        'avgRating': 7.08,
-        'overall': 84, 'minutesPlayed': 2890,
-        'recentRatings': [7.2, 7.5, 6.8, 7.0, 7.8],
-        'recentForm': ['W', 'W', 'D', 'W', 'W'],
-        'skills': {'VEL': 88.0, 'TIR': 78.0, 'PAS': 77.0, 'DRI': 87.0, 'DIF': 57.0, 'FIS': 66.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2021 - Presente', 'apps': '105', 'goals': '20'},
-          {'team': 'Hellas Verona', 'years': '2018 - 2021', 'apps': '91', 'goals': '11'},
-          {'team': 'Chievo Verona', 'years': '2015 - 2018', 'apps': '42', 'goals': '2'},
-        ],
-      },
-      'Pedro': {
-        'birthDate': '28/07/1987', 'age': 35, 'nationality': '🇪🇸 Spagna',
-        'height': 169, 'weight': 64, 'foot': 'Destro',
-        'appearances': 28, 'goals': 4, 'assists': 5, 'yellowCards': 2, 'redCards': 0,
-        'avgRating': 7.02,
-        'overall': 77, 'minutesPlayed': 1820,
-        'recentRatings': [7.0, 7.5, 6.5, 7.2, 6.8],
-        'recentForm': ['W', 'W', 'L', 'W', 'D'],
-        'skills': {'VEL': 68.0, 'TIR': 74.0, 'PAS': 74.0, 'DRI': 78.0, 'DIF': 40.0, 'FIS': 62.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2021 - 2024', 'apps': '80', 'goals': '14'},
-          {'team': 'Roma', 'years': '2020 - 2021', 'apps': '40', 'goals': '5'},
-          {'team': 'Chelsea', 'years': '2015 - 2020', 'apps': '137', 'goals': '22'},
-          {'team': 'Barcellona', 'years': '2007 - 2015', 'apps': '321', 'goals': '99'},
-        ],
-      },
-      'Luis Alberto': {
-        'birthDate': '28/09/1992', 'age': 30, 'nationality': '🇪🇸 Spagna',
-        'height': 183, 'weight': 75, 'foot': 'Sinistro',
-        'appearances': 33, 'goals': 6, 'assists': 10, 'yellowCards': 6, 'redCards': 0,
-        'avgRating': 7.18,
-        'overall': 82, 'minutesPlayed': 2650,
-        'recentRatings': [7.5, 7.0, 7.8, 6.5, 7.2],
-        'recentForm': ['W', 'W', 'W', 'L', 'W'],
-        'skills': {'VEL': 58.0, 'TIR': 72.0, 'PAS': 86.0, 'DRI': 82.0, 'DIF': 48.0, 'FIS': 56.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2016 - 2023', 'apps': '228', 'goals': '40'},
-          {'team': 'Malaga (prestito)', 'years': '2015 - 2016', 'apps': '30', 'goals': '2'},
-          {'team': 'Deportivo (prestito)', 'years': '2014 - 2015', 'apps': '30', 'goals': '4'},
-          {'team': 'Liverpool', 'years': '2013 - 2016', 'apps': '9', 'goals': '0'},
-          {'team': 'Siviglia B', 'years': '2010 - 2013', 'apps': '63', 'goals': '11'},
-        ],
-      },
-      'Guendouzi': {
-        'birthDate': '14/04/1999', 'age': 24, 'nationality': '🇫🇷 Francia',
-        'height': 185, 'weight': 77, 'foot': 'Destro',
-        'appearances': 34, 'goals': 1, 'assists': 4, 'yellowCards': 8, 'redCards': 0,
-        'avgRating': 6.92,
-        'overall': 82, 'minutesPlayed': 2950,
-        'recentRatings': [6.8, 7.0, 6.5, 7.2, 6.9],
-        'recentForm': ['D', 'W', 'L', 'W', 'D'],
-        'skills': {'VEL': 72.0, 'TIR': 73.0, 'PAS': 80.0, 'DRI': 80.0, 'DIF': 77.0, 'FIS': 77.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2022 - Presente', 'apps': '70', 'goals': '3'},
-          {'team': 'Marsiglia', 'years': '2021 - 2022', 'apps': '52', 'goals': '2'},
-          {'team': 'Hertha Berlino (prestito)', 'years': '2020 - 2021', 'apps': '24', 'goals': '2'},
-          {'team': 'Arsenal', 'years': '2018 - 2022', 'apps': '82', 'goals': '1'},
-          {'team': 'Lorient', 'years': '2016 - 2018', 'apps': '21', 'goals': '0'},
-        ],
-      },
-      'Cataldi': {
-        'birthDate': '12/08/1994', 'age': 28, 'nationality': '🇮🇹 Italia',
-        'height': 180, 'weight': 72, 'foot': 'Sinistro',
-        'appearances': 30, 'goals': 2, 'assists': 3, 'yellowCards': 5, 'redCards': 0,
-        'avgRating': 6.82,
-        'overall': 77, 'minutesPlayed': 2120,
-        'recentRatings': [6.5, 7.0, 6.8, 6.5, 7.2],
-        'recentForm': ['D', 'W', 'D', 'L', 'W'],
-        'skills': {'VEL': 68.0, 'TIR': 71.0, 'PAS': 77.0, 'DRI': 78.0, 'DIF': 73.0, 'FIS': 71.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2012 - 2024', 'apps': '185', 'goals': '10'},
-          {'team': 'Genoa (prestito)', 'years': '2017 - 2018', 'apps': '14', 'goals': '0'},
-          {'team': 'Benevento (prestito)', 'years': '2016 - 2017', 'apps': '22', 'goals': '2'},
-          {'team': 'Crotone (prestito)', 'years': '2015 - 2016', 'apps': '28', 'goals': '1'},
-        ],
-      },
-      'Romagnoli': {
-        'birthDate': '12/01/1995', 'age': 28, 'nationality': '🇮🇹 Italia',
-        'height': 185, 'weight': 80, 'foot': 'Sinistro',
-        'appearances': 32, 'goals': 1, 'assists': 0, 'yellowCards': 6, 'redCards': 0,
-        'avgRating': 6.72,
-        'overall': 82, 'minutesPlayed': 2780,
-        'recentRatings': [6.5, 6.8, 7.0, 6.5, 7.2],
-        'recentForm': ['D', 'W', 'W', 'L', 'W'],
-        'skills': {'VEL': 64.0, 'TIR': 40.0, 'PAS': 55.0, 'DRI': 69.0, 'DIF': 84.0, 'FIS': 80.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2022 - Presente', 'apps': '60', 'goals': '1'},
-          {'team': 'Milan', 'years': '2015 - 2022', 'apps': '247', 'goals': '7'},
-          {'team': 'Sampdoria (prestito)', 'years': '2014 - 2015', 'apps': '33', 'goals': '1'},
-          {'team': 'Roma', 'years': '2012 - 2015', 'apps': '12', 'goals': '0'},
-        ],
-      },
-      'Patric': {
-        'birthDate': '17/04/1993', 'age': 30, 'nationality': '🇪🇸 Spagna',
-        'height': 184, 'weight': 74, 'foot': 'Destro',
-        'appearances': 28, 'goals': 2, 'assists': 1, 'yellowCards': 7, 'redCards': 0,
-        'avgRating': 6.68,
-        'overall': 75, 'minutesPlayed': 2310,
-        'recentRatings': [6.8, 6.5, 6.2, 7.0, 6.8],
-        'recentForm': ['D', 'L', 'L', 'W', 'D'],
-        'skills': {'VEL': 68.0, 'TIR': 38.0, 'PAS': 62.0, 'DRI': 60.0, 'DIF': 74.0, 'FIS': 72.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2015 - Presente', 'apps': '195', 'goals': '5'},
-          {'team': 'Barcellona B', 'years': '2013 - 2015', 'apps': '45', 'goals': '1'},
-        ],
-      },
-      'Marusic': {
-        'birthDate': '28/10/1992', 'age': 30, 'nationality': '🇲🇪 Montenegro',
-        'height': 185, 'weight': 80, 'foot': 'Destro',
-        'appearances': 32, 'goals': 1, 'assists': 2, 'yellowCards': 5, 'redCards': 0,
-        'avgRating': 6.65,
-        'overall': 78, 'minutesPlayed': 2680,
-        'recentRatings': [6.5, 6.8, 6.2, 6.6, 7.0],
-        'recentForm': ['D', 'W', 'L', 'D', 'W'],
-        'skills': {'VEL': 78.0, 'TIR': 52.0, 'PAS': 66.0, 'DRI': 68.0, 'DIF': 74.0, 'FIS': 78.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2017 - Presente', 'apps': '210', 'goals': '9'},
-          {'team': 'Ostende', 'years': '2015 - 2017', 'apps': '58', 'goals': '3'},
-          {'team': 'Koritiba', 'years': '2013 - 2015', 'apps': '42', 'goals': '2'},
-        ],
-      },
-      'Lazzari': {
-        'birthDate': '29/11/1993', 'age': 29, 'nationality': '🇮🇹 Italia',
-        'height': 171, 'weight': 60, 'foot': 'Destro',
-        'appearances': 28, 'goals': 0, 'assists': 3, 'yellowCards': 3, 'redCards': 0,
-        'avgRating': 6.58,
-        'overall': 78, 'minutesPlayed': 1950,
-        'recentRatings': [6.2, 6.5, 6.8, 6.0, 6.6],
-        'recentForm': ['L', 'D', 'W', 'L', 'D'],
-        'skills': {'VEL': 93.0, 'TIR': 62.0, 'PAS': 76.0, 'DRI': 82.0, 'DIF': 70.0, 'FIS': 66.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2019 - Presente', 'apps': '140', 'goals': '4'},
-          {'team': 'SPAL', 'years': '2015 - 2019', 'apps': '130', 'goals': '8'},
-          {'team': 'Fano', 'years': '2013 - 2015', 'apps': '32', 'goals': '1'},
-        ],
-      },
-      'Felipe Anderson': {
-        'birthDate': '15/04/1993', 'age': 30, 'nationality': '🇧🇷 Brasile',
-        'height': 175, 'weight': 73, 'foot': 'Destro',
-        'appearances': 38, 'goals': 9, 'assists': 5, 'yellowCards': 3, 'redCards': 0,
-        'avgRating': 7.05,
-        'overall': 78, 'minutesPlayed': 3100,
-        'recentRatings': [7.0, 7.5, 6.8, 7.4, 7.2],
-        'recentForm': ['W', 'W', 'D', 'W', 'W'],
-        'skills': {'VEL': 86.0, 'TIR': 70.0, 'PAS': 72.0, 'DRI': 82.0, 'DIF': 34.0, 'FIS': 62.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2021 - 2024', 'apps': '95', 'goals': '16'},
-          {'team': 'Porto (prestito)', 'years': '2020 - 2021', 'apps': '26', 'goals': '1'},
-          {'team': 'West Ham', 'years': '2018 - 2021', 'apps': '73', 'goals': '12'},
-          {'team': 'Lazio', 'years': '2013 - 2018', 'apps': '177', 'goals': '34'},
-          {'team': 'Santos', 'years': '2011 - 2013', 'apps': '30', 'goals': '3'},
-        ],
-      },
-      'Vecino': {
-        'birthDate': '24/08/1991', 'age': 31, 'nationality': '🇺🇾 Uruguay',
-        'height': 187, 'weight': 79, 'foot': 'Destro',
-        'appearances': 28, 'goals': 3, 'assists': 2, 'yellowCards': 4, 'redCards': 0,
-        'avgRating': 6.55,
-        'overall': 77, 'minutesPlayed': 1650,
-        'recentRatings': [6.2, 6.5, 6.8, 6.0, 6.2],
-        'recentForm': ['L', 'D', 'W', 'L', 'L'],
-        'skills': {'VEL': 64.0, 'TIR': 70.0, 'PAS': 68.0, 'DRI': 68.0, 'DIF': 68.0, 'FIS': 78.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2022 - 2024', 'apps': '55', 'goals': '6'},
-          {'team': 'Inter', 'years': '2017 - 2022', 'apps': '143', 'goals': '13'},
-          {'team': 'Fiorentina', 'years': '2013 - 2017', 'apps': '131', 'goals': '11'},
-          {'team': 'CA Peñarol', 'years': '2010 - 2013', 'apps': '48', 'goals': '5'},
-        ],
-      },
-      'Maximiano': {
-        'birthDate': '05/01/1999', 'age': 24, 'nationality': '🇵🇹 Portogallo',
-        'height': 190, 'weight': 87, 'foot': 'Sinistro',
-        'appearances': 5, 'goals': 0, 'assists': 0, 'yellowCards': 1, 'redCards': 0,
-        'avgRating': 6.40,
-        'overall': 76, 'minutesPlayed': 450,
-        'recentRatings': [6.5, 6.0, 6.2, 6.8, 6.5],
-        'recentForm': ['D', 'L', 'L', 'W', 'D'],
-        'skills': {'TUF': 76.0, 'RIF': 78.0, 'VEL': 38.0, 'POS': 72.0, 'PRS': 64.0, 'MAN': 70.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2022 - 2024', 'apps': '10', 'goals': '0'},
-          {'team': 'Granada', 'years': '2021 - 2022', 'apps': '36', 'goals': '0'},
-          {'team': 'Sporting CP', 'years': '2017 - 2021', 'apps': '45', 'goals': '0'},
-        ],
-      },
-      'Provedel': {
-        'birthDate': '17/03/1994', 'age': 29, 'nationality': '🇮🇹 Italia',
-        'height': 193, 'weight': 80, 'foot': 'Destro',
-        'appearances': 36, 'goals': 1, 'assists': 0, 'yellowCards': 2, 'redCards': 0,
-        'avgRating': 6.72,
-        'overall': 79, 'minutesPlayed': 3240,
-        'recentRatings': [6.5, 7.0, 6.8, 6.5, 7.5],
-        'recentForm': ['D', 'W', 'W', 'L', 'W'],
-        'skills': {'TUF': 84.0, 'RIF': 85.0, 'VEL': 42.0, 'POS': 84.0, 'PRS': 80.0, 'MAN': 79.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2022 - Presente', 'apps': '70', 'goals': '1'},
-          {'team': 'Spezia', 'years': '2018 - 2022', 'apps': '120', 'goals': '0'},
-          {'team': 'Modena (prestito)', 'years': '2017 - 2018', 'apps': '15', 'goals': '0'},
-          {'team': 'Empoli', 'years': '2014 - 2018', 'apps': '5', 'goals': '0'},
-        ],
-      },
-      'Marcos Antonio': {
-        'birthDate': '13/06/2000', 'age': 23, 'nationality': '🇧🇷 Brasile',
-        'height': 170, 'weight': 63, 'foot': 'Destro',
-        'appearances': 12, 'goals': 0, 'assists': 1, 'yellowCards': 2, 'redCards': 0,
-        'avgRating': 6.20,
-        'overall': 68, 'minutesPlayed': 540,
-        'recentRatings': [6.0, 6.2, 5.8, 6.5, 6.0],
-        'recentForm': ['L', 'L', 'L', 'D', 'L'],
-        'skills': {'VEL': 72.0, 'TIR': 54.0, 'PAS': 68.0, 'DRI': 70.0, 'DIF': 52.0, 'FIS': 52.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2022 - 2024', 'apps': '20', 'goals': '0'},
-          {'team': 'Shakhtar Donetsk', 'years': '2019 - 2022', 'apps': '56', 'goals': '2'},
-          {'team': 'Estoril (prestito)', 'years': '2019', 'apps': '15', 'goals': '1'},
-        ],
-      },
-      'Hysaj': {
-        'birthDate': '02/02/1994', 'age': 29, 'nationality': '🇦🇱 Albania',
-        'height': 177, 'weight': 75, 'foot': 'Destro',
-        'appearances': 18, 'goals': 0, 'assists': 1, 'yellowCards': 4, 'redCards': 0,
-        'avgRating': 6.35,
-        'overall': 72, 'minutesPlayed': 1280,
-        'recentRatings': [6.0, 6.2, 6.5, 6.0, 6.8],
-        'recentForm': ['L', 'L', 'D', 'L', 'W'],
-        'skills': {'VEL': 72.0, 'TIR': 48.0, 'PAS': 64.0, 'DRI': 64.0, 'DIF': 72.0, 'FIS': 72.0},
-        'career': [
-          {'team': 'Lazio', 'years': '2021 - 2024', 'apps': '50', 'goals': '0'},
-          {'team': 'Napoli', 'years': '2015 - 2021', 'apps': '199', 'goals': '2'},
-          {'team': 'Empoli', 'years': '2013 - 2015', 'apps': '68', 'goals': '1'},
-        ],
-      },
-
-      // ═══════════════════════════════════════
-      //  MILAN
-      // ═══════════════════════════════════════
-      'Giroud': {
-        'birthDate': '30/09/1986', 'age': 36, 'nationality': '🇫🇷 Francia',
-        'height': 192, 'weight': 91, 'foot': 'Destro',
-        'appearances': 30, 'goals': 8, 'assists': 2, 'yellowCards': 3, 'redCards': 0,
-        'avgRating': 6.85,
-        'overall': 82, 'minutesPlayed': 2210,
-        'recentRatings': [7.0, 6.5, 7.2, 6.8, 6.5],
-        'recentForm': ['W', 'L', 'W', 'D', 'L'],
-        'skills': {'VEL': 56.0, 'TIR': 82.0, 'PAS': 64.0, 'DRI': 72.0, 'DIF': 38.0, 'FIS': 82.0},
-        'career': [
-          {'team': 'Milan', 'years': '2021 - 2024', 'apps': '110', 'goals': '35'},
-          {'team': 'Chelsea', 'years': '2018 - 2021', 'apps': '119', 'goals': '39'},
-          {'team': 'Arsenal', 'years': '2012 - 2018', 'apps': '253', 'goals': '105'},
-          {'team': 'Montpellier', 'years': '2010 - 2012', 'apps': '73', 'goals': '33'},
-          {'team': 'Tours', 'years': '2008 - 2010', 'apps': '46', 'goals': '16'},
-        ],
-      },
-      'Leao': {
-        'birthDate': '10/06/1999', 'age': 24, 'nationality': '🇵🇹 Portogallo',
-        'height': 188, 'weight': 81, 'foot': 'Destro',
-        'appearances': 34, 'goals': 15, 'assists': 9, 'yellowCards': 3, 'redCards': 0,
-        'avgRating': 7.35,
-        'overall': 84, 'minutesPlayed': 2850,
-        'recentRatings': [7.5, 8.0, 7.2, 7.8, 6.8],
-        'recentForm': ['W', 'W', 'W', 'W', 'D'],
-        'skills': {'VEL': 93.0, 'TIR': 78.0, 'PAS': 80.0, 'DRI': 86.0, 'DIF': 28.0, 'FIS': 75.0},
-        'career': [
-          {'team': 'Milan', 'years': '2019 - Presente', 'apps': '195', 'goals': '52'},
-          {'team': 'Lille', 'years': '2018 - 2019', 'apps': '24', 'goals': '6'},
-          {'team': 'Sporting CP', 'years': '2017 - 2018', 'apps': '5', 'goals': '2'},
-        ],
-      },
-      'Pulisic': {
-        'birthDate': '18/09/1998', 'age': 24, 'nationality': '🇺🇸 USA',
-        'height': 177, 'weight': 70, 'foot': 'Destro',
-        'appearances': 33, 'goals': 7, 'assists': 5, 'yellowCards': 2, 'redCards': 0,
-        'avgRating': 7.05,
-        'overall': 84, 'minutesPlayed': 2550,
-        'recentRatings': [7.0, 7.5, 6.8, 7.2, 6.5],
-        'recentForm': ['W', 'W', 'D', 'W', 'L'],
-        'skills': {'VEL': 88.0, 'TIR': 82.0, 'PAS': 80.0, 'DRI': 86.0, 'DIF': 46.0, 'FIS': 65.0},
-        'career': [
-          {'team': 'Milan', 'years': '2023 - Presente', 'apps': '45', 'goals': '10'},
-          {'team': 'Chelsea', 'years': '2019 - 2023', 'apps': '145', 'goals': '26'},
-          {'team': 'Borussia Dortmund', 'years': '2016 - 2019', 'apps': '127', 'goals': '19'},
-        ],
-      },
-      'Tomori': {
-        'birthDate': '19/12/1997', 'age': 25, 'nationality': '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inghilterra',
-        'height': 185, 'weight': 78, 'foot': 'Destro',
-        'appearances': 31, 'goals': 1, 'assists': 0, 'yellowCards': 5, 'redCards': 0,
-        'avgRating': 6.78,
-        'overall': 81, 'minutesPlayed': 2720,
-        'recentRatings': [6.5, 7.0, 6.8, 6.2, 7.5],
-        'recentForm': ['D', 'W', 'W', 'L', 'W'],
-        'skills': {'VEL': 81.0, 'TIR': 40.0, 'PAS': 60.0, 'DRI': 67.0, 'DIF': 82.0, 'FIS': 78.0},
-        'career': [
-          {'team': 'Milan', 'years': '2021 - Presente', 'apps': '120', 'goals': '4'},
-          {'team': 'Milan (prestito)', 'years': '2020 - 2021', 'apps': '22', 'goals': '2'},
-          {'team': 'Derby County (prestito)', 'years': '2018 - 2019', 'apps': '26', 'goals': '0'},
-          {'team': 'Chelsea', 'years': '2016 - 2021', 'apps': '27', 'goals': '1'},
-        ],
-      },
-      'Kjaer': {
-        'birthDate': '23/03/1989', 'age': 34, 'nationality': '🇩🇰 Danimarca',
-        'height': 191, 'weight': 88, 'foot': 'Destro',
-        'appearances': 18, 'goals': 0, 'assists': 0, 'yellowCards': 4, 'redCards': 0,
-        'avgRating': 6.62,
-        'overall': 76, 'minutesPlayed': 1520,
-        'recentRatings': [6.5, 6.8, 6.0, 6.5, 7.0],
-        'recentForm': ['D', 'W', 'L', 'D', 'W'],
-        'skills': {'VEL': 50.0, 'TIR': 36.0, 'PAS': 60.0, 'DRI': 54.0, 'DIF': 78.0, 'FIS': 76.0},
-        'career': [
-          {'team': 'Milan', 'years': '2020 - 2024', 'apps': '65', 'goals': '1'},
-          {'team': 'Siviglia', 'years': '2019 - 2020', 'apps': '16', 'goals': '0'},
-          {'team': 'Atalanta (prestito)', 'years': '2019 - 2020', 'apps': '7', 'goals': '0'},
-          {'team': 'Fenerbahçe', 'years': '2015 - 2019', 'apps': '95', 'goals': '2'},
-          {'team': 'Palermo', 'years': '2008 - 2010', 'apps': '50', 'goals': '0'},
-          {'team': 'Roma', 'years': '2010 - 2012', 'apps': '18', 'goals': '0'},
-          {'team': 'Wolfsburg', 'years': '2012 - 2015', 'apps': '67', 'goals': '3'},
-          {'team': 'Lille', 'years': '2015', 'apps': '18', 'goals': '0'},
-        ],
-      },
-      'Theo Hernandez': {
-        'birthDate': '06/10/1997', 'age': 25, 'nationality': '🇫🇷 Francia',
-        'height': 184, 'weight': 81, 'foot': 'Sinistro',
-        'appearances': 33, 'goals': 5, 'assists': 7, 'yellowCards': 7, 'redCards': 0,
-        'avgRating': 7.10,
-        'overall': 84, 'minutesPlayed': 2850,
-        'recentRatings': [7.0, 7.5, 6.8, 7.2, 7.0],
-        'recentForm': ['W', 'W', 'D', 'W', 'W'],
-        'skills': {'VEL': 90.0, 'TIR': 76.0, 'PAS': 78.0, 'DRI': 83.0, 'DIF': 79.0, 'FIS': 83.0},
-        'career': [
-          {'team': 'Milan', 'years': '2019 - Presente', 'apps': '175', 'goals': '22'},
-          {'team': 'Real Sociedad (prestito)', 'years': '2017 - 2018', 'apps': '24', 'goals': '1'},
-          {'team': 'Alavés (prestito)', 'years': '2017 - 2018', 'apps': '23', 'goals': '4'},
-          {'team': 'Real Madrid', 'years': '2016 - 2019', 'apps': '23', 'goals': '1'},
-          {'team': 'Atletico Madrid', 'years': '2014 - 2017', 'apps': '3', 'goals': '0'},
-        ],
-      },
-      'Bennacer': {
-        'birthDate': '01/12/1997', 'age': 25, 'nationality': '🇩🇿 Algeria',
-        'height': 175, 'weight': 68, 'foot': 'Sinistro',
-        'appearances': 28, 'goals': 1, 'assists': 3, 'yellowCards': 6, 'redCards': 0,
-        'avgRating': 6.88,
-        'overall': 78, 'minutesPlayed': 2280,
-        'recentRatings': [7.0, 6.5, 7.2, 6.8, 6.5],
-        'recentForm': ['W', 'L', 'W', 'D', 'L'],
-        'skills': {'VEL': 68.0, 'TIR': 62.0, 'PAS': 78.0, 'DRI': 80.0, 'DIF': 74.0, 'FIS': 72.0},
-        'career': [
-          {'team': 'Milan', 'years': '2019 - Presente', 'apps': '140', 'goals': '4'},
-          {'team': 'Empoli', 'years': '2017 - 2019', 'apps': '64', 'goals': '1'},
-          {'team': 'Tours (prestito)', 'years': '2016 - 2017', 'apps': '30', 'goals': '0'},
-          {'team': 'Arsenal', 'years': '2015 - 2017', 'apps': '1', 'goals': '0'},
-        ],
-      },
-      'Tonali': {
-        'birthDate': '08/05/2000', 'age': 23, 'nationality': '🇮🇹 Italia',
-        'height': 181, 'weight': 71, 'foot': 'Destro',
-        'appearances': 34, 'goals': 4, 'assists': 3, 'yellowCards': 8, 'redCards': 0,
-        'avgRating': 7.02,
-        'overall': 86, 'minutesPlayed': 2920,
-        'recentRatings': [7.0, 7.5, 6.8, 7.2, 6.5],
-        'recentForm': ['W', 'W', 'D', 'W', 'L'],
-        'skills': {'VEL': 79.0, 'TIR': 74.0, 'PAS': 82.0, 'DRI': 80.0, 'DIF': 81.0, 'FIS': 83.0},
-        'career': [
-          {'team': 'Milan', 'years': '2021 - 2023', 'apps': '100', 'goals': '8'},
-          {'team': 'Milan (prestito)', 'years': '2020 - 2021', 'apps': '37', 'goals': '1'},
-          {'team': 'Brescia', 'years': '2017 - 2020', 'apps': '76', 'goals': '5'},
-        ],
-      },
-      'Brahim Diaz': {
-        'birthDate': '03/08/1999', 'age': 23, 'nationality': '🇪🇸 Spagna',
-        'height': 171, 'weight': 63, 'foot': 'Destro',
-        'appearances': 30, 'goals': 4, 'assists': 5, 'yellowCards': 2, 'redCards': 0,
-        'avgRating': 6.82,
-        'overall': 82, 'minutesPlayed': 1980,
-        'recentRatings': [6.8, 7.0, 6.5, 7.2, 6.8],
-        'recentForm': ['D', 'W', 'L', 'W', 'D'],
-        'skills': {'VEL': 82.0, 'TIR': 74.0, 'PAS': 79.0, 'DRI': 85.0, 'DIF': 31.0, 'FIS': 58.0},
-        'career': [
-          {'team': 'Real Madrid', 'years': '2019 - Presente', 'apps': '40', 'goals': '4'},
-          {'team': 'Milan (prestito)', 'years': '2020 - 2023', 'apps': '98', 'goals': '12'},
-          {'team': 'Man City', 'years': '2016 - 2019', 'apps': '15', 'goals': '2'},
-        ],
-      },
-      'Calabria': {
-        'birthDate': '06/12/1996', 'age': 26, 'nationality': '🇮🇹 Italia',
-        'height': 176, 'weight': 72, 'foot': 'Destro',
-        'appearances': 30, 'goals': 1, 'assists': 3, 'yellowCards': 5, 'redCards': 0,
-        'avgRating': 6.65,
-        'overall': 78, 'minutesPlayed': 2480,
-        'recentRatings': [6.5, 6.8, 6.2, 6.5, 7.0],
-        'recentForm': ['D', 'W', 'L', 'D', 'W'],
-        'skills': {'VEL': 76.0, 'TIR': 56.0, 'PAS': 70.0, 'DRI': 70.0, 'DIF': 76.0, 'FIS': 76.0},
-        'career': [
-          {'team': 'Milan', 'years': '2015 - Presente', 'apps': '210', 'goals': '5'},
-        ],
-      },
-      'Maignan': {
-        'birthDate': '03/07/1995', 'age': 28, 'nationality': '🇫🇷 Francia',
-        'height': 191, 'weight': 86, 'foot': 'Destro',
-        'appearances': 32, 'goals': 0, 'assists': 1, 'yellowCards': 2, 'redCards': 0,
-        'avgRating': 6.92,
-        'overall': 87, 'minutesPlayed': 2880,
-        'recentRatings': [6.5, 7.5, 6.8, 7.0, 7.2],
-        'recentForm': ['L', 'W', 'D', 'W', 'W'],
-        'skills': {'TUF': 84.0, 'RIF': 88.0, 'VEL': 64.0, 'POS': 84.0, 'PRS': 85.0, 'MAN': 83.0},
-        'career': [
-          {'team': 'Milan', 'years': '2021 - Presente', 'apps': '90', 'goals': '0'},
-          {'team': 'Lille', 'years': '2015 - 2021', 'apps': '182', 'goals': '0'},
-          {'team': 'PSG', 'years': '2013 - 2015', 'apps': '0', 'goals': '0'},
-        ],
-      },
-    };
-    // Match esatto
-    if (db.containsKey(name)) return db[name];
-    // Match parziale: cerca se il nome contiene una chiave del db
-    for (final key in db.keys) {
-      if (name.contains(key) || key.contains(name)) return db[key];
-    }
-    // Match per cognome (ultima parola)
-    final lastName = name.split(' ').last;
-    if (db.containsKey(lastName)) return db[lastName];
-    return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
-    final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
-    final bg = isDark ? const Color(0xFF121212) : const Color(0xFFF5F6FA);
-    final cardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
-    final divider = isDark ? Colors.grey[800]! : Colors.grey[200]!;
-    final data = _getSeasonData();
-    final p = widget.player;
-
-    Color ratingBg;
-    final avg = (data['avgRating'] as double);
-    if (avg >= 7.5)
-      ratingBg = const Color(0xFF1B5E20);
-    else if (avg >= 7.0)
-      ratingBg = const Color(0xFF388E3C);
-    else if (avg >= 6.5)
-      ratingBg = const Color(0xFFF9A825);
-    else
-      ratingBg = const Color(0xFFEF6C00);
-
-    return Scaffold(
-      backgroundColor: bg,
-      body: CustomScrollView(slivers: [
-        // ═══ SLIVER APP BAR — Premium Style ═══
-        SliverAppBar(
-          expandedHeight: 280,
-          pinned: true,
-          backgroundColor: isDark ? const Color(0xFF121212) : widget.teamColor,
-          leading: IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.black26,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: Colors.white),
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-          actions: [
-              IconButton(
-                icon: const Icon(Icons.home_rounded, size: 22),
-                tooltip: 'Home',
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const MainScreen()),
-                    (route) => false,
-                  );
-                },
-              ),
-            // Cuore preferiti
-            StatefulBuilder(builder: (ctx, setSheetState) {
-              final favService = ctx.read<FavoritesService>();
-              final playerId = widget.player.name.hashCode.abs();
-              final isFav = favService.isPlayerFavorite(playerId);
-              return IconButton(
-                icon: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: isFav ? Colors.red.withOpacity(0.3) : Colors.black26,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(
-                    isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                    color: Colors.white, size: 18,
-                  ),
-                ),
-                onPressed: () {
-                  _playerHaptic.lightImpact();
-                  setState(() {
-                    favService.togglePlayerFavorite(playerId);
-                    if (!isFav) {
-                      final seasonData2 = getPlayerSeasonData(widget.player.name);
-                      favService.storePlayerMeta(playerId, {
-                        'name': widget.player.name,
-                        'position': widget.player.position,
-                        'number': widget.player.number,
-                        'rating': seasonData2?['avgRating'] ?? widget.player.rating,
-                        'goals': seasonData2?['goals'] ?? 0,
-                        'assists': seasonData2?['assists'] ?? 0,
-                        'appearances': seasonData2?['appearances'] ?? 0,
-                        'yellowCards': seasonData2?['yellowCards'] ?? 0,
-                        'redCards': seasonData2?['redCards'] ?? 0,
-                        'nationality': seasonData2?['nationality'] ?? '',
-                        'age': seasonData2?['age'] ?? 0,
-                        'team': widget.teamName,
-                      });
-                    }
-                  });
-                },
-              );
-            }),
-            // Campanella notifiche
-            IconButton(
-              icon: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: _playerNotifEnabled
-                      ? widget.teamColor.withOpacity(0.3)
-                      : Colors.black26,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  _playerNotifEnabled
-                      ? Icons.notifications_active
-                      : Icons.notifications_none,
-                  color: Colors.white,
-                  size: 18,
-                ),
-              ),
-              onPressed: _showPlayerNotificationDialog,
-            ),
-            const SizedBox(width: 4),
-          ],
-          flexibleSpace: FlexibleSpaceBar(
-            background: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    widget.teamColor.withOpacity(0.9),
-                    widget.teamColor.withOpacity(0.6),
-                    bg,
-                  ],
-                  stops: const [0.0, 0.6, 1.0],
-                ),
-              ),
-              child: SafeArea(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 24),
-                    // Player number in rounded square
-                    Container(
-                      width: 90,
-                      height: 90,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
-                        boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 8)),
-                        ],
-                      ),
-                      child: Center(
-                        child: isCoach
-                          ? const Icon(Icons.assignment_ind_rounded, size: 42, color: Colors.white)
-                          : Text('${p.number}',
-                          style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white)),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    // Name
-                    Text(p.name,
-                        style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Colors.white)),
-                    const SizedBox(height: 6),
-                    // Team name
-                    Text(widget.teamName,
-                        style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.8))),
-                    const SizedBox(height: 10),
-                    // Info chips + rating
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      if (isCoach) Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(tr(context, 'Allenatore'),
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),
-                      ),
-                      if (!isCoach) Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(p.position,
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),
-                      ),
-                      if (!isCoach) const SizedBox(width: 8),
-                      // Rating badge with glow
-                      if (!isCoach) Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: ratingBg,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(color: ratingBg.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 2)),
-                          ],
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.star_rounded, size: 14, color: Colors.white),
-                          const SizedBox(width: 4),
-                          Text(avg.toStringAsFixed(1),
-                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.white)),
-                        ]),
-                      ),
-                    ]),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        // ═══ TAB BAR ═══
-        SliverPersistentHeader(
-          pinned: true,
-          delegate: _StickyTabBarDelegate(
-            TabBar(
-              controller: _tabController,
-              labelColor: isDark && widget.teamColor.computeLuminance() < 0.3
-                  ? Color.lerp(widget.teamColor, Colors.white, 0.5)!
-                  : widget.teamColor,
-              unselectedLabelColor: lb,
-              indicatorColor: isDark && widget.teamColor.computeLuminance() < 0.3
-                  ? Color.lerp(widget.teamColor, Colors.white, 0.5)!
-                  : widget.teamColor,
-              indicatorWeight: 3,
-              indicatorSize: TabBarIndicatorSize.label,
-              labelStyle:
-                  const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, letterSpacing: 0.3),
-              unselectedLabelStyle:
-                  const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-              tabs: [
-                Tab(text: _localizeShotData(context, 'Stagione')),
-                Tab(text: _localizeShotData(context, 'Carriera')),
-                Tab(text: _localizeShotData(context, 'Partite')),
-                if (!isCoach) Tab(text: 'Overall FC26'),
-              ],
-            ),
-            isDark ? const Color(0xFF121212) : const Color(0xFFF5F6FA),
-          ),
-        ),
-
-        // ═══ TAB CONTENT ═══
-        SliverFillRemaining(
-          child: TabBarView(controller: _tabController, children: [
-            // ── TAB 1: STAGIONE ──
-            _buildSeasonTab(data, p, tx, lb, cardBg, divider, isDark),
-            // ── TAB 2: CARRIERA ──
-            _buildCareerTab(data, tx, lb, cardBg, divider, isDark),
-            // ── TAB 3: PARTITE ──
-            _buildMatchesTab(data, p, tx, lb, cardBg, divider, isDark),
-            // ── TAB 4: OVERALL FC26 ──
-            if (!isCoach) _buildSkillsTab(data, tx, lb, cardBg, isDark),
-
-
-
-
-          ]),
-        ),
-      ]),
-    );
-  }
-
-  // ── SEASON TAB ──
-  Widget _buildSeasonTab(Map<String, dynamic> data, LocalLineupPlayer p,
-      Color tx, Color lb, Color cardBg, Color divider, bool isDark) {
-    final isGK = p.position == 'GK';
-    return ListView(padding: const EdgeInsets.all(16), children: [
-      // Key stats grid
-      _sectionTitle(isCoach ? tr(context, 'Riepilogo Stagione') : S.of(context)!.statisticheStagione, tx),
-      const SizedBox(height: 10),
-      if (isCoach) ...[
-        Row(children: [
-          _statBoxIcon(Icons.sports, tr(context, 'Panchine'), '36', const Color(0xFF7E57C2), cardBg, tx, lb),
-          const SizedBox(width: 10),
-          _statBoxIcon(Icons.emoji_events, tr(context, 'Vittorie'), '18', const Color(0xFF4CAF50), cardBg, tx, lb),
-          const SizedBox(width: 10),
-          _statBoxIcon(Icons.handshake, tr(context, 'Pareggi'), '10', const Color(0xFFF9A825), cardBg, tx, lb),
-        ]),
-        const SizedBox(height: 10),
-        Row(children: [
-          _statBoxIcon(Icons.cancel_outlined, tr(context, 'Sconfitte'), '8', const Color(0xFFD32F2F), cardBg, tx, lb),
-          const SizedBox(width: 10),
-          _statBoxIcon(Icons.sports_soccer, tr(context, 'GF/GS'), '52/30', const Color(0xFF2196F3), cardBg, tx, lb),
-          const SizedBox(width: 10),
-          _statBoxIcon(Icons.trending_up, tr(context, 'Media Pt'), '1.78', const Color(0xFF2E7D32), cardBg, tx, lb),
-        ]),
-      ] else ...[
-      Row(children: [
-        _statBoxIcon(Icons.calendar_today_rounded, _localizeShotData(context, 'Pres.'), '${data['appearances']}', const Color(0xFF7E57C2), cardBg, tx, lb),
-        const SizedBox(width: 10),
-        _statBoxIcon(Icons.sports_soccer, 'Goal', '${data['goals']}', const Color(0xFF4CAF50), cardBg, tx, lb),
-        const SizedBox(width: 10),
-        _statBoxIcon(Icons.assistant_rounded, 'Assist', '${data['assists']}', const Color(0xFF2196F3), cardBg, tx, lb),
-      ]),
-      const SizedBox(height: 10),
-      Row(children: [
-        _statBoxIcon(Icons.timer_outlined, S.of(context)!.minuti, '${data['minutesPlayed']}', const Color(0xFF26A69A), cardBg, tx, lb),
-        const SizedBox(width: 10),
-        _statBoxIcon(Icons.square_rounded, _localizeShotData(context, 'Cart.'), '${data['yellowCards']}', const Color(0xFFF9A825), cardBg, tx, lb),
-        const SizedBox(width: 10),
-        _statBoxIcon(Icons.star_rounded, _localizeShotData(context, 'Media'), (data['avgRating'] as double).toStringAsFixed(1), const Color(0xFF2E7D32), cardBg, tx, lb),
-      ]),
-      ],
-
-      const SizedBox(height: 24),
-
-      // Recent form
-      _sectionTitle(_localizeShotData(context, isCoach ? 'Ultimi 5 risultati' : tr(context, 'Ultime 5 partite')), tx),
-      const SizedBox(height: 10),
-      if (isCoach) Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12), border: Border.all(color: divider)),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          for (final r in [
-            {'opp': 'Milan', 'score': '2-1', 'res': 'W', 'home': true},
-            {'opp': 'Napoli', 'score': '0-0', 'res': 'D', 'home': false},
-            {'opp': 'Lazio', 'score': '3-1', 'res': 'W', 'home': true},
-            {'opp': 'Inter', 'score': '1-2', 'res': 'L', 'home': false},
-            {'opp': 'Roma', 'score': '2-0', 'res': 'W', 'home': true},
-          ])
-            GestureDetector(
-              onTap: () {
-                final hName = (r['home'] as bool) ? widget.teamName : r['opp'] as String;
-                final aName = (r['home'] as bool) ? r['opp'] as String : widget.teamName;
-                final scores = (r['score'] as String).split('-');
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => MatchDetailScreen(
-                  match: SoccerMatch(id: r.hashCode, date: DateTime.now(), time: '20:45', status: 'FT',
-                    venue: '', homeTeamId: 0, awayTeamId: 0, homeTeamName: hName, awayTeamName: aName,
-                    homeScore: int.parse(scores[0]), awayScore: int.parse(scores[1]),
-                    leagueName: 'Serie A', season: 2023, round: ''),
-                )));
-              },
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon((r['home'] as bool) ? Icons.home_rounded : Icons.flight_rounded, size: 13, color: lb),
-                const SizedBox(height: 3),
-                Container(width: 48, height: 48,
-                  decoration: BoxDecoration(
-                    color: r['res'] == 'W' ? const Color(0xFF2E7D32).withOpacity(0.15)
-                        : r['res'] == 'D' ? const Color(0xFFF9A825).withOpacity(0.15)
-                        : const Color(0xFFD32F2F).withOpacity(0.15),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: r['res'] == 'W' ? const Color(0xFF2E7D32).withOpacity(0.4)
-                        : r['res'] == 'D' ? const Color(0xFFF9A825).withOpacity(0.4)
-                        : const Color(0xFFD32F2F).withOpacity(0.4))),
-                  child: Center(child: Text(r['score'] as String, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800,
-                    color: r['res'] == 'W' ? const Color(0xFF2E7D32) : r['res'] == 'D' ? const Color(0xFFF9A825) : const Color(0xFFD32F2F))))),
-                const SizedBox(height: 3),
-                Text(r['opp'] as String, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: tx)),
-              ]),
-            ),
-        ]),
-      ) else Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12), border: Border.all(color: divider)),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          for (int i = 0; i < 5; i++)
-            Column(children: [
-              Container(width: 44, height: 44,
-                decoration: BoxDecoration(
-                  color: (data['recentForm'] as List)[i] == 'W' ? const Color(0xFF2E7D32).withOpacity(0.15)
-                      : (data['recentForm'] as List)[i] == 'D' ? const Color(0xFFF9A825).withOpacity(0.15)
-                      : const Color(0xFFD32F2F).withOpacity(0.15),
-                  shape: BoxShape.circle),
-                child: Center(child: Text((data['recentRatings'] as List)[i].toStringAsFixed(1),
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
-                    color: (data['recentForm'] as List)[i] == 'W' ? const Color(0xFF2E7D32)
-                        : (data['recentForm'] as List)[i] == 'D' ? const Color(0xFFF9A825) : const Color(0xFFD32F2F))))),
-              const SizedBox(height: 4),
-              Text('G${i + 1}', style: TextStyle(fontSize: 10, color: lb)),
-            ]),
-        ]),
-      ),
-
-      const SizedBox(height: 24),
-
-      // Detailed stats list
-      _sectionTitle(_localizeShotData(context, isCoach ? 'Riepilogo allenatore' : tr(context, 'Dettaglio statistiche')), tx),
-      const SizedBox(height: 10),
-      Container(
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: divider)),
-        child: Column(children: [
-          if (isCoach) ...[
-            _profileStatRow(tr(context, 'Panchine totali'), '36', tx, lb, divider),
-            _profileStatRow(tr(context, 'Vittorie'), '18', tx, lb, divider, valueColor: const Color(0xFF2E7D32)),
-            _profileStatRow(tr(context, 'Pareggi'), '10', tx, lb, divider, valueColor: const Color(0xFFF9A825)),
-            _profileStatRow(tr(context, 'Sconfitte'), '8', tx, lb, divider, valueColor: const Color(0xFFD32F2F)),
-            _profileStatRow(tr(context, '% Vittorie'), '50%', tx, lb, divider),
-            _profileStatRow(tr(context, 'Gol fatti'), '52', tx, lb, divider),
-            _profileStatRow(tr(context, 'Gol subiti'), '30', tx, lb, divider),
-            _profileStatRow(tr(context, 'Diff. reti'), '+22', tx, lb, divider, valueColor: const Color(0xFF2E7D32)),
-            _profileStatRow(tr(context, 'Media punti'), '1.78', tx, lb, Colors.transparent),
-          ] else ...[
-            _profileStatRow(
-                tr(context, 'Presenze (Titolare)'),
-                '${data['appearances']} (${(data['appearances'] as int) - 4})',
-                tx, lb, divider),
-            _profileStatRow(
-                S.of(context)!.minutesPlayedLabel, '${data['minutesPlayed']}', tx, lb, divider),
-            _profileStatRow(S.of(context)!.gol, '${data['goals']}', tx, lb, divider),
-            _profileStatRow(tr(context, 'Assist'), '${data['assists']}', tx, lb, divider),
-          if (!isGK)
-            _profileStatRow(
-                S.of(context)!.mediaVoto,
-                (data['avgRating'] as double).toStringAsFixed(2),
-                tx,
-                lb,
-                divider),
-          _profileStatRow(
-              S.of(context)!.ammonizioni, '${data['yellowCards']}', tx, lb, divider,
-              valueColor: const Color(0xFFF9A825)),
-          if ((data['redCards'] as int) > 0)
-            _profileStatRow(
-                'Espulsioni', '${data['redCards']}', tx, lb, divider,
-                valueColor: const Color(0xFFD32F2F)),
-          if (!isGK)
-            _profileStatRow(
-                'Min/Gol',
-                (data['goals'] as int) > 0
-                    ? '${((data['minutesPlayed'] as int) / (data['goals'] as int)).round()}\''
-                    : '-',
-                tx,
-                lb,
-                divider),
-          _profileStatRow(
-              'Min/Assist',
-              (data['assists'] as int) > 0
-                  ? '${((data['minutesPlayed'] as int) / (data['assists'] as int)).round()}\''
-                  : '-',
-              tx,
-              lb,
-              Colors.transparent),
-          ],
-        ]),
-      ),
-    ]);
-  }
-
-  // ── SKILLS TAB (FC26 REDESIGN) ──
-  // ── MATCHES TAB (Partite) ──
-  bool _showAllMatches = false;
-
-  Widget _buildMatchesTab(Map<String, dynamic> data, LocalLineupPlayer p,
-      Color tx, Color lb, Color cardBg, Color divider, bool isDark) {
-    final allMatches = _getPlayerRecentMatches(p);
-    final matches = _showAllMatches ? allMatches : allMatches.take(5).toList();
-    final hasMore = allMatches.length > 5 && !_showAllMatches;
-    final teamColor = widget.teamColor;
-
-    return ListView(padding: EdgeInsets.all(16), children: [
-      _sectionTitle(tr(context, isCoach ? 'Ultime Partite (Allenatore)' : 'Ultime Partite'), tx),
-      const SizedBox(height: 12),
-      Container(
-        decoration: BoxDecoration(
-          color: cardBg,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
-        ),
-        child: Column(
-          children: [
-            ...matches.asMap().entries.map((entry) {
-              final i = entry.key;
-              final m = entry.value;
-              final isLast = i == matches.length - 1 && !hasMore;
-              final isUpcoming = m['status'] == 'upcoming';
-              final rating = m['rating'] as double;
-              final events = m['events'] as List<Map<String, dynamic>>;
-
-              Color ratingColor;
-              if (rating >= 7.5) ratingColor = const Color(0xFF1B5E20);
-              else if (rating >= 7.0) ratingColor = const Color(0xFF388E3C);
-              else if (rating >= 6.5) ratingColor = const Color(0xFFF9A825);
-              else if (rating >= 6.0) ratingColor = const Color(0xFFEF6C00);
-              else ratingColor = const Color(0xFFD32F2F);
-              // For coaches, determine match result
-              final isTeamHome = m['homeTeam'] == widget.teamName;
-              final teamScore = isTeamHome ? (m['homeScore'] as int) : (m['awayScore'] as int);
-              final oppScore = isTeamHome ? (m['awayScore'] as int) : (m['homeScore'] as int);
-              final coachWon = !isUpcoming && teamScore > oppScore;
-              final coachDraw = !isUpcoming && teamScore == oppScore;
-              final coachLost = !isUpcoming && teamScore < oppScore;
-
-              return GestureDetector(
-                onTap: isUpcoming ? null : () {
-                  final demoMatch = SoccerMatch(
-                    id: 1000 + i,
-                    date: DateTime.now(),
-                    time: isUpcoming ? m['time'] as String : '20:45',
-                    status: 'FT',
-                    venue: 'Stadio Olimpico',
-                    homeTeamId: 0,
-                    homeTeamName: m['homeTeam'] as String,
-                    awayTeamId: 0,
-                    awayTeamName: m['awayTeam'] as String,
-                    homeScore: m['homeScore'] as int,
-                    awayScore: m['awayScore'] as int,
-                    leagueName: 'Serie A',
-                    season: 2023,
-                    round: 'Giornata ${27 - i}',
-                  );
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => MatchDetailScreen(match: demoMatch),
-                  ));
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                  decoration: BoxDecoration(
-                    border: isLast ? null : Border(bottom: BorderSide(color: divider)),
-                  ),
-                  child: Row(children: [
-                    // ── Data + status ──
-                    SizedBox(
-                      width: 48,
-                      child: Column(children: [
-                        Text(m['date'] as String,
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: tx),
-                            textAlign: TextAlign.center),
-                        const SizedBox(height: 2),
-                        Text(isUpcoming ? m['time'] as String : 'FINE',
-                            style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w600,
-                              color: isUpcoming ? teamColor : lb,
-                            ),
-                            textAlign: TextAlign.center),
-                      ]),
-                    ),
-                    // Divider verticale
-                    Container(
-                      width: 1, height: 38,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      color: divider,
-                    ),
-                    // ── Teams (no score here) ──
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _matchTeamRow(m['homeTeam'] as String, m['homeTeam'] == widget.teamName,
-                              null, tx, lb, isDark),
-                          const SizedBox(height: 3),
-                          _matchTeamRow(m['awayTeam'] as String, m['awayTeam'] == widget.teamName,
-                              null, tx, lb, isDark),
-                        ],
-                      ),
-                    ),
-                    // ── Events column (fixed width, LEFT of score) ──
-                    SizedBox(
-                      width: 32,
-                      child: events.isNotEmpty
-                          ? Wrap(
-                              alignment: WrapAlignment.center,
-                              spacing: 2,
-                              runSpacing: 2,
-                              children: events.map((ev) {
-                                if (ev['type'] == 'goal') {
-                                  return Icon(Icons.sports_soccer, size: 13,
-                                      color: isDark ? Colors.white70 : Colors.black87);
-                                } else if (ev['type'] == 'assist') {
-                                  return Container(
-                                    width: 14, height: 14,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: isDark ? Colors.white54 : Colors.grey[600]!,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text('A',
-                                        style: TextStyle(fontSize: 7, fontWeight: FontWeight.w900,
-                                            color: isDark ? Colors.white54 : Colors.grey[600]),
-                                      ),
-                                    ),
-                                  );
-                                } else if (ev['type'] == 'yellowCard') {
-                                  return Container(
-                                    width: 9, height: 12,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFDD835),
-                                      borderRadius: BorderRadius.circular(1.5),
-                                      boxShadow: [
-                                        BoxShadow(color: Colors.amber.withOpacity(0.3), blurRadius: 3),
-                                      ],
-                                    ),
-                                  );
-                                }
-                                return const SizedBox.shrink();
-                              }).toList(),
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                    // ── Score column ──
-                    if (!isUpcoming)
-                      SizedBox(
-                        width: 22,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text('${m['homeScore']}',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: tx)),
-                            const SizedBox(height: 3),
-                            Text('${m['awayScore']}',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: tx)),
-                          ],
-                        ),
-                      ),
-                    // ── Rating ──
-                    const SizedBox(width: 8),
-                    if (isUpcoming)
-                      SizedBox(
-                        width: 36,
-                        child: Center(child: Icon(Icons.star_outline_rounded, size: 20, color: lb)),
-                      )
-                    else if (isCoach)
-                      Container(
-                        width: 36, height: 28,
-                        decoration: BoxDecoration(
-                          color: coachWon ? const Color(0xFF2E7D32) : coachDraw ? const Color(0xFFF9A825) : const Color(0xFFD32F2F),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Center(
-                          child: Text(coachWon ? formInitial(context, 'W') : coachDraw ? formInitial(context, 'D') : formInitial(context, 'L'),
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.white),
-                          ),
-                        ),
-                      )
-                    else
-                      Container(
-                        width: 36, height: 28,
-                        decoration: BoxDecoration(
-                          color: ratingColor,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Center(
-                          child: Text(rating.toStringAsFixed(1),
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                  ]),
-                ),
-              );
-            }),
-            // ── Carica partite precedenti ──
-            if (hasMore)
-              GestureDetector(
-                onTap: () {
-                  setState(() { _showAllMatches = true; });
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  decoration: BoxDecoration(
-                    border: Border(top: BorderSide(color: divider)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.expand_more_rounded, size: 18, color: isDark && teamColor.computeLuminance() < 0.3 ? Color.lerp(teamColor, Colors.white, 0.5)! : teamColor),
-                      const SizedBox(width: 6),
-                      Text(tr(context, 'Carica partite precedenti'),
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: isDark && teamColor.computeLuminance() < 0.3 ? Color.lerp(teamColor, Colors.white, 0.5)! : teamColor)),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    ]);
-  }
-
-  Widget _matchTeamRow(String team, bool isOwnTeam, int? score, Color tx, Color lb, bool isDark) {
-    final colors = _getTeamColors(team);
-    return Row(children: [
-      // Team logo con iniziali
-      Container(
-        width: 20, height: 20,
-        decoration: BoxDecoration(
-          color: colors[0].withOpacity(0.15),
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: colors[0].withOpacity(0.3), width: 0.5),
-        ),
-        child: Center(
-          child: Text(
-            team.length > 3 ? team.substring(0, 3).toUpperCase() : team.toUpperCase(),
-            style: TextStyle(fontSize: 6, fontWeight: FontWeight.w900, color: colors[0]),
-          ),
-        ),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: Text(team,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: isOwnTeam ? FontWeight.w700 : FontWeight.w400,
-            color: tx,
-          ),
-        ),
-      ),
-      if (score != null)
-        SizedBox(
-          width: 20,
-          child: Text('$score',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: tx),
-            textAlign: TextAlign.right,
-          ),
-        ),
-    ]);
-  }
-
-  List<Color> _getTeamColors(String team) {
-    const map = {
-      'Lazio': [Color(0xFF87CEEB), Color(0xFFFFFFFF)],
-      'Milan': [Color(0xFFD32F2F), Color(0xFF000000)],
-      'Juventus': [Color(0xFF000000), Color(0xFFFFFFFF)],
-      'Inter': [Color(0xFF0047AB), Color(0xFF000000)],
-      'Roma': [Color(0xFFB71C1C), Color(0xFFFFA000)],
-      'Napoli': [Color(0xFF1565C0), Color(0xFFFFFFFF)],
-      'Atalanta': [Color(0xFF1A237E), Color(0xFF000000)],
-      'Fiorentina': [Color(0xFF7B1FA2), Color(0xFFFFFFFF)],
-      'Torino': [Color(0xFF8B0000), Color(0xFFFFFFFF)],
-      'Bologna': [Color(0xFFB71C1C), Color(0xFF1565C0)],
-      'Sassuolo': [Color(0xFF2E7D32), Color(0xFF000000)],
-      'Monza': [Color(0xFFD32F2F), Color(0xFFFFFFFF)],
-      'Udinese': [Color(0xFF212121), Color(0xFFFFFFFF)],
-      'Lecce': [Color(0xFFF9A825), Color(0xFFD32F2F)],
-      'Empoli': [Color(0xFF1565C0), Color(0xFFFFFFFF)],
-      'Salernitana': [Color(0xFF8B0000), Color(0xFFFFFFFF)],
-      'Cagliari': [Color(0xFFD32F2F), Color(0xFF1565C0)],
-      'Genoa': [Color(0xFFD32F2F), Color(0xFF1565C0)],
-      'Verona': [Color(0xFFF9A825), Color(0xFF1565C0)],
-      'Frosinone': [Color(0xFFF9A825), Color(0xFF1565C0)],
-    };
-    return map[team] ?? [const Color(0xFF757575), const Color(0xFFFFFFFF)];
-  }
-
-  List<Map<String, dynamic>> _getPlayerRecentMatches(LocalLineupPlayer p) {
-    // Coach: generate matches for their team
-    if (isCoach) {
-      final team = widget.teamName;
-      final opponents = ['Milan', 'Napoli', 'Lazio', 'Inter', 'Roma', 'Juventus', 'Atalanta', 'Fiorentina', 'Torino', 'Verona'];
-      final scores = [[2,1],[0,0],[3,1],[1,2],[2,0],[1,1],[3,2],[0,1],[2,2],[1,0]];
-      final results = ['W','D','W','L','W','D','W','L','D','W'];
-      final dates = ['07/03','01/03','25/02','18/02','11/02','04/02','28/01','21/01','14/01','07/01'];
-      final homes = [true,false,true,false,true,false,true,false,true,false];
-      return [
-        for (int i = 0; i < 10; i++)
-          {
-            'date': dates[i],
-            'status': i == 0 ? 'upcoming' : 'played',
-            'time': '20:45',
-            'homeTeam': homes[i] ? team : opponents[i % opponents.length],
-            'awayTeam': homes[i] ? opponents[i % opponents.length] : team,
-            'homeScore': homes[i] ? scores[i][0] : scores[i][1],
-            'awayScore': homes[i] ? scores[i][1] : scores[i][0],
-            'result': i == 0 ? '-' : results[i],
-            'rating': i == 0 ? 0.0 : 5.5 + (i % 5) * 0.4,
-            'events': <Map<String, dynamic>>[],
-          },
-      ];
-    }
-    final isHome = widget.teamName == 'Lazio';
-    final pos = p.position;
-    final isAttacker = pos == 'ST' || pos == 'LW' || pos == 'RW' || pos == 'CF' || pos == 'AM';
-    final isMidfielder = pos == 'CM' || pos == 'DM' || pos == 'AM';
-    final isDefender = pos == 'CB' || pos == 'LB' || pos == 'RB';
-
-    if (isHome) {
-      return [
-        {
-          'date': '07/03', 'status': 'upcoming', 'time': '18:00',
-          'homeTeam': 'Lazio', 'awayTeam': 'Udinese',
-          'homeScore': 0, 'awayScore': 0, 'result': '-', 'rating': 0.0,
-          'events': <Map<String, dynamic>>[],
-        },
-        {
-          'date': '01/03', 'status': 'played',
-          'homeTeam': 'Sassuolo', 'awayTeam': 'Lazio',
-          'homeScore': 2, 'awayScore': 1, 'result': 'L',
-          'rating': _playerRatingForMatch(p, 0),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) {'type': 'goal'},
-          ],
-        },
-        {
-          'date': '25/02', 'status': 'played',
-          'homeTeam': 'Lazio', 'awayTeam': 'Milan',
-          'homeScore': 2, 'awayScore': 1, 'result': 'W',
-          'rating': p.rating > 0 ? p.rating : 6.5,
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) {'type': 'goal'},
-            if (isMidfielder) {'type': 'assist'},
-          ],
-        },
-        {
-          'date': '18/02', 'status': 'played',
-          'homeTeam': 'Juventus', 'awayTeam': 'Lazio',
-          'homeScore': 1, 'awayScore': 1, 'result': 'D',
-          'rating': _playerRatingForMatch(p, 2),
-          'events': <Map<String, dynamic>>[
-            if (isDefender) {'type': 'yellowCard'},
-          ],
-        },
-        {
-          'date': '11/02', 'status': 'played',
-          'homeTeam': 'Lazio', 'awayTeam': 'Fiorentina',
-          'homeScore': 3, 'awayScore': 0, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 3),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) ...[{'type': 'goal'}, {'type': 'goal'}],
-            if (isMidfielder) {'type': 'assist'},
-          ],
-        },
-        // ── Partite extra (visibili dopo "Carica") ──
-        {
-          'date': '04/02', 'status': 'played',
-          'homeTeam': 'Napoli', 'awayTeam': 'Lazio',
-          'homeScore': 0, 'awayScore': 1, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 4),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) {'type': 'goal'},
-            if (isMidfielder) {'type': 'yellowCard'},
-          ],
-        },
-        {
-          'date': '28/01', 'status': 'played',
-          'homeTeam': 'Lazio', 'awayTeam': 'Cagliari',
-          'homeScore': 1, 'awayScore': 0, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 5),
-          'events': <Map<String, dynamic>>[
-            if (isDefender) {'type': 'yellowCard'},
-          ],
-        },
-        {
-          'date': '21/01', 'status': 'played',
-          'homeTeam': 'Roma', 'awayTeam': 'Lazio',
-          'homeScore': 2, 'awayScore': 2, 'result': 'D',
-          'rating': _playerRatingForMatch(p, 6),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) {'type': 'goal'},
-            if (isMidfielder) {'type': 'assist'},
-          ],
-        },
-        {
-          'date': '14/01', 'status': 'played',
-          'homeTeam': 'Lazio', 'awayTeam': 'Empoli',
-          'homeScore': 2, 'awayScore': 0, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 7),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) {'type': 'assist'},
-          ],
-        },
-        {
-          'date': '07/01', 'status': 'played',
-          'homeTeam': 'Atalanta', 'awayTeam': 'Lazio',
-          'homeScore': 1, 'awayScore': 3, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 8),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) ...[{'type': 'goal'}, {'type': 'assist'}],
-            if (isDefender) {'type': 'yellowCard'},
-          ],
-        },
-        {
-          'date': '23/12', 'status': 'played',
-          'homeTeam': 'Lazio', 'awayTeam': 'Lecce',
-          'homeScore': 2, 'awayScore': 1, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 9),
-          'events': <Map<String, dynamic>>[],
-        },
-        {
-          'date': '17/12', 'status': 'played',
-          'homeTeam': 'Torino', 'awayTeam': 'Lazio',
-          'homeScore': 0, 'awayScore': 0, 'result': 'D',
-          'rating': _playerRatingForMatch(p, 10),
-          'events': <Map<String, dynamic>>[
-            if (isMidfielder) {'type': 'yellowCard'},
-          ],
-        },
-      ];
-    } else {
-      return [
-        {
-          'date': '07/03', 'status': 'upcoming', 'time': '20:45',
-          'homeTeam': 'Milan', 'awayTeam': 'Torino',
-          'homeScore': 0, 'awayScore': 0, 'result': '-', 'rating': 0.0,
-          'events': <Map<String, dynamic>>[],
-        },
-        {
-          'date': '01/03', 'status': 'played',
-          'homeTeam': 'Milan', 'awayTeam': 'Monza',
-          'homeScore': 3, 'awayScore': 1, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 0),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) {'type': 'goal'},
-            if (isMidfielder) {'type': 'assist'},
-          ],
-        },
-        {
-          'date': '25/02', 'status': 'played',
-          'homeTeam': 'Lazio', 'awayTeam': 'Milan',
-          'homeScore': 2, 'awayScore': 1, 'result': 'L',
-          'rating': p.rating > 0 ? p.rating : 6.0,
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) {'type': 'goal'},
-          ],
-        },
-        {
-          'date': '18/02', 'status': 'played',
-          'homeTeam': 'Milan', 'awayTeam': 'Inter',
-          'homeScore': 1, 'awayScore': 2, 'result': 'L',
-          'rating': _playerRatingForMatch(p, 2),
-          'events': <Map<String, dynamic>>[
-            if (isDefender) {'type': 'yellowCard'},
-          ],
-        },
-        {
-          'date': '11/02', 'status': 'played',
-          'homeTeam': 'Atalanta', 'awayTeam': 'Milan',
-          'homeScore': 0, 'awayScore': 2, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 3),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) ...[{'type': 'goal'}, {'type': 'assist'}],
-          ],
-        },
-        // ── Extra ──
-        {
-          'date': '04/02', 'status': 'played',
-          'homeTeam': 'Milan', 'awayTeam': 'Bologna',
-          'homeScore': 2, 'awayScore': 0, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 4),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) {'type': 'goal'},
-          ],
-        },
-        {
-          'date': '28/01', 'status': 'played',
-          'homeTeam': 'Genoa', 'awayTeam': 'Milan',
-          'homeScore': 1, 'awayScore': 1, 'result': 'D',
-          'rating': _playerRatingForMatch(p, 5),
-          'events': <Map<String, dynamic>>[
-            if (isMidfielder) {'type': 'yellowCard'},
-          ],
-        },
-        {
-          'date': '21/01', 'status': 'played',
-          'homeTeam': 'Milan', 'awayTeam': 'Roma',
-          'homeScore': 3, 'awayScore': 2, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 6),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) ...[{'type': 'goal'}, {'type': 'goal'}],
-            if (isMidfielder) {'type': 'assist'},
-          ],
-        },
-        {
-          'date': '14/01', 'status': 'played',
-          'homeTeam': 'Verona', 'awayTeam': 'Milan',
-          'homeScore': 0, 'awayScore': 1, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 7),
-          'events': <Map<String, dynamic>>[],
-        },
-        {
-          'date': '07/01', 'status': 'played',
-          'homeTeam': 'Milan', 'awayTeam': 'Udinese',
-          'homeScore': 4, 'awayScore': 1, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 8),
-          'events': <Map<String, dynamic>>[
-            if (isAttacker) ...[{'type': 'goal'}, {'type': 'assist'}],
-          ],
-        },
-        {
-          'date': '23/12', 'status': 'played',
-          'homeTeam': 'Cagliari', 'awayTeam': 'Milan',
-          'homeScore': 1, 'awayScore': 2, 'result': 'W',
-          'rating': _playerRatingForMatch(p, 9),
-          'events': <Map<String, dynamic>>[
-            if (isDefender) {'type': 'yellowCard'},
-          ],
-        },
-      ];
-    }
-  }
-
-  double _playerRatingForMatch(LocalLineupPlayer p, int matchIdx) {
-    final base = p.rating > 0 ? p.rating : 6.5;
-    final offsets = [-0.3, 0.0, 0.2, 0.5, -0.1, 0.3, -0.2, 0.1, 0.4, -0.4, 0.1];
-    final offset = offsets[matchIdx % offsets.length];
-    return double.parse((base + offset).clamp(5.5, 9.0).toStringAsFixed(1));
-  }
-
-  Widget _buildSkillsTab(Map<String, dynamic> data, Color tx, Color lb,
-      Color cardBg, bool isDark) {
-    final skills = data['skills'] as Map<String, dynamic>? ?? {};
-    final overall = data['overall'] as int? ?? 0;
-    final isGK = skills.containsKey('TUF');
-
-    // Rating tier color
-    Color tierColor;
-    String tierLabel;
-    if (overall >= 83) {
-      tierColor = const Color(0xFFD4AF37); // Gold
-      tierLabel = 'GOLD';
-    } else if (overall >= 75) {
-      tierColor = const Color(0xFFC0C0C0); // Silver
-      tierLabel = 'SILVER';
-    } else {
-      tierColor = const Color(0xFFCD7F32); // Bronze
-      tierLabel = 'BRONZE';
-    }
-
-    return ListView(padding: const EdgeInsets.all(16), children: [
-      // ── OVR HERO CARD ──
-      Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    tierColor.withOpacity(0.15),
-                    tierColor.withOpacity(0.05),
-                  ]
-                : [
-                    tierColor.withOpacity(0.12),
-                    tierColor.withOpacity(0.04),
-                  ],
-          ),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: tierColor.withOpacity(isDark ? 0.3 : 0.25),
-            width: 1.5,
-          ),
-        ),
-        child: Column(children: [
-          // Tier badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: tierColor.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              tierLabel,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                color: tierColor,
-                letterSpacing: 2,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          // Big OVR number
-          Text(
-            '$overall',
-            style: TextStyle(
-              fontSize: 72,
-              fontWeight: FontWeight.w900,
-              color: tierColor,
-              height: 1.0,
-              letterSpacing: -2,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'OVERALL',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: tx.withOpacity(0.5),
-              letterSpacing: 3,
-            ),
-          ),
-          const SizedBox(height: 16),
-          // Mini stat chips row
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            alignment: WrapAlignment.center,
-            children: skills.entries.map((e) {
-              final val = (e.value as num).toInt();
-              return Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: _getStatColor(val).withOpacity(isDark ? 0.15 : 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color:
-                        _getStatColor(val).withOpacity(isDark ? 0.3 : 0.2),
-                  ),
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text(
-                    tr(context, e.key),
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: tx.withOpacity(0.6),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    '$val',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: _getStatColor(val),
-                    ),
-                  ),
-                ]),
-              );
-            }).toList(),
-          ),
-        ]),
-      ),
-
-      // ── RUOLI FC26 ──
-      SizedBox(height: 8),
-      _sectionTitle(_localizeShotData(context, 'Posizioni'), tx),
-      const SizedBox(height: 12),
-      Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: cardBg,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
-        ),
-        child: Builder(builder: (ctx) {
-          final pos = widget.player.position;
-          final roles = _getFC26Roles(pos, overall);
-          return Column(
-            children: roles.asMap().entries.map((entry) {
-              final i = entry.key;
-              final r = entry.value;
-              final isLast = i == roles.length - 1;
-              final fit = r['fit'] as int; // 0-100
-              Color fitColor;
-              if (fit >= 80) fitColor = const Color(0xFF2E7D32);
-              else if (fit >= 60) fitColor = const Color(0xFF689F38);
-              else if (fit >= 40) fitColor = const Color(0xFFF9A825);
-              else fitColor = const Color(0xFFEF6C00);
-              return Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  border: isLast ? null : Border(bottom: BorderSide(
-                    color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1),
-                  )),
-                ),
-                child: Row(children: [
-                  // Position badge
-                  Container(
-                    width: 42, height: 28,
-                    decoration: BoxDecoration(
-                      color: fitColor.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: fitColor.withOpacity(0.3)),
-                    ),
-                    child: Center(
-                      child: Text(r['pos'] as String,
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: fitColor)),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  // Role name
-                  Expanded(
-                    child: Text(tr(context, r['name'] as String),
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: tx)),
-                  ),
-                ]),
-              );
-            }).toList(),
-          );
-        }),
-      ),
-      const SizedBox(height: 20),
-      // ── STAT BARS ──
-      _sectionTitle(tr(context, 'Dettaglio parametri'), tx),
-      const SizedBox(height: 12),
-      ...skills.entries.map((e) {
-        final label = e.key;
-        final val = (e.value as num).toDouble();
-        final color = _getStatColor(val.toInt());
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Row(children: [
-            SizedBox(
-              width: 36,
-              child: Text(
-                tr(context, label),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: tx.withOpacity(0.7),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Stack(children: [
-                // Background track
-                Container(
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.white.withOpacity(0.08)
-                        : Colors.black.withOpacity(0.06),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                // Filled bar
-                FractionallySizedBox(
-                  widthFactor: (val / 99).clamp(0.0, 1.0),
-                  child: Container(
-                    height: 8,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          color,
-                          color.withOpacity(0.7),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 28,
-              child: Text(
-                '${val.toInt()}',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  color: color,
-                ),
-              ),
-            ),
-          ]),
-        );
-      }),
-    ]);
-  }
-
-  // Stat color helper for FC26 bars
-  List<Map<String, dynamic>> _getFC26Roles(String position, int overall) {
-    // Ruoli FC26 basati sulla posizione reale + overall
-    const rolesMap = {
-      'GK': [
-        {'pos': 'POR', 'name': 'Portiere', 'baseFit': 95},
-        {'pos': 'POR-L', 'name': 'Portiere Libero', 'baseFit': 55},
-      ],
-      'CB': [
-        {'pos': 'DC', 'name': 'Difensore Centrale', 'baseFit': 95},
-        {'pos': 'DCS', 'name': 'Difensore Centrale Sinistro', 'baseFit': 80},
-        {'pos': 'DCD', 'name': 'Difensore Centrale Destro', 'baseFit': 80},
-      ],
-      'LB': [
-        {'pos': 'TS', 'name': 'Terzino Sinistro', 'baseFit': 95},
-        {'pos': 'ES', 'name': 'Esterno Sinistro', 'baseFit': 70},
-        {'pos': 'DCS', 'name': 'Difensore Centrale Sinistro', 'baseFit': 50},
-      ],
-      'RB': [
-        {'pos': 'TD', 'name': 'Terzino Destro', 'baseFit': 95},
-        {'pos': 'ED', 'name': 'Esterno Destro', 'baseFit': 70},
-        {'pos': 'DCD', 'name': 'Difensore Centrale Destro', 'baseFit': 50},
-      ],
-      'DM': [
-        {'pos': 'CDC', 'name': 'Centrocampista Difensivo', 'baseFit': 95},
-        {'pos': 'CC', 'name': 'Centrocampista Centrale', 'baseFit': 75},
-        {'pos': 'DC', 'name': 'Difensore Centrale', 'baseFit': 45},
-      ],
-      'CM': [
-        {'pos': 'CC', 'name': 'Centrocampista Centrale', 'baseFit': 95},
-        {'pos': 'CDC', 'name': 'Centrocampista Difensivo', 'baseFit': 65},
-        {'pos': 'COC', 'name': 'Centrocampista Offensivo', 'baseFit': 70},
-        {'pos': 'ES', 'name': 'Esterno Sinistro', 'baseFit': 45},
-      ],
-      'AM': [
-        {'pos': 'COC', 'name': 'Centrocampista Offensivo', 'baseFit': 95},
-        {'pos': 'CC', 'name': 'Centrocampista Centrale', 'baseFit': 60},
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 70},
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 70},
-      ],
-      'LW': [
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 95},
-        {'pos': 'ES', 'name': 'Esterno Sinistro', 'baseFit': 75},
-        {'pos': 'AT', 'name': 'Attaccante', 'baseFit': 65},
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 55},
-      ],
-      'RW': [
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 95},
-        {'pos': 'ED', 'name': 'Esterno Destro', 'baseFit': 75},
-        {'pos': 'AT', 'name': 'Attaccante', 'baseFit': 65},
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 55},
-      ],
-      'CF': [
-        {'pos': 'AT', 'name': 'Attaccante', 'baseFit': 95},
-        {'pos': 'COC', 'name': 'Centrocampista Offensivo', 'baseFit': 65},
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 60},
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 60},
-      ],
-      'ST': [
-        {'pos': 'AT', 'name': 'Attaccante', 'baseFit': 95},
-        {'pos': 'ATD', 'name': 'Seconda Punta', 'baseFit': 80},
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 50},
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 50},
-      ],
-    };
-
-    final roles = rolesMap[position] ?? rolesMap['CM']!;
-    // Aggiusta fit in base all'overall
-    final overallFactor = (overall - 60) / 40.0; // 0.0 at 60, 1.0 at 100
-    return roles.map((r) {
-      final base = r['baseFit'] as int;
-      final adjusted = (base * (0.7 + 0.3 * overallFactor)).round().clamp(15, 99);
-      return {'pos': r['pos'], 'name': r['name'], 'fit': adjusted};
-    }).toList();
-  }
-
-  Color _getStatColor(int val) {
-    if (val >= 80) return const Color(0xFF4CAF50); // Green
-    if (val >= 70) return const Color(0xFF8BC34A); // Light green
-    if (val >= 60) return const Color(0xFFFFC107); // Amber
-    if (val >= 50) return const Color(0xFFFF9800); // Orange
-    return const Color(0xFFF44336); // Red
-  }
-
-  // ── CAREER TAB ──
-  Widget _buildCareerTab(Map<String, dynamic> data, Color tx, Color lb,
-      Color cardBg, Color divider, bool isDark) {
-    var career = data['career'] as List<Map<String, String>>? ?? [];
-    // Override career for coaches with V/P/S data
-    if (isCoach) {
-      final coachCareerData = <String, List<Map<String, String>>>{
-        'José Mourinho': [
-          {'team': 'Roma', 'years': '2021-2024', 'apps': '128', 'goals': '0', 'wins': '62', 'draws': '30', 'losses': '36'},
-          {'team': 'Tottenham', 'years': '2019-2021', 'apps': '86', 'goals': '0', 'wins': '44', 'draws': '19', 'losses': '23'},
-          {'team': 'Manchester Utd', 'years': '2016-2018', 'apps': '144', 'goals': '0', 'wins': '84', 'draws': '31', 'losses': '29'},
-          {'team': 'Chelsea', 'years': '2013-2015', 'apps': '136', 'goals': '0', 'wins': '80', 'draws': '29', 'losses': '27'},
-          {'team': 'Real Madrid', 'years': '2010-2013', 'apps': '178', 'goals': '0', 'wins': '128', 'draws': '28', 'losses': '22'},
-          {'team': 'Inter', 'years': '2008-2010', 'apps': '108', 'goals': '0', 'wins': '67', 'draws': '26', 'losses': '15'},
-          {'team': 'Chelsea', 'years': '2004-2007', 'apps': '185', 'goals': '0', 'wins': '124', 'draws': '40', 'losses': '21'},
-          {'team': 'Porto', 'years': '2002-2004', 'apps': '127', 'goals': '0', 'wins': '91', 'draws': '22', 'losses': '14'},
-        ],
-        'Thiago Motta': [
-          {'team': 'Bologna', 'years': '2022 - Presente', 'apps': '72', 'goals': '0', 'wins': '33', 'draws': '22', 'losses': '17'},
-          {'team': 'Spezia', 'years': '2021-2022', 'apps': '36', 'goals': '0', 'wins': '10', 'draws': '13', 'losses': '13'},
-          {'team': 'Genoa U19', 'years': '2019-2021', 'apps': '48', 'goals': '0', 'wins': '22', 'draws': '12', 'losses': '14'},
-        ],
-        'Simone Inzaghi': [
-          {'team': 'Inter', 'years': '2021 - Presente', 'apps': '158', 'goals': '0', 'wins': '98', 'draws': '30', 'losses': '30'},
-          {'team': 'Lazio', 'years': '2016-2021', 'apps': '246', 'goals': '0', 'wins': '131', 'draws': '52', 'losses': '63'},
-        ],
-        'Stefano Pioli': [
-          {'team': 'Milan', 'years': '2019-2024', 'apps': '242', 'goals': '0', 'wins': '138', 'draws': '50', 'losses': '54'},
-          {'team': 'Fiorentina', 'years': '2017-2019', 'apps': '80', 'goals': '0', 'wins': '32', 'draws': '20', 'losses': '28'},
-          {'team': 'Inter', 'years': '2016-2017', 'apps': '28', 'goals': '0', 'wins': '14', 'draws': '5', 'losses': '9'},
-          {'team': 'Lazio', 'years': '2014-2016', 'apps': '92', 'goals': '0', 'wins': '42', 'draws': '22', 'losses': '28'},
-        ],
-        'Massimiliano Allegri': [
-          {'team': 'Juventus', 'years': '2021-2024', 'apps': '138', 'goals': '0', 'wins': '72', 'draws': '38', 'losses': '28'},
-          {'team': 'Juventus', 'years': '2014-2019', 'apps': '269', 'goals': '0', 'wins': '191', 'draws': '44', 'losses': '34'},
-          {'team': 'Milan', 'years': '2010-2014', 'apps': '168', 'goals': '0', 'wins': '82', 'draws': '42', 'losses': '44'},
-        ],
-        'Luciano Spalletti': [
-          {'team': 'Napoli', 'years': '2021-2023', 'apps': '82', 'goals': '0', 'wins': '55', 'draws': '14', 'losses': '13'},
-          {'team': 'Inter', 'years': '2017-2019', 'apps': '98', 'goals': '0', 'wins': '52', 'draws': '22', 'losses': '24'},
-          {'team': 'Roma', 'years': '2005-2009', 'apps': '192', 'goals': '0', 'wins': '100', 'draws': '48', 'losses': '44'},
-        ],
-        'Maurizio Sarri': [
-          {'team': 'Lazio', 'years': '2021-2024', 'apps': '120', 'goals': '0', 'wins': '55', 'draws': '28', 'losses': '37'},
-          {'team': 'Juventus', 'years': '2019-2020', 'apps': '52', 'goals': '0', 'wins': '34', 'draws': '9', 'losses': '9'},
-          {'team': 'Chelsea', 'years': '2018-2019', 'apps': '63', 'goals': '0', 'wins': '39', 'draws': '12', 'losses': '12'},
-          {'team': 'Napoli', 'years': '2015-2018', 'apps': '146', 'goals': '0', 'wins': '96', 'draws': '26', 'losses': '24'},
-        ],
-        'Gian Piero Gasperini': [
-          {'team': 'Atalanta', 'years': '2016 - Presente', 'apps': '380', 'goals': '0', 'wins': '198', 'draws': '82', 'losses': '100'},
-          {'team': 'Inter', 'years': '2011', 'apps': '5', 'goals': '0', 'wins': '1', 'draws': '1', 'losses': '3'},
-          {'team': 'Genoa', 'years': '2006-2011', 'apps': '188', 'goals': '0', 'wins': '62', 'draws': '52', 'losses': '74'},
-        ],
-        'Vincenzo Italiano': [
-          {'team': 'Fiorentina', 'years': '2021-2024', 'apps': '150', 'goals': '0', 'wins': '68', 'draws': '38', 'losses': '44'},
-          {'team': 'Spezia', 'years': '2019-2021', 'apps': '78', 'goals': '0', 'wins': '30', 'draws': '22', 'losses': '26'},
-        ],
-        'Ivan Juric': [
-          {'team': 'Torino', 'years': '2021-2024', 'apps': '118', 'goals': '0', 'wins': '38', 'draws': '34', 'losses': '46'},
-          {'team': 'Verona', 'years': '2019-2021', 'apps': '80', 'goals': '0', 'wins': '28', 'draws': '24', 'losses': '28'},
-        ],
-      };
-      career = coachCareerData[widget.player.name] ?? career;
-    }
-    return ListView(padding: EdgeInsets.all(16), children: [
-      // Personal info
-      _sectionTitle(tr(context, 'Informazioni personali'), tx),
-      const SizedBox(height: 10),
-      Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: divider)),
-        child: Column(children: [
-          _infoRow(tr(context, 'Data di nascita'), '${data['birthDate']}', tx, lb, divider),
-          _infoRow(tr(context, 'Età'), '${data['age']} ${tr(context, 'anni')}', tx, lb, divider),
-          _infoRow(tr(context, 'Nazionalità'), tr(context, data['nationality'] as String? ?? ''), tx, lb, divider),
-          if (!isCoach) ...[_infoRow(tr(context, 'Altezza'), '${data['height']} cm', tx, lb, divider),
-          _infoRow(tr(context, 'Peso'), '${data['weight']} kg', tx, lb, divider),
-          _infoRow(
-              tr(context, 'Piede preferito'), tr(context, data['foot'] as String? ?? ''), tx, lb, Colors.transparent),],
-        ]),
-      ),
-
-      const SizedBox(height: 24),
-
-      // Career history
-      _sectionTitle(tr(context, 'Storico carriera'), tx),
-      const SizedBox(height: 10),
-      Container(
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: divider)),
-        child: Column(children: [
-          // Header
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: widget.teamColor.withOpacity(0.08),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
-            ),
-            child: Row(children: [
-              Expanded(
-                  flex: 3,
-                  child: Text(tr(context, 'Squadra'),
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: lb))),
-              Expanded(
-                  flex: 3,
-                  child: Text(tr(context, 'Periodo'),
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: lb))),
-              if (isCoach) ...[
-                Expanded(flex: 1, child: Text(standingsAbbr(context, 'V'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.green), textAlign: TextAlign.center)),
-                Expanded(flex: 1, child: Text(standingsAbbr(context, 'P'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.orange), textAlign: TextAlign.center)),
-                Expanded(flex: 1, child: Text(standingsAbbr(context, 'S'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.red), textAlign: TextAlign.center)),
-              ] else ...[
-                Expanded(flex: 1, child: Text('App', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-                Expanded(flex: 1, child: Text(S.of(context)!.gol, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-              ],
-            ]),
-          ),
-          ...career.asMap().entries.map((entry) {
-            final i = entry.key;
-            final c = entry.value;
-            final isLast = i == career.length - 1;
-            final isCurrent = c['years']!.contains('Presente');
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                  border: isLast
-                      ? null
-                      : Border(bottom: BorderSide(color: divider, width: 0.5))),
-              child: Row(children: [
-                Expanded(
-                    flex: 3,
-                    child: Row(children: [
-                      Builder(builder: (ctx) {
-                        final colors = _getTeamColors(c['team']!);
-                        final abbr = c['team']!.length > 3
-                            ? c['team']!.substring(0, 3).toUpperCase()
-                            : c['team']!.toUpperCase();
-                        return Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: colors[0].withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: colors[0].withOpacity(0.3), width: 0.5),
-                          ),
-                          child: Center(
-                            child: Text(abbr,
-                              style: TextStyle(fontSize: 7, fontWeight: FontWeight.w900, color: colors[0]),
-                            ),
-                          ),
-                        );
-                      }),
-                      const SizedBox(width: 8),
-                      Expanded(
-                          child: Text(c['team']!,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: isCurrent
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                                color: isCurrent ? widget.teamColor : tx,
-                              ),
-                              overflow: TextOverflow.ellipsis)),
-                    ])),
-                Expanded(
-                    flex: 3,
-                    child: Text(c['years']!.replaceAll('Presente', tr(context, 'Presente')),
-                        style: TextStyle(fontSize: 12, color: lb))),
-                if (isCoach) ...[
-                  Expanded(flex: 1, child: Text(c['wins'] ?? '-', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.green[700]), textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text(c['draws'] ?? '-', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.orange), textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text(c['losses'] ?? '-', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.red), textAlign: TextAlign.center)),
-                ] else ...[
-                  Expanded(flex: 1, child: Text(c['apps']!, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: tx), textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text(c['goals']!, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: tx), textAlign: TextAlign.center)),
-                ],
-              ]),
-            );
-          }),
-          // Totals row
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: widget.teamColor.withOpacity(0.05),
-              borderRadius:
-                  const BorderRadius.vertical(bottom: Radius.circular(12)),
-            ),
-            child: Row(children: [
-              Expanded(
-                  flex: 6,
-                  child: Text(tr(context, 'Totale carriera'),
-                      style: TextStyle(
-                          fontSize: 13, fontWeight: FontWeight.w800))),
-              if (isCoach) ...[
-                Expanded(flex: 1, child: Text(career.fold(0, (sum, c) => sum + int.parse(c['wins'] ?? '0')).toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.green[700]), textAlign: TextAlign.center)),
-                Expanded(flex: 1, child: Text(career.fold(0, (sum, c) => sum + int.parse(c['draws'] ?? '0')).toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.orange), textAlign: TextAlign.center)),
-                Expanded(flex: 1, child: Text(career.fold(0, (sum, c) => sum + int.parse(c['losses'] ?? '0')).toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.red), textAlign: TextAlign.center)),
-              ] else ...[
-              Expanded(
-                  flex: 1,
-                  child: Text(
-                    career
-                        .fold(0, (sum, c) => sum + int.parse(c['apps']!))
-                        .toString(),
-                    style: TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w800, color: tx),
-                    textAlign: TextAlign.center,
-                  )),
-              Expanded(
-                  flex: 1,
-                  child: Text(
-                    career
-                        .fold(0, (sum, c) => sum + int.parse(c['goals']!))
-                        .toString(),
-                    style: TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w800, color: tx),
-                    textAlign: TextAlign.center,
-                  )),
-              ],
-            ]),
-          ),
-        ]),
-      ),
-    ]);
-  }
-
-  // ── Helpers ──
-  Widget _sectionTitle(String title, Color tx) {
-    final isDarkLocal = tx == Colors.white || tx == const Color(0xFFFFFFFF);
-    return Row(children: [
-      Container(
-        width: 3,
-        height: 16,
-        decoration: BoxDecoration(
-          color: widget.teamColor,
-          borderRadius: BorderRadius.circular(2),
-        ),
-      ),
-      const SizedBox(width: 10),
-      Text(title,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: tx, letterSpacing: 0.2)),
-    ]);
-  }
-  Widget _statBoxIcon(IconData icon, String label, String value, Color color, Color cardBg, Color tx, Color lb) {
-    final isDarkLocal = tx == Colors.white || tx == const Color(0xFFFFFFFF);
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-        decoration: BoxDecoration(
-          color: color.withOpacity(isDarkLocal ? 0.08 : 0.04),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: color.withOpacity(0.2)),
-        ),
-        child: Column(children: [
-          Icon(icon, size: 16, color: color.withOpacity(0.7)),
-          const SizedBox(height: 6),
-          Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: tx)),
-          const SizedBox(height: 2),
-          Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: lb), textAlign: TextAlign.center),
-        ]),
-      ),
-    );
-  }
-
-  Widget _statBox(String label, String value, Color cardBg, Color tx, Color lb,
-      {Color? valueColor}) {
-    final isDarkLocal = tx == Colors.white || tx == const Color(0xFFFFFFFF);
-    return Expanded(
-        child: Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-      decoration: BoxDecoration(
-          color: valueColor != null
-              ? valueColor.withOpacity(isDarkLocal ? 0.08 : 0.05)
-              : cardBg,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-              color: valueColor?.withOpacity(0.2) ??
-                  (isDarkLocal ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)))),
-      child: Column(children: [
-        Text(value,
-            style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                color: valueColor ?? tx)),
-        const SizedBox(height: 4),
-        Text(label,
-            style: TextStyle(fontSize: 10, color: lb, fontWeight: FontWeight.w500,
-                letterSpacing: 0.2),
-            textAlign: TextAlign.center),
-      ]),
-    ));
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  Widget _profileStatRow(
-      String label, String value, Color tx, Color lb, Color divider,
-      {Color? valueColor}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: divider, width: 0.5))),
-      child: Row(children: [
-        Expanded(child: Text(label, style: TextStyle(fontSize: 14, color: lb))),
-        Text(value,
-            style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: valueColor ?? tx)),
-      ]),
-    );
-  }
-
-  Widget _infoRow(
-      String label, String value, Color tx, Color lb, Color divider) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: divider, width: 0.5))),
-      child: Row(children: [
-        Expanded(child: Text(label, style: TextStyle(fontSize: 14, color: lb))),
-        Text(value,
-            style: TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w600, color: tx)),
-      ]),
-    );
-  }
-}
-
-
-class _RadarChartPainter extends CustomPainter {
-  final List<String> labels;
-  final List<double> values; // 0.0 to 1.0
-  final Color color;
-  final bool isDark;
-
-  _RadarChartPainter(
-      {required this.labels,
-      required this.values,
-      required this.color,
-      required this.isDark});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width * 0.38;
-    final n = labels.length;
-    final angleStep = 2 * math.pi / n;
-    final startAngle = -math.pi / 2;
-
-    // Draw grid rings
-    final gridPaint = Paint()
-      ..color = (isDark ? Colors.white : Colors.black).withOpacity(0.1)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    for (int ring = 1; ring <= 4; ring++) {
-      final r = radius * ring / 4;
-      final path = Path();
-      for (int i = 0; i <= n; i++) {
-        final angle = startAngle + angleStep * (i % n);
-        final p = Offset(
-            center.dx + r * math.cos(angle), center.dy + r * math.sin(angle));
-        if (i == 0)
-          path.moveTo(p.dx, p.dy);
-        else
-          path.lineTo(p.dx, p.dy);
-      }
-      canvas.drawPath(path, gridPaint);
-    }
-
-    // Draw axes
-    for (int i = 0; i < n; i++) {
-      final angle = startAngle + angleStep * i;
-      final end = Offset(center.dx + radius * math.cos(angle),
-          center.dy + radius * math.sin(angle));
-      canvas.drawLine(center, end, gridPaint);
-    }
-
-    // Draw value polygon
-    final valuePath = Path();
-    final fillPaint = Paint()
-      ..color = color.withOpacity(0.2)
-      ..style = PaintingStyle.fill;
-    final strokePaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5;
-
-    for (int i = 0; i <= n; i++) {
-      final idx = i % n;
-      final angle = startAngle + angleStep * idx;
-      final r = radius * values[idx];
-      final p = Offset(
-          center.dx + r * math.cos(angle), center.dy + r * math.sin(angle));
-      if (i == 0)
-        valuePath.moveTo(p.dx, p.dy);
-      else
-        valuePath.lineTo(p.dx, p.dy);
-    }
-    canvas.drawPath(valuePath, fillPaint);
-    canvas.drawPath(valuePath, strokePaint);
-
-    // Draw dots on vertices
-    final dotPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-    for (int i = 0; i < n; i++) {
-      final angle = startAngle + angleStep * i;
-      final r = radius * values[i];
-      final p = Offset(
-          center.dx + r * math.cos(angle), center.dy + r * math.sin(angle));
-      canvas.drawCircle(p, 4, dotPaint);
-      canvas.drawCircle(
-          p,
-          4,
-          Paint()
-            ..color = Colors.white
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.5);
-    }
-
-    // Draw labels
-    final textPainterStyle = TextStyle(
-      fontSize: 11,
-      fontWeight: FontWeight.w600,
-      color: isDark ? Colors.white70 : Colors.black87,
-    );
-    for (int i = 0; i < n; i++) {
-      final angle = startAngle + angleStep * i;
-      final lR = radius + 22;
-      final p = Offset(
-          center.dx + lR * math.cos(angle), center.dy + lR * math.sin(angle));
-      final tp = TextPainter(
-          text: TextSpan(text: labels[i], style: textPainterStyle),
-          textDirection: TextDirection.ltr)
-        ..layout();
-      tp.paint(canvas, Offset(p.dx - tp.width / 2, p.dy - tp.height / 2));
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// ── STICKY TAB BAR DELEGATE ──
-class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar tabBar;
-  final Color bgColor;
-  _StickyTabBarDelegate(this.tabBar, this.bgColor);
-
-  @override
-  double get minExtent => tabBar.preferredSize.height;
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(color: bgColor, child: tabBar);
-  }
-
-  @override
-  bool shouldRebuild(covariant _StickyTabBarDelegate oldDelegate) => false;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// IN-APP NOTIFICATION SYSTEM
-// ═══════════════════════════════════════════════════════════════════════════
-
+// [FAV-extract3] classe estratta in match_player_profile_screen.dart
 class _InAppNotification {
   final String type;
   final String title;
@@ -15814,11 +12851,11 @@ class CoachProfileScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     Row(children: [
-                      _infoTile(_localizeShotData(context, 'Gol Fatti'), '${data['seasonGoalsFor']}', tx, lb),
+                      _infoTile(localizeShotData(context, 'Gol Fatti'), '${data['seasonGoalsFor']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),
-                      _infoTile(_localizeShotData(context, 'Gol Subiti'), '${data['seasonGoalsAgainst']}', tx, lb),
+                      _infoTile(localizeShotData(context, 'Gol Subiti'), '${data['seasonGoalsAgainst']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),
-                      _infoTile(_localizeShotData(context, 'Clean Sheet'), '${stats['cleanSheets']}', tx, lb),
+                      _infoTile(localizeShotData(context, 'Clean Sheet'), '${stats['cleanSheets']}', tx, lb),
                     ]),
                   ]),
                 ),
@@ -15832,13 +12869,13 @@ class CoachProfileScreen extends StatelessWidget {
                     _sectionHeader(Icons.bar_chart_rounded, tr(context, 'STATISTICHE'), isDark),
                     SizedBox(height: 14),
                     Row(children: [
-                      _infoTile(_localizeShotData(context, 'Partite'), '${stats['matches']}', tx, lb),
+                      _infoTile(localizeShotData(context, 'Partite'), '${stats['matches']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),
-                      _infoTile(_localizeShotData(context, '% Vittorie'), '${stats['winRate']}%', tx, lb),
+                      _infoTile(localizeShotData(context, '% Vittorie'), '${stats['winRate']}%', tx, lb),
                       Container(width: 1, height: 30, color: divider),
-                      _infoTile(_localizeShotData(context, 'Gol/Partita'), '${stats['avgGoals']}', tx, lb),
+                      _infoTile(localizeShotData(context, 'Gol/Partita'), '${stats['avgGoals']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),
-                      _infoTile(_localizeShotData(context, 'Punti/Partita'), '${stats['avgPoints']}', tx, lb),
+                      _infoTile(localizeShotData(context, 'Punti/Partita'), '${stats['avgPoints']}', tx, lb),
                     ]),
                   ]),
                 ),
@@ -16326,10 +13363,10 @@ class _PlayerComparisonColumnState extends State<_PlayerComparisonColumn> {
           _row('xG', p.xG.toStringAsFixed(2), tx, lb, divider),
           _row(tr(context, 'Assist'), '${p.assists}', tx, lb, divider, highlight: p.assists > 0),
           _row('xA', p.xA.toStringAsFixed(2), tx, lb, divider),
-          _row(_localizeShotData(context, 'Tiri totali'), '${p.shots}', tx, lb, divider),
-          _row(_localizeShotData(context, 'Tiri in porta'), '${p.shotsOnTarget}', tx, lb, divider),
+          _row(localizeShotData(context, 'Tiri totali'), '${p.shots}', tx, lb, divider),
+          _row(localizeShotData(context, 'Tiri in porta'), '${p.shotsOnTarget}', tx, lb, divider),
           _row(tr(context, 'Pass. chiave'), '${p.keyPasses}', tx, lb, divider),
-          if (p.offsides > 0) _row(_localizeShotData(context, 'Fuorigioco'), '${p.offsides}', tx, lb, divider),
+          if (p.offsides > 0) _row(localizeShotData(context, 'Fuorigioco'), '${p.offsides}', tx, lb, divider),
         ],
 
         // ── TAB 1: PASSAGGI ──
@@ -16362,9 +13399,9 @@ class _PlayerComparisonColumnState extends State<_PlayerComparisonColumn> {
           _header(S.of(context)!.dribblingLabel, Icons.directions_run_rounded, Color(0xFF7B1FA2), sectionBg),
           if (p.dribbles > 0) _row(S.of(context)!.dribblingLabel, '${p.dribblesSuccessful}/${p.dribbles}', tx, lb, divider),
           _row(S.of(context)!.tocchi, '${p.touches}', tx, lb, divider),
-          if (p.foulsWon > 0) _row(_localizeShotData(context, 'Falli subiti'), '${p.foulsWon}', tx, lb, divider),
+          if (p.foulsWon > 0) _row(localizeShotData(context, 'Falli subiti'), '${p.foulsWon}', tx, lb, divider),
           if (p.ballsLost > 0) _row(tr(context, 'Palle perse'), '${p.ballsLost}', tx, lb, divider),
-          if (p.offsides > 0) _row(_localizeShotData(context, 'Fuorigioco'), '${p.offsides}', tx, lb, divider),
+          if (p.offsides > 0) _row(localizeShotData(context, 'Fuorigioco'), '${p.offsides}', tx, lb, divider),
         ],
 
         // ── TAB 3: DIFESA + DISCIPLINA ──
@@ -16380,8 +13417,8 @@ class _PlayerComparisonColumnState extends State<_PlayerComparisonColumn> {
             ),
           ),
           _header(S.of(context)!.difesaSection, Icons.shield_outlined, Color(0xFFE65100), sectionBg),
-          if (p.tackles > 0) _row(_localizeShotData(context, 'Contrasti'), '${p.tacklesWon}/${p.tackles}', tx, lb, divider),
-          if (p.interceptions > 0) _row(_localizeShotData(context, 'Intercetti'), '${p.interceptions}', tx, lb, divider),
+          if (p.tackles > 0) _row(localizeShotData(context, 'Contrasti'), '${p.tacklesWon}/${p.tackles}', tx, lb, divider),
+          if (p.interceptions > 0) _row(localizeShotData(context, 'Intercetti'), '${p.interceptions}', tx, lb, divider),
           if (p.clearances > 0) _row(tr(context, 'Chiusure'), '${p.clearances}', tx, lb, divider),
           if (p.recoveries > 0) _row(tr(context, 'Recuperi'), '${p.recoveries}', tx, lb, divider),
           if (p.duelsTotal > 0) _row(S.of(context)!.duelliLabel, '${p.duelsWon}/${p.duelsTotal}', tx, lb, divider),
@@ -16389,7 +13426,7 @@ class _PlayerComparisonColumnState extends State<_PlayerComparisonColumn> {
           SizedBox(height: 6),
           _header(S.of(context)!.disciplinaLabel, Icons.style_rounded, Color(0xFFC62828), sectionBg),
           _row(S.of(context)!.falliLabel, '${p.fouls}', tx, lb, divider),
-          _row(_localizeShotData(context, 'Falli subiti'), '${p.foulsWon}', tx, lb, divider),
+          _row(localizeShotData(context, 'Falli subiti'), '${p.foulsWon}', tx, lb, divider),
           _row(tr(context, 'Gialli'), '${p.yellowCards}', tx, lb, divider,
               valueColor: p.yellowCards > 0 ? const Color(0xFFFDD835) : null),
           _row(tr(context, 'Rossi'), '${p.redCards}', tx, lb, divider,
