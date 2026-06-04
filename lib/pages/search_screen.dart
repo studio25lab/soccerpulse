@@ -13,6 +13,7 @@ import '../api/api_service.dart';
 import '../services/haptic_service.dart';
 import '../generated/l10n.dart';
 import 'match_detail_screen.dart';
+import 'coach_profile_screen.dart';
 import 'match_player_profile_screen.dart'; // [FAV-extract4]
 import 'team_detail_screen.dart';
 import '../main.dart';

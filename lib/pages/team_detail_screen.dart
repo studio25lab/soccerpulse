@@ -21,6 +21,7 @@ import '../widgets/glassmorphic_card.dart';
 import '../widgets/loading_state_widget.dart';
 import '../widgets/match_card.dart';
 import 'match_detail_screen.dart';
+import 'coach_profile_screen.dart';
 import 'match_player_profile_screen.dart'; // [FAV-extract4]
 import 'player_detail_screen.dart';
 import '../utils/player_converter.dart';
