@@ -14,6 +14,8 @@ import '../models/team_standing.dart';
 import '../models/player.dart';
 import '../api/api_service.dart';
 import '../services/favorites_service.dart';
+import '../services/team_notification_preferences_service.dart';
+import '../widgets/team_notification_settings_bottom_sheet.dart';
 import '../services/haptic_service.dart';
 import '../widgets/glassmorphic_card.dart';
 import '../widgets/loading_state_widget.dart';
@@ -83,6 +85,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     with SingleTickerProviderStateMixin {
   final ApiService _apiService = ApiService();
   late final FavoritesService _favoritesService;
+  late final TeamNotificationPreferencesService _teamNotifService;
   final HapticService _haptic = HapticService();
 
   late TabController _tabController;
@@ -97,6 +100,8 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
   void initState() {
     super.initState();
     _favoritesService = context.read<FavoritesService>();
+    _teamNotifService =
+        context.read<TeamNotificationPreferencesService>();
     _tabController = TabController(length: 4, vsync: this);
     _loadTeamData();
   }
@@ -307,13 +312,50 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               ),
               IconButton(
                 icon: Icon(
+                  // [FAV-N5] cuore colorato
                   _favoritesService.isTeamFavorite(widget.teamStanding.teamId)
                       ? Icons.favorite : Icons.favorite_border,
+                  color: _favoritesService
+                          .isTeamFavorite(widget.teamStanding.teamId)
+                      ? Colors.red
+                      : Colors.white,
                 ),
                 onPressed: () {
                   _haptic.lightImpact();
-              _favoritesService.toggleTeamFavorite(widget.teamStanding.teamId);
+                  final teamId = widget.teamStanding.teamId;
+                  final wasFav =
+                      _favoritesService.isTeamFavorite(teamId);
+                  _favoritesService.toggleTeamFavorite(teamId);
+                  // [FAV-C] auto-attivazione notifiche col cuore
+                  if (!wasFav) {
+                    _teamNotifService.enableDefaultForTeam(teamId);
+                  } else {
+                    _teamNotifService.disableForTeam(teamId);
+                  }
                   setState(() {});
+                },
+              ),
+              // [FAV-C] campanella notifiche squadra
+              IconButton(
+                icon: Icon(
+                  _teamNotifService.hasActiveNotifications(
+                              widget.teamStanding.teamId)
+                      ? Icons.notifications_active_rounded
+                      : Icons.notifications_none_rounded,
+                  color: _teamNotifService.hasActiveNotifications(
+                              widget.teamStanding.teamId)
+                      ? const Color(0xFF4CAF50)
+                      : Colors.white,
+                ),
+                tooltip: 'Notifiche',
+                onPressed: () async {
+                  _haptic.lightImpact();
+                  await TeamNotificationSettingsBottomSheet.show(
+                    context,
+                    teamId: widget.teamStanding.teamId,
+                    teamName: widget.teamStanding.teamName,
+                  );
+                  if (mounted) setState(() {});
                 },
               ),
               IconButton(

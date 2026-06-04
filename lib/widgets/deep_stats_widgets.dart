@@ -294,8 +294,8 @@ class DeepStatsSection extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      tr(context, 'Assist Effettivi'),
+                    Text(
+                      'Assist Effettivi',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.white70,
@@ -377,7 +377,7 @@ class DeepStatsSection extends StatelessWidget {
               Icon(Icons.grid_on, color: Colors.blue[700]),
               SizedBox(width: 8),
               Text(
-                tr(context, 'Precisione Passaggi per Zona'),
+                'Precisione Passaggi per Zona',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -430,7 +430,7 @@ class DeepStatsSection extends StatelessWidget {
               Icon(Icons.shield, color: Colors.red[700]),
               SizedBox(width: 8),
               Text(
-                tr(context, 'Mappa Azioni Difensive'),
+                'Mappa Azioni Difensive',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -451,7 +451,7 @@ class DeepStatsSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildDefensiveStat('Tackle', 12, Icons.sports_kabaddi),
-              _buildDefensiveStat(tr(context, 'Intercetti'), 8, Icons.block),
+              _buildDefensiveStat('Intercetti', 8, Icons.block),
               _buildDefensiveStat('Clearance', 5, Icons.clear_all),
             ],
           ),

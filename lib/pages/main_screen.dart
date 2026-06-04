@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
         selectedItemColor: Colors.indigo,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',

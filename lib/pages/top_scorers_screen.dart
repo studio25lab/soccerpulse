@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../api/api_service.dart';
 import '../models/league.dart';
@@ -71,7 +72,7 @@ class _TopScorersScreenState extends State<TopScorersScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${s.topScorers} - ${selectedLeague.name}'),
+        title: Text('${tr(context, 'Capocannonieri')} - ${selectedLeague.name}'),
         elevation: 0,
         flexibleSpace: Container(
           decoration: BoxDecoration(

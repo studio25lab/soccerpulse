@@ -589,7 +589,7 @@ class _TeamComparisonScreenState extends State<TeamComparisonScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           tr(context, 'Ultimi Risultati'),
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),

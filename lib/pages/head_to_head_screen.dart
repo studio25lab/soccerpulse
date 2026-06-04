@@ -95,8 +95,11 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
 
       if (mounted) {
         setState(() {
-          _h2hStats = data;
-          _h2hMatches = data['matches'] ?? [];
+          // TODO: fetchHeadToHead ritorna solo la lista. Quando
+          // l-API esponera anche statistiche aggregate, popolare
+          // _h2hStats con team1Wins/team2Wins/draws/totalMeetings.
+          _h2hStats = {};
+          _h2hMatches = data;
           _isLoading = false;
         });
       }

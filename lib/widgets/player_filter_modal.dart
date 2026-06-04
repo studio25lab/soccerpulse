@@ -372,7 +372,7 @@ class _PlayerFilterModalState extends State<PlayerFilterModal> {
                       underline: const SizedBox(),
                       hint: Text(tr(context, 'Nessun limite')),
                       items: [
-                        const DropdownMenuItem(
+                        DropdownMenuItem(
                             value: null, child: Text(tr(context, 'Nessun limite'))),
                         ...List.generate(20, (i) => (i + 1) * 1 + 16)
                             .map((age) {
@@ -405,7 +405,7 @@ class _PlayerFilterModalState extends State<PlayerFilterModal> {
                       underline: const SizedBox(),
                       hint: Text(tr(context, 'Nessun limite')),
                       items: [
-                        const DropdownMenuItem(
+                        DropdownMenuItem(
                             value: null, child: Text(tr(context, 'Nessun limite'))),
                         ...List.generate(20, (i) => (i + 1) * 1 + 16)
                             .map((age) {

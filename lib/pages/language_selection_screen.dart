@@ -87,8 +87,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
 
     // Update app locale
     if (mounted) {
-      final locale = Locale(languageCode);
-      S.load(locale);
+      // TODO: per cambio lingua live integrare con
+      //   context.read<ThemeService>().setLocale(Locale(languageCode))
+      // Per ora la lingua si applica al riavvio della schermata.
 
       // Show confirmation
       ScaffoldMessenger.of(context).showSnackBar(
@@ -130,7 +131,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
       backgroundColor: isDark ? Colors.grey[900] : Colors.grey[50],
       appBar: AppBar(
         title:
-            Text(widget.isInitialSetup ? 'Choose Language' : s.changeLanguage),
+            Text(widget.isInitialSetup ? 'Choose Language' : tr(context, 'Cambia lingua')),
         backgroundColor: isDark ? Colors.grey[900] : theme.primaryColor,
         elevation: 0,
         centerTitle: true,

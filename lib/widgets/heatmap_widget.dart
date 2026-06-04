@@ -657,7 +657,6 @@ class AdvancedHeatmapPainter extends CustomPainter {
     points.sort((a, b) => a.intensity.compareTo(b.intensity));
 
     // Draw with smooth blending — soglia più alta per heatmap squadra
-    final isTeamView = playerName == null || playerName!.isEmpty;
     final alphaMax = isTeamView ? 0.55 : 0.5;
     final alphaMul = isTeamView ? 0.45 : 0.35;
     final minAlpha = isTeamView ? 0.10 : 0.02;

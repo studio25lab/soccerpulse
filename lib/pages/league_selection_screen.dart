@@ -446,8 +446,8 @@ class _LeagueSelectionScreenState extends State<LeagueSelectionScreen>
                       .animate()
                       .fadeIn(delay: Duration(milliseconds: index * 50))
                       .scale(
-                        begin: 0.8,
-                        end: 1.0,
+                        begin: const Offset(0.8, 0.8),
+                        end: const Offset(1.0, 1.0),
                         duration: 400.ms,
                         curve: Curves.easeOutBack,
                       );

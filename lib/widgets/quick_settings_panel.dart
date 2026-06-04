@@ -573,28 +573,32 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
           const SizedBox(height: 12),
           Row(
             children: [
-              _buildQuickActionButton(
-                Icons.delete_sweep,
-                'Pulisci Cache',
+              Expanded(
+                child: _buildQuickActionButton(
+                  Icons.delete_sweep,
+                  'Pulisci Cache',
                 () {
                   _haptic.mediumImpact();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(tr(context, 'Cache pulita'))),
                   );
                 },
-                Colors.orange,
+                  Colors.orange,
+                ),
               ),
               const SizedBox(width: 8),
-              _buildQuickActionButton(
-                Icons.sync,
-                'Sincronizza',
+              Expanded(
+                child: _buildQuickActionButton(
+                  Icons.sync,
+                  'Sincronizza',
                 () {
                   _haptic.mediumImpact();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(tr(context, 'Sincronizzazione avviata'))),
                   );
                 },
-                Colors.blue,
+                  Colors.blue,
+                ),
               ),
             ],
           ),
@@ -613,14 +617,15 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
     );
   }
 
+  // [FAV-qsp-fix] ritorna InkWell nudo; l-Expanded lo mette il
+  // chiamante, ma solo quando il bottone e dentro un Row.
   Widget _buildQuickActionButton(
     IconData icon,
     String label,
     VoidCallback onTap,
     Color color,
   ) {
-    return Expanded(
-      child: InkWell(
+    return InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
         child: Container(
@@ -645,7 +650,6 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

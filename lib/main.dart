@@ -10,8 +10,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'services/theme_service.dart';
 import 'services/favorites_service.dart';
 import 'services/live_update_service.dart';
+import 'services/favorite_notification_coordinator.dart';
 import 'services/haptic_service.dart';
 import 'services/match_notification_preferences_service.dart';
+import 'services/team_notification_preferences_service.dart';
 import 'services/player_notification_preferences_service.dart';
 
 // Pages
@@ -62,6 +64,9 @@ void main() async {
   // 🆕 Inizializza il servizio notifiche giocatori
   final playerNotificationPrefsService = PlayerNotificationPreferencesService();
   await playerNotificationPrefsService.loadSettings();
+  // 🆕 Inizializza il servizio notifiche squadre
+  final teamNotificationPrefsService = TeamNotificationPreferencesService();
+  await teamNotificationPrefsService.loadSettings();
 
   runApp(
     MultiProvider(
@@ -73,6 +78,8 @@ void main() async {
             value: matchNotificationPrefsService), // 🆕
         ChangeNotifierProvider.value(
             value: playerNotificationPrefsService), // 🆕
+        ChangeNotifierProvider.value(
+            value: teamNotificationPrefsService), // 🆕
       ],
       child: const SoccerPulseApp(),
     ),
@@ -373,6 +380,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   late AnimationController _fabAnimationController;
   late AnimationController _notificationAnimationController;
 
+  FavoriteNotificationCoordinator? _favNotifCoordinator;
+
   // Pagine principali
   final List<Widget> _pages = [
     const HomeScreen(),
@@ -410,11 +419,50 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       liveUpdateService.addListener(() {
         _handleLiveUpdate(liveUpdateService);
       });
+
+      // Coordinatore notifiche per le squadre preferite
+      // TODO API: quando l-app sara collegata alle API, dopo
+      // aver creato il LiveUpdateService chiamare
+      //   liveUpdateService.startLiveUpdates(leagueId: 135);
+      // per attivare il polling. Il coordinator qui sotto
+      // ascolta goalStream e fara scattare i banner in
+      // automatico per le squadre/partite preferite.
+      _favNotifCoordinator = FavoriteNotificationCoordinator(
+        liveUpdateService: liveUpdateService,
+        matchNotifService:
+            context.read<MatchNotificationPreferencesService>(),
+        teamNotifService:
+            context.read<TeamNotificationPreferencesService>(),
+        onFavoriteGoal: ({
+          required String homeTeam,
+          required String awayTeam,
+          required int homeScore,
+          required int awayScore,
+          required String scorer,
+          required int minute,
+          String? homeTeamLogo,
+          String? awayTeamLogo,
+        }) {
+          LiveNotificationOverlay.globalKey.currentState
+              ?.showGoalNotification(
+            homeTeam: homeTeam,
+            awayTeam: awayTeam,
+            homeScore: homeScore,
+            awayScore: awayScore,
+            scorer: scorer,
+            minute: minute,
+            homeTeamLogo: homeTeamLogo,
+            awayTeamLogo: awayTeamLogo,
+          );
+        },
+      );
+      _favNotifCoordinator!.start();
     });
   }
 
   @override
   void dispose() {
+    _favNotifCoordinator?.dispose();
     _pageController.dispose();
     _fabAnimationController.dispose();
     _notificationAnimationController.dispose();
@@ -439,6 +487,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     final isDark = theme.brightness == Brightness.dark;
 
     return LiveNotificationOverlay(
+      key: LiveNotificationOverlay.globalKey,
       child: Scaffold(
         appBar: AppBar(
           title: Text(_getTitles(context)[_currentIndex]),
@@ -473,6 +522,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             ),
             const SizedBox(width: 8),
           ],
+        ),
+        // [FAV-testbtn] pulsante TEMPORANEO per testare i banner
+        floatingActionButton: FloatingActionButton(
+          heroTag: 'fav_testbtn',
+          mini: true,
+          tooltip: 'Test notifiche',
+          onPressed: _testNotifications,
+          child: const Icon(Icons.notifications_active),
         ),
         body: Stack(
           children: [
@@ -585,25 +642,37 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     );
   }
 
+  // TODO API: rimuovere _testNotifications e il relativo FAB
+  // "campanella" quando le notifiche scatteranno dal flusso
+  // live reale. E codice solo di sviluppo.
   // Funzione di test per notifiche (SOLO PER DEVELOPMENT)
+  // [FAV-testall] lancia in sequenza tutti gli 11 banner (3s di
+  // distanza). Ogni banner si puo chiudere con tap o swipe.
   void _testNotifications() {
     _haptic.mediumImpact();
 
-    // Test notifica goal
-    LiveNotificationOverlay.of(context)?.showGoalNotification(
-      homeTeam: 'Inter',
-      awayTeam: 'Milan',
-      homeScore: 1,
-      awayScore: 0,
-      scorer: 'Lautaro Martinez',
-      minute: 23,
-      homeTeamLogo: 'https://media.api-sports.io/football/teams/505.png',
-      awayTeamLogo: 'https://media.api-sports.io/football/teams/489.png',
-    );
+    void show(int seconds, void Function() action) {
+      Future.delayed(Duration(seconds: seconds), () {
+        final overlay = LiveNotificationOverlay.globalKey.currentState;
+        if (overlay != null) action();
+      });
+    }
 
-    // Test cartellino giallo dopo 2 secondi
-    Future.delayed(const Duration(seconds: 2), () {
-      LiveNotificationOverlay.of(context)?.showCardNotification(
+    // 0s - GOL
+    show(0, () {
+      LiveNotificationOverlay.globalKey.currentState?.showGoalNotification(
+        homeTeam: 'Inter',
+        awayTeam: 'Milan',
+        homeScore: 1,
+        awayScore: 0,
+        scorer: 'Lautaro Martinez',
+        minute: 23,
+      );
+    });
+
+    // 3s - Cartellino Giallo
+    show(3, () {
+      LiveNotificationOverlay.globalKey.currentState?.showCardNotification(
         player: 'Theo Hernandez',
         team: 'Milan',
         cardType: CardType.yellow,
@@ -611,25 +680,108 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       );
     });
 
-    // Test inizio partita dopo 4 secondi
-    Future.delayed(const Duration(seconds: 4), () {
-      LiveNotificationOverlay.of(context)?.showMatchStartNotification(
+    // 6s - Cartellino Rosso
+    show(6, () {
+      LiveNotificationOverlay.globalKey.currentState?.showCardNotification(
+        player: 'Rafael Leao',
+        team: 'Milan',
+        cardType: CardType.red,
+        minute: 38,
+      );
+    });
+
+    // 9s - Partita Iniziata
+    show(9, () {
+      LiveNotificationOverlay.globalKey.currentState
+          ?.showMatchStartNotification(
         homeTeam: 'Juventus',
         awayTeam: 'Napoli',
         competition: 'Serie A',
       );
     });
 
-    // Test fine partita dopo 6 secondi
-    Future.delayed(const Duration(seconds: 6), () {
-      LiveNotificationOverlay.of(context)?.showMatchEndNotification(
+    // 12s - Partita Terminata
+    show(12, () {
+      LiveNotificationOverlay.globalKey.currentState
+          ?.showMatchEndNotification(
         homeTeam: 'Roma',
         awayTeam: 'Lazio',
         homeScore: 2,
         awayScore: 2,
       );
     });
+
+    // 15s - Fallo
+    show(15, () {
+      // [FAV-testcount] nuova firma con conteggio
+      LiveNotificationOverlay.globalKey.currentState?.showFoulNotification(
+        homeTeam: 'Lazio',
+        awayTeam: 'Milan',
+        homeCount: 12,
+        awayCount: 15,
+        isHomeTeam: true,
+        minute: 41,
+      );
+    });
+
+    // 18s - Fuori gioco
+    show(18, () {
+      // [FAV-testoff] nuova firma con conteggio
+      LiveNotificationOverlay.globalKey.currentState
+          ?.showOffsideNotification(
+        homeTeam: 'Lazio',
+        awayTeam: 'Milan',
+        homeCount: 2,
+        awayCount: 3,
+        isHomeTeam: false,
+        minute: 44,
+      );
+    });
+
+    // 21s - Calcio d'angolo
+    show(21, () {
+      // [FAV-testcount] nuova firma con conteggio
+      LiveNotificationOverlay.globalKey.currentState
+          ?.showCornerNotification(
+        homeTeam: 'Lazio',
+        awayTeam: 'Milan',
+        homeCount: 4,
+        awayCount: 6,
+        isHomeTeam: false,
+        minute: 47,
+      );
+    });
+
+    // 24s - Rigore assegnato
+    show(24, () {
+      LiveNotificationOverlay.globalKey.currentState
+          ?.showPenaltyNotification(
+        team: 'Milan',
+        minute: 52,
+      );
+    });
+
+    // 27s - Sostituzione
+    show(27, () {
+      LiveNotificationOverlay.globalKey.currentState
+          ?.showSubstitutionNotification(
+        playerOut: 'Luis Alberto',
+        playerIn: 'Matias Vecino',
+        team: 'Lazio',
+        minute: 60,
+      );
+    });
+
+    // 30s - Revisione VAR
+    show(30, () {
+      LiveNotificationOverlay.globalKey.currentState?.showVarNotification(
+        outcome: 'Gol annullato per fuorigioco',
+        team: 'Milan',
+        minute: 63,
+      );
+    });
   }
+
 }
 
 

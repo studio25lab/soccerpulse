@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart';
 import '../generated/l10n.dart';
 
 enum MatchFilterType { all, live, scheduled, finished }
@@ -44,7 +45,7 @@ class _MatchFilterSheetState extends State<MatchFilterSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                s.filters,
+                tr(context, 'Filtri'),
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -68,25 +69,25 @@ class _MatchFilterSheetState extends State<MatchFilterSheet> {
           const SizedBox(height: 16),
           _buildFilterOption(
             MatchFilterType.all,
-            s.all,
+            tr(context, 'Tutte'),
             Icons.grid_view,
             Colors.blue,
           ),
           _buildFilterOption(
             MatchFilterType.live,
-            s.showOnlyLive,
+            tr(context, 'Solo in corso'),
             Icons.circle,
             Colors.red,
           ),
           _buildFilterOption(
             MatchFilterType.scheduled,
-            s.showOnlyScheduled,
+            tr(context, 'Solo programmate'),
             Icons.schedule,
             Colors.orange,
           ),
           _buildFilterOption(
             MatchFilterType.finished,
-            s.showOnlyFinished,
+            tr(context, 'Solo terminate'),
             Icons.check_circle,
             Colors.green,
           ),
@@ -98,7 +99,7 @@ class _MatchFilterSheetState extends State<MatchFilterSheet> {
                   onPressed: () {
                     setState(() => _selectedFilter = MatchFilterType.all);
                   },
-                  child: Text(s.resetFilters),
+                  child: Text(tr(context, 'Reimposta filtri')),
                 ),
               ),
               const SizedBox(width: 12),
@@ -108,7 +109,7 @@ class _MatchFilterSheetState extends State<MatchFilterSheet> {
                     widget.onFilterChanged(_selectedFilter);
                     Navigator.pop(context);
                   },
-                  child: Text(s.applyFilters),
+                  child: Text(tr(context, 'Applica filtri')),
                 ),
               ),
             ],

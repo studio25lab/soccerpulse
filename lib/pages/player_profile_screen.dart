@@ -168,7 +168,7 @@ class PlayerProfileScreen extends StatelessWidget {
               Icon(Icons.person_outline, color: theme.primaryColor, size: 24),
               SizedBox(width: 8),
               Text(
-                tr(context, 'Informazioni Personali'),
+                'Informazioni Personali',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
@@ -374,7 +374,7 @@ class PlayerProfileScreen extends StatelessWidget {
           ),
           SizedBox(height: 20),
           _buildContractRow(
-              tr(context, 'Squadra Attuale'), player.teamName, Icons.shield, theme),
+              'Squadra Attuale', player.teamName, Icons.shield, theme),
           _buildContractRow(
               'Scadenza', '30/06/2027', Icons.calendar_today, theme),
           _buildContractRow('Stipendio Annuale', '€6.5M', Icons.euro, theme),
@@ -466,8 +466,8 @@ class PlayerProfileScreen extends StatelessWidget {
             children: [
               Icon(Icons.history, color: theme.primaryColor, size: 24),
               const SizedBox(width: 8),
-              const Text(
-                tr(context, 'Carriera Calcistica'),
+              Text(
+                'Carriera Calcistica',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],

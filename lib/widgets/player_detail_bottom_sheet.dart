@@ -740,7 +740,7 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               children: [
                 Icon(Icons.sports_soccer, color: theme.primaryColor, size: 20),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   tr(context, 'Azioni Offensive'),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
@@ -802,7 +802,7 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               children: [
                 Icon(Icons.shield, color: theme.primaryColor, size: 20),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   tr(context, 'Azioni Difensive'),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
@@ -866,7 +866,7 @@ class _PlayerDetailBottomSheetState extends State<PlayerDetailBottomSheet>
               children: [
                 Icon(Icons.warning, color: theme.primaryColor, size: 20),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   tr(context, 'Disciplina'),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),

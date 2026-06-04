@@ -1307,7 +1307,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
             children: [
               Icon(Icons.show_chart, size: 16),
               SizedBox(width: 4),
-              Text(tr(context, 'Prestazioni'),
+              Text(tr(context, 'Prestazioni')),
             ],
           )),
           Tab(
@@ -1632,11 +1632,11 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 4,
           ),
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.save),
-              SizedBox(width: 8),
+              const Icon(Icons.save),
+              const SizedBox(width: 8),
               Text(
                 tr(context, 'Salva preferenze notifiche'),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -1952,7 +1952,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                     const Icon(Icons.bar_chart, color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -2074,7 +2074,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                     color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -2291,7 +2291,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                     color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -394,7 +394,8 @@ class _StandingsScreenState extends State<StandingsScreen>
   // ═══════════════════════════════════════════════════════════
   void _showRendimento(ThemeData theme, bool isDark, Color tx, Color lb) {
     final int currentMatchday = 38; // TODO: da API
-    int selectedMatchday = currentMatchday;
+    // [FAV-rangeslider] range invece di singola giornata
+    RangeValues selectedRange = RangeValues(1, currentMatchday.toDouble());
     final bg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
     final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
 
@@ -427,21 +428,21 @@ class _StandingsScreenState extends State<StandingsScreen>
 
     // Genera risultati giornata per giornata per ogni squadra
     // Distribuisce W/D/L realisticamente su 38 giornate
-    Map<String, List<int>> _generateResults() {
-      final results = <String, List<int>>{};
+    // [FAV-rangeslider] ora ritorna anche perMatch (punti per
+    // singola giornata, 3/1/0) per supportare il filtro a range.
+    Map<String, Map<String, List<int>>> _generateResults() {
+      final results = <String, Map<String, List<int>>>{};
       for (final td in teamsData) {
         final team = td['team'] as String;
         int w = td['w'] as int;
         int d = td['d'] as int;
         int l = td['l'] as int;
 
-        // Crea array di risultati: 3=W, 1=D, 0=L
         final matchResults = <int>[];
         for (int i = 0; i < w; i++) matchResults.add(3);
         for (int i = 0; i < d; i++) matchResults.add(1);
         for (int i = 0; i < l; i++) matchResults.add(0);
 
-        // Shuffle deterministico basato sul nome squadra (sempre stesso ordine)
         final seed = team.hashCode.abs();
         for (int i = matchResults.length - 1; i > 0; i--) {
           final j = (seed + i * 7) % (i + 1);
@@ -450,25 +451,29 @@ class _StandingsScreenState extends State<StandingsScreen>
           matchResults[j] = tmp;
         }
 
-        // Punti cumulativi per giornata
         final cumulative = <int>[];
+        final perMatch = <int>[];
         int total = 0;
         for (int i = 0; i < matchResults.length && i < 38; i++) {
+          perMatch.add(matchResults[i]);
           total += matchResults[i];
           cumulative.add(total);
         }
-        results[team] = cumulative;
+        results[team] = {'cumulative': cumulative, 'perMatch': perMatch};
       }
       return results;
     }
 
     final allResults = _generateResults();
 
+    // [FAV-rangeslider] resta per compatibilita interna ma non usata
+    // direttamente dall-UI (la modale ora usa getRankingForRange).
+    // ignore: unused_element
     List<Map<String, dynamic>> getRankingForMatchday(int md) {
       final ranking = <Map<String, dynamic>>[];
       for (final td in teamsData) {
         final team = td['team'] as String;
-        final pts = allResults[team]![md - 1]; // 0-indexed
+        final pts = allResults[team]!['cumulative']![md - 1];
         ranking.add({
           'team': team,
           'logo': td['logo'],
@@ -479,7 +484,32 @@ class _StandingsScreenState extends State<StandingsScreen>
       ranking.sort((a, b) {
         final cmp = (b['pts'] as int).compareTo(a['pts'] as int);
         if (cmp != 0) return cmp;
-        // Parità: ordine alfabetico
+        return (a['team'] as String).compareTo(b['team'] as String);
+      });
+      return ranking;
+    }
+
+    // [FAV-rangeslider] Ranking per range di giornate [start, end].
+    // I punti partono da zero: somma SOLO i match nel range.
+    List<Map<String, dynamic>> getRankingForRange(int start, int end) {
+      final ranking = <Map<String, dynamic>>[];
+      for (final td in teamsData) {
+        final team = td['team'] as String;
+        final perMatch = allResults[team]!['perMatch']!;
+        int pts = 0;
+        for (int i = start - 1; i < end && i < perMatch.length; i++) {
+          pts += perMatch[i];
+        }
+        ranking.add({
+          'team': team,
+          'logo': td['logo'],
+          'pts': pts,
+          'played': end - start + 1,
+        });
+      }
+      ranking.sort((a, b) {
+        final cmp = (b['pts'] as int).compareTo(a['pts'] as int);
+        if (cmp != 0) return cmp;
         return (a['team'] as String).compareTo(b['team'] as String);
       });
       return ranking;
@@ -489,7 +519,9 @@ class _StandingsScreenState extends State<StandingsScreen>
       context: context, isScrollControlled: true, backgroundColor: Colors.transparent,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setSheetState) {
-          final ranking = getRankingForMatchday(selectedMatchday);
+          final startMd = selectedRange.start.round();
+          final endMd = selectedRange.end.round();
+          final ranking = getRankingForRange(startMd, endMd);
           return Container(
             constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
             decoration: BoxDecoration(color: bg, borderRadius: const BorderRadius.vertical(top: Radius.circular(24))),
@@ -501,18 +533,29 @@ class _StandingsScreenState extends State<StandingsScreen>
                 SizedBox(width: 10),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(S.of(context)!.rendimentoSerieA, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: tx)),
-                  Text('${tr(context, "Classifica alla giornata")} $selectedMatchday', style: TextStyle(fontSize: 12, color: lb)),
+                  Text('${tr(context, "Classifica giornate")} $startMd–$endMd', style: TextStyle(fontSize: 12, color: lb)),
                 ]),
               ])),
-              // Slider
+              // [FAV-rangeslider] RangeSlider con due manopole
               Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4), child: Row(children: [
                 Text(tr(context, 'Giornata 1'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: lb)),
                 Expanded(child: SliderTheme(
                   data: SliderThemeData(activeTrackColor: theme.primaryColor, inactiveTrackColor: isDark ? Colors.white12 : Colors.grey[200],
-                      thumbColor: theme.primaryColor, thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8), trackHeight: 4),
-                  child: Slider(value: selectedMatchday.toDouble(), min: 1, max: currentMatchday.toDouble(),
+                      thumbColor: theme.primaryColor, rangeThumbShape: const RoundRangeSliderThumbShape(enabledThumbRadius: 8), trackHeight: 4),
+                  child: RangeSlider(
+                      values: selectedRange,
+                      min: 1,
+                      max: currentMatchday.toDouble(),
                       divisions: (currentMatchday - 1).clamp(1, 37),
-                      onChanged: (val) { _haptic.lightImpact(); setSheetState(() => selectedMatchday = val.round()); }),
+                      onChanged: (val) {
+                        _haptic.lightImpact();
+                        setSheetState(() {
+                          selectedRange = RangeValues(
+                            val.start.roundToDouble(),
+                            val.end.roundToDouble(),
+                          );
+                        });
+                      }),
                 )),
                 Text('${tr(context, 'Giornata')} $currentMatchday', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: lb)),
               ])),
@@ -523,7 +566,7 @@ class _StandingsScreenState extends State<StandingsScreen>
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Icon(Icons.calendar_today_rounded, size: 14, color: theme.primaryColor),
                     const SizedBox(width: 8),
-                    Text('${tr(context, 'Giornata')} $selectedMatchday', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: theme.primaryColor)),
+                    Text('${tr(context, 'Giornate')} $startMd–$endMd', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: theme.primaryColor)),
                   ])),
               const SizedBox(height: 8),
               // Header colonne

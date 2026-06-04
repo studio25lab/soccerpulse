@@ -176,7 +176,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                       Icon(Icons.assistant,
                           size: 18, color: theme.primaryColor),
                       const SizedBox(width: 8),
-                      const Text(tr(context, 'Assist')),
+                      Text(tr(context, 'Assist')),
                     ],
                   )),
               PopupMenuItem(

@@ -46,9 +46,12 @@ class _PulseScreenState extends State<PulseScreen>
 
   void _loadStandings({bool forceRefresh = false}) {
     setState(() {
+      // TODO: forceRefresh non e supportato da ApiService
+      // .fetchStandings (firma e fetchStandings(int leagueId)).
+      // Se in futuro l-API supportera cache invalidation,
+      // riaggiungere il parametro forceRefresh.
       _standingsFuture = _apiService.fetchStandings(
         _selectedLeagueId,
-        forceRefresh: forceRefresh,
       );
     });
   }
@@ -56,7 +59,7 @@ class _PulseScreenState extends State<PulseScreen>
   Future<void> _selectLeague() async {
     _haptic.medium();
     final selected = await context.pushWithTransition<League>(
-      const LeagueSelectorScreen(),
+      const LeagueSelectionScreen(),
       type: TransitionType.slideFromRight,
     );
 
@@ -106,7 +109,7 @@ class _PulseScreenState extends State<PulseScreen>
             const SizedBox(width: 8),
             Flexible(
               child: Text(
-                s.pulse,
+                tr(context, 'Pulse'),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -147,7 +150,7 @@ class _PulseScreenState extends State<PulseScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    s.pulseTitle,
+                    tr(context, 'Pulse'),
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -165,7 +168,7 @@ class _PulseScreenState extends State<PulseScreen>
                   ).animate(delay: 100.ms).fadeIn(duration: 600.ms).slideX(),
                   const SizedBox(height: 4),
                   Text(
-                    s.pulseDescription,
+                    tr(context, 'Le statistiche piu rilevanti del campionato'),
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.white70,
@@ -335,7 +338,7 @@ class _PulseScreenState extends State<PulseScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            s.topStatistics,
+            tr(context, 'Statistiche Top'),
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -416,7 +419,7 @@ class _PulseScreenState extends State<PulseScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                s.teamForm,
+                tr(context, 'Forma squadra'),
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -428,7 +431,7 @@ class _PulseScreenState extends State<PulseScreen>
                   // TODO: Navigate to full form view
                 },
                 icon: const Icon(Icons.arrow_forward, size: 16),
-                label: Text(s.viewDetails),
+                label: Text(tr(context, 'Vedi dettagli')),
               ),
             ],
           ),
@@ -449,7 +452,7 @@ class _PulseScreenState extends State<PulseScreen>
                       teamLogo: team.teamLogo,
                       form: team.form?.split('') ?? [],
                       points: team.points,
-                      rank: team.rank,
+                      rank: team.position,
                       onTap: () {
                         _haptic.light();
                         // TODO: Show team details
@@ -481,7 +484,7 @@ class _PulseScreenState extends State<PulseScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            s.seasonRecords,
+            tr(context, 'Record stagionali'),
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -494,7 +497,7 @@ class _PulseScreenState extends State<PulseScreen>
                 _buildRecordItem(
                   icon: Icons.sports,
                   color: Colors.red,
-                  title: s.mostGoals,
+                  title: tr(context, 'Piu gol'),
                   teamName: mostGoals.teamName,
                   teamLogo: mostGoals.teamLogo,
                   value: '${mostGoals.goalsFor} gol',
@@ -503,7 +506,7 @@ class _PulseScreenState extends State<PulseScreen>
                 _buildRecordItem(
                   icon: Icons.shield,
                   color: Colors.blue,
-                  title: s.fewestGoals,
+                  title: tr(context, 'Meno gol'),
                   teamName: fewestGoals.teamName,
                   teamLogo: fewestGoals.teamLogo,
                   value: '${fewestGoals.goalsAgainst} gol subiti',
@@ -512,7 +515,7 @@ class _PulseScreenState extends State<PulseScreen>
                 _buildRecordItem(
                   icon: Icons.emoji_events,
                   color: Colors.amber,
-                  title: s.longestWinStreak,
+                  title: tr(context, 'Striscia vincente piu lunga'),
                   teamName: mostWins.teamName,
                   teamLogo: mostWins.teamLogo,
                   value: '${mostWins.wins} vittorie',

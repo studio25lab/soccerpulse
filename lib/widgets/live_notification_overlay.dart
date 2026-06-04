@@ -1,11 +1,15 @@
 // lib/widgets/live_notification_overlay.dart
 
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import '../models/soccer_match.dart';
+import '../pages/match_detail_screen.dart';
 import '../services/haptic_service.dart';
 
 class LiveNotificationOverlay extends StatefulWidget {
+  static final GlobalKey<_LiveNotificationOverlayState> globalKey =
+      GlobalKey<_LiveNotificationOverlayState>();
+
   final Widget child;
 
   const LiveNotificationOverlay({
@@ -40,9 +44,10 @@ class _LiveNotificationOverlayState extends State<LiveNotificationOverlay>
     final notification = NotificationItem(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       type: NotificationType.goal,
-      title: 'GOOOOOL! ⚽',
-      message: '$scorer ($minute\')',
-      subtitle: '$homeTeam $homeScore - $awayScore $awayTeam',
+      title: 'GOL',
+      // [FAV-labelB] message = dettaglio + risultato; subtitle = etichetta
+      message: '$scorer ($minute\') \u00b7 $homeTeam $homeScore-$awayScore $awayTeam',
+      subtitle: 'GOL',
       homeTeamLogo: homeTeamLogo,
       awayTeamLogo: awayTeamLogo,
       timestamp: DateTime.now(),
@@ -64,10 +69,11 @@ class _LiveNotificationOverlayState extends State<LiveNotificationOverlay>
           ? NotificationType.yellowCard
           : NotificationType.redCard,
       title: cardType == CardType.yellow
-          ? '🟨 Cartellino Giallo'
-          : '🟥 Cartellino Rosso',
-      message: '$player ($minute\')',
-      subtitle: team,
+          ? 'Cartellino Giallo'
+          : 'Cartellino Rosso',
+      // [FAV-labelB]
+      message: '$player ($minute\') \u00b7 $team',
+      subtitle: cardType == CardType.yellow ? 'GIALLO' : 'ROSSO',
       timestamp: DateTime.now(),
     );
 
@@ -83,9 +89,12 @@ class _LiveNotificationOverlayState extends State<LiveNotificationOverlay>
     final notification = NotificationItem(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       type: NotificationType.matchStart,
-      title: '🏁 Partita Iniziata!',
-      message: '$homeTeam vs $awayTeam',
-      subtitle: competition,
+      title: 'Partita Iniziata',
+      // [FAV-labelB]
+      message: competition == null || competition.isEmpty
+          ? '$homeTeam vs $awayTeam'
+          : '$homeTeam vs $awayTeam \u00b7 $competition',
+      subtitle: 'INIZIO',
       timestamp: DateTime.now(),
     );
 
@@ -102,18 +111,159 @@ class _LiveNotificationOverlayState extends State<LiveNotificationOverlay>
     final notification = NotificationItem(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       type: NotificationType.matchEnd,
-      title: '⏱️ Partita Terminata',
-      message: '$homeTeam $homeScore - $awayScore $awayTeam',
-      subtitle: homeScore > awayScore
-          ? '🏆 Vittoria $homeTeam'
+      title: 'Partita Terminata',
+      // [FAV-labelB]
+      message: homeScore > awayScore
+          ? '$homeTeam $homeScore-$awayScore $awayTeam \u00b7 Vittoria $homeTeam'
           : homeScore < awayScore
-              ? '🏆 Vittoria $awayTeam'
-              : '🤝 Pareggio',
+              ? '$homeTeam $homeScore-$awayScore $awayTeam \u00b7 Vittoria $awayTeam'
+              : '$homeTeam $homeScore-$awayScore $awayTeam \u00b7 Pareggio',
+      subtitle: 'FINE',
       timestamp: DateTime.now(),
     );
 
     _addNotification(notification);
     _haptic.lightImpact();
+  }
+
+  // [FAV-newtypes] --- nuovi banner ---------------------------------
+
+  // Fallo - livello squadra
+  // [FAV-count] Fallo con conteggio progressivo.
+  void showFoulNotification({
+    required String homeTeam,
+    required String awayTeam,
+    required int homeCount,
+    required int awayCount,
+    required bool isHomeTeam,
+    required int minute,
+  }) {
+    final eventTeam = isHomeTeam ? homeTeam : awayTeam;
+    final tally = isHomeTeam
+        ? '$homeTeam-$awayTeam [$homeCount]-$awayCount'
+        : '$homeTeam-$awayTeam $homeCount-[$awayCount]';
+    final notification = NotificationItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      type: NotificationType.foul,
+      title: 'Fallo \u00b7 $eventTeam',
+      message: '$minute\' \u00b7 $tally',
+      subtitle: 'FALLO',
+      timestamp: DateTime.now(),
+    );
+    _addNotification(notification);
+    _haptic.lightImpact();
+  }
+
+  // Fuori gioco - livello squadra
+  // [FAV-offcount] Fuorigioco con conteggio progressivo.
+  void showOffsideNotification({
+    required String homeTeam,
+    required String awayTeam,
+    required int homeCount,
+    required int awayCount,
+    required bool isHomeTeam,
+    required int minute,
+  }) {
+    final eventTeam = isHomeTeam ? homeTeam : awayTeam;
+    final tally = isHomeTeam
+        ? '$homeTeam-$awayTeam [$homeCount]-$awayCount'
+        : '$homeTeam-$awayTeam $homeCount-[$awayCount]';
+    final notification = NotificationItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      type: NotificationType.offside,
+      title: 'Fuorigioco \u00b7 $eventTeam',
+      message: '$minute\' \u00b7 $tally',
+      subtitle: 'FUORIGIOCO',
+      timestamp: DateTime.now(),
+    );
+    _addNotification(notification);
+    _haptic.lightImpact();
+  }
+
+  // Calcio d-angolo - livello squadra
+  // [FAV-count] Calcio d-angolo con conteggio progressivo.
+  void showCornerNotification({
+    required String homeTeam,
+    required String awayTeam,
+    required int homeCount,
+    required int awayCount,
+    required bool isHomeTeam,
+    required int minute,
+  }) {
+    final eventTeam = isHomeTeam ? homeTeam : awayTeam;
+    final tally = isHomeTeam
+        ? '$homeTeam-$awayTeam [$homeCount]-$awayCount'
+        : '$homeTeam-$awayTeam $homeCount-[$awayCount]';
+    final notification = NotificationItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      type: NotificationType.corner,
+      title: 'Calcio d\'angolo \u00b7 $eventTeam',
+      message: '$minute\' \u00b7 $tally',
+      subtitle: 'ANGOLO',
+      timestamp: DateTime.now(),
+    );
+    _addNotification(notification);
+    _haptic.lightImpact();
+  }
+
+  // Rigore assegnato - livello squadra
+  void showPenaltyNotification({
+    required String team,
+    required int minute,
+  }) {
+    final notification = NotificationItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      type: NotificationType.penalty,
+      title: 'Rigore assegnato',
+      // [FAV-labelB]
+      message: '$minute\' \u00b7 $team',
+      subtitle: 'RIGORE',
+      timestamp: DateTime.now(),
+    );
+    _addNotification(notification);
+    _haptic.mediumImpact();
+  }
+
+  // Sostituzione - livello giocatore
+  void showSubstitutionNotification({
+    required String playerOut,
+    required String playerIn,
+    required String team,
+    required int minute,
+  }) {
+    final notification = NotificationItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      type: NotificationType.substitution,
+      title: 'Sostituzione',
+      // [FAV-labelB]
+      message: 'Esce $playerOut, entra $playerIn ($minute\') \u00b7 $team',
+      subtitle: 'CAMBIO',
+      timestamp: DateTime.now(),
+    );
+    _addNotification(notification);
+    _haptic.lightImpact();
+  }
+
+  // Revisione VAR - l-esito viene passato dal chiamante
+  // Esempi di outcome: 'Gol annullato per fuorigioco',
+  // 'Gol annullato per fallo', 'Rigore annullato',
+  // 'Rigore confermato', 'Gol convalidato'.
+  void showVarNotification({
+    required String outcome,
+    required String team,
+    required int minute,
+  }) {
+    final notification = NotificationItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      type: NotificationType.varReview,
+      title: 'Revisione VAR',
+      // [FAV-labelB]
+      message: '$outcome ($minute\') \u00b7 $team',
+      subtitle: 'VAR',
+      timestamp: DateTime.now(),
+    );
+    _addNotification(notification);
+    _haptic.mediumImpact();
   }
 
   void _addNotification(NotificationItem notification) {
@@ -122,7 +272,8 @@ class _LiveNotificationOverlayState extends State<LiveNotificationOverlay>
     });
 
     // Auto rimuovi dopo 5 secondi
-    Future.delayed(const Duration(seconds: 5), () {
+    // [FAV-tap7] 7s pieni + 400ms per l-uscita animata
+    Future.delayed(const Duration(milliseconds: 7400), () {
       _removeNotification(notification.id);
     });
   }
@@ -144,7 +295,10 @@ class _LiveNotificationOverlayState extends State<LiveNotificationOverlay>
           right: 0,
           child: Column(
             children: _notifications.map((notification) {
+              // [FAV-bannerkey] ValueKey -> i timer di ogni card
+              // restano coordinati quando ne arrivano di nuove.
               return GoalNotificationCard(
+                key: ValueKey(notification.id),
                 notification: notification,
                 onDismiss: () => _removeNotification(notification.id),
               );
@@ -156,6 +310,7 @@ class _LiveNotificationOverlayState extends State<LiveNotificationOverlay>
   }
 }
 
+// [FAV-banner3] finto-vetro (no BackdropFilter, robusto su web)
 class GoalNotificationCard extends StatefulWidget {
   final NotificationItem notification;
   final VoidCallback onDismiss;
@@ -180,27 +335,28 @@ class _GoalNotificationCardState extends State<GoalNotificationCard>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 360),
       vsync: this,
     );
 
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1),
+      begin: const Offset(0, -1.2),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeOutBack,
     ));
 
-    _fadeAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeIn,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
 
     _controller.forward();
+
+    // [FAV-tap7] uscita dopo 7s pieni
+    Future.delayed(const Duration(milliseconds: 7000), () {
+      if (mounted) _controller.reverse();
+    });
   }
 
   @override
@@ -209,191 +365,197 @@ class _GoalNotificationCardState extends State<GoalNotificationCard>
     super.dispose();
   }
 
-  Color _getNotificationColor() {
-    switch (widget.notification.type) {
-      case NotificationType.goal:
-        return Colors.green;
-      case NotificationType.yellowCard:
-        return Colors.amber;
-      case NotificationType.redCard:
-        return Colors.red;
-      case NotificationType.matchStart:
-        return Colors.blue;
-      case NotificationType.matchEnd:
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
+  IconData get _icon => Icons.notifications_active_rounded;
+
+  // [FAV-tap7] Apre la partita live al tap sul banner.
+  // Coi mock l-unica live e Lazio-Milan; quando ci sara il
+  // simulatore, ogni banner portera il proprio matchId.
+  // [FAV-fetchx] Apre la partita live al tap.
+  // L-acquisizione della partita e isolata in
+  // _fetchLiveMatchForTap() per facilitare il passaggio alle
+  // API: quando ci arriverai, modifica solo quel metodo.
+  Future<void> _handleTap(BuildContext context) async {
+    // 1) chiudo subito il banner (UI reattiva)
+    widget.onDismiss();
+
+    // 2) ottengo la partita (oggi mock, domani repo API)
+    final liveMatch = await _fetchLiveMatchForTap();
+    if (liveMatch == null) return;
+
+    // 3) navigo al dettaglio (stesso pattern di home_screen)
+    if (!context.mounted) return;
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (_) => MatchDetailScreen(match: liveMatch),
+      ),
+    );
   }
 
-  IconData _getNotificationIcon() {
-    switch (widget.notification.type) {
-      case NotificationType.goal:
-        return Icons.sports_soccer;
-      case NotificationType.yellowCard:
-      case NotificationType.redCard:
-        return Icons.square;
-      case NotificationType.matchStart:
-        return Icons.play_arrow;
-      case NotificationType.matchEnd:
-        return Icons.stop;
-      default:
-        return Icons.notifications;
-    }
+  // TODO API: rimpiazzare il corpo con
+  //   final repo = RepositoryProvider.matchRepository;
+  //   return repo.getMatchById(widget.notification.matchId);
+  // (richiede prima di aggiungere `matchId` a NotificationItem)
+  // Per ora torna la stessa SoccerMatch costruita inline dalla
+  // home in _loadMockMatches (Lazio-Milan, id 9001).
+  Future<SoccerMatch?> _fetchLiveMatchForTap() async {
+    return SoccerMatch(
+      id: 9001,
+      homeTeamId: 487,
+      awayTeamId: 489,
+      homeTeamName: 'Lazio',
+      awayTeamName: 'Milan',
+      homeScore: 2,
+      awayScore: 1,
+      status: '1H',
+      date: DateTime(2023, 5, 14),
+      time: '20:45',
+      venue: 'Stadio Olimpico',
+      leagueId: 135,
+      leagueName: 'Serie A',
+      round: 'Giornata 35',
+      elapsed: 45,
+      homeTeamLogo:
+          'https://media.api-sports.io/football/teams/487.png',
+      awayTeamLogo:
+          'https://media.api-sports.io/football/teams/489.png',
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final color = _getNotificationColor();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return SlideTransition(
-      position: _slideAnimation,
-      child: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Dismissible(
-          key: Key(widget.notification.id),
-          direction: DismissDirection.horizontal,
-          onDismissed: (_) => widget.onDismiss(),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  color.withOpacity(0.9),
-                  color.withOpacity(0.7),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
+    // "Finto vetro": niente BackdropFilter. Superficie a trasparenza
+    // parziale. Su Flutter Web e robusto e non collassa.
+    final Color glassFill = isDark
+        ? const Color(0xFF1E1E1E).withValues(alpha: 0.92)
+        : Colors.white.withValues(alpha: 0.94);
+    final Color glassBorder = isDark
+        ? Colors.white.withValues(alpha: 0.16)
+        : Colors.white.withValues(alpha: 0.90);
+    final Color textPrimary =
+        isDark ? Colors.white : const Color(0xFF1A1A1A);
+    final Color textSecondary = isDark
+        ? Colors.white.withValues(alpha: 0.62)
+        : Colors.black.withValues(alpha: 0.55);
+    final Color pillFill = isDark
+        ? Colors.white.withValues(alpha: 0.14)
+        : Colors.black.withValues(alpha: 0.05);
+
+    final n = widget.notification;
+    final hasSubtitle = n.subtitle != null && n.subtitle!.trim().isNotEmpty;
+
+    return SizedBox(
+      width: double.infinity,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: Dismissible(
+            key: Key(n.id),
+            direction: DismissDirection.horizontal,
+            onDismissed: (_) => widget.onDismiss(),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: glassFill,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: glassBorder, width: 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                          alpha: isDark ? 0.40 : 0.18),
+                      blurRadius: 22,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  widget.onDismiss();
-                },
-                borderRadius: BorderRadius.circular(16),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      // Icona animata
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          _getNotificationIcon(),
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      )
-                          .animate(
-                            onPlay: (controller) => controller.repeat(),
-                          )
-                          .scale(
-                            duration: const Duration(seconds: 1),
-                            begin: const Offset(1, 1),
-                            end: const Offset(1.2, 1.2),
-                          )
-                          .then()
-                          .scale(
-                            duration: const Duration(seconds: 1),
-                            begin: const Offset(1.2, 1.2),
-                            end: const Offset(1, 1),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    // [FAV-tap7] tap = apri partita live + dismiss
+                    onTap: () => _handleTap(context),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 12),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              color: pillFill,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(_icon,
+                                size: 22, color: textPrimary),
                           ),
-                      const SizedBox(width: 12),
-
-                      // Contenuto
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.notification.title,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  n.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: textPrimary,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 15,
+                                    letterSpacing: 0.2,
+                                  ),
+                                ),
+                                if (n.message.isNotEmpty) ...[
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    n.message,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: textSecondary,
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          if (hasSubtitle) ...[
+                            const SizedBox(width: 10),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: pillFill,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                n.subtitle!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: textPrimary,
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
-                            if (widget.notification.message.isNotEmpty)
-                              Text(
-                                widget.notification.message,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            if (widget.notification.subtitle != null)
-                              Text(
-                                widget.notification.subtitle!,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontSize: 11,
-                                ),
-                              ),
                           ],
-                        ),
+                        ],
                       ),
-
-                      // Logo squadre (per goal)
-                      if (widget.notification.type ==
-                          NotificationType.goal) ...[
-                        if (widget.notification.homeTeamLogo != null)
-                          CachedNetworkImage(
-                            imageUrl: widget.notification.homeTeamLogo!,
-                            width: 24,
-                            height: 24,
-                            errorWidget: (context, url, error) => const Icon(
-                                Icons.sports_soccer,
-                                size: 24,
-                                color: Colors.white),
-                          ),
-                        const SizedBox(width: 4),
-                        if (widget.notification.awayTeamLogo != null)
-                          CachedNetworkImage(
-                            imageUrl: widget.notification.awayTeamLogo!,
-                            width: 24,
-                            height: 24,
-                            errorWidget: (context, url, error) => const Icon(
-                                Icons.sports_soccer,
-                                size: 24,
-                                color: Colors.white),
-                          ),
-                      ],
-
-                      // Close button
-                      IconButton(
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        onPressed: widget.onDismiss,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ).animate().shimmer(
-                duration: const Duration(seconds: 2),
-                color: Colors.white.withOpacity(0.2),
-              ),
+          ),
         ),
       ),
     );
@@ -407,6 +569,13 @@ enum NotificationType {
   redCard,
   matchStart,
   matchEnd,
+  // [FAV-newtypes] nuovi tipi
+  foul,
+  offside,
+  corner,
+  penalty,
+  substitution,
+  varReview,
   generic,
 }
 
