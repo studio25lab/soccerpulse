@@ -37,6 +37,7 @@ import '../widgets/tabs/pre_match_info_tab.dart';
 import '../widgets/tabs/h2h_tab.dart';
 import '../widgets/tabs/probable_lineups_tab.dart';
 import '../widgets/tabs/statistics_tab.dart';
+import '../widgets/tabs/standings_comparison_tab.dart';
 import '../painters/match_detail_painters.dart'; // [FAV-extract-painters]
 import 'player_finished_match_screen.dart';
 import '../painters/advanced_stats_painters.dart';
@@ -8432,216 +8433,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
 
 
   // ── Standings Comparison Tab ──
-  Widget _buildStandingsComparisonTab(ThemeData theme, bool isDark) {
-    final bg = isDark ? Colors.grey[900]! : const Color(0xFFF5F6FA);
-    final cardBg = isDark ? const Color(0xFF1E1E2A) : Colors.white;
-    final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
-    final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
-    final homeName = widget.match.homeTeamName;
-    final awayName = widget.match.awayTeamName;
-
-    // Full Serie A standings
-    final standings = [
-      {'pos': 1, 'team': 'Inter', 'pts': 83, 'p': 35, 'w': 26, 'd': 5, 'l': 4, 'gf': 78, 'ga': 25, 'gd': '+53', 'form': 'WWDWW'},
-      {'pos': 2, 'team': 'Milan', 'pts': 72, 'p': 35, 'w': 22, 'd': 6, 'l': 7, 'gf': 65, 'ga': 38, 'gd': '+27', 'form': 'WLWWD'},
-      {'pos': 3, 'team': 'Juventus', 'pts': 68, 'p': 35, 'w': 20, 'd': 8, 'l': 7, 'gf': 55, 'ga': 30, 'gd': '+25', 'form': 'DDWWL'},
-      {'pos': 4, 'team': 'Atalanta', 'pts': 65, 'p': 35, 'w': 19, 'd': 8, 'l': 8, 'gf': 64, 'ga': 38, 'gd': '+26', 'form': 'WWWLW'},
-      {'pos': 5, 'team': 'Bologna', 'pts': 62, 'p': 35, 'w': 18, 'd': 8, 'l': 9, 'gf': 49, 'ga': 32, 'gd': '+17', 'form': 'DWWLD'},
-      {'pos': 6, 'team': 'Roma', 'pts': 58, 'p': 35, 'w': 17, 'd': 7, 'l': 11, 'gf': 52, 'ga': 42, 'gd': '+10', 'form': 'WLDWL'},
-      {'pos': 7, 'team': 'Lazio', 'pts': 55, 'p': 35, 'w': 16, 'd': 7, 'l': 12, 'gf': 48, 'ga': 38, 'gd': '+10', 'form': 'LWWDL'},
-      {'pos': 8, 'team': 'Fiorentina', 'pts': 51, 'p': 35, 'w': 14, 'd': 9, 'l': 12, 'gf': 44, 'ga': 40, 'gd': '+4', 'form': 'DLWLW'},
-      {'pos': 9, 'team': 'Torino', 'pts': 49, 'p': 35, 'w': 13, 'd': 10, 'l': 12, 'gf': 36, 'ga': 36, 'gd': '0', 'form': 'DDLWD'},
-      {'pos': 10, 'team': 'Napoli', 'pts': 49, 'p': 35, 'w': 14, 'd': 7, 'l': 14, 'gf': 52, 'ga': 48, 'gd': '+4', 'form': 'LWDLW'},
-      {'pos': 11, 'team': 'Monza', 'pts': 45, 'p': 35, 'w': 12, 'd': 9, 'l': 14, 'gf': 38, 'ga': 44, 'gd': '-6', 'form': 'DLLWD'},
-      {'pos': 12, 'team': 'Genoa', 'pts': 42, 'p': 35, 'w': 11, 'd': 9, 'l': 15, 'gf': 35, 'ga': 42, 'gd': '-7', 'form': 'LDWDL'},
-      {'pos': 13, 'team': 'Lecce', 'pts': 38, 'p': 35, 'w': 9, 'd': 11, 'l': 15, 'gf': 30, 'ga': 44, 'gd': '-14', 'form': 'DLDLL'},
-      {'pos': 14, 'team': 'Verona', 'pts': 37, 'p': 35, 'w': 9, 'd': 10, 'l': 16, 'gf': 32, 'ga': 48, 'gd': '-16', 'form': 'LLWDL'},
-      {'pos': 15, 'team': 'Udinese', 'pts': 36, 'p': 35, 'w': 9, 'd': 9, 'l': 17, 'gf': 34, 'ga': 50, 'gd': '-16', 'form': 'DLLDW'},
-      {'pos': 16, 'team': 'Empoli', 'pts': 34, 'p': 35, 'w': 8, 'd': 10, 'l': 17, 'gf': 28, 'ga': 44, 'gd': '-16', 'form': 'LDDLL'},
-      {'pos': 17, 'team': 'Cagliari', 'pts': 33, 'p': 35, 'w': 8, 'd': 9, 'l': 18, 'gf': 32, 'ga': 52, 'gd': '-20', 'form': 'LDLWL'},
-      {'pos': 18, 'team': 'Frosinone', 'pts': 28, 'p': 35, 'w': 6, 'd': 10, 'l': 19, 'gf': 36, 'ga': 58, 'gd': '-22', 'form': 'LLLDD'},
-      {'pos': 19, 'team': 'Sassuolo', 'pts': 22, 'p': 35, 'w': 4, 'd': 10, 'l': 21, 'gf': 28, 'ga': 64, 'gd': '-36', 'form': 'LLDLL'},
-      {'pos': 20, 'team': 'Salernitana', 'pts': 16, 'p': 35, 'w': 3, 'd': 7, 'l': 25, 'gf': 22, 'ga': 68, 'gd': '-46', 'form': 'LLLLL'},
-    ];
-
-    return Container(
-      color: bg,
-      child: ListView(padding: const EdgeInsets.all(12), children: [
-        // Filters row (flat, like main standings)
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Row(children: [
-            _standingsFilterChip(tr(context, 'Totale'), true, theme),
-            const SizedBox(width: 6),
-            _standingsFilterChip(tr(context, 'Casa'), false, theme),
-            const SizedBox(width: 6),
-            _standingsFilterChip(tr(context, 'Trasferta'), false, theme),
-            const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-              decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
-              ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.trending_up_rounded, size: 14, color: theme.primaryColor),
-                const SizedBox(width: 4),
-                Text(tr(context, 'Rendimento'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: theme.primaryColor)),
-              ]),
-            ),
-          ]),
-        ),
-        // Header
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: isDark ? Colors.white.withOpacity(0.03) : Colors.grey.withOpacity(0.05),
-            border: Border(left: BorderSide(width: 3, color: Colors.transparent), bottom: BorderSide(width: 0.5, color: divider)),
-          ),
-          child: Row(children: [
-            SizedBox(width: 24, child: Text('#', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-            const SizedBox(width: 8),
-            Expanded(flex: 4, child: Text(tr(context, 'Squadra'), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: lb))),
-            SizedBox(width: 26, child: Text(standingsAbbr(context, 'G'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-            SizedBox(width: 26, child: Text(standingsAbbr(context, 'V'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-            SizedBox(width: 26, child: Text(standingsAbbr(context, 'P'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-            SizedBox(width: 26, child: Text(standingsAbbr(context, 'S'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-            SizedBox(width: 26, child: Text(standingsAbbr(context, 'GF'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-            SizedBox(width: 26, child: Text(standingsAbbr(context, 'GS'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-            SizedBox(width: 30, child: Text(standingsAbbr(context, 'DR'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
-            SizedBox(width: 30, child: Text(standingsAbbr(context, 'Pt'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: theme.primaryColor), textAlign: TextAlign.center)),
-            SizedBox(width: 80, child: Text(tr(context, 'Forma'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: lb), textAlign: TextAlign.center)),
-          ]),
-        ),
-        // Rows
-        Container(
-          color: cardBg,
-          child: Column(children: [
-            ...standings.asMap().entries.map((entry) {
-              final i = entry.key;
-              final s = entry.value;
-              final teamName = s['team'] as String;
-              final isMatch = teamName == homeName || teamName == awayName;
-              final teamColor = _getTeamColor(teamName);
-              final pos = s['pos'] as int;
-              final isLast = i == standings.length - 1;
-
-              // Zone colors
-              Color? zoneBg;
-              Color? zoneBar;
-              if (pos <= 4) { zoneBar = const Color(0xFF4CAF50); }
-              else if (pos == 5 || pos == 6) { zoneBar = const Color(0xFF2196F3); }
-              else if (pos == 7) { zoneBar = const Color(0xFFFFA726); }
-              else if (pos >= 18) { zoneBar = const Color(0xFFE53935); }
-
-              final abbr = teamName.length > 3 ? teamName.substring(0, 3).toUpperCase() : teamName.toUpperCase();
-
-              return GestureDetector(
-                onTap: () => _navigateToTeamDetail(0, teamName, null),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                  decoration: BoxDecoration(
-                    color: isMatch ? (teamColor.withOpacity(isDark ? 0.15 : 0.08)) : null,
-                    border: Border(
-                      left: BorderSide(width: 3, color: zoneBar ?? Colors.transparent),
-                      bottom: isLast ? BorderSide.none : BorderSide(width: 0.5, color: divider),
-                    ),
-                    borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(16)) : null,
-                  ),
-                  child: Row(children: [
-                    // Position
-                    SizedBox(width: 24, child: Center(child: Text('$pos', style: TextStyle(fontSize: 13, fontWeight: isMatch ? FontWeight.w900 : FontWeight.w600, color: tx)))),
-                    const SizedBox(width: 8),
-                    // Team logo
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: CachedNetworkImage(
-                        imageUrl: _getTeamLogoUrl(teamName),
-                        width: 24, height: 24,
-                        errorWidget: (_, __, ___) => Container(
-                          width: 24, height: 24,
-                          decoration: BoxDecoration(
-                            color: teamColor.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Center(child: Text(abbr, style: TextStyle(fontSize: 6, fontWeight: FontWeight.w900, color: teamColor))),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(flex: 4, child: Text(teamName,
-                        style: TextStyle(fontSize: 13, fontWeight: isMatch ? FontWeight.w800 : FontWeight.w500, color: isMatch ? teamColor : tx),
-                        overflow: TextOverflow.ellipsis)),
-                    SizedBox(width: 26, child: Text('${s['p']}', style: TextStyle(fontSize: 11, color: lb), textAlign: TextAlign.center)),
-                    SizedBox(width: 26, child: Text('${s['w']}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: tx), textAlign: TextAlign.center)),
-                    SizedBox(width: 26, child: Text('${s['d'] ?? s['dd'] ?? 0}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: tx), textAlign: TextAlign.center)),
-                    SizedBox(width: 26, child: Text('${s['l']}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: tx), textAlign: TextAlign.center)),
-                    SizedBox(width: 26, child: Text('${s['gf']}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: tx), textAlign: TextAlign.center)),
-                    SizedBox(width: 26, child: Text('${s['ga']}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: tx), textAlign: TextAlign.center)),
-                    SizedBox(width: 30, child: Text('${s['gd']}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: lb), textAlign: TextAlign.center)),
-                    SizedBox(width: 30, child: Text('${s['pts']}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: theme.primaryColor), textAlign: TextAlign.center)),
-                    SizedBox(width: 80, child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      for (int fi = 0; fi < (s['form'] as String? ?? 'DDDDD').split('').length; fi++) ...[
-                        Builder(builder: (ctx) {
-                          final f = (s['form'] as String? ?? 'DDDDD').split('')[fi];
-                          final c = f == 'W' ? const Color(0xFF4CAF50) : f == 'D' ? const Color(0xFFF9A825) : const Color(0xFFE53935);
-                          final label = f == 'W' ? 'V' : f == 'D' ? 'P' : 'S';
-                          final resultText = f == 'W' ? 'Vittoria' : f == 'D' ? 'Pareggio' : 'Sconfitta';
-                          return Tooltip(
-                            message: '$resultText\nGiornata ${35 - fi}',
-                            decoration: BoxDecoration(color: const Color(0xFF1A1A2E), borderRadius: BorderRadius.circular(8)),
-                            textStyle: const TextStyle(color: Colors.white, fontSize: 11),
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            child: Container(
-                              width: 14, height: 14, margin: const EdgeInsets.symmetric(horizontal: 1),
-                              decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(3)),
-                              child: Center(child: Text(label, style: const TextStyle(fontSize: 7, fontWeight: FontWeight.w900, color: Colors.white))),
-                            ),
-                          );
-                        }),
-                      ],
-                    ])),
-                  ]),
-                ),
-              );
-            }),
-          ]),
-        ),
-        const SizedBox(height: 12),
-        // Legend
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12), border: Border.all(color: divider)),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(tr(context, 'Regolamento'), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: tx)),
-            const SizedBox(height: 10),
-            _legendItem(const Color(0xFF4CAF50), 'Champions League'),
-            const SizedBox(height: 6),
-            _legendItem(const Color(0xFF2196F3), 'UEFA Europa League'),
-            const SizedBox(height: 6),
-            _legendItem(const Color(0xFFFFA726), 'Conference League Qualification'),
-            const SizedBox(height: 6),
-            _legendItem(const Color(0xFFE53935), tr(context, 'Retrocessione')),
-            const SizedBox(height: 14),
-            Divider(height: 1, color: divider),
-            const SizedBox(height: 10),
-            Wrap(spacing: 16, runSpacing: 6, children: [
-              _legendAbbr('G', tr(context, 'Partite giocate'), lb),
-              _legendAbbr('V', tr(context, 'Vittorie'), lb),
-              _legendAbbr('P', tr(context, 'Pareggi'), lb),
-              _legendAbbr('S', tr(context, 'Sconfitte'), lb),
-              _legendAbbr('GF', tr(context, 'Gol fatti'), lb),
-              _legendAbbr('GS', tr(context, 'Gol subiti'), lb),
-              _legendAbbr('DR', tr(context, 'Differenza reti'), lb),
-              _legendAbbr(standingsAbbr(context, 'Pt'), tr(context, 'Punti'), lb),
-            ]),
-          ]),
-        ),
-      ]),
-    );
-  }
 
   String _getTeamLogoUrl(String teamName) {
     const logos = {
@@ -8671,73 +8462,10 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
 
 
 
-  String _formTooltipText(String teamName, String result, int index) {
-    const opponents = ['Juventus', 'Milan', 'Inter', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Bologna', 'Fiorentina', 'Torino'];
-    final opp = opponents[(teamName.hashCode.abs() + index) % opponents.length];
-    final actual = opp == teamName ? 'Monza' : opp;
-    final isHome = index % 2 == 0;
-    String score;
-    if (result == 'W') { score = isHome ? '2:0' : '0:1'; }
-    else if (result == 'D') { score = '1:1'; }
-    else { score = isHome ? '0:2' : '1:3'; }
-    final home = isHome ? teamName : actual;
-    final away = isHome ? actual : teamName;
-    final day = 28 - index * 7;
-    final month = day > 0 ? '03' : '02';
-    final d = day > 0 ? day : day + 28;
-    return '$score ($home - $away)\n${d.toString().padLeft(2, "0")}.$month.2024';
-  }
 
-  void _navigateToFormMatch(BuildContext context, String teamName, String result, int index) {
-    const opponents = ['Juventus', 'Milan', 'Inter', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Bologna', 'Fiorentina', 'Torino'];
-    final opp = opponents[(teamName.hashCode.abs() + index) % opponents.length];
-    final actual = opp == teamName ? 'Monza' : opp;
-    final isHome = index % 2 == 0;
-    int hs, as_;
-    if (result == 'W') { hs = isHome ? 2 : 0; as_ = isHome ? 0 : 1; }
-    else if (result == 'D') { hs = 1; as_ = 1; }
-    else { hs = isHome ? 0 : 1; as_ = isHome ? 2 : 3; }
-    if (!isHome) { final tmp = hs; hs = as_; as_ = tmp; }
-    final home = isHome ? teamName : actual;
-    final away = isHome ? actual : teamName;
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MatchDetailScreen(
-      match: SoccerMatch(id: (teamName + actual + index.toString()).hashCode.abs(),
-        date: DateTime.now(), time: '20:45', status: 'FT', venue: '',
-        homeTeamId: 0, awayTeamId: 0, homeTeamName: home, awayTeamName: away,
-        homeScore: hs, awayScore: as_, leagueName: 'Serie A', season: 2023, round: 'Giornata ${35 - index}'),
-    )));
-  }
 
-  Widget _standingsFilterChip(String label, bool active, ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: active ? theme.primaryColor : Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: active ? theme.primaryColor : Colors.grey.withOpacity(0.3)),
-      ),
-      child: Text(label, style: TextStyle(
-        fontSize: 12, fontWeight: FontWeight.w600,
-        color: active ? Colors.white : Colors.grey[500],
-      )),
-    );
-  }
 
-  Widget _legendItem(Color color, String label) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-      const SizedBox(width: 8),
-      Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[400])),
-    ]);
-  }
 
-  Widget _legendAbbr(String abbr, String label, Color lb) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Text(abbr, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: lb)),
-      const SizedBox(width: 4),
-      Text(label, style: TextStyle(fontSize: 11, color: Colors.grey[500])),
-    ]);
-  }
 
   // ── Pre-match data helpers ──
 
@@ -8888,25 +8616,24 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     ];
   }
 
-  Map<String, dynamic> _getTeamSeasonStats(String teamName) {
-    final stats = <String, Map<String, dynamic>>{
-      'Inter': {'position': 1, 'points': 83, 'played': 35, 'wins': 26, 'draws': 5, 'losses': 4, 'goalsFor': 78, 'goalsAgainst': 25, 'gd': '+53'},
-      'Milan': {'position': 2, 'points': 72, 'played': 35, 'wins': 22, 'draws': 6, 'losses': 7, 'goalsFor': 65, 'goalsAgainst': 38, 'gd': '+27'},
-      'Juventus': {'position': 3, 'points': 68, 'played': 35, 'wins': 20, 'draws': 8, 'losses': 7, 'goalsFor': 55, 'goalsAgainst': 30, 'gd': '+25'},
-      'Napoli': {'position': 10, 'points': 49, 'played': 35, 'wins': 14, 'draws': 7, 'losses': 14, 'goalsFor': 52, 'goalsAgainst': 48, 'gd': '+4'},
-      'Atalanta': {'position': 4, 'points': 65, 'played': 35, 'wins': 19, 'draws': 8, 'losses': 8, 'goalsFor': 64, 'goalsAgainst': 38, 'gd': '+26'},
-      'Roma': {'position': 6, 'points': 58, 'played': 35, 'wins': 17, 'draws': 7, 'losses': 11, 'goalsFor': 52, 'goalsAgainst': 42, 'gd': '+10'},
-      'Lazio': {'position': 7, 'points': 55, 'played': 35, 'wins': 16, 'draws': 7, 'losses': 12, 'goalsFor': 48, 'goalsAgainst': 38, 'gd': '+10'},
-      'Bologna': {'position': 5, 'points': 62, 'played': 35, 'wins': 18, 'draws': 8, 'losses': 9, 'goalsFor': 49, 'goalsAgainst': 32, 'gd': '+17'},
-      'Fiorentina': {'position': 8, 'points': 52, 'played': 35, 'wins': 15, 'draws': 7, 'losses': 13, 'goalsFor': 48, 'goalsAgainst': 42, 'gd': '+6'},
-      'Torino': {'position': 9, 'points': 50, 'played': 35, 'wins': 14, 'draws': 8, 'losses': 13, 'goalsFor': 38, 'goalsAgainst': 40, 'gd': '-2'},
-      'Verona': {'position': 15, 'points': 35, 'played': 35, 'wins': 9, 'draws': 8, 'losses': 18, 'goalsFor': 32, 'goalsAgainst': 52, 'gd': '-20'},
-    };
-    return stats[teamName] ?? {'position': 10, 'points': 45, 'played': 35, 'wins': 12, 'draws': 9, 'losses': 14, 'goalsFor': 40, 'goalsAgainst': 45, 'gd': '-5'};
-  }
 
   // H2H TAB — Scontri diretti
   // ══════════════════════════════════════════════════════════════════
+
+  Widget _buildStandingsComparisonTab(ThemeData theme, bool isDark) {
+    return StandingsComparisonTab(
+      homeName: widget.match.homeTeamName,
+      awayName: widget.match.awayTeamName,
+      getTeamColor: _getTeamColor,
+      getTeamLogoUrl: _getTeamLogoUrl,
+      onTeamTap: _navigateToTeamDetail,
+      onMatchTap: (m) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => MatchDetailScreen(match: m)),
+        );
+      },
+    );
+  }
 
   Widget _buildH2HTab(ThemeData theme, bool isDark) {
     return H2HTab(
