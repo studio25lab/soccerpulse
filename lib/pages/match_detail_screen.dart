@@ -33,6 +33,7 @@ import 'coach_profile_screen.dart';
 import 'match_player_comparison_screen.dart';
 import '../widgets/match_event_overlay.dart';
 import '../widgets/tabs/match_form_tab.dart';
+import '../widgets/tabs/pre_match_info_tab.dart';
 import '../painters/match_detail_painters.dart'; // [FAV-extract-painters]
 import 'player_finished_match_screen.dart';
 import '../painters/advanced_stats_painters.dart';
@@ -8880,152 +8881,23 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   // ══════════════════════════════════════════════════════════════════
 
   Widget _buildPreMatchInfoTab(ThemeData theme, bool isDark) {
-    final bg = isDark ? Colors.grey[900]! : const Color(0xFFF5F6FA);
-    final cardBg = isDark ? const Color(0xFF1E1E2A) : Colors.white;
-    final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
-    final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
-
-    return Container(
-      color: bg,
-      child: ListView(padding: const EdgeInsets.all(16), children: [
-        // Match info card
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: divider),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Icon(Icons.info_outline_rounded, size: 16, color: lb),
-              const SizedBox(width: 8),
-              Text(tr(context, 'Informazioni Partita'), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: lb, letterSpacing: 1)),
-            ]),
-            const SizedBox(height: 16),
-            _preMatchInfoRow(Icons.emoji_events_rounded, tr(context, 'Competizione'), widget.match.leagueName ?? 'Serie A', tx, lb, theme.primaryColor),
-            _preMatchInfoRow(Icons.calendar_today_rounded, tr(context, 'Data'), '${widget.match.date.day}/${widget.match.date.month}/${widget.match.date.year}', tx, lb, theme.primaryColor),
-            _preMatchInfoRow(Icons.access_time_rounded, tr(context, 'Orario'), widget.match.time, tx, lb, theme.primaryColor),
-            _preMatchInfoRow(Icons.stadium_rounded, tr(context, 'Stadio'), widget.match.venue ?? 'TBD', tx, lb, theme.primaryColor),
-            if (widget.match.round != null)
-              _preMatchInfoRow(Icons.format_list_numbered_rounded, tr(context, 'Giornata'), widget.match.round!, tx, lb, theme.primaryColor),
-            _preMatchInfoRow(Icons.sports_rounded, tr(context, 'Arbitro'), widget.match.referee ?? 'Daniele Orsato', tx, lb, theme.primaryColor),
-          ]),
-        ),
-        const SizedBox(height: 16),
-
-        // Season stats comparison mini
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: divider),
-          ),
-          child: Column(children: [
-            Row(children: [
-              Icon(Icons.analytics_rounded, size: 16, color: lb),
-              const SizedBox(width: 8),
-              Text(tr(context, 'Confronto Squadre'), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: lb, letterSpacing: 1)),
-            ]),
-            const SizedBox(height: 16),
-            Builder(builder: (_) {
-              final hStats = _getPreMatchTeamStats(widget.match.homeTeamName);
-              final aStats = _getPreMatchTeamStats(widget.match.awayTeamName);
-              final hc = _getTeamColor(widget.match.homeTeamName);
-              final ac = _getTeamColor(widget.match.awayTeamName);
-              return Column(children: [
-                _preMatchStatRow(tr(context, 'Gol fatti'), '${hStats['gf']}', '${aStats['gf']}', tx, lb, hc, ac),
-                _preMatchStatRow(tr(context, 'Gol subiti'), '${hStats['ga']}', '${aStats['ga']}', tx, lb, hc, ac),
-                _preMatchStatRow(tr(context, 'Precisione passaggi'), '${hStats['pass']}%', '${aStats['pass']}%', tx, lb, hc, ac),
-                _preMatchStatRow(tr(context, 'Tiri per partita'), '${hStats['shots']}', '${aStats['shots']}', tx, lb, hc, ac),
-                _preMatchStatRow(tr(context, 'Clean Sheet'), '${hStats['cs']}', '${aStats['cs']}', tx, lb, hc, ac),
-              ]);
-            }),
-          ]),
-        ),
-      ]),
+    return PreMatchInfoTab(
+      homeTeamName: widget.match.homeTeamName,
+      awayTeamName: widget.match.awayTeamName,
+      homeColor: _getTeamColor(widget.match.homeTeamName),
+      awayColor: _getTeamColor(widget.match.awayTeamName),
+      leagueName: widget.match.leagueName,
+      date: widget.match.date,
+      time: widget.match.time,
+      venue: widget.match.venue,
+      round: widget.match.round,
+      referee: widget.match.referee,
     );
   }
 
 
-  Map<String, dynamic> _getPreMatchTeamStats(String teamName) {
-    const teamStats = <String, Map<String, dynamic>>{
-      'Lazio': {'gf': 49, 'ga': 39, 'pass': 85, 'shots': 14.2, 'cs': 10},
-      'Milan': {'gf': 46, 'ga': 37, 'pass': 86, 'shots': 14.8, 'cs': 11},
-      'AC Milan': {'gf': 46, 'ga': 37, 'pass': 86, 'shots': 14.8, 'cs': 11},
-      'Inter': {'gf': 71, 'ga': 28, 'pass': 88, 'shots': 16.1, 'cs': 15},
-      'Napoli': {'gf': 77, 'ga': 28, 'pass': 87, 'shots': 15.9, 'cs': 14},
-      'Juventus': {'gf': 47, 'ga': 26, 'pass': 87, 'shots': 13.4, 'cs': 16},
-      'AS Roma': {'gf': 47, 'ga': 38, 'pass': 84, 'shots': 14.1, 'cs': 9},
-      'Atalanta': {'gf': 59, 'ga': 42, 'pass': 83, 'shots': 15.5, 'cs': 8},
-      'Fiorentina': {'gf': 49, 'ga': 40, 'pass': 84, 'shots': 13.9, 'cs': 9},
-      'Bologna': {'gf': 44, 'ga': 38, 'pass': 83, 'shots': 13.2, 'cs': 8},
-      'Torino': {'gf': 36, 'ga': 36, 'pass': 81, 'shots': 12.1, 'cs': 7},
-      'Monza': {'gf': 40, 'ga': 46, 'pass': 82, 'shots': 11.8, 'cs': 6},
-      'Udinese': {'gf': 38, 'ga': 44, 'pass': 79, 'shots': 11.5, 'cs': 7},
-      'Sassuolo': {'gf': 40, 'ga': 56, 'pass': 83, 'shots': 13.0, 'cs': 5},
-      'Empoli': {'gf': 32, 'ga': 44, 'pass': 80, 'shots': 10.8, 'cs': 6},
-      'Salernitana': {'gf': 33, 'ga': 62, 'pass': 78, 'shots': 10.2, 'cs': 4},
-      'Lecce': {'gf': 30, 'ga': 42, 'pass': 79, 'shots': 10.5, 'cs': 7},
-      'Verona': {'gf': 32, 'ga': 52, 'pass': 78, 'shots': 11.0, 'cs': 5},
-      'Spezia': {'gf': 32, 'ga': 56, 'pass': 77, 'shots': 10.7, 'cs': 4},
-      'Cremonese': {'gf': 27, 'ga': 56, 'pass': 80, 'shots': 10.0, 'cs': 3},
-      'Sampdoria': {'gf': 25, 'ga': 56, 'pass': 78, 'shots': 9.8, 'cs': 3},
-    };
-    final stats = teamStats[teamName];
-    if (stats != null) return stats;
-    final hash = teamName.hashCode.abs();
-    return {'gf': 30 + (hash % 50), 'ga': 25 + (hash % 40), 'pass': 78 + (hash % 12), 'shots': (10 + (hash % 8)).toDouble(), 'cs': 3 + (hash % 14)};
-  }
 
-  Widget _preMatchInfoRow(IconData icon, String label, String value, Color tx, Color lb, Color accent) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Row(children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: accent.withOpacity(0.08),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, size: 16, color: accent),
-        ),
-        const SizedBox(width: 14),
-        Text(label, style: TextStyle(fontSize: 14, color: lb)),
-        const Spacer(),
-        Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: tx)),
-      ]),
-    );
-  }
 
-  Widget _preMatchStatRow(String label, String homeVal, String awayVal, Color tx, Color lb, Color homeColor, Color awayColor) {
-    final hv = double.tryParse(homeVal.replaceAll('%', '')) ?? 0;
-    final av = double.tryParse(awayVal.replaceAll('%', '')) ?? 0;
-    final total = hv + av;
-    final hPct = total > 0 ? hv / total : 0.5;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(children: [
-        Row(children: [
-          Text(homeVal, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: tx)),
-          const Spacer(),
-          Text(label, style: TextStyle(fontSize: 12, color: lb)),
-          const Spacer(),
-          Text(awayVal, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: tx)),
-        ]),
-        const SizedBox(height: 6),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(3),
-          child: SizedBox(height: 4, child: Row(children: [
-            Expanded(flex: (hPct * 100).round(), child: Container(color: homeColor.withOpacity(0.7))),
-            Expanded(flex: ((1 - hPct) * 100).round(), child: Container(color: awayColor.withOpacity(0.7))),
-          ])),
-        ),
-      ]),
-    );
-  }
 
   // ── Probable Lineups Tab ──
   Widget _buildProbableLineupsTab(ThemeData theme, bool isDark) {
