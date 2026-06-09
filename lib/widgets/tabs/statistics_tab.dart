@@ -114,7 +114,7 @@ class StatisticsTab extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
         children: [
           // ── Header con nomi squadre ──
-          _statsTeamHeader(isDark, homeColor, awayColor),
+          _statsTeamHeader(context, isDark, homeColor, awayColor),
           const SizedBox(height: 14),
 
           // ── Possesso Palla (widget speciale) ──
@@ -227,7 +227,7 @@ class StatisticsTab extends StatelessWidget {
     );
   }
 
-  Widget _statsTeamHeader(bool isDark, Color homeColor, Color awayColor) {
+  Widget _statsTeamHeader(BuildContext context, bool isDark, Color homeColor, Color awayColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Row(
@@ -260,7 +260,7 @@ class StatisticsTab extends StatelessWidget {
             ),
           ),
           Text(
-            'STATISTICHE',
+            tr(context, 'STATISTICHE'),
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w800,
