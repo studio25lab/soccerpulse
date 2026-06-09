@@ -2,7 +2,6 @@
 // lib/widgets/deep_stats_widgets.dart
 
 import 'package:flutter/material.dart';
-import '../../utils/l10n_helper.dart';
 import 'dart:math' as math;
 
 class DeepStatsSection extends StatelessWidget {

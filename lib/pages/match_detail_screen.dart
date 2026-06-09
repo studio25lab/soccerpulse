@@ -9,8 +9,6 @@
 // ✅ Eventi con Timeline, Filtri, Vista Compatta, Espandibili
 // ============================================================================
 
-import 'dart:math' as math;
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
 import '../generated/l10n.dart';
@@ -21,16 +19,12 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fl_chart/fl_chart.dart';
 import '../models/soccer_match.dart';
 import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
 import '../services/match_data_service.dart';
 import '../models/match_data.dart' hide ShotData;
-import 'player_match_stats_screen.dart';
 import 'match_player_profile_screen.dart';
-import 'coach_profile_screen.dart';
-import 'match_player_comparison_screen.dart';
 import '../widgets/match_event_overlay.dart';
 import '../widgets/tabs/match_form_tab.dart';
 import '../widgets/tabs/pre_match_info_tab.dart';
@@ -41,8 +35,6 @@ import '../widgets/tabs/standings_comparison_tab.dart';
 import '../widgets/tabs/info_tab.dart';
 import '../widgets/dialogs/lineup_dialogs.dart';
 import '../painters/match_detail_painters.dart'; // [FAV-extract-painters]
-import 'player_finished_match_screen.dart';
-import '../painters/advanced_stats_painters.dart';
 import '../widgets/interactive_shot_map_widget.dart';
 import '../widgets/player_match_visuals.dart';
 import '../widgets/Interactive_defensive_widget.dart';
@@ -54,7 +46,6 @@ import '../models/match_notification_settings.dart';
 import '../widgets/notification_settings_widgets.dart';
 import '../models/player_notification_settings.dart';
 import 'dart:async';
-import 'package:soccerpulse/pages/main_navigation.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
 import 'package:soccerpulse/main.dart';
 

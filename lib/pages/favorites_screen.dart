@@ -14,13 +14,9 @@ import '../services/haptic_service.dart';
 import '../api/api_service.dart';
 import '../generated/l10n.dart';
 import '../widgets/glassmorphic_card.dart';
-import '../widgets/match_card.dart';
 import 'match_detail_screen.dart';
 import 'match_player_profile_screen.dart'; // [FAV-extract4]
-import 'main_navigation.dart';
 import 'team_detail_screen.dart';
-import 'player_detail_screen.dart';
-import '../utils/player_converter.dart';
 import '../services/match_notification_preferences_service.dart';
 import '../models/match_notification_settings.dart';
 import '../services/player_notification_preferences_service.dart';

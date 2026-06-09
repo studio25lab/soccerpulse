@@ -19,18 +19,14 @@ import '../widgets/team_notification_settings_bottom_sheet.dart';
 import '../services/haptic_service.dart';
 import '../widgets/glassmorphic_card.dart';
 import '../widgets/loading_state_widget.dart';
-import '../widgets/match_card.dart';
 import 'match_detail_screen.dart';
 import 'coach_profile_screen.dart';
 import 'match_player_profile_screen.dart'; // [FAV-extract4]
-import 'player_detail_screen.dart';
-import '../utils/player_converter.dart';
 
 import 'package:soccerpulse/services/match_notification_preferences_service.dart';
 import 'package:soccerpulse/models/match_notification_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
-import 'package:soccerpulse/main.dart';
 
 
 String _localizeTeam(BuildContext context, String? text) {

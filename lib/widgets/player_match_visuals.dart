@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import '../../utils/l10n_helper.dart';
 import 'interactive_shot_map_widget.dart';

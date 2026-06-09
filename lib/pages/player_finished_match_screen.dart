@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import '../models/player_detail.dart';
 import '../models/soccer_match.dart';
 import '../services/haptic_service.dart';
 import '../api/api_service.dart';
@@ -10,7 +8,6 @@ import '../services/match_data_service.dart';
 import '../models/match_data.dart';
 import '../widgets/player_performance_widgets.dart';
 import 'dart:math' as math;
-import 'package:soccerpulse/pages/main_navigation.dart';
 
 class PlayerFinishedMatchScreen extends StatefulWidget {
   final String playerName;

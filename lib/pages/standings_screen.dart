@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../models/team_standing.dart';
@@ -12,7 +11,6 @@ import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
 import '../generated/l10n.dart';
 import 'team_detail_screen.dart';
-import 'settings_screen.dart';
 import '../main.dart';
 import 'match_detail_screen.dart';
 import 'match_player_profile_screen.dart'; // [FAV-extract4]

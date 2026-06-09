@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../generated/l10n.dart';
 import '../models/soccer_match.dart';
-import '../models/team_standing.dart';
 import '../api/api_service.dart';
 import '../services/haptic_service.dart';
 import '../widgets/glassmorphic_card.dart';

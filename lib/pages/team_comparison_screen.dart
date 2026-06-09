@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'dart:math' as math;
 import '../models/soccer_match.dart';
 
 class TeamComparisonScreen extends StatefulWidget {

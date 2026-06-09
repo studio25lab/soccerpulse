@@ -7,10 +7,8 @@
 // la PlayerProfileScreen di lib/pages/player_profile_screen.dart).
 
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:soccerpulse/main.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
@@ -22,7 +20,6 @@ import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
 import '../services/player_notification_preferences_service.dart';
 import 'match_detail_screen.dart';
-import 'player_match_stats_screen.dart';
 
 class MatchPlayerProfileScreen extends StatefulWidget {
   final LocalLineupPlayer player;

@@ -13,10 +13,8 @@ import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
 import '../generated/l10n.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
-import '../models/match_data.dart' hide ShotData;
 import '../widgets/interactive_shot_map_widget.dart';
 import '../widgets/Interactive_defensive_widget.dart';
-import '../painters/match_detail_painters.dart';
 import 'package:soccerpulse/main.dart';
 import '../widgets/player_match_visuals.dart';
 

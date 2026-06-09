@@ -4,14 +4,12 @@ import "package:provider/provider.dart";
 import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/soccer_match.dart';
 import '../models/team.dart';
 import '../models/player.dart';
 import '../api/api_service.dart';
 import '../services/haptic_service.dart';
-import '../generated/l10n.dart';
 import 'match_detail_screen.dart';
 import 'coach_profile_screen.dart';
 import 'match_player_profile_screen.dart'; // [FAV-extract4]

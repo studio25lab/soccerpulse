@@ -18,7 +18,6 @@ import 'package:provider/provider.dart';
 import '../../utils/l10n_helper.dart';
 import '../../generated/l10n.dart';
 import '../../models/local_match_models.dart';
-import '../../models/match_data.dart' hide ShotData;
 import '../../services/player_notification_preferences_service.dart';
 import '../../pages/coach_profile_screen.dart';
 import '../../pages/match_player_comparison_screen.dart';
