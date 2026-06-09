@@ -1792,8 +1792,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     if (detail == 'CORNER_LEFT') return isEn ? 'Left corner' : 'Corner sinistro';
     if (detail == 'CORNER_RIGHT') return isEn ? 'Right corner' : 'Corner destro';
     if (detail == 'CORNER') return isEn ? 'Corner' : 'Corner';
-    if (detail == 'OFFSIDE_ACTIVE') return isEn ? 'Active offside' : 'Fuorigioco attivo';
-    if (detail == 'OFFSIDE_PASSIVE') return isEn ? 'Passive offside' : 'Fuorigioco passivo';
+    if (detail == 'OFFSIDE_ACTIVE') return isEn ? 'Offside' : 'Fuorigioco';
+    if (detail == 'OFFSIDE_PASSIVE') return isEn ? 'Offside' : 'Fuorigioco';
     if (detail == 'TACTICAL_FOUL') return isEn ? 'Tactical foul' : 'Fallo tattico';
     if (detail == 'PROTESTS') return isEn ? 'Protests' : 'Proteste';
     // ── Italian token in italian: pass-through; in english: localize ──
