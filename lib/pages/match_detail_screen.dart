@@ -591,16 +591,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     overlay.insert(entry);
   }
 
-  Future<void> _handleRefresh() async {
-    _haptic.mediumImpact();
-    // Simula caricamento dati
-    await Future.delayed(const Duration(seconds: 1));
-    if (mounted) {
-      setState(() {
-        // Quando collegheremo le API, qui ricaricheremo i dati
-      });
-    }
-  }
 
   @override
   void dispose() {
@@ -5418,17 +5408,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     );
   }
 
-  Widget _buildCardIcon(Color color) {
-    return Container(
-        width: 16,
-        height: 22,
-        decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(3),
-            boxShadow: [
-              BoxShadow(color: color.withOpacity(0.4), blurRadius: 4)
-            ]));
-  }
 
   // ── SOSTITUZIONE ──
   Widget _buildSubEvent(LocalMatchEvent event, bool isHome, bool isDark,
@@ -5537,23 +5516,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     );
   }
 
-  Widget _buildSubIcon() {
-    return SizedBox(
-        width: 20,
-        height: 24,
-        child: Stack(children: [
-          const Positioned(
-              top: 0,
-              left: 2,
-              child: Icon(Icons.arrow_downward_rounded,
-                  size: 14, color: Color(0xFF2E7D32))),
-          const Positioned(
-              bottom: 0,
-              right: 2,
-              child: Icon(Icons.arrow_upward_rounded,
-                  size: 14, color: Color(0xFFD32F2F))),
-        ]));
-  }
 
   // ── EVENTI MINORI (falli, tiri, corner, fuorigioco) ──
   Widget _buildMinorEvent(LocalMatchEvent event, bool isHome, bool isDark,
@@ -5585,33 +5547,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   }
 
   // ── HELPERS ──
-  void _navigateToPlayer(LocalMatchEvent event, bool isHome, Color teamColor) {
-    if (widget.match.status == 'live') {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PlayerMatchStatsScreen(
-                  playerName: event.playerName,
-                  playerNumber: event.minute,
-                  teamName: isHome
-                      ? widget.match.homeTeamName
-                      : widget.match.awayTeamName,
-                  teamColor: teamColor,
-                  match: widget.match)));
-    } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PlayerFinishedMatchScreen(
-                  playerName: event.playerName,
-                  playerNumber: event.minute,
-                  teamName: isHome
-                      ? widget.match.homeTeamName
-                      : widget.match.awayTeamName,
-                  teamColor: teamColor,
-                  match: widget.match)));
-    }
-  }
 
   Color _getEventColor(String type) {
     switch (type) {
