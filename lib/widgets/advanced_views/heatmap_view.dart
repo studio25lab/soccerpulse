@@ -417,7 +417,7 @@ class _HeatmapViewState extends State<HeatmapView> {
           const SizedBox(height: 16),
           // Barra grande possesso — font uniforme
           Row(children: [
-            Text('$widget.homePossession%',
+            Text('${widget.homePossession}%',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -453,7 +453,7 @@ class _HeatmapViewState extends State<HeatmapView> {
                       ]),
                     ))),
             const SizedBox(width: 10),
-            Text('$widget.awayPossession%',
+            Text('${widget.awayPossession}%',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
