@@ -136,7 +136,10 @@ class _HeatmapViewState extends State<HeatmapView> {
             Expanded(
                 child: GestureDetector(
               onTap: () {
-                setState(() => _heatmapSelectedTeam = null);
+                setState(() {
+                  _heatmapSelectedTeam = null;
+                  _heatmapTimeFilter = 0;
+                });
                 HapticService().lightImpact();
               },
               child: AnimatedContainer(
@@ -171,7 +174,10 @@ class _HeatmapViewState extends State<HeatmapView> {
             Expanded(
                 child: GestureDetector(
               onTap: () {
-                setState(() => _heatmapSelectedTeam = true);
+                setState(() {
+                  _heatmapSelectedTeam = true;
+                  _heatmapTimeFilter = 0;
+                });
                 HapticService().lightImpact();
               },
               child: AnimatedContainer(
@@ -206,7 +212,10 @@ class _HeatmapViewState extends State<HeatmapView> {
             Expanded(
                 child: GestureDetector(
               onTap: () {
-                setState(() => _heatmapSelectedTeam = false);
+                setState(() {
+                  _heatmapSelectedTeam = false;
+                  _heatmapTimeFilter = 0;
+                });
                 HapticService().lightImpact();
               },
               child: AnimatedContainer(
