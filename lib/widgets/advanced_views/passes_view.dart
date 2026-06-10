@@ -169,6 +169,35 @@ class _PassesViewState extends State<PassesView> {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        // // [FAV-info-banner]
+        if (_passesTimeFilter != 0)
+          Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? Colors.amber.shade900.withOpacity(0.25)
+                  : Colors.amber.shade50,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                  color: Colors.amber.shade400.withOpacity(0.6), width: 1),
+            ),
+            child: Row(children: [
+              Icon(Icons.info_outline,
+                  size: 16, color: Colors.amber.shade700),
+              const SizedBox(width: 10),
+              Expanded(
+                  child: Text(
+                tr(context, 'Dati riferiti alla partita intera'),
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: isDark
+                        ? Colors.amber.shade200
+                        : Colors.amber.shade900),
+              ))
+            ]),
+          ),
         widget.buildPeriodSelector(_passesTimeFilter,
             (val) => setState(() => _passesTimeFilter = val), isDark),
         const SizedBox(height: 8),
@@ -842,11 +871,7 @@ class _PassesViewState extends State<PassesView> {
                     'Accuratezza',
                     '$acc%',
                     Icons.gps_fixed,
-                    acc >= 80
-                        ? const Color(0xFF4CAF50)
-                        : acc >= 70
-                            ? const Color(0xFFFF9800)
-                            : const Color(0xFFF44336),
+                    const Color(0xFF4CAF50), // [FAV-pallino-verde] sempre verde per uniformita visiva
                     isDark),
                 const SizedBox(height: 16),
                 ClipRRect(
