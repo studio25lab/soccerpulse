@@ -412,6 +412,35 @@ class _HeatmapViewState extends State<HeatmapView> {
   Widget _heatmapComparativeStats(bool isDark, Color tx, Color lb, Color cardBg,
       Color cardBorder, Color homeColor, Color awayColor) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      // // [FAV-info-banner]
+      if (_heatmapTimeFilter != 0)
+        Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: isDark
+                ? Colors.amber.shade900.withOpacity(0.25)
+                : Colors.amber.shade50,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+                color: Colors.amber.shade400.withOpacity(0.6), width: 1),
+          ),
+          child: Row(children: [
+            Icon(Icons.info_outline,
+                size: 16, color: Colors.amber.shade700),
+            const SizedBox(width: 10),
+            Expanded(
+                child: Text(
+              tr(context, 'Dati riferiti alla partita intera'),
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: isDark
+                      ? Colors.amber.shade200
+                      : Colors.amber.shade900),
+            ))
+          ]),
+        ),
       // Possesso palla
       Container(
         padding: const EdgeInsets.all(20),

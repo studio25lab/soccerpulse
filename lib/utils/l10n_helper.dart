@@ -177,6 +177,7 @@ const _map = <String, String>{
   'Tocca un giocatore per filtrare': 'Tap a player to filter',
   'Tutti i tentativi verso la porta': 'All attempts towards goal',
   'Fuorigioco': 'Offsides',
+  'Dati riferiti alla partita intera': 'Data refers to the entire match',
   'Contrasti (vinti)': 'Tackles (won)',
   'Passaggi precisi': 'Accurate passes',
   'Passaggi chiave': 'Key passes',
