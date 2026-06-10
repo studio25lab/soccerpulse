@@ -61,6 +61,10 @@ class HeatmapView extends StatefulWidget {
   // Callback per filtro zone heatmap per periodo
   final List<int> Function(List<int> baseZones, bool isHome, int filter) heatZonesForPeriod;
 
+  /// Widget selettore squadra (Tutti / Casa / Trasferta).
+  final Widget Function(bool? selected, ValueChanged<bool?> onChanged,
+      bool isDark, {bool showTutti}) buildTeamSelector;
+
   const HeatmapView({
     Key? key,
     required this.homeTeamName,
@@ -94,6 +98,7 @@ class HeatmapView extends StatefulWidget {
     required this.animationController,
     required this.circularProgress,
     required this.heatZonesForPeriod,
+    required this.buildTeamSelector,
   }) : super(key: key);
 
   @override
@@ -126,128 +131,14 @@ class _HeatmapViewState extends State<HeatmapView> {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        // ═══ SELETTORE SQUADRA (3 tab) ═══
-        Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2A2A2A) : const Color(0xFFEEEEEE),
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(children: [
-            Expanded(
-                child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _heatmapSelectedTeam = null;
-                  _heatmapTimeFilter = 0;
-                });
-                HapticService().lightImpact();
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                decoration: BoxDecoration(
-                  color: _heatmapSelectedTeam == null
-                      ? (isDark ? const Color(0xFF1A1A1A) : Colors.white)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(11),
-                  boxShadow: _heatmapSelectedTeam == null
-                      ? [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2))
-                        ]
-                      : null,
-                ),
-                child: Text(localizeShotData(context, 'Tutti'),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: _heatmapSelectedTeam == null
-                            ? FontWeight.w700
-                            : FontWeight.w500,
-                        color: _heatmapSelectedTeam == null ? tx : lb)),
-              ),
-            )),
-            const SizedBox(width: 4),
-            Expanded(
-                child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _heatmapSelectedTeam = true;
-                  _heatmapTimeFilter = 0;
-                });
-                HapticService().lightImpact();
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                decoration: BoxDecoration(
-                  color: _heatmapSelectedTeam == true
-                      ? (isDark ? const Color(0xFF1A1A1A) : Colors.white)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(11),
-                  boxShadow: _heatmapSelectedTeam == true
-                      ? [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2))
-                        ]
-                      : null,
-                ),
-                child: Text(widget.homeTeamName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: _heatmapSelectedTeam == true
-                            ? FontWeight.w700
-                            : FontWeight.w500,
-                        color: _heatmapSelectedTeam == true ? homeColor : lb)),
-              ),
-            )),
-            const SizedBox(width: 4),
-            Expanded(
-                child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _heatmapSelectedTeam = false;
-                  _heatmapTimeFilter = 0;
-                });
-                HapticService().lightImpact();
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                decoration: BoxDecoration(
-                  color: _heatmapSelectedTeam == false
-                      ? (isDark ? const Color(0xFF1A1A1A) : Colors.white)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(11),
-                  boxShadow: _heatmapSelectedTeam == false
-                      ? [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2))
-                        ]
-                      : null,
-                ),
-                child: Text(widget.awayTeamName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: _heatmapSelectedTeam == false
-                            ? FontWeight.w700
-                            : FontWeight.w500,
-                        color: _heatmapSelectedTeam == false ? awayColor : lb)),
-              ),
-            )),
-          ]),
+        // [FAV-uniform-selector] sostituito con buildTeamSelector callback condivisa
+        widget.buildTeamSelector(
+          _heatmapSelectedTeam,
+          (val) => setState(() {
+            _heatmapSelectedTeam = val;
+            _heatmapTimeFilter = 0;
+          }),
+          isDark,
         ),
         const SizedBox(height: 10),
 

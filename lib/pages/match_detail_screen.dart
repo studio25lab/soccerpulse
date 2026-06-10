@@ -2524,6 +2524,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       animationController: _advancedStatsAnimationController,
       circularProgress: _circularProgress,
       heatZonesForPeriod: _heatZonesForPeriod,
+      buildTeamSelector: _buildTeamSelector3,
     );
   }
 
