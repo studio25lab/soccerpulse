@@ -37,6 +37,7 @@ import '../widgets/tabs/enhanced_events_tab.dart';
 import '../widgets/tabs/lineups_tab.dart';
 import '../widgets/advanced_views/attack_view.dart';
 import '../widgets/advanced_views/heatmap_view.dart';
+import '../widgets/advanced_views/passes_view.dart';
 import '../widgets/dialogs/lineup_dialogs.dart';
 import '../painters/match_detail_painters.dart'; // [FAV-extract-painters]
 import '../widgets/interactive_shot_map_widget.dart';
@@ -92,11 +93,9 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   // Shotmap: null = tutti, true = home, false = away
   bool? _shotmapSelectedTeam;
   // Passaggi: null = vista comparativa, true = home, false = away
-  bool? _passesSelectedTeam;
   // Heatmap: null = entrambe sovrapposte, true = home, false = away
   int _shotmapTimeFilter = 0; // 0=tutti, 1=primo tempo, 2=secondo tempo (UI only)
   int _attackTimeFilter = 0;  // 0=tutti, 1=primo tempo, 2=secondo tempo (UI only)
-  int _passesTimeFilter = 0;  // 0=tutti, 1=primo tempo, 2=secondo tempo (UI only)
   // Attacco: uses _advancedStatsShowHome from team selector
 
   // Shot Map Data (coerente con statistiche)
@@ -2353,1009 +2352,124 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     );
   }
 
-  Widget _buildPassesView(bool isDark) {
-    final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
-    final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
-    final cardBg = isDark ? const Color(0xFF262626) : const Color(0xFFF5F5F0);
-    final cardBorder = isDark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.black.withOpacity(0.04);
-
-    const homeColor = Color(0xFF1B5E20);
-    const awayColor = Color(0xFF1565C0);
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        _buildPeriodSelector(_passesTimeFilter,
-            (val) => setState(() => _passesTimeFilter = val), isDark),
-        const SizedBox(height: 8),
-        // Selettore squadra (refactored Patch 8: usa _buildTeamSelector3
-        // riusabile per coerenza con tutte le altre tab)
-        _buildTeamSelector3(_passesSelectedTeam,
-            (val) => setState(() => _passesSelectedTeam = val), isDark),
-        const SizedBox(height: 14),
-
-        // Mostra vista comparativa o vista singola squadra
-        if (_passesSelectedTeam == null)
-          _passesComparativeView(
-              isDark, tx, lb, cardBg, cardBorder, homeColor, awayColor)
-        else
-          _passesTeamView(
-              _passesSelectedTeam!, isDark, tx, lb, cardBg, cardBorder),
-      ]),
-    );
-  }
 
   // ═══════════════════════════════════════════════════════════════
   // VISTA COMPARATIVA (default — entrambe le squadre, barre + cerchi)
   // ═══════════════════════════════════════════════════════════════
-  Widget _passesComparativeView(bool isDark, Color tx, Color lb, Color cardBg,
-      Color cardBorder, Color homeColor, Color awayColor) {
-    // Percentuali generali (entrambe le squadre combinate)
-    final genLeftPct = (_generalZoneLeft / _generalZoneTotal * 100).round();
-    final genCenterPct = (_generalZoneCenter / _generalZoneTotal * 100).round();
-    final genRightPct = (_generalZoneRight / _generalZoneTotal * 100).round();
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      // Campo generale — distribuzione passaggi partita
-      Container(
-        padding: const EdgeInsets.fromLTRB(12, 14, 12, 12),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cardBorder)),
-        child: Column(children: [
-          Text(tr(context, 'Distribuzione Passaggi'),
-              style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
-          const SizedBox(height: 4),
-          Text('$_generalZoneTotal ${tr(context, 'passaggi totali nella partita')}',
-              style: TextStyle(fontSize: 11, color: lb)),
-          const SizedBox(height: 12),
-          // ── TITOLO SEZIONE (centrato) ──
-          Center(
-            child: Text(tr(context, 'Distribuzione passaggi per zona'),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
-          ),
-          const SizedBox(height: 10),
-          _generalFieldHeatmap(genLeftPct, genCenterPct, genRightPct, isDark),
-        ]),
-      ),
-      const SizedBox(height: 14),
-
-      // Header con totali entrambe le squadre
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cardBorder)),
-        child: Column(children: [
-          Text(tr(context, 'Precisione Passaggi'),
-              style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
-          const SizedBox(height: 16),
-          Row(children: [
-            Expanded(
-                child: _miniAccuracyBlock(
-                    _homePassesCompleted, _homePassesTotal, homeColor, tx, lb)),
-            Container(width: 1, height: 70, color: cardBorder),
-            Expanded(
-                child: _miniAccuracyBlock(
-                    _awayPassesCompleted, _awayPassesTotal, awayColor, tx, lb)),
-          ]),
-        ]),
-      ),
-      const SizedBox(height: 14),
-
-      // Barre comparative
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cardBorder)),
-        child: Column(children: [
-          _passComparisonBarPremium(S.of(context)!.passaggiPrecisilabel, _homePassesCompleted,
-              _awayPassesCompleted, homeColor, awayColor, tx, lb, isDark),
-          const SizedBox(height: 22),
-          _passComparisonBarPremium(tr(context, 'Rimesse laterali'), _homeThrowIns,
-              _awayThrowIns, homeColor, awayColor, tx, lb, isDark),
-          SizedBox(height: 22),
-          _passComparisonBarPremium(
-              tr(context, 'Ingressi terzo offensivo'),
-              _homeFinalThirdEntries,
-              _awayFinalThirdEntries,
-              homeColor,
-              awayColor,
-              tx,
-              lb,
-              isDark),
-          const SizedBox(height: 22),
-          _passComparisonBarPremium(S.of(context)!.passaggiChiave, _homeKeyPasses,
-              _awayKeyPasses, homeColor, awayColor, tx, lb, isDark),
-          const SizedBox(height: 22),
-          _passComparisonBarPremium(
-              S.of(context)!.passaggiProgressivi,
-              _homeProgressivePasses,
-              _awayProgressivePasses,
-              homeColor,
-              awayColor,
-              tx,
-              lb,
-              isDark),
-        ]),
-      ),
-      const SizedBox(height: 14),
-
-      // Cerchi accuratezza per tipo
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cardBorder)),
-        child: Column(children: [
-          Text(tr(context, 'Accuratezza per Tipo'),
-              style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
-          const SizedBox(height: 20),
-          _passCircularRow(
-              S.of(context)!.passaggiTerzoOffensivo,
-              _homeFTPasses,
-              _homeFTTotal,
-              _awayFTPasses,
-              _awayFTTotal,
-              homeColor,
-              awayColor,
-              tx,
-              lb),
-          const SizedBox(height: 24),
-          _passCircularRow(
-              localizeShotData(context, 'Palle lunghe'),
-              _homeLongBallsOk,
-              _homeLongBallsTotal,
-              _awayLongBallsOk,
-              _awayLongBallsTotal,
-              homeColor,
-              awayColor,
-              tx,
-              lb),
-          const SizedBox(height: 24),
-          _passCircularRow(localizeShotData(context, 'Cross'), _homeCrossOk, _homeCrossTotal, _awayCrossOk,
-              _awayCrossTotal, homeColor, awayColor, tx, lb),
-        ]),
-      ),
-      const SizedBox(height: 14),
-    ]);
-  }
 
   // Campo generale — percentuali combinate entrambe le squadre
-  Widget _generalFieldHeatmap(
-      int leftPct, int centerPct, int rightPct, bool isDark) {
-    final maxPct =
-        [leftPct, centerPct, rightPct].reduce((a, b) => a > b ? a : b);
-    double zoneOpacity(int val) => 0.40 + (val / maxPct) * 0.55;
 
-    return AspectRatio(
-      aspectRatio: 1.5,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Stack(children: [
-          // Zone sfumate VERDI (palette unificata Avanzate)
-          Row(children: [
-            Expanded(
-                child: Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                const Color(0xFFC8E6C9).withOpacity(zoneOpacity(leftPct)),
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(leftPct) - 0.10)
-              ],
-            )))),
-            Expanded(
-                child: Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(centerPct)),
-                const Color(0xFF2E7D32)
-                    .withOpacity(zoneOpacity(centerPct) + 0.05)
-              ],
-            )))),
-            Expanded(
-                child: Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                const Color(0xFFC8E6C9).withOpacity(zoneOpacity(rightPct)),
-                const Color(0xFF66BB6A)
-                    .withOpacity(zoneOpacity(rightPct) - 0.10)
-              ],
-            )))),
-          ]),
-          // Linee campo
-          CustomPaint(
-              painter: PassFieldLinePainter(isDark: isDark),
-              size: Size.infinite),
-          // Badge percentuali (non tappabili in vista generale)
-          Row(children: [
-            Expanded(child: Center(child: _generalZoneBadge('$leftPct%'))),
-            Expanded(child: Center(child: _generalZoneBadge('$centerPct%'))),
-            Expanded(child: Center(child: _generalZoneBadge('$rightPct%'))),
-          ]),
-        ]),
-      ),
-    );
-  }
 
-  Widget _generalZoneBadge(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.12),
-              blurRadius: 8,
-              offset: const Offset(0, 2)),
-          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 2),
-        ],
-      ),
-      child: Text(text,
-          style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: Color(0xFF1A1A1A))),
-    );
-  }
-
-  Widget _miniAccuracyBlock(
-      int completed, int total, Color color, Color tx, Color lb) {
-    final pct = total > 0 ? (completed / total * 100).round() : 0;
-    return Column(children: [
-      SizedBox(
-          width: 64,
-          height: 64,
-          child: Stack(alignment: Alignment.center, children: [
-            SizedBox(
-                width: 64,
-                height: 64,
-                child: CircularProgressIndicator(
-                  value: pct / 100,
-                  strokeWidth: 5,
-                  backgroundColor: Colors.grey.withOpacity(0.25),
-                  valueColor: AlwaysStoppedAnimation<Color>(color),
-                  strokeCap: StrokeCap.round,
-                )),
-            Text('$pct%',
-                style: TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w800, color: color)),
-          ])),
-      const SizedBox(height: 10),
-      RichText(
-          text: TextSpan(children: [
-        TextSpan(
-            text: '$completed',
-            style: TextStyle(
-                fontSize: 22, fontWeight: FontWeight.w900, color: color)),
-        TextSpan(
-            text: ' / $total',
-            style: TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w500, color: lb)),
-      ])),
-    ]);
-  }
 
   // ═══════════════════════════════════════════════════════════════
   // VISTA SINGOLA SQUADRA (campo + metriche + donut)
   // ═══════════════════════════════════════════════════════════════
-  Widget _passesTeamView(bool isHome, bool isDark, Color tx, Color lb,
-      Color cardBg, Color cardBorder) {
-    const homeColor = Color(0xFF1B5E20);
-    const awayColor = Color(0xFF1565C0);
-    final teamColor = isHome ? homeColor : awayColor;
-    final oppColor = isHome ? awayColor : homeColor;
-
-    final totalPasses = isHome ? _homePassesTotal : _awayPassesTotal;
-    final accPasses = isHome ? _homePassesCompleted : _awayPassesCompleted;
-    final accPct =
-        totalPasses > 0 ? (accPasses / totalPasses * 100).round() : 0;
-    final passLeft = isHome ? _homePassLeft : _awayPassLeft;
-    final passCenter = isHome ? _homePassCenter : _awayPassCenter;
-    final passRight = isHome ? _homePassRight : _awayPassRight;
-    final keyPasses = isHome ? _homeKeyPasses : _awayKeyPasses;
-    final oppKeyPasses = isHome ? _awayKeyPasses : _homeKeyPasses;
-    final progressivePasses =
-        isHome ? _homeProgressivePasses : _awayProgressivePasses;
-    final oppProgressivePasses =
-        isHome ? _awayProgressivePasses : _homeProgressivePasses;
-    final shortP = isHome ? _homeShortPasses : _awayShortPasses;
-    final mediumP = isHome ? _homeMediumPasses : _awayMediumPasses;
-    final longP = isHome ? _homeLongPasses : _awayLongPasses;
-    final ftP = isHome ? _homeFTPasses : _awayFTPasses;
-    final ftT = isHome ? _homeFTTotal : _awayFTTotal;
-    final oppFtP = isHome ? _awayFTPasses : _homeFTPasses;
-    final oppFtT = isHome ? _awayFTTotal : _homeFTTotal;
-    final lbOk = isHome ? _homeLongBallsOk : _awayLongBallsOk;
-    final lbTot = isHome ? _homeLongBallsTotal : _awayLongBallsTotal;
-    final oppLbOk = isHome ? _awayLongBallsOk : _homeLongBallsOk;
-    final oppLbTot = isHome ? _awayLongBallsTotal : _homeLongBallsTotal;
-    final crOk = isHome ? _homeCrossOk : _awayCrossOk;
-    final crTot = isHome ? _homeCrossTotal : _awayCrossTotal;
-    final oppCrOk = isHome ? _awayCrossOk : _homeCrossOk;
-    final oppCrTot = isHome ? _awayCrossTotal : _homeCrossTotal;
-    final zLeftOk = isHome ? _homePassLeftOk : _awayPassLeftOk;
-    final zLeftTot = isHome ? _homePassLeftTotal : _awayPassLeftTotal;
-    final zCenterOk = isHome ? _homePassCenterOk : _awayPassCenterOk;
-    final zCenterTot = isHome ? _homePassCenterTotal : _awayPassCenterTotal;
-    final zRightOk = isHome ? _homePassRightOk : _awayPassRightOk;
-    final zRightTot = isHome ? _homePassRightTotal : _awayPassRightTotal;
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      // Header accuratezza grande
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cardBorder)),
-        child: Row(children: [
-          SizedBox(
-              width: 72,
-              height: 72,
-              child: Stack(alignment: Alignment.center, children: [
-                SizedBox(
-                    width: 72,
-                    height: 72,
-                    child: CircularProgressIndicator(
-                      value: accPct / 100,
-                      strokeWidth: 6,
-                      backgroundColor: isDark
-                          ? Colors.white.withOpacity(0.15)
-                          : Colors.grey.withOpacity(0.25),
-                      valueColor: AlwaysStoppedAnimation<Color>(teamColor),
-                      strokeCap: StrokeCap.round,
-                    )),
-                Text('$accPct%',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                        color: teamColor)),
-              ])),
-          const SizedBox(width: 20),
-          Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                Text(tr(context, 'Precisione Passaggi'),
-                    style: TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w600, color: lb)),
-                const SizedBox(height: 4),
-                RichText(
-                    text: TextSpan(children: [
-                  TextSpan(
-                      text: '$accPasses',
-                      style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w900,
-                          color: teamColor)),
-                  TextSpan(
-                      text: ' / $totalPasses',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: lb)),
-                ])),
-                const SizedBox(height: 2),
-                Text(tr(context, 'passaggi completati'),
-                    style: TextStyle(fontSize: 12, color: lb)),
-              ])),
-        ]),
-      ),
-      const SizedBox(height: 14),
-
-      // Titolo zone (allineato alla vista Tutti)
-      Center(
-        child: Text(tr(context, 'Distribuzione passaggi per zona'),
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
-      ),
-      const SizedBox(height: 12),
-      // Campo minimal con zone + freccia orientamento
-      Container(
-        padding: const EdgeInsets.fromLTRB(12, 14, 12, 12),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cardBorder)),
-        child: _passFieldMinimal(
-            passLeft,
-            passCenter,
-            passRight,
-            zLeftOk,
-            zLeftTot,
-            zCenterOk,
-            zCenterTot,
-            zRightOk,
-            zRightTot,
-            isHome,
-            teamColor,
-            isDark),
-      ),
-      const SizedBox(height: 14),
-
-      // Passaggi chiave + progressivi
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cardBorder)),
-        child: Column(children: [
-          _passMetricRow(Icons.key, S.of(context)!.passaggiChiave, keyPasses, oppKeyPasses,
-              teamColor, oppColor, tx, lb, isDark,
-              tooltip: "Passaggi che creano un'occasione da gol"),
-          const SizedBox(height: 20),
-          _passMetricRow(
-              Icons.trending_up,
-              S.of(context)!.passaggiProgressivi,
-              progressivePasses,
-              oppProgressivePasses,
-              teamColor,
-              oppColor,
-              tx,
-              lb,
-              isDark,
-              tooltip:
-                  S.of(context)!.passaggiAvanzano),
-        ]),
-      ),
-      const SizedBox(height: 14),
-
-      // Donut chart distribuzione lunghezza
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cardBorder)),
-        child: Column(children: [
-          Text(tr(context, 'Distribuzione Lunghezza'),
-              style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
-          const SizedBox(height: 20),
-          _passDonutChart(
-              shortP, mediumP, longP, totalPasses, teamColor, isDark, tx, lb),
-        ]),
-      ),
-      const SizedBox(height: 14),
-
-      // Cerchi accuratezza per tipo
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cardBorder)),
-        child: Column(children: [
-          Text(tr(context, 'Accuratezza per Tipo'),
-              style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
-          const SizedBox(height: 20),
-          _passCircularRow(S.of(context)!.passaggiTerzoOffensivo, ftP, ftT, oppFtP,
-              oppFtT, teamColor, oppColor, tx, lb),
-          const SizedBox(height: 24),
-          _passCircularRow(localizeShotData(context, 'Palle lunghe'), lbOk, lbTot, oppLbOk, oppLbTot,
-              teamColor, oppColor, tx, lb),
-          const SizedBox(height: 24),
-          _passCircularRow(localizeShotData(context, 'Cross'), crOk, crTot, oppCrOk, oppCrTot, teamColor,
-              oppColor, tx, lb),
-        ]),
-      ),
-      const SizedBox(height: 14),
-    ]);
-  }
 
   // ═══════════════════════════════════════════════════════════════
   // CAMPO MINIMAL — zone %, freccia orientamento offensivo
   // ═══════════════════════════════════════════════════════════════
-  Widget _passFieldMinimal(
-    int left,
-    int center,
-    int right,
-    int zLOk,
-    int zLTot,
-    int zCOk,
-    int zCTot,
-    int zROk,
-    int zRTot,
-    bool isHome,
-    Color teamColor,
-    bool isDark,
-  ) {
-    final maxPct = [left, center, right].reduce((a, b) => a > b ? a : b);
-    double zoneOpacity(int val) => 0.40 + (val / maxPct) * 0.55;
 
-    return AspectRatio(
-      aspectRatio: 1.5,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Stack(children: [
-          // Zone sfumate
-          // Zone sfumate VERDI (palette unificata Avanzate)
-          Row(children: [
-            Expanded(
-                child: Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                const Color(0xFFC8E6C9).withOpacity(zoneOpacity(left)),
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(left) - 0.10)
-              ],
-            )))),
-            Expanded(
-                child: Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(center)),
-                const Color(0xFF2E7D32).withOpacity(zoneOpacity(center) + 0.05)
-              ],
-            )))),
-            Expanded(
-                child: Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                const Color(0xFFC8E6C9).withOpacity(zoneOpacity(right)),
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(right) - 0.10)
-              ],
-            )))),
-          ]),
-          // Linee campo
-          CustomPaint(
-              painter: PassFieldLinePainter(isDark: isDark),
-              size: Size.infinite),
-          // Orientamento offensivo (in basso)
-          Positioned(
-            bottom: 10,
-            left: 0,
-            right: 0,
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              if (!isHome)
-                Icon(Icons.arrow_back_rounded,
-                    size: 14, color: Colors.white.withOpacity(0.5)),
-              const SizedBox(width: 4),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.22),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Text(
-                  isHome
-                      ? 'Attacca verso destra →'
-                      : '← Attacca verso sinistra',
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white.withOpacity(0.7)),
-                ),
-              ),
-              const SizedBox(width: 4),
-              if (isHome)
-                Icon(Icons.arrow_forward_rounded,
-                    size: 14, color: Colors.white.withOpacity(0.5)),
-            ]),
-          ),
-          // Badge percentuali tappabili
-          Row(children: [
-            Expanded(
-                child: _tappableZone(
-                    'Sinistra', left, zLOk, zLTot, teamColor, isDark)),
-            Expanded(
-                child: _tappableZone(
-                    'Centro', center, zCOk, zCTot, teamColor, isDark)),
-            Expanded(
-                child: _tappableZone(
-                    'Destra', right, zROk, zRTot, teamColor, isDark)),
-          ]),
-        ]),
-      ),
-    );
-  }
 
-  Widget _tappableZone(String zoneName, int pct, int ok, int total,
-      Color teamColor, bool isDark) {
-    final acc = total > 0 ? (ok / total * 100).round() : 0;
-    return GestureDetector(
-      onTap: () {
-        _haptic.lightImpact();
-        _showZoneDetailPopup(zoneName, pct, ok, total, acc, teamColor, isDark);
-      },
-      child: Container(
-          color: Colors.transparent,
-          child: Center(
-              child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.12),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2)),
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.04), blurRadius: 2)
-                ]),
-            child: Text('$pct%',
-                style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF1A1A1A))),
-          ))),
-    );
-  }
 
-  void _showZoneDetailPopup(String zoneName, int pct, int ok, int total,
-      int acc, Color teamColor, bool isDark) {
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              backgroundColor: isDark ? const Color(0xFF2A2A2A) : Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              title: Row(children: [
-                Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: teamColor.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Icon(Icons.location_on, color: teamColor, size: 22)),
-                const SizedBox(width: 12),
-                Text('${tr(context, 'Zona')} $zoneName',
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.w800)),
-              ]),
-              content: Column(mainAxisSize: MainAxisSize.min, children: [
-                _zoneDetailRow(tr(context, 'Distribuzione'), '$pct%',
-                    Icons.pie_chart_outline, teamColor, isDark),
-                const SizedBox(height: 14),
-                _zoneDetailRow(S.of(context)!.passaggiTotaliLabel, '$total', Icons.swap_calls,
-                    teamColor, isDark),
-                const SizedBox(height: 14),
-                _zoneDetailRow(tr(context, 'Completati'), '$ok', Icons.check_circle_outline,
-                    const Color(0xFF4CAF50), isDark),
-                const SizedBox(height: 14),
-                _zoneDetailRow(
-                    'Accuratezza',
-                    '$acc%',
-                    Icons.gps_fixed,
-                    acc >= 80
-                        ? const Color(0xFF4CAF50)
-                        : acc >= 70
-                            ? const Color(0xFFFF9800)
-                            : const Color(0xFFF44336),
-                    isDark),
-                const SizedBox(height: 16),
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: SizedBox(
-                        height: 10,
-                        child: Stack(children: [
-                          Container(color: Colors.grey.withOpacity(0.12)),
-                          FractionallySizedBox(
-                              widthFactor: acc / 100,
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(colors: [
-                                        teamColor,
-                                        teamColor.withOpacity(0.7)
-                                      ]),
-                                      borderRadius: BorderRadius.circular(6)))),
-                        ]))),
-              ]),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: Text(tr(context, 'Chiudi'),
-                        style: TextStyle(
-                            color: teamColor, fontWeight: FontWeight.w700)))
-              ],
-            ));
-  }
-
-  Widget _zoneDetailRow(
-      String label, String value, IconData icon, Color color, bool isDark) {
-    return Row(children: [
-      Icon(icon, size: 18, color: color),
-      const SizedBox(width: 10),
-      Text(label,
-          style: TextStyle(
-              fontSize: 14,
-              color: isDark ? Colors.grey[400] : Colors.grey[600])),
-      const Spacer(),
-      Text(value,
-          style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: isDark ? Colors.white : const Color(0xFF1A1A1A))),
-    ]);
-  }
 
   // ═══════════════════════════════════════════════════════════════
   // METRIC ROW — passaggi chiave/progressivi
   // ═══════════════════════════════════════════════════════════════
-  Widget _passMetricRow(IconData icon, String label, int value, int oppValue,
-      Color color, Color oppColor, Color tx, Color lb, bool isDark,
-      {String? tooltip}) {
-    final isWinning = value > oppValue;
-    final isDraw = value == oppValue;
-    return Row(children: [
-      Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              color: color.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10)),
-          child: Icon(icon, size: 18, color: color)),
-      const SizedBox(width: 12),
-      Expanded(
-          child: Row(children: [
-        Flexible(
-            child: Text(label,
-                style: TextStyle(
-                    fontSize: 13, fontWeight: FontWeight.w600, color: tx))),
-        if (tooltip != null) ...[
-          const SizedBox(width: 4),
-          GestureDetector(
-              onTap: () => _showTooltip(label, tooltip, isDark),
-              child: Icon(Icons.info_outline, size: 14, color: lb))
-        ],
-      ])),
-      const SizedBox(width: 8),
-      Text(value.toString(),
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.w900, color: color)),
-      const SizedBox(width: 6),
-      if (!isDraw)
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-          decoration: BoxDecoration(
-              color: (isWinning
-                      ? const Color(0xFF4CAF50)
-                      : const Color(0xFFF44336))
-                  .withOpacity(0.12),
-              borderRadius: BorderRadius.circular(4)),
-          child: Icon(isWinning ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-              size: 16,
-              color: isWinning
-                  ? const Color(0xFF4CAF50)
-                  : const Color(0xFFF44336)),
-        ),
-      const SizedBox(width: 4),
-      Text('vs ${oppValue.toString()}',
-          style: TextStyle(fontSize: 12, color: lb)),
-    ]);
-  }
 
-  void _showTooltip(String title, String description, bool isDark) {
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              backgroundColor: isDark ? const Color(0xFF2A2A2A) : Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
-              title: Text(title,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w700)),
-              content: Text(description,
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600])),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: const Text('OK'))
-              ],
-            ));
-  }
 
   // ═══════════════════════════════════════════════════════════════
   // BARRA COMPARATIVA PREMIUM
   // ═══════════════════════════════════════════════════════════════
-  Widget _passComparisonBarPremium(String label, int value, int oppValue,
-      Color color, Color oppColor, Color tx, Color lb, bool isDark) {
-    final total = value + oppValue;
-    final pct = total > 0 ? value / total : 0.5;
-    final isWinning = value > oppValue;
-    final isDraw = value == oppValue;
-    return Column(children: [
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(label,
-            style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w600, color: lb)),
-      ]),
-      const SizedBox(height: 10),
-      Row(children: [
-        SizedBox(
-            width: 44,
-            child: Text(value.toString(),
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    color: isWinning || isDraw ? tx : lb))),
-        const SizedBox(width: 8),
-        Expanded(
-            child: SizedBox(
-                height: 10,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Row(children: [
-                      Expanded(
-                          flex: (pct * 1000).round(),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      colors: [color, color.withOpacity(0.75)]),
-                                  borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(5),
-                                      bottomLeft: Radius.circular(5))))),
-                      Container(
-                          width: 2,
-                          color:
-                              isDark ? const Color(0xFF1A1A1A) : Colors.white),
-                      Expanded(
-                          flex: ((1 - pct) * 1000).round(),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(colors: [
-                                    oppColor.withOpacity(0.35),
-                                    oppColor.withOpacity(0.25)
-                                  ]),
-                                  borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(5),
-                                      bottomRight: Radius.circular(5))))),
-                    ])))),
-        const SizedBox(width: 8),
-        SizedBox(
-            width: 44,
-            child: Text(oppValue.toString(),
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    color: !isWinning && !isDraw ? tx : lb),
-                textAlign: TextAlign.right)),
-      ]),
-    ]);
-  }
 
   // ═══════════════════════════════════════════════════════════════
   // DONUT CHART
   // ═══════════════════════════════════════════════════════════════
-  Widget _passDonutChart(int shortP, int mediumP, int longP, int total,
-      Color teamColor, bool isDark, Color tx, Color lb) {
-    final shortPct = total > 0 ? (shortP / total * 100).round() : 0;
-    final mediumPct = total > 0 ? (mediumP / total * 100).round() : 0;
-    final longPct = total > 0 ? (longP / total * 100).round() : 0;
-    const shortColor = Color(0xFF4CAF50);
-    const mediumColor = Color(0xFFFF9800);
-    const longColor = Color(0xFFE53935);
-    return Row(children: [
-      SizedBox(
-          width: 120,
-          height: 120,
-          child: Stack(alignment: Alignment.center, children: [
-            SizedBox(
-                width: 120,
-                height: 120,
-                child: CustomPaint(
-                    painter: DonutChartPainter(segments: [
-                  DonutSegment(value: shortP.toDouble(), color: shortColor),
-                  DonutSegment(value: mediumP.toDouble(), color: mediumColor),
-                  DonutSegment(value: longP.toDouble(), color: longColor)
-                ], strokeWidth: 14, isDark: isDark))),
-            Column(mainAxisSize: MainAxisSize.min, children: [
-              Text('$total',
-                  style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w900, color: tx)),
-              Text(tr(context, 'totali'), style: TextStyle(fontSize: 10, color: lb)),
-            ]),
-          ])),
-      const SizedBox(width: 24),
-      Expanded(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _donutLegendItem(tr(context, 'Corti (<15m)'), shortP, shortPct, shortColor, tx, lb),
-        const SizedBox(height: 14),
-        _donutLegendItem(
-            tr(context, 'Medi (15-30m)'), mediumP, mediumPct, mediumColor, tx, lb),
-        const SizedBox(height: 14),
-        _donutLegendItem(tr(context, 'Lunghi (>30m)'), longP, longPct, longColor, tx, lb),
-      ])),
-    ]);
-  }
 
-  Widget _donutLegendItem(
-      String label, int count, int pct, Color color, Color tx, Color lb) {
-    return Row(children: [
-      Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-              color: color, borderRadius: BorderRadius.circular(3))),
-      const SizedBox(width: 8),
-      Expanded(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label,
-            style: TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w500, color: lb)),
-        const SizedBox(height: 2),
-        RichText(
-            text: TextSpan(children: [
-          TextSpan(
-              text: '$count',
-              style: TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w800, color: tx)),
-          TextSpan(
-              text: '  $pct%',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w600, color: color)),
-        ])),
-      ])),
-    ]);
-  }
 
   // ═══════════════════════════════════════════════════════════════
   // CERCHI PERCENTUALE
   // ═══════════════════════════════════════════════════════════════
-  Widget _passCircularRow(String label, int ok, int total, int oppOk,
-      int oppTotal, Color color, Color oppColor, Color tx, Color lb) {
-    final pct = total > 0 ? (ok / total * 100).round() : 0;
-    final oppPct = oppTotal > 0 ? (oppOk / oppTotal * 100).round() : 0;
-    return Row(children: [
-      SizedBox(
-          width: 52,
-          child: Text('$ok/$total',
-              style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700, color: tx))),
-      _circularProgress(pct / 100, '$pct%', color, 62),
-      const SizedBox(width: 10),
-      Expanded(
-          child: Text(label,
-              style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w600, color: lb),
-              textAlign: TextAlign.center)),
-      const SizedBox(width: 10),
-      _circularProgress(oppPct / 100, '$oppPct%', oppColor, 62),
-      SizedBox(
-          width: 52,
-          child: Text('$oppOk/$oppTotal',
-              style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700, color: tx),
-              textAlign: TextAlign.right)),
-    ]);
+
+
+  // ============================================================================
+  // ✅ HEATMAP — v2 (3 stati: combinata / home / away)
+  // ============================================================================
+
+
+  // ═══ HEATMAP STATS — VISTA COMPARATIVA ═══
+
+  // Barra comparativa con font uniforme per heatmap stats
+
+  // ═══ HEATMAP STATS — VISTA SINGOLA SQUADRA ═══
+
+
+
+  // ============================================================================
+  // ALTRE VISUALIZZAZIONI AVANZATE
+  // ============================================================================
+  Widget _buildPassesView(bool isDark) {
+    return PassesView(
+      homeCrossOk: _homeCrossOk,
+      homeCrossTotal: _homeCrossTotal,
+      homeFTPasses: _homeFTPasses,
+      homeFTTotal: _homeFTTotal,
+      homeFinalThirdEntries: _homeFinalThirdEntries,
+      homeKeyPasses: _homeKeyPasses,
+      homeLongBallsOk: _homeLongBallsOk,
+      homeLongBallsTotal: _homeLongBallsTotal,
+      homeLongPasses: _homeLongPasses,
+      homeMediumPasses: _homeMediumPasses,
+      homePassCenter: _homePassCenter,
+      homePassCenterOk: _homePassCenterOk,
+      homePassCenterTotal: _homePassCenterTotal,
+      homePassLeft: _homePassLeft,
+      homePassLeftOk: _homePassLeftOk,
+      homePassLeftTotal: _homePassLeftTotal,
+      homePassRight: _homePassRight,
+      homePassRightOk: _homePassRightOk,
+      homePassRightTotal: _homePassRightTotal,
+      homePassesCompleted: _homePassesCompleted,
+      homePassesTotal: _homePassesTotal,
+      homeProgressivePasses: _homeProgressivePasses,
+      homeShortPasses: _homeShortPasses,
+      homeThrowIns: _homeThrowIns,
+      awayCrossOk: _awayCrossOk,
+      awayCrossTotal: _awayCrossTotal,
+      awayFTPasses: _awayFTPasses,
+      awayFTTotal: _awayFTTotal,
+      awayFinalThirdEntries: _awayFinalThirdEntries,
+      awayKeyPasses: _awayKeyPasses,
+      awayLongBallsOk: _awayLongBallsOk,
+      awayLongBallsTotal: _awayLongBallsTotal,
+      awayLongPasses: _awayLongPasses,
+      awayMediumPasses: _awayMediumPasses,
+      awayPassCenter: _awayPassCenter,
+      awayPassCenterOk: _awayPassCenterOk,
+      awayPassCenterTotal: _awayPassCenterTotal,
+      awayPassLeft: _awayPassLeft,
+      awayPassLeftOk: _awayPassLeftOk,
+      awayPassLeftTotal: _awayPassLeftTotal,
+      awayPassRight: _awayPassRight,
+      awayPassRightOk: _awayPassRightOk,
+      awayPassRightTotal: _awayPassRightTotal,
+      awayPassesCompleted: _awayPassesCompleted,
+      awayPassesTotal: _awayPassesTotal,
+      awayProgressivePasses: _awayProgressivePasses,
+      awayShortPasses: _awayShortPasses,
+      awayThrowIns: _awayThrowIns,
+      generalZoneLeft: _generalZoneLeft,
+      generalZoneCenter: _generalZoneCenter,
+      generalZoneRight: _generalZoneRight,
+      generalZoneTotal: _generalZoneTotal,
+      buildTeamSelector: _buildTeamSelector3,
+      buildPeriodSelector: _buildPeriodSelector,
+      inSelectedHalf: _inSelectedHalf,
+    );
   }
 
+  // [FAV-circularProgress-helper]
+  // Duplicato qui dopo estrazione PassesView: serve al wrapper HeatmapView
+  // come callback. Tenuto piccolo, ~17 righe.
   Widget _circularProgress(
       double progress, String label, Color color, double size) {
     return SizedBox(
@@ -3377,22 +2491,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         ]));
   }
 
-  // ============================================================================
-  // ✅ HEATMAP — v2 (3 stati: combinata / home / away)
-  // ============================================================================
-
-
-  // ═══ HEATMAP STATS — VISTA COMPARATIVA ═══
-
-  // Barra comparativa con font uniforme per heatmap stats
-
-  // ═══ HEATMAP STATS — VISTA SINGOLA SQUADRA ═══
-
-
-
-  // ============================================================================
-  // ALTRE VISUALIZZAZIONI AVANZATE
-  // ============================================================================
   Widget _buildHeatmapView(bool isDark) {
     return HeatmapView(
       homeTeamName: widget.match.homeTeamName,
