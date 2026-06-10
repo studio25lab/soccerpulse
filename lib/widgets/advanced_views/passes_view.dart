@@ -12,6 +12,7 @@
 
 import 'package:flutter/material.dart';
 import '../../utils/l10n_helper.dart';
+import '../../utils/period_factor.dart';
 import '../../generated/l10n.dart';
 import '../../services/haptic_service.dart';
 import '../../painters/match_detail_painters.dart';
@@ -169,35 +170,6 @@ class _PassesViewState extends State<PassesView> {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        // // [FAV-info-banner]
-        if (_passesTimeFilter != 0)
-          Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: isDark
-                  ? Colors.amber.shade900.withOpacity(0.25)
-                  : Colors.amber.shade50,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                  color: Colors.amber.shade400.withOpacity(0.6), width: 1),
-            ),
-            child: Row(children: [
-              Icon(Icons.info_outline,
-                  size: 16, color: Colors.amber.shade700),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: Text(
-                tr(context, 'Dati riferiti alla partita intera'),
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: isDark
-                        ? Colors.amber.shade200
-                        : Colors.amber.shade900),
-              ))
-            ]),
-          ),
         widget.buildPeriodSelector(_passesTimeFilter,
             (val) => setState(() => _passesTimeFilter = val), isDark),
         const SizedBox(height: 8),
@@ -269,11 +241,11 @@ class _PassesViewState extends State<PassesView> {
           Row(children: [
             Expanded(
                 child: _miniAccuracyBlock(
-                    widget.homePassesCompleted, widget.homePassesTotal, homeColor, tx, lb)),
+                    periodScale(widget.homePassesCompleted, _passesTimeFilter), periodScale(widget.homePassesTotal, _passesTimeFilter), homeColor, tx, lb)),
             Container(width: 1, height: 70, color: cardBorder),
             Expanded(
                 child: _miniAccuracyBlock(
-                    widget.awayPassesCompleted, widget.awayPassesTotal, awayColor, tx, lb)),
+                    periodScale(widget.awayPassesCompleted, _passesTimeFilter), periodScale(widget.awayPassesTotal, _passesTimeFilter), awayColor, tx, lb)),
           ]),
         ]),
       ),
@@ -287,29 +259,29 @@ class _PassesViewState extends State<PassesView> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: cardBorder)),
         child: Column(children: [
-          _passComparisonBarPremium(S.of(context)!.passaggiPrecisilabel, widget.homePassesCompleted,
-              widget.awayPassesCompleted, homeColor, awayColor, tx, lb, isDark),
+          _passComparisonBarPremium(S.of(context)!.passaggiPrecisilabel, periodScale(widget.homePassesCompleted, _passesTimeFilter),
+              periodScale(widget.awayPassesCompleted, _passesTimeFilter), homeColor, awayColor, tx, lb, isDark),
           const SizedBox(height: 22),
-          _passComparisonBarPremium(tr(context, 'Rimesse laterali'), widget.homeThrowIns,
-              widget.awayThrowIns, homeColor, awayColor, tx, lb, isDark),
+          _passComparisonBarPremium(tr(context, 'Rimesse laterali'), periodScale(widget.homeThrowIns, _passesTimeFilter),
+              periodScale(widget.awayThrowIns, _passesTimeFilter), homeColor, awayColor, tx, lb, isDark),
           SizedBox(height: 22),
           _passComparisonBarPremium(
               tr(context, 'Ingressi terzo offensivo'),
-              widget.homeFinalThirdEntries,
-              widget.awayFinalThirdEntries,
+              periodScale(widget.homeFinalThirdEntries, _passesTimeFilter),
+              periodScale(widget.awayFinalThirdEntries, _passesTimeFilter),
               homeColor,
               awayColor,
               tx,
               lb,
               isDark),
           const SizedBox(height: 22),
-          _passComparisonBarPremium(S.of(context)!.passaggiChiave, widget.homeKeyPasses,
-              widget.awayKeyPasses, homeColor, awayColor, tx, lb, isDark),
+          _passComparisonBarPremium(S.of(context)!.passaggiChiave, periodScale(widget.homeKeyPasses, _passesTimeFilter),
+              periodScale(widget.awayKeyPasses, _passesTimeFilter), homeColor, awayColor, tx, lb, isDark),
           const SizedBox(height: 22),
           _passComparisonBarPremium(
               S.of(context)!.passaggiProgressivi,
-              widget.homeProgressivePasses,
-              widget.awayProgressivePasses,
+              periodScale(widget.homeProgressivePasses, _passesTimeFilter),
+              periodScale(widget.awayProgressivePasses, _passesTimeFilter),
               homeColor,
               awayColor,
               tx,
@@ -333,10 +305,10 @@ class _PassesViewState extends State<PassesView> {
           const SizedBox(height: 20),
           _passCircularRow(
               S.of(context)!.passaggiTerzoOffensivo,
-              widget.homeFTPasses,
-              widget.homeFTTotal,
-              widget.awayFTPasses,
-              widget.awayFTTotal,
+              periodScale(widget.homeFTPasses, _passesTimeFilter),
+              periodScale(widget.homeFTTotal, _passesTimeFilter),
+              periodScale(widget.awayFTPasses, _passesTimeFilter),
+              periodScale(widget.awayFTTotal, _passesTimeFilter),
               homeColor,
               awayColor,
               tx,
@@ -344,17 +316,17 @@ class _PassesViewState extends State<PassesView> {
           const SizedBox(height: 24),
           _passCircularRow(
               localizeShotData(context, 'Palle lunghe'),
-              widget.homeLongBallsOk,
-              widget.homeLongBallsTotal,
-              widget.awayLongBallsOk,
-              widget.awayLongBallsTotal,
+              periodScale(widget.homeLongBallsOk, _passesTimeFilter),
+              periodScale(widget.homeLongBallsTotal, _passesTimeFilter),
+              periodScale(widget.awayLongBallsOk, _passesTimeFilter),
+              periodScale(widget.awayLongBallsTotal, _passesTimeFilter),
               homeColor,
               awayColor,
               tx,
               lb),
           const SizedBox(height: 24),
-          _passCircularRow(localizeShotData(context, 'Cross'), widget.homeCrossOk, widget.homeCrossTotal, widget.awayCrossOk,
-              widget.awayCrossTotal, homeColor, awayColor, tx, lb),
+          _passCircularRow(localizeShotData(context, 'Cross'), periodScale(widget.homeCrossOk, _passesTimeFilter), periodScale(widget.homeCrossTotal, _passesTimeFilter), periodScale(widget.awayCrossOk, _passesTimeFilter),
+              periodScale(widget.awayCrossTotal, _passesTimeFilter), homeColor, awayColor, tx, lb),
         ]),
       ),
       const SizedBox(height: 14),
@@ -491,40 +463,40 @@ class _PassesViewState extends State<PassesView> {
     final teamColor = isHome ? homeColor : awayColor;
     final oppColor = isHome ? awayColor : homeColor;
 
-    final totalPasses = isHome ? widget.homePassesTotal : widget.awayPassesTotal;
-    final accPasses = isHome ? widget.homePassesCompleted : widget.awayPassesCompleted;
+    final totalPasses = isHome ? periodScale(widget.homePassesTotal, _passesTimeFilter) : periodScale(widget.awayPassesTotal, _passesTimeFilter);
+    final accPasses = isHome ? periodScale(widget.homePassesCompleted, _passesTimeFilter) : periodScale(widget.awayPassesCompleted, _passesTimeFilter);
     final accPct =
         totalPasses > 0 ? (accPasses / totalPasses * 100).round() : 0;
-    final passLeft = isHome ? widget.homePassLeft : widget.awayPassLeft;
-    final passCenter = isHome ? widget.homePassCenter : widget.awayPassCenter;
-    final passRight = isHome ? widget.homePassRight : widget.awayPassRight;
-    final keyPasses = isHome ? widget.homeKeyPasses : widget.awayKeyPasses;
-    final oppKeyPasses = isHome ? widget.awayKeyPasses : widget.homeKeyPasses;
+    final passLeft = isHome ? periodScale(widget.homePassLeft, _passesTimeFilter) : periodScale(widget.awayPassLeft, _passesTimeFilter);
+    final passCenter = isHome ? periodScale(widget.homePassCenter, _passesTimeFilter) : periodScale(widget.awayPassCenter, _passesTimeFilter);
+    final passRight = isHome ? periodScale(widget.homePassRight, _passesTimeFilter) : periodScale(widget.awayPassRight, _passesTimeFilter);
+    final keyPasses = isHome ? periodScale(widget.homeKeyPasses, _passesTimeFilter) : periodScale(widget.awayKeyPasses, _passesTimeFilter);
+    final oppKeyPasses = isHome ? periodScale(widget.awayKeyPasses, _passesTimeFilter) : periodScale(widget.homeKeyPasses, _passesTimeFilter);
     final progressivePasses =
-        isHome ? widget.homeProgressivePasses : widget.awayProgressivePasses;
+        isHome ? periodScale(widget.homeProgressivePasses, _passesTimeFilter) : periodScale(widget.awayProgressivePasses, _passesTimeFilter);
     final oppProgressivePasses =
-        isHome ? widget.awayProgressivePasses : widget.homeProgressivePasses;
-    final shortP = isHome ? widget.homeShortPasses : widget.awayShortPasses;
-    final mediumP = isHome ? widget.homeMediumPasses : widget.awayMediumPasses;
-    final longP = isHome ? widget.homeLongPasses : widget.awayLongPasses;
-    final ftP = isHome ? widget.homeFTPasses : widget.awayFTPasses;
-    final ftT = isHome ? widget.homeFTTotal : widget.awayFTTotal;
-    final oppFtP = isHome ? widget.awayFTPasses : widget.homeFTPasses;
-    final oppFtT = isHome ? widget.awayFTTotal : widget.homeFTTotal;
-    final lbOk = isHome ? widget.homeLongBallsOk : widget.awayLongBallsOk;
-    final lbTot = isHome ? widget.homeLongBallsTotal : widget.awayLongBallsTotal;
-    final oppLbOk = isHome ? widget.awayLongBallsOk : widget.homeLongBallsOk;
-    final oppLbTot = isHome ? widget.awayLongBallsTotal : widget.homeLongBallsTotal;
-    final crOk = isHome ? widget.homeCrossOk : widget.awayCrossOk;
-    final crTot = isHome ? widget.homeCrossTotal : widget.awayCrossTotal;
-    final oppCrOk = isHome ? widget.awayCrossOk : widget.homeCrossOk;
-    final oppCrTot = isHome ? widget.awayCrossTotal : widget.homeCrossTotal;
-    final zLeftOk = isHome ? widget.homePassLeftOk : widget.awayPassLeftOk;
-    final zLeftTot = isHome ? widget.homePassLeftTotal : widget.awayPassLeftTotal;
-    final zCenterOk = isHome ? widget.homePassCenterOk : widget.awayPassCenterOk;
-    final zCenterTot = isHome ? widget.homePassCenterTotal : widget.awayPassCenterTotal;
-    final zRightOk = isHome ? widget.homePassRightOk : widget.awayPassRightOk;
-    final zRightTot = isHome ? widget.homePassRightTotal : widget.awayPassRightTotal;
+        isHome ? periodScale(widget.awayProgressivePasses, _passesTimeFilter) : periodScale(widget.homeProgressivePasses, _passesTimeFilter);
+    final shortP = isHome ? periodScale(widget.homeShortPasses, _passesTimeFilter) : periodScale(widget.awayShortPasses, _passesTimeFilter);
+    final mediumP = isHome ? periodScale(widget.homeMediumPasses, _passesTimeFilter) : periodScale(widget.awayMediumPasses, _passesTimeFilter);
+    final longP = isHome ? periodScale(widget.homeLongPasses, _passesTimeFilter) : periodScale(widget.awayLongPasses, _passesTimeFilter);
+    final ftP = isHome ? periodScale(widget.homeFTPasses, _passesTimeFilter) : periodScale(widget.awayFTPasses, _passesTimeFilter);
+    final ftT = isHome ? periodScale(widget.homeFTTotal, _passesTimeFilter) : periodScale(widget.awayFTTotal, _passesTimeFilter);
+    final oppFtP = isHome ? periodScale(widget.awayFTPasses, _passesTimeFilter) : periodScale(widget.homeFTPasses, _passesTimeFilter);
+    final oppFtT = isHome ? periodScale(widget.awayFTTotal, _passesTimeFilter) : periodScale(widget.homeFTTotal, _passesTimeFilter);
+    final lbOk = isHome ? periodScale(widget.homeLongBallsOk, _passesTimeFilter) : periodScale(widget.awayLongBallsOk, _passesTimeFilter);
+    final lbTot = isHome ? periodScale(widget.homeLongBallsTotal, _passesTimeFilter) : periodScale(widget.awayLongBallsTotal, _passesTimeFilter);
+    final oppLbOk = isHome ? periodScale(widget.awayLongBallsOk, _passesTimeFilter) : periodScale(widget.homeLongBallsOk, _passesTimeFilter);
+    final oppLbTot = isHome ? periodScale(widget.awayLongBallsTotal, _passesTimeFilter) : periodScale(widget.homeLongBallsTotal, _passesTimeFilter);
+    final crOk = isHome ? periodScale(widget.homeCrossOk, _passesTimeFilter) : periodScale(widget.awayCrossOk, _passesTimeFilter);
+    final crTot = isHome ? periodScale(widget.homeCrossTotal, _passesTimeFilter) : periodScale(widget.awayCrossTotal, _passesTimeFilter);
+    final oppCrOk = isHome ? periodScale(widget.awayCrossOk, _passesTimeFilter) : periodScale(widget.homeCrossOk, _passesTimeFilter);
+    final oppCrTot = isHome ? periodScale(widget.awayCrossTotal, _passesTimeFilter) : periodScale(widget.homeCrossTotal, _passesTimeFilter);
+    final zLeftOk = isHome ? periodScale(widget.homePassLeftOk, _passesTimeFilter) : periodScale(widget.awayPassLeftOk, _passesTimeFilter);
+    final zLeftTot = isHome ? periodScale(widget.homePassLeftTotal, _passesTimeFilter) : periodScale(widget.awayPassLeftTotal, _passesTimeFilter);
+    final zCenterOk = isHome ? periodScale(widget.homePassCenterOk, _passesTimeFilter) : periodScale(widget.awayPassCenterOk, _passesTimeFilter);
+    final zCenterTot = isHome ? periodScale(widget.homePassCenterTotal, _passesTimeFilter) : periodScale(widget.awayPassCenterTotal, _passesTimeFilter);
+    final zRightOk = isHome ? periodScale(widget.homePassRightOk, _passesTimeFilter) : periodScale(widget.awayPassRightOk, _passesTimeFilter);
+    final zRightTot = isHome ? periodScale(widget.homePassRightTotal, _passesTimeFilter) : periodScale(widget.awayPassRightTotal, _passesTimeFilter);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       // Header accuratezza grande

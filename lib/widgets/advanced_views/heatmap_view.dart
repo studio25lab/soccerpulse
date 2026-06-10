@@ -11,6 +11,7 @@
 
 import 'package:flutter/material.dart';
 import '../../utils/l10n_helper.dart';
+import '../../utils/period_factor.dart';
 import '../../generated/l10n.dart';
 import '../../services/haptic_service.dart';
 import '../../painters/match_detail_painters.dart';
@@ -412,8 +413,6 @@ class _HeatmapViewState extends State<HeatmapView> {
   Widget _heatmapComparativeStats(bool isDark, Color tx, Color lb, Color cardBg,
       Color cardBorder, Color homeColor, Color awayColor) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      // // [FAV-info-banner]
-      if (_heatmapTimeFilter != 0)
         Container(
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -602,19 +601,19 @@ class _HeatmapViewState extends State<HeatmapView> {
     final possAttack = isHome ? widget.homePossAttack : widget.awayPossAttack;
     final zones = isHome ? widget.homeHeatZones : widget.awayHeatZones;
     // Dati aggiuntivi centralizzati
-    final totalPasses = isHome ? widget.homePassesTotal : widget.awayPassesTotal;
-    final accPasses = isHome ? widget.homePassesCompleted : widget.awayPassesCompleted;
+    final totalPasses = isHome ? periodScale(widget.homePassesTotal, _heatmapTimeFilter) : periodScale(widget.awayPassesTotal, _heatmapTimeFilter);
+    final accPasses = isHome ? periodScale(widget.homePassesCompleted, _heatmapTimeFilter) : periodScale(widget.awayPassesCompleted, _heatmapTimeFilter);
     final accPct =
         totalPasses > 0 ? (accPasses / totalPasses * 100).round() : 0;
-    final corners = isHome ? widget.homeCorners : widget.awayCorners;
-    final oppCorners = isHome ? widget.awayCorners : widget.homeCorners;
-    final ftEntries = isHome ? widget.homeFinalThirdEntries : widget.awayFinalThirdEntries;
+    final corners = isHome ? periodScale(widget.homeCorners, _heatmapTimeFilter) : periodScale(widget.awayCorners, _heatmapTimeFilter);
+    final oppCorners = isHome ? periodScale(widget.awayCorners, _heatmapTimeFilter) : periodScale(widget.homeCorners, _heatmapTimeFilter);
+    final ftEntries = isHome ? periodScale(widget.homeFinalThirdEntries, _heatmapTimeFilter) : periodScale(widget.awayFinalThirdEntries, _heatmapTimeFilter);
     final oppFtEntries =
-        isHome ? widget.awayFinalThirdEntries : widget.homeFinalThirdEntries;
-    final shots = isHome ? widget.homeShotsTotal : widget.awayShotsTotal;
-    final oppShots = isHome ? widget.awayShotsTotal : widget.homeShotsTotal;
-    final shotsOnTarget = isHome ? widget.homeShotsOnTarget : widget.awayShotsOnTarget;
-    final oppShotsOnTarget = isHome ? widget.awayShotsOnTarget : widget.homeShotsOnTarget;
+        isHome ? periodScale(widget.awayFinalThirdEntries, _heatmapTimeFilter) : periodScale(widget.homeFinalThirdEntries, _heatmapTimeFilter);
+    final shots = isHome ? periodScale(widget.homeShotsTotal, _heatmapTimeFilter) : periodScale(widget.awayShotsTotal, _heatmapTimeFilter);
+    final oppShots = isHome ? periodScale(widget.awayShotsTotal, _heatmapTimeFilter) : periodScale(widget.homeShotsTotal, _heatmapTimeFilter);
+    final shotsOnTarget = isHome ? periodScale(widget.homeShotsOnTarget, _heatmapTimeFilter) : periodScale(widget.awayShotsOnTarget, _heatmapTimeFilter);
+    final oppShotsOnTarget = isHome ? periodScale(widget.awayShotsOnTarget, _heatmapTimeFilter) : periodScale(widget.homeShotsOnTarget, _heatmapTimeFilter);
     // Zona più attiva
     final maxZone = zones.reduce((a, b) => a > b ? a : b);
     final maxIdx = zones.indexOf(maxZone).clamp(0, 19);
