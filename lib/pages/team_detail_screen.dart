@@ -93,6 +93,8 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
 
   Future<List<Player>>? _playersFuture;
   List<SoccerMatch> _teamMatches = [];
+  // [FAV-team-form-filter] selettore numero partite per calcolo W/D/L
+  int? _formLimit = 5;
 
   @override
   void initState() {
@@ -651,14 +653,75 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
 
 
   // ── Form strip: last 5 results ──
+  // [FAV-team-form-filter] selettore filtro 5/10/20/Tutte
+  Widget _buildFormLimitSelector(bool isDark, Color tx, Color lb, int totalMatches) {
+    final bg = isDark ? const Color(0xFF2A2A2A) : const Color(0xFFEEEEEE);
+    Widget chip(String label, int? value) {
+      final active = _formLimit == value;
+      final disabled = value != null && totalMatches < value;
+      return GestureDetector(
+        onTap: disabled
+            ? null
+            : () => setState(() => _formLimit = value),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
+          decoration: BoxDecoration(
+            color: active
+                ? (isDark ? const Color(0xFF1A1A1A) : Colors.white)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: active
+                ? [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2))
+                  ]
+                : null,
+          ),
+          child: Text(label,
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                  color: disabled
+                      ? (isDark ? Colors.grey[700] : Colors.grey[400])
+                      : (active ? tx : lb))),
+        ),
+      );
+    }
+
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          chip('5', 5),
+          const SizedBox(width: 4),
+          chip('10', 10),
+          const SizedBox(width: 4),
+          chip('20', 20),
+          const SizedBox(width: 4),
+          chip(_localizeTeam(context, 'Tutte'), null),
+        ]),
+      ),
+    );
+  }
+
   Widget _buildMatchFormStrip(BuildContext context, List<SoccerMatch> results, bool isDark, Color tx, Color lb, Color cardBg) {
     if (results.isEmpty) return const SizedBox.shrink();
 
     final teamName = widget.teamStanding.teamName;
     final last5 = results.take(5).toList().reversed.toList();
+    // [FAV-team-form-filter] lista filtrata per badge W/D/L
+    final filteredResults =
+        _formLimit == null ? results : results.take(_formLimit!).toList();
 
     int w = 0, d = 0, l = 0;
-    for (final m in last5) {
+    for (final m in filteredResults) {
       final isHome = m.homeTeamName == teamName;
       final myScore = isHome ? m.homeScore : m.awayScore;
       final oppScore = isHome ? m.awayScore : m.homeScore;
@@ -681,7 +744,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
           Row(children: [
             Icon(Icons.trending_up_rounded, size: 14, color: lb),
             const SizedBox(width: 6),
-            Text(_localizeTeam(context, 'Ultime 5 partite'),
+            Text(_localizeTeam(context, 'Forma'),
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: lb)),
             const Spacer(),
             _formCountChip('$w', formInitial(context, 'W'), const Color(0xFF4CAF50), isDark),
@@ -690,7 +753,10 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
             const SizedBox(width: 5),
             _formCountChip('$l', formInitial(context, 'L'), const Color(0xFFE53935), isDark),
           ]),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
+          // [FAV-team-form-filter] selettore filtro
+          _buildFormLimitSelector(isDark, tx, lb, results.length),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: last5.asMap().entries.map((entry) {
