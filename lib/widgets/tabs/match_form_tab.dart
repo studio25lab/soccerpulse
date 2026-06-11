@@ -15,7 +15,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../utils/l10n_helper.dart';
 import '../../models/soccer_match.dart';
 
-class MatchFormTab extends StatelessWidget {
+class MatchFormTab extends StatefulWidget {
   final String homeName;
   final String awayName;
   final Color homeColor;
@@ -50,6 +50,16 @@ class MatchFormTab extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<MatchFormTab> createState() => _MatchFormTabState();
+}
+
+class _MatchFormTabState extends State<MatchFormTab> {
+  // [FAV-form-limit-filter]
+  // null = mostra tutte; altrimenti limite al numero di partite mostrate
+  // nella match list dettagliata. I form dots (chips V/P/S) restano sempre 5.
+  int? _formLimit = 5;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -64,12 +74,67 @@ class MatchFormTab extends StatelessWidget {
     return Container(
       color: bg,
       child: ListView(padding: const EdgeInsets.all(16), children: [
-        _buildFormSection(context, homeName, homeForm, homeColor,
-            cardBg, tx, lb, divider),
+        _buildLimitSelector(isDark, tx, lb),
+        const SizedBox(height: 14),
+        _buildFormSection(context, widget.homeName, widget.homeForm,
+            widget.homeColor, cardBg, tx, lb, divider),
         const SizedBox(height: 16),
-        _buildFormSection(context, awayName, awayForm, awayColor,
-            cardBg, tx, lb, divider),
+        _buildFormSection(context, widget.awayName, widget.awayForm,
+            widget.awayColor, cardBg, tx, lb, divider),
       ]),
+    );
+  }
+
+  // [FAV-form-limit-filter] selettore numero partite mostrate
+  Widget _buildLimitSelector(bool isDark, Color tx, Color lb) {
+    final bg = isDark ? const Color(0xFF2A2A2A) : const Color(0xFFEEEEEE);
+    Widget chip(String label, int? value) {
+      final active = _formLimit == value;
+      return GestureDetector(
+        onTap: () => setState(() => _formLimit = value),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+          decoration: BoxDecoration(
+            color: active
+                ? (isDark ? const Color(0xFF1A1A1A) : Colors.white)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: active
+                ? [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2))
+                  ]
+                : null,
+          ),
+          child: Text(label,
+              style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                  color: active ? tx : lb)),
+        ),
+      );
+    }
+
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          chip('5', 5),
+          const SizedBox(width: 4),
+          chip('10', 10),
+          const SizedBox(width: 4),
+          chip('20', 20),
+          const SizedBox(width: 4),
+          chip(tr(context, 'Tutte'), null),
+        ]),
+      ),
     );
   }
 
@@ -155,10 +220,15 @@ class MatchFormTab extends StatelessWidget {
         ]),
         const SizedBox(height: 16),
         // Match list with logos and clickable
-        ...form.asMap().entries.map((entry) {
+        // [FAV-form-limit-filter] applica il limite se settato; altrimenti tutte
+        ...(_formLimit == null ? form : form.take(_formLimit!).toList())
+            .asMap()
+            .entries
+            .map((entry) {
           final i = entry.key;
           final m = entry.value;
-          final isLast = i == form.length - 1;
+          final list = _formLimit == null ? form : form.take(_formLimit!).toList();
+          final isLast = i == list.length - 1;
           final r = m['result'] as String;
           final rc = r == 'W'
               ? const Color(0xFF2E7D32)
@@ -167,7 +237,7 @@ class MatchFormTab extends StatelessWidget {
                   : const Color(0xFFD32F2F);
           final rLabel = r == 'W' ? 'V' : r == 'D' ? 'P' : 'S';
           final oppName = m['opponent'] as String;
-          final oppColor = opponentColor?.call(oppName) ?? color;
+          final oppColor = widget.opponentColor?.call(oppName) ?? color;
           final oppAbbr = oppName.length > 3
               ? oppName.substring(0, 3).toUpperCase()
               : oppName.toUpperCase();
@@ -193,7 +263,7 @@ class MatchFormTab extends StatelessWidget {
                 season: 2023,
                 round: '',
               );
-              onMatchTap(demoMatch);
+              widget.onMatchTap(demoMatch);
             },
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -224,7 +294,7 @@ class MatchFormTab extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(7),
                   child: CachedNetworkImage(
-                    imageUrl: opponentLogoUrl?.call(oppName) ?? '',
+                    imageUrl: widget.opponentLogoUrl?.call(oppName) ?? '',
                     width: 28,
                     height: 28,
                     errorWidget: (_, __, ___) => Container(
