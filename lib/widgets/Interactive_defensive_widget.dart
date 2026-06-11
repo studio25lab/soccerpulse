@@ -290,20 +290,24 @@ class _InteractiveDefensiveWidgetState
   // ===================== FILTRO SQUADRA =====================
   Widget _teamFilterBar() {
     final dk = widget.isDark;
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: dk ? Colors.grey[850] : Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: dk ? const Color(0xFF2A2A2A) : const Color(0xFFEEEEEE),
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            _teamTab(tr(context, 'Tutti'), _TeamFilter.all, null),
+            const SizedBox(width: 4),
+            _teamTab(widget.homeTeamName, _TeamFilter.home, widget.homeColor),
+            const SizedBox(width: 4),
+            _teamTab(widget.awayTeamName, _TeamFilter.away, widget.awayColor),
+          ]),
+        ),
       ),
-      child: Row(children: [
-        _teamTab(tr(context, 'Tutti'), _TeamFilter.all, null),
-        const SizedBox(width: 4),
-        _teamTab(widget.homeTeamName, _TeamFilter.home, widget.homeColor),
-        const SizedBox(width: 4),
-        _teamTab(widget.awayTeamName, _TeamFilter.away, widget.awayColor),
-      ]),
     );
   }
 
@@ -312,37 +316,33 @@ class _InteractiveDefensiveWidgetState
     final dk = widget.isDark;
     final color = activeColor ?? (dk ? Colors.white : const Color(0xFF424242));
 
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => _setTeamFilter(f),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            // Patch 9: sfondo chip attivo uniforme (bianco/grigio scuro)
-            // per tutti e tre i tab. Identità squadra resta nel colore testo.
-            color: active
-                ? (dk ? const Color(0xFF424242) : Colors.white)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: active && !dk
-                ? [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.06),
-                        blurRadius: 4,
-                        offset: const Offset(0, 1))
-                  ]
-                : null,
-          ),
-          child: Text(label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-                  color: active
-                      ? color
-                      : (dk ? Colors.grey[500] : Colors.grey[600]))),
+    return GestureDetector(
+      onTap: () => _setTeamFilter(f),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+        decoration: BoxDecoration(
+          color: active
+              ? (dk ? const Color(0xFF1A1A1A) : Colors.white)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: active
+              ? [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2))
+                ]
+              : null,
         ),
+        child: Text(label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 13,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                color: active
+                    ? color
+                    : (dk ? Colors.grey[500] : Colors.grey[600]))),
       ),
     );
   }
