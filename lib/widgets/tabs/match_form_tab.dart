@@ -141,8 +141,16 @@ class _MatchFormTabState extends State<MatchFormTab> {
   Widget _buildFormSection(BuildContext context, String teamName,
       List<Map<String, dynamic>> form, Color color, Color cardBg,
       Color tx, Color lb, Color divider) {
+    // [FAV-form-stats-on-filter]
+    // Lista filtrata (in base a _formLimit) per i conteggi badge W/D/L
+    // e per la match list dettagliata.
+    final filteredForm =
+        _formLimit == null ? form : form.take(_formLimit!).toList();
+    // I form dots (chips V/P/S) restano sempre le ultime 5, sono icone visuali.
+    final dotsForm = form.take(5).toList();
+
     int w = 0, d = 0, l = 0;
-    for (final m in form) {
+    for (final m in filteredForm) {
       if (m['result'] == 'W') {
         w++;
       } else if (m['result'] == 'D') {
@@ -184,10 +192,10 @@ class _MatchFormTabState extends State<MatchFormTab> {
           _formBadge('S', l, const Color(0xFFD32F2F)),
         ]),
         const SizedBox(height: 12),
-        // Form dots - bigger
+        // Form dots - bigger - SEMPRE le ultime 5 partite
         Row(children: [
           const SizedBox(width: 14),
-          ...form.map((m) {
+          ...dotsForm.map((m) {
             final r = m['result'] as String;
             final c = r == 'W'
                 ? const Color(0xFF2E7D32)
@@ -219,16 +227,11 @@ class _MatchFormTabState extends State<MatchFormTab> {
           }),
         ]),
         const SizedBox(height: 16),
-        // Match list with logos and clickable
-        // [FAV-form-limit-filter] applica il limite se settato; altrimenti tutte
-        ...(_formLimit == null ? form : form.take(_formLimit!).toList())
-            .asMap()
-            .entries
-            .map((entry) {
+        // Match list with logos and clickable - usa filteredForm
+        ...filteredForm.asMap().entries.map((entry) {
           final i = entry.key;
           final m = entry.value;
-          final list = _formLimit == null ? form : form.take(_formLimit!).toList();
-          final isLast = i == list.length - 1;
+          final isLast = i == filteredForm.length - 1;
           final r = m['result'] as String;
           final rc = r == 'W'
               ? const Color(0xFF2E7D32)
