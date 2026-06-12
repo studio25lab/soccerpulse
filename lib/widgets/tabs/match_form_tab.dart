@@ -75,7 +75,12 @@ class _MatchFormTabState extends State<MatchFormTab> {
     return Container(
       color: bg,
       child: ListView(padding: const EdgeInsets.all(16), children: [
-        _buildLimitSelector(isDark, tx, lb),
+        // [FAV-chip-disable] passa max tra home/away per disabilitare
+        // chip che richiedono piu partite di quelle disponibili
+        _buildLimitSelector(isDark, tx, lb,
+            widget.homeForm.length > widget.awayForm.length
+                ? widget.homeForm.length
+                : widget.awayForm.length),
         const SizedBox(height: 14),
         // [FAV-team-form-refactor] sostituito con TeamFormSection riusabile
         TeamFormSection(
@@ -110,12 +115,16 @@ class _MatchFormTabState extends State<MatchFormTab> {
   }
 
   // [FAV-form-limit-filter] selettore numero partite mostrate
-  Widget _buildLimitSelector(bool isDark, Color tx, Color lb) {
+  // [FAV-chip-disable] disabilita chip se value > totalMatches
+  Widget _buildLimitSelector(bool isDark, Color tx, Color lb, int totalMatches) {
     final bg = isDark ? const Color(0xFF2A2A2A) : const Color(0xFFEEEEEE);
     Widget chip(String label, int? value) {
       final active = _formLimit == value;
+      final disabled = value != null && totalMatches < value;
       return GestureDetector(
-        onTap: () => setState(() => _formLimit = value),
+        onTap: disabled
+            ? null
+            : () => setState(() => _formLimit = value),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
@@ -137,7 +146,9 @@ class _MatchFormTabState extends State<MatchFormTab> {
               style: TextStyle(
                   fontSize: 13,
                   fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-                  color: active ? tx : lb)),
+                  color: disabled
+                      ? (isDark ? Colors.grey[700] : Colors.grey[400])
+                      : (active ? tx : lb))),
         ),
       );
     }
