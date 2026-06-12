@@ -11,6 +11,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../generated/l10n.dart';
 import '../models/soccer_match.dart';
 import '../widgets/team_form_section.dart';
+import '../utils/mock_form_data.dart';
 import '../models/team_standing.dart';
 import '../models/player.dart';
 import '../api/api_service.dart';
@@ -229,78 +230,21 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
   // [FAV-extra-mock-matches] generatore procedurale di partite mock
   // addizionali (15 per squadra). Usa pool di avversari Serie A e
   // risultati pseudo-random deterministici (hash del nome squadra).
+  // [FAV-extra-matches-via-helper]
+  // Wrapper sottile sull'helper centralizzato generateMockFormMatches.
+  // 15 partite procedurali in piu rispetto alle 5 hardcoded di teamSchedule
+  // (totale 20 partite per squadra, abilita filtro 5/10/20/Tutte).
+  // Quando arrivera l'API, l'intero metodo sara rimosso.
   List<SoccerMatch> _generateExtraDemoMatches(String name, int id) {
-    const opponentsPool = [
-      'Sassuolo', 'Empoli', 'Cagliari', 'Frosinone', 'Salernitana',
-      'Monza', 'Lecce', 'Verona', 'Udinese', 'Genoa',
-      'Torino', 'Bologna', 'Fiorentina', 'Atalanta',
-    ];
-
-    final hash = name.hashCode.abs();
-    final matches = <SoccerMatch>[];
-
-    // 15 partite con date scaglionate da Aprile 2023 indietro fino a
-    // Ottobre 2022 (~7 mesi di partite ogni 2 settimane circa).
-    final startMonths = [4, 4, 3, 3, 2, 2, 1, 1, 12, 12, 11, 11, 10, 10, 9];
-    final startDays = [21, 7, 24, 10, 24, 10, 27, 13, 30, 16, 25, 11, 28, 14, 30];
-
-    for (int i = 0; i < 15; i++) {
-      // Avversario: rotazione deterministica
-      var opp = opponentsPool[(hash + i) % opponentsPool.length];
-      // Evita auto-match
-      if (opp == name) {
-        opp = opponentsPool[(hash + i + 1) % opponentsPool.length];
-      }
-
-      // Home/away alternato
-      final isHome = (hash + i) % 2 == 0;
-
-      // Risultato pseudo-random deterministico
-      final rnd = (hash + i * 7) % 10;
-      int hs, as_;
-      if (rnd < 5) {
-        // Vittoria 60% delle volte (per simulare team forte)
-        hs = isHome ? (1 + rnd % 3) : 0;
-        as_ = isHome ? 0 : (1 + rnd % 3);
-        if (!isHome) {
-          // swap (la team al ha vinto da fuoricasa)
-          final t = hs;
-          hs = as_;
-          as_ = t;
-        }
-      } else if (rnd < 7) {
-        // Pareggio
-        hs = rnd % 3;
-        as_ = hs;
-      } else {
-        // Sconfitta
-        hs = isHome ? 0 : (1 + rnd % 2);
-        as_ = isHome ? (1 + rnd % 2) : 0;
-      }
-
-      final year = startMonths[i] >= 9 ? 2022 : 2023;
-
-      matches.add(SoccerMatch(
-        id: 7000 + id * 100 + i,
-        date: DateTime(year, startMonths[i], startDays[i]),
-        time: '20:45',
-        status: 'FT',
-        venue: isHome ? 'Casa' : 'Trasferta',
-        homeTeamId: isHome ? id : 0,
-        homeTeamName: isHome ? name : opp,
-        homeTeamLogo: _logos[isHome ? name : opp],
-        awayTeamId: isHome ? 0 : id,
-        awayTeamName: isHome ? opp : name,
-        awayTeamLogo: _logos[isHome ? opp : name],
-        homeScore: hs,
-        awayScore: as_,
-        leagueName: 'Serie A',
-        season: 2023,
-        round: 'Giornata ${28 - i}',
-      ));
-    }
-
-    return matches;
+    return generateMockFormMatches(
+      name,
+      id,
+      teamLogos: _logos,
+      count: 15,
+      startMonth: 4,
+      startYear: 2023,
+      seedOffset: 200,
+    );
   }
 
   Future<List<Player>> _loadTeamPlayers() async {
