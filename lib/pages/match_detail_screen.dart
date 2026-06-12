@@ -11,6 +11,7 @@
 
 import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
+import '../utils/mock_form_data.dart';
 import '../generated/l10n.dart';
 import 'team_detail_screen.dart';
 import '../api/api_service.dart';
@@ -3741,25 +3742,20 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
 
 
 
+  // [FAV-form-mock-procedural]
+  // Per le 5 top team: 5 partite hardcoded "realistiche" + 15 procedurali.
+  // Per le altre squadre: 20 partite procedurali (deterministiche).
+  // Quando arrivera l'API, l'intero metodo sara sostituito da una chiamata
+  // che ritorna le partite reali della stagione.
   List<Map<String, dynamic>> _getTeamForm(String teamName) {
-
-    final forms = <String, List<Map<String, dynamic>>>{
+    // Partite hardcoded "realistiche" per le 5 top team (ultime 5).
+    final hardcoded = <String, List<Map<String, dynamic>>>{
       'Inter': [
         {'opponent': 'Torino', 'score': '2-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/03'},
         {'opponent': 'Juventus', 'score': '1-0', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '23/02'},
         {'opponent': 'Fiorentina', 'score': '0-1', 'result': 'L', 'venue': 'Casa', 'comp': 'Serie A', 'date': '16/02'},
         {'opponent': 'Napoli', 'score': '1-1', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '09/02'},
         {'opponent': 'Roma', 'score': '4-2', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/02'},
-        {'opponent': 'Lazio', 'score': '2-1', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '26/01'},
-        {'opponent': 'Atalanta', 'score': '3-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '19/01'},
-        {'opponent': 'Bologna', 'score': '2-2', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '12/01'},
-        {'opponent': 'Milan', 'score': '1-2', 'result': 'L', 'venue': 'Casa', 'comp': 'Serie A', 'date': '05/01'},
-        {'opponent': 'Verona', 'score': '4-0', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '23/12'},
-        {'opponent': 'Lecce', 'score': '2-1', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '16/12'},
-        {'opponent': 'Cagliari', 'score': '1-1', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '09/12'},
-        {'opponent': 'Udinese', 'score': '2-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/12'},
-        {'opponent': 'Genoa', 'score': '0-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '25/11'},
-        {'opponent': 'Empoli', 'score': '3-1', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '18/11'},
       ],
       'Milan': [
         {'opponent': 'Lazio', 'score': '1-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '02/03'},
@@ -3767,16 +3763,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         {'opponent': 'Atalanta', 'score': '2-2', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '16/02'},
         {'opponent': 'Napoli', 'score': '1-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '09/02'},
         {'opponent': 'Roma', 'score': '3-1', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '02/02'},
-        {'opponent': 'Inter', 'score': '2-1', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '05/01'},
-        {'opponent': 'Sassuolo', 'score': '1-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '30/12'},
-        {'opponent': 'Salernitana', 'score': '3-1', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '22/12'},
-        {'opponent': 'Monza', 'score': '3-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '17/12'},
-        {'opponent': 'Atalanta', 'score': '1-3', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '09/12'},
-        {'opponent': 'Frosinone', 'score': '3-1', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/12'},
-        {'opponent': 'Fiorentina', 'score': '1-0', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '25/11'},
-        {'opponent': 'Lecce', 'score': '3-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '11/11'},
-        {'opponent': 'Udinese', 'score': '0-1', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '04/11'},
-        {'opponent': 'Napoli', 'score': '2-2', 'result': 'D', 'venue': 'Casa', 'comp': 'Serie A', 'date': '28/10'},
       ],
       'Roma': [
         {'opponent': 'Napoli', 'score': '2-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/03'},
@@ -3784,16 +3770,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         {'opponent': 'Fiorentina', 'score': '1-1', 'result': 'D', 'venue': 'Casa', 'comp': 'Serie A', 'date': '16/02'},
         {'opponent': 'Juventus', 'score': '1-0', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '09/02'},
         {'opponent': 'Lazio', 'score': '0-1', 'result': 'L', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/02'},
-        {'opponent': 'Cagliari', 'score': '4-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '26/01'},
-        {'opponent': 'Atalanta', 'score': '1-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '07/01'},
-        {'opponent': 'Napoli', 'score': '2-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '23/12'},
-        {'opponent': 'Bologna', 'score': '3-1', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '17/12'},
-        {'opponent': 'Fiorentina', 'score': '1-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '10/12'},
-        {'opponent': 'Sassuolo', 'score': '1-1', 'result': 'D', 'venue': 'Casa', 'comp': 'Serie A', 'date': '03/12'},
-        {'opponent': 'Udinese', 'score': '3-1', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '26/11'},
-        {'opponent': 'Lecce', 'score': '0-0', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '05/11'},
-        {'opponent': 'Frosinone', 'score': '2-0', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '01/11'},
-        {'opponent': 'Monza', 'score': '1-1', 'result': 'D', 'venue': 'Casa', 'comp': 'Serie A', 'date': '22/10'},
       ],
       'Bologna': [
         {'opponent': 'Atalanta', 'score': '1-1', 'result': 'D', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/03'},
@@ -3801,16 +3777,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         {'opponent': 'Torino', 'score': '3-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '16/02'},
         {'opponent': 'Lazio', 'score': '0-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '09/02'},
         {'opponent': 'Napoli', 'score': '2-2', 'result': 'D', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/02'},
-        {'opponent': 'Sassuolo', 'score': '4-2', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '28/01'},
-        {'opponent': 'Fiorentina', 'score': '2-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '21/01'},
-        {'opponent': 'Genoa', 'score': '1-1', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '07/01'},
-        {'opponent': 'Atalanta', 'score': '1-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '23/12'},
-        {'opponent': 'Udinese', 'score': '2-1', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '16/12'},
-        {'opponent': 'Roma', 'score': '0-2', 'result': 'L', 'venue': 'Casa', 'comp': 'Serie A', 'date': '09/12'},
-        {'opponent': 'Verona', 'score': '2-0', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '02/12'},
-        {'opponent': 'Torino', 'score': '2-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '25/11'},
-        {'opponent': 'Lecce', 'score': '0-0', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '11/11'},
-        {'opponent': 'Lazio', 'score': '0-1', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '04/11'},
       ],
       'Napoli': [
         {'opponent': 'Roma', 'score': '0-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '02/03'},
@@ -3818,35 +3784,24 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         {'opponent': 'Juventus', 'score': '1-1', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '16/02'},
         {'opponent': 'Bologna', 'score': '2-2', 'result': 'D', 'venue': 'Casa', 'comp': 'Serie A', 'date': '09/02'},
         {'opponent': 'Torino', 'score': '2-0', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '02/02'},
-        {'opponent': 'Verona', 'score': '2-1', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '21/01'},
-        {'opponent': 'Lazio', 'score': '0-0', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '28/01'},
-        {'opponent': 'Salernitana', 'score': '2-1', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '13/01'},
-        {'opponent': 'Inter', 'score': '0-3', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '03/12'},
-        {'opponent': 'Milan', 'score': '2-2', 'result': 'D', 'venue': 'Casa', 'comp': 'Serie A', 'date': '29/10'},
-        {'opponent': 'Empoli', 'score': '2-0', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '08/11'},
-        {'opponent': 'Atalanta', 'score': '1-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '25/11'},
-        {'opponent': 'Lecce', 'score': '4-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '03/12'},
-        {'opponent': 'Frosinone', 'score': '2-1', 'result': 'W', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '19/12'},
-        {'opponent': 'Monza', 'score': '0-0', 'result': 'D', 'venue': 'Casa', 'comp': 'Serie A', 'date': '29/12'},
       ],
     };
-    return forms[teamName] ?? [
-      {'opponent': 'Team A', 'score': '1-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/03'},
-      {'opponent': 'Team B', 'score': '0-0', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '23/02'},
-      {'opponent': 'Team C', 'score': '2-1', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '16/02'},
-      {'opponent': 'Team D', 'score': '0-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '09/02'},
-      {'opponent': 'Team E', 'score': '3-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/02'},
-      {'opponent': 'Team F', 'score': '1-1', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '26/01'},
-      {'opponent': 'Team G', 'score': '2-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '19/01'},
-      {'opponent': 'Team H', 'score': '0-1', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '12/01'},
-      {'opponent': 'Team I', 'score': '3-2', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '05/01'},
-      {'opponent': 'Team J', 'score': '1-1', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '23/12'},
-      {'opponent': 'Team K', 'score': '2-0', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '16/12'},
-      {'opponent': 'Team L', 'score': '0-0', 'result': 'D', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '09/12'},
-      {'opponent': 'Team M', 'score': '4-1', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '02/12'},
-      {'opponent': 'Team N', 'score': '1-2', 'result': 'L', 'venue': 'Trasferta', 'comp': 'Serie A', 'date': '25/11'},
-      {'opponent': 'Team O', 'score': '2-1', 'result': 'W', 'venue': 'Casa', 'comp': 'Serie A', 'date': '18/11'},
-    ];
+
+    final hardcodedForTeam = hardcoded[teamName];
+    if (hardcodedForTeam != null) {
+      // Aggiungi 15 partite procedurali in piu, totale 20
+      final extra = generateMockFormMaps(
+        teamName,
+        count: 15,
+        startMonth: 1,
+        startYear: 2023,
+        seedOffset: 100,
+      );
+      return [...hardcodedForTeam, ...extra];
+    }
+
+    // Fallback: 20 partite procedurali per qualsiasi altra squadra
+    return generateMockFormMaps(teamName, count: 20);
   }
 
 
