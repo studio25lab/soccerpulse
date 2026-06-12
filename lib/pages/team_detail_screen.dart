@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../generated/l10n.dart';
 import '../models/soccer_match.dart';
+import '../widgets/team_form_section.dart';
 import '../models/team_standing.dart';
 import '../models/player.dart';
 import '../api/api_service.dart';
@@ -796,113 +797,68 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     );
   }
 
-  Widget _buildMatchFormStrip(BuildContext context, List<SoccerMatch> results, bool isDark, Color tx, Color lb, Color cardBg) {
+  // [FAV-team-detail-form-section] usa TeamFormSection riusabile
+  // (stesso widget di MatchFormTab pre-match per uniformita visiva)
+  Widget _buildMatchFormStrip(BuildContext context, List<SoccerMatch> results,
+      bool isDark, Color tx, Color lb, Color cardBg) {
     if (results.isEmpty) return const SizedBox.shrink();
-
     final teamName = widget.teamStanding.teamName;
-    final last5 = results.take(5).toList().reversed.toList();
-    // [FAV-team-form-filter] lista filtrata per badge W/D/L
-    final filteredResults =
-        _formLimit == null ? results : results.take(_formLimit!).toList();
+    final divider =
+        isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
 
-    int w = 0, d = 0, l = 0;
-    for (final m in filteredResults) {
+    // Converto List<SoccerMatch> in List<Map<String, dynamic>> per uniformita
+    // con il formato accettato da TeamFormSection.
+    final form = results.map((m) {
       final isHome = m.homeTeamName == teamName;
       final myScore = isHome ? m.homeScore : m.awayScore;
       final oppScore = isHome ? m.awayScore : m.homeScore;
-      if (myScore > oppScore) w++;
-      else if (myScore == oppScore) d++;
-      else l++;
-    }
+      final opponent = isHome ? m.awayTeamName : m.homeTeamName;
+      final result = myScore > oppScore
+          ? 'W'
+          : myScore == oppScore
+              ? 'D'
+              : 'L';
+      return <String, dynamic>{
+        'opponent': opponent,
+        'score': '$myScore-$oppScore',
+        'result': result,
+        'venue': isHome ? 'Casa' : 'Trasferta',
+        'comp': m.leagueName,
+        'date':
+            '${m.date.day.toString().padLeft(2, '0')}/${m.date.month.toString().padLeft(2, '0')}',
+      };
+    }).toList();
 
-    return Container(
-      margin: const EdgeInsets.fromLTRB(12, 8, 12, 4),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.1)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            Icon(Icons.trending_up_rounded, size: 14, color: lb),
-            const SizedBox(width: 6),
-            Text(_localizeTeam(context, 'Forma'),
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: lb)),
-            const Spacer(),
-            _formCountChip('$w', formInitial(context, 'W'), const Color(0xFF4CAF50), isDark),
-            const SizedBox(width: 5),
-            _formCountChip('$d', formInitial(context, 'D'), const Color(0xFFF9A825), isDark),
-            const SizedBox(width: 5),
-            _formCountChip('$l', formInitial(context, 'L'), const Color(0xFFE53935), isDark),
-          ]),
-          const SizedBox(height: 10),
-          // [FAV-team-form-filter] selettore filtro
+          // Selettore filtro (controlla _formLimit dello state padre)
           _buildFormLimitSelector(isDark, tx, lb, results.length),
           const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: last5.asMap().entries.map((entry) {
-              final m = entry.value;
-              final isHome = m.homeTeamName == teamName;
-              final myScore = isHome ? m.homeScore : m.awayScore;
-              final oppScore = isHome ? m.awayScore : m.homeScore;
-              final opponent = isHome ? m.awayTeamName : m.homeTeamName;
-
-              String r; Color c;
-              if (myScore > oppScore) { r = 'V'; c = const Color(0xFF4CAF50); }
-              else if (myScore == oppScore) { r = 'P'; c = const Color(0xFFF9A825); }
-              else { r = 'S'; c = const Color(0xFFE53935); }
-
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (_) => MatchDetailScreen(match: m),
-                    ));
-                  },
-                  child: Tooltip(
-                    message: '$opponent: $myScore-$oppScore',
-                    child: Container(
-                      height: 48,
-                      margin: const EdgeInsets.symmetric(horizontal: 3),
-                      decoration: BoxDecoration(
-                        color: c.withOpacity(isDark ? 0.15 : 0.1),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: c.withOpacity(0.25)),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(r, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: c)),
-                          Text('$myScore-$oppScore',
-                              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: c.withOpacity(0.7))),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+          // Sezione Forma riusabile (header + dots + match list)
+          TeamFormSection(
+            teamName: teamName,
+            form: form,
+            formLimit: _formLimit,
+            teamColor: const Color(0xFF4CAF50),
+            cardBg: cardBg,
+            tx: tx,
+            lb: lb,
+            divider: divider,
+            opponentLogoUrl: (name) => _logos[name] ?? '',
+            onMatchTap: (m) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => MatchDetailScreen(match: m)),
               );
-            }).toList(),
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _formCountChip(String count, String label, Color color, bool isDark) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withOpacity(isDark ? 0.15 : 0.1),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text('$count$label',
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: color)),
-    );
-  }
 
   // ── Section header ──
   Widget _matchSectionHeader(BuildContext context, String title, IconData icon, bool isDark, int count) {
