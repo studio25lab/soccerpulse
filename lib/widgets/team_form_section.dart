@@ -305,25 +305,15 @@ class TeamFormSection extends StatelessWidget {
 
   Widget _formBadge(String label, int count, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withOpacity(0.25)),
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Text('$count',
-            style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w900,
-                color: color)),
-        const SizedBox(width: 3),
-        Text(label,
-            style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: color.withOpacity(0.85))),
-      ]),
+      child: Text('$count$label',
+          style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w800, color: color)),
     );
   }
 }
