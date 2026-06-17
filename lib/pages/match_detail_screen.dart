@@ -814,12 +814,12 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     final isEn = Localizations.localeOf(context).languageCode == 'en';
     // ── Token-based detail (always normalized, both IT and EN) ──
     if (detail.startsWith('FOUL_ON:')) {
-      final name = detail.substring(8);
-      return isEn ? 'Foul on $name' : 'Fallo su $name';
+      // [FAV-simplify-foul] non mostriamo piu su chi e' il fallo
+      return isEn ? 'Foul' : 'Fallo';
     }
-    if (detail == 'CORNER_LEFT') return isEn ? 'Left corner' : 'Corner sinistro';
-    if (detail == 'CORNER_RIGHT') return isEn ? 'Right corner' : 'Corner destro';
-    if (detail == 'CORNER') return isEn ? 'Corner' : 'Corner';
+    if (detail == 'CORNER_LEFT') return isEn ? 'Corner' : 'Calcio d\'angolo';
+    if (detail == 'CORNER_RIGHT') return isEn ? 'Corner' : 'Calcio d\'angolo';
+    if (detail == 'CORNER') return isEn ? 'Corner' : 'Calcio d\'angolo';
     if (detail == 'OFFSIDE_ACTIVE') return isEn ? 'Offside' : 'Fuorigioco';
     if (detail == 'OFFSIDE_PASSIVE') return isEn ? 'Offside' : 'Fuorigioco';
     if (detail == 'TACTICAL_FOUL') return isEn ? 'Tactical foul' : 'Fallo tattico';

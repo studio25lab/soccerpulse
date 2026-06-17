@@ -1116,7 +1116,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
             if (!isHome) const SizedBox(width: 5),
             Flexible(
                 child: Text(
-              '${event.playerName}${event.detail != null ? " · ${event.detail}" : ""}',
+              '${event.playerName}${event.detail != null ? " · ${widget.localizeEventDetail(context, event.detail!)}" : ""}',
               style: TextStyle(
                   fontSize: 11, color: lb, fontWeight: FontWeight.w400),
               textAlign: isHome ? TextAlign.right : TextAlign.left,
