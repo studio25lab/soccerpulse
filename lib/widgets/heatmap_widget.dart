@@ -849,6 +849,11 @@ class AdvancedHeatmapPainter extends CustomPainter {
     canvas.drawCircle(Offset(w * 0.88, h / 2), 2, spotPaint);
   }
 
+  void _drawZoneStatistics(Canvas canvas, Size size) {
+    // Zone stats overlay - simplified for clean look
+    // Intentionally left minimal to not clutter the heatmap
+  }
+
   @override
   bool shouldRepaint(covariant AdvancedHeatmapPainter oldDelegate) =>
       oldDelegate.animationValue != animationValue ||
