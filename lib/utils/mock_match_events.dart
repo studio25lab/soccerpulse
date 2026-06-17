@@ -12,9 +12,11 @@
 //
 // // [FAV-extract-mock-events]
 
+import 'package:flutter/material.dart';
+import '../generated/l10n.dart';
 import '../models/local_match_event.dart';
 
-List<LocalMatchEvent> generateMockMatchEvents() {
+List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
   return [
     // === 1° TEMPO ===
     LocalMatchEvent(

@@ -1718,7 +1718,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   // (mock estratto in mock_match_events.dart)
   // Quando arrivera l'API, sostituire con chiamata API.
   List<LocalMatchEvent> _generateDetailedMockEvents() {
-    return generateMockMatchEvents();
+    return generateMockMatchEvents(context);
   }
 
   // ============================================================================
