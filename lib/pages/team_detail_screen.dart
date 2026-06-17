@@ -514,7 +514,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
 
   Widget _buildStatsCards(ThemeData theme, bool isDark, S s) {
     final t = widget.teamStanding;
-    final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
     final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
     
@@ -1678,7 +1677,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
 
 
   Widget _buildFormRow(String label, String form, bool isDark) {
-    final tx = isDark ? Colors.white : Colors.black87;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
@@ -2387,7 +2385,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
   }
 
   Map<String, dynamic> _getCoachMockData(String coachName, String teamName) {
-    final tn = _normalizeTeamName(teamName);
     final coaches = <String, Map<String, dynamic>>{
       'Maurizio Sarri': {
         'nationality': '🇮🇹 Italiano',
@@ -2741,7 +2738,6 @@ class _MatchdayBarPainter extends CustomPainter {
     if (matchdays.isEmpty) return;
 
     final labelColor = (isDark ? Colors.white : Colors.black).withOpacity(0.4);
-    final gridColor = (isDark ? Colors.white : Colors.black).withOpacity(0.06);
     final faintGrid = (isDark ? Colors.white : Colors.black).withOpacity(0.15);
 
     // Layout zones

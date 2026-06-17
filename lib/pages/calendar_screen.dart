@@ -313,7 +313,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
               GestureDetector(
                 onTap: () {
                   _haptic.lightImpact();
-                  final now = DateTime.now();
                   // Per demo usiamo il 14 maggio, con API useremo DateTime.now()
                   final today = DateTime(2023, 5, 14); // TODO: DateTime(now.year, now.month, now.day) con API
                   setState(() {
@@ -415,7 +414,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
         calendarBuilders: CalendarBuilders(
           markerBuilder: (context, date, events) {
             if (events.isEmpty) return null;
-            final hasLive = events.any((m) => m.isLive);
             return Positioned(
               bottom: 1,
               child: Row(

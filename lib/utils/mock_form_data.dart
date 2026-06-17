@@ -45,7 +45,6 @@ List<Map<String, dynamic>> generateMockFormMaps(
 
   // Genera date scaglionate ogni ~2 settimane andando indietro
   int month = startMonth;
-  int year = startYear;
   int day = 28;
 
   for (int i = 0; i < count; i++) {

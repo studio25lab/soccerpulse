@@ -57,7 +57,6 @@ class AttackView extends StatelessWidget {
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF262626) : Colors.white;
-    final fieldGreen = const Color(0xFF66BB6A);
 
     // ── Palette unificata Avanzate (= Difensiva) ──
     const homeColor = Color(0xFF4CAF50); // verde Material (Lazio)
@@ -171,8 +170,6 @@ class AttackView extends StatelessWidget {
     }
 
     final selectedZones = _calcZones(showHome);
-    final selectedColor = showHome ? homeColor : awayColor;
-    final selectedName = showHome ? homeName : awayName;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),

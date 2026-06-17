@@ -1529,7 +1529,6 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
               final oppScore = isTeamHome ? (m['awayScore'] as int) : (m['homeScore'] as int);
               final coachWon = !isUpcoming && teamScore > oppScore;
               final coachDraw = !isUpcoming && teamScore == oppScore;
-              final coachLost = !isUpcoming && teamScore < oppScore;
 
               return GestureDetector(
                 onTap: isUpcoming ? null : () {
@@ -2043,7 +2042,6 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       Color cardBg, bool isDark) {
     final skills = data['skills'] as Map<String, dynamic>? ?? {};
     final overall = data['overall'] as int? ?? 0;
-    final isGK = skills.containsKey('TUF');
 
     // Rating tier color
     Color tierColor;
@@ -2622,7 +2620,6 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
 
   // ── Helpers ──
   Widget _sectionTitle(String title, Color tx) {
-    final isDarkLocal = tx == Colors.white || tx == const Color(0xFFFFFFFF);
     return Row(children: [
       Container(
         width: 3,

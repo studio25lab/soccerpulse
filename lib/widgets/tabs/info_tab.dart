@@ -47,8 +47,6 @@ class InfoTab extends StatelessWidget {
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
-    final homeColor = const Color(0xFF1565C0);
-    final awayColor = const Color(0xFFD32F2F);
 
     return Container(
       color: bg,

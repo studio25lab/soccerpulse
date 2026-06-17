@@ -1430,7 +1430,6 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     }
 
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
-    final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
 
     // Raggruppa per squadra
     final grouped = <String, List<Map<String, dynamic>>>{};

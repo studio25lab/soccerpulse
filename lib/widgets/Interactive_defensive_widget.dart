@@ -408,7 +408,6 @@ class _InteractiveDefensiveWidgetState
 
   // ===================== FILTRO TEMPO =====================
   Widget _timeFilterRow() {
-    final dk = widget.isDark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(children: [
@@ -687,7 +686,6 @@ class _InteractiveDefensiveWidgetState
 
   // ===================== LEGENDA =====================
   Widget _legend() {
-    final dk = widget.isDark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

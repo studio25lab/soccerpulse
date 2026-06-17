@@ -78,9 +78,7 @@ void showCoachProfile(BuildContext context, {required String coachName, required
   final data = coachData[coachName];
   if (data == null) return;
 
-  final career = data['career'] as List<Map<String, String>>;
   final stats = data['stats'] as Map<String, dynamic>;
-  final totalGames = data['seasonW'] + data['seasonD'] + data['seasonL'];
 
   showModalBottomSheet(
     context: context,
@@ -349,7 +347,6 @@ void showPlayerComparisonPicker(BuildContext context, {required LocalLineupPlaye
   final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
   final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
   final bg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
-  final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
   final others = allPlayers.where((p) => p.number != player1.number).toList();
 
   showModalBottomSheet(

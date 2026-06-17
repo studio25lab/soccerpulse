@@ -323,11 +323,9 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildMatchCard(SoccerMatch match, ThemeData theme, bool isDark,
       Color tx, Color lb, int index, {bool isLive = false, bool isScheduled = false}) {
     final cardBg = isDark ? const Color(0xFF1E1E30) : Colors.white;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08);
     final isFav = _favoritesService.isMatchFavorite(match.id);
 
     // Marcatori mock
-    final scorers = _getScorers(match);
 
     return GestureDetector(
       onTap: () {

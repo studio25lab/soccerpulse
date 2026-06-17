@@ -26,7 +26,6 @@ class CoachProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
     final scaffoldBg = isDark ? const Color(0xFF0D0D1A) : const Color(0xFFF0F2F5);
     final tx = isDark ? Colors.white : Colors.black87;
     final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;

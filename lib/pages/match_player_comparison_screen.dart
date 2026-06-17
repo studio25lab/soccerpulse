@@ -132,7 +132,6 @@ class _MatchPlayerComparisonScreenState extends State<MatchPlayerComparisonScree
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0D0D1A) : const Color(0xFFF0F2F5);
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
-    final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
 
     return Scaffold(
