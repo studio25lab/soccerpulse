@@ -11,7 +11,6 @@
 // // [FAV-formtab]
 
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../utils/l10n_helper.dart';
 import '../../models/soccer_match.dart';
 import '../team_form_section.dart';

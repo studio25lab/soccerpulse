@@ -10,7 +10,6 @@ import '../generated/l10n.dart';
 import '../widgets/match_card.dart';
 import 'match_detail_screen.dart';
 import '../services/favorites_service.dart';
-import '../services/haptic_service.dart';
 import 'package:provider/provider.dart';
 import '../services/match_notification_preferences_service.dart';
 

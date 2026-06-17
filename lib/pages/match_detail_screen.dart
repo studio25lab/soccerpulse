@@ -46,17 +46,11 @@ import '../widgets/advanced_views/passes_view.dart';
 import '../widgets/dialogs/player_match_stats_dialog.dart';
 import '../widgets/dialogs/lineup_dialogs.dart';
 import '../widgets/dialogs/match_notification_dialog.dart';
-import '../painters/match_detail_painters.dart'; // [FAV-extract-painters]
 import '../widgets/interactive_shot_map_widget.dart';
-import '../widgets/player_match_visuals.dart';
 import '../widgets/Interactive_defensive_widget.dart';
-import '../widgets/player_match_visuals.dart';
 import '../services/match_notification_preferences_service.dart';
-import '../services/player_notification_preferences_service.dart';
 import '../services/live_match_simulator.dart';
 import '../models/match_notification_settings.dart';
-import '../widgets/notification_settings_widgets.dart';
-import '../models/player_notification_settings.dart';
 import 'dart:async';
 import 'package:soccerpulse/models/local_match_models.dart';
 import 'package:soccerpulse/main.dart';

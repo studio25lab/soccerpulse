@@ -18,7 +18,6 @@ import '../main.dart';
 import '../services/favorites_service.dart';
 import '../services/match_notification_preferences_service.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
-import 'package:soccerpulse/pages/team_detail_screen.dart';
 import 'package:soccerpulse/models/team_standing.dart';
 
 class SearchScreen extends StatefulWidget {

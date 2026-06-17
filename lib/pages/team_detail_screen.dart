@@ -1,5 +1,4 @@
 import "dart:ui" as ui;
-import "dart:ui" as ui;
 // lib/pages/team_detail_screen.dart
 
 import 'package:flutter/material.dart';

@@ -10,7 +10,6 @@
 
 import 'package:flutter/material.dart';
 import '../../utils/l10n_helper.dart';
-import '../../generated/l10n.dart';
 import '../../models/local_match_models.dart';
 import '../../models/match_data.dart';
 import '../../painters/match_detail_painters.dart';
