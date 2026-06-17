@@ -51,7 +51,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
         }
 
         // Rating filter
-        if (player.rating != null && player.rating! < minRating) {
+        if (player.rating != null && player.rating < minRating) {
           return false;
         }
 
@@ -532,9 +532,9 @@ class _PlayersScreenState extends State<PlayersScreen> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: player.rating! >= 8.0
+                    colors: player.rating >= 8.0
                         ? [const Color(0xFF00C853), const Color(0xFF00E676)]
-                        : player.rating! >= 7.0
+                        : player.rating >= 7.0
                             ? [const Color(0xFF2196F3), const Color(0xFF64B5F6)]
                             : [
                                 const Color(0xFFFFC107),
@@ -544,7 +544,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  player.rating!.toStringAsFixed(1),
+                  player.rating.toStringAsFixed(1),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

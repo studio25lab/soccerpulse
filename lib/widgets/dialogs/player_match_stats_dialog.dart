@@ -444,7 +444,7 @@ void showPlayerMatchStats(
                 ),
                 const SizedBox(width: 10),
                 // Minute
-                Text('${subEvent!.minute}\'',
+                Text('${subEvent.minute}\'',
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -463,8 +463,8 @@ void showPlayerMatchStats(
                       Text(
                           linkedPlayer?.name ??
                               (wasSubbedOut
-                                  ? subEvent!.detail ?? ''
-                                  : subEvent!.playerName),
+                                  ? subEvent.detail ?? ''
+                                  : subEvent.playerName),
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
@@ -482,7 +482,7 @@ void showPlayerMatchStats(
                           color: teamColor.withOpacity(0.4), width: 1.5),
                     ),
                     child: Center(
-                        child: Text('${linkedPlayer!.number}',
+                        child: Text('${linkedPlayer.number}',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w800,

@@ -1250,7 +1250,7 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                     ],
                   ),
                   child: Text(
-                    widget.player.rating!.toStringAsFixed(1),
+                    widget.player.rating.toStringAsFixed(1),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 22,

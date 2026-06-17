@@ -811,7 +811,7 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        match.venue!,
+                        match.venue,
                         style: TextStyle(
                           fontSize: 11,
                           color: Colors.grey[600],

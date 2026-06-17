@@ -216,7 +216,7 @@ class MatchCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
-                          match.venue!,
+                          match.venue,
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
