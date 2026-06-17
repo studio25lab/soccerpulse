@@ -1232,7 +1232,6 @@ class _PlayerStatsScreenState extends State<PlayerStatsScreen>
                   ],
                 ),
               ),
-              if (widget.player.rating != null)
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

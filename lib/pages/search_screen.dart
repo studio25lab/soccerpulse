@@ -740,7 +740,7 @@ class _SearchScreenState extends State<SearchScreen>
           'icon': Icons.person_outline_rounded, 'logo': p.photo, 'data': p});
     }
     // Players header
-    final topPlayers = _playerResults.where((p) => p.position != 'ALL' && (p.rating ?? 0) >= 7.0).take(3).toList();
+    final topPlayers = _playerResults.where((p) => p.position != 'ALL' && p.rating >= 7.0).take(3).toList();
     if (topPlayers.isNotEmpty) {
       suggestions.add({'type': 'header', 'name': tr(context, 'Giocatori'), 'sub': '', 'icon': Icons.person, 'logo': null, 'data': null});
     }
@@ -832,7 +832,7 @@ class _SearchScreenState extends State<SearchScreen>
               final llp = LocalLineupPlayer(
                 number: p.id % 99 + 1, name: p.name,
                 position: p.position.contains('Att') ? 'F' : p.position.contains('Cent') ? 'M' : p.position.contains('Dif') ? 'D' : 'G',
-                rating: p.rating ?? 7.0, goals: p.goals ?? 0, assists: p.assists ?? 0,
+                rating: p.rating, goals: p.goals ?? 0, assists: p.assists ?? 0,
               );
               Color tc;
               switch (p.teamName) {

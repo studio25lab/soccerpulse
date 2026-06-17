@@ -526,7 +526,6 @@ class _PlayersScreenState extends State<PlayersScreen> {
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
-            if (player.rating != null)
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

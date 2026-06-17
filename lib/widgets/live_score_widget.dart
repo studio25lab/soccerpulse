@@ -259,7 +259,7 @@ class LiveScoreWidget extends StatelessWidget {
                 ),
 
                 // Venue (se non compact)
-                if (!compact && match.venue != null) ...[
+                if (!compact) ...[
                   const SizedBox(height: 12),
                   const Divider(height: 1),
                   const SizedBox(height: 8),
