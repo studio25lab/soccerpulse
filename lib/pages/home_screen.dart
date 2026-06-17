@@ -23,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  final ApiService _apiService = ApiService();
   final HapticService _haptic = HapticService();
   late TabController _tabController;
   late FavoritesService _favoritesService;
@@ -32,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen>
   List<SoccerMatch> _liveMatches = [];
   List<SoccerMatch> _finishedMatches = [];
   List<SoccerMatch> _scheduledMatches = [];
-  bool _isLoading = false;
 
   @override
   void initState() {

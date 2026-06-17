@@ -42,7 +42,6 @@ class _MainNavigationState extends State<MainNavigation>
 
   final HapticService _haptic = HapticService();
   late final FavoritesService _favoritesService;
-  final ThemeService _themeService = ThemeService();
 
   late int _selectedIndex;
   late PageController _pageController;

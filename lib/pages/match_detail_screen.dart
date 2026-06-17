@@ -101,7 +101,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
 
   // Shot Map Data (coerente con statistiche)
   List<ShotData> _homeShotsData = [];
-  int _visualTab = -1;
   List<ShotData> _awayShotsData = [];
 
   // Defensive Data

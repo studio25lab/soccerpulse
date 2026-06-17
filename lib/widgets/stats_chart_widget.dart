@@ -29,7 +29,6 @@ class StatsChartWidget extends StatefulWidget {
 class _StatsChartWidgetState extends State<StatsChartWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  String _selectedStat = 'Possesso palla';
 
   @override
   void initState() {

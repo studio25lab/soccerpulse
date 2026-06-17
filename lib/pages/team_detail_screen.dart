@@ -82,7 +82,6 @@ class TeamDetailScreen extends StatefulWidget {
 
 class _TeamDetailScreenState extends State<TeamDetailScreen>
     with SingleTickerProviderStateMixin {
-  final ApiService _apiService = ApiService();
   late final FavoritesService _favoritesService;
   late final TeamNotificationPreferencesService _teamNotifService;
   final HapticService _haptic = HapticService();
@@ -93,7 +92,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
   Future<List<SoccerMatch>>? _matchesFuture;
 
   Future<List<Player>>? _playersFuture;
-  List<SoccerMatch> _teamMatches = [];
   // [FAV-team-form-filter] selettore numero partite per calcolo W/D/L
   int? _formLimit = 5;
 

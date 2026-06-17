@@ -32,14 +32,12 @@ class FavoritesScreen extends StatefulWidget {
 
 class _FavoritesScreenState extends State<FavoritesScreen>
     with SingleTickerProviderStateMixin {
-  final ApiService _apiService = ApiService();
   final HapticService _haptic = HapticService();
   late FavoritesService _favoritesService;
   late TabController _tabController;
 
   bool _isLoading = false;
   List<TeamStanding> _favoriteTeams = [];
-  List<Player> _favoritePlayers = [];
 
   @override
   void initState() {
