@@ -257,9 +257,6 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                             final newVal = !allOn;
                             setSheetState(() {
                               _setAllPlayerNotif(newVal);
-                              for (final k in _playerNotifSettingsToMap().keys) {
-                                // Map is now a getter, no-op here
-                              }
                             });
                             setState(() {});
                           },

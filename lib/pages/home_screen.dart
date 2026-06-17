@@ -213,9 +213,6 @@ class _HomeScreenState extends State<HomeScreen>
     final months = isEn
         ? ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
         : ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
-    final days = isEn
-        ? ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-        : ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
     return '${now.day} ${months[now.month - 1]}';
   }
 

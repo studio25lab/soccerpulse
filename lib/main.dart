@@ -483,7 +483,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     return LiveNotificationOverlay(
       key: LiveNotificationOverlay.globalKey,

@@ -144,7 +144,6 @@ class StandingsComparisonTab extends StatelessWidget {
               final isLast = i == standings.length - 1;
 
               // Zone colors
-              Color? zoneBg;
               Color? zoneBar;
               if (pos <= 4) { zoneBar = const Color(0xFF4CAF50); }
               else if (pos == 5 || pos == 6) { zoneBar = const Color(0xFF2196F3); }

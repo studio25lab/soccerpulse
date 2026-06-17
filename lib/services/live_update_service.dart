@@ -157,10 +157,6 @@ class LiveUpdateService extends ChangeNotifier {
         );
       } else if (matchIds != null && matchIds.isNotEmpty) {
         // Fetch partite specifiche
-        for (int id in matchIds) {
-          // Qui dovresti implementare un metodo per fetchare una singola partita
-          // Per ora usiamo le partite in cache
-        }
       }
 
       // Controlla cambiamenti e genera eventi

@@ -371,8 +371,6 @@ void showPlayerComparisonPicker(BuildContext context, {required LocalLineupPlaye
           itemCount: others.length,
           itemBuilder: (ctx, i) {
             final p2 = others[i];
-            final teamName = i < allPlayers.length ~/ 2
-                ? homeTeamName : awayTeamName;
             final pColor = i < allPlayers.length ~/ 2
                 ? const Color(0xFF1565C0) : const Color(0xFFD32F2F);
             return ListTile(
