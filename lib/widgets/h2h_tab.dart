@@ -141,8 +141,8 @@ class H2HTab extends StatelessWidget {
     for (var match in matches) {
       // Determina quale squadra è "home" nella partita storica
       final isHomeTeamHome = match.homeTeamId == homeTeamId;
-      final homeScore = match.homeScore ?? 0;
-      final awayScore = match.awayScore ?? 0;
+      final homeScore = match.homeScore;
+      final awayScore = match.awayScore;
 
       if (isHomeTeamHome) {
         // La squadra home attuale era home anche nella partita storica
@@ -527,8 +527,8 @@ class H2HTab extends StatelessWidget {
   ) {
     // Determina se homeTeam attuale era home o away in questa partita
     final isHomeTeamHome = match.homeTeamId == homeTeamId;
-    final homeScore = match.homeScore ?? 0;
-    final awayScore = match.awayScore ?? 0;
+    final homeScore = match.homeScore;
+    final awayScore = match.awayScore;
 
     // Calcola il risultato dal punto di vista della squadra home attuale
     String result = 'D';

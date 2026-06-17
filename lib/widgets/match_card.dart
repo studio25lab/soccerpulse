@@ -197,7 +197,7 @@ class MatchCard extends StatelessWidget {
                         ),
                       ),
                     ],
-                    if (showDate && showVenue && match.venue != null)
+                    if (showDate && showVenue)
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         width: 4,
@@ -207,7 +207,7 @@ class MatchCard extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                       ),
-                    if (showVenue && match.venue != null) ...[
+                    if (showVenue) ...[
                       Icon(
                         Icons.location_on,
                         size: 14,

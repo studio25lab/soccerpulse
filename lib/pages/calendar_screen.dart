@@ -415,13 +415,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
         calendarBuilders: CalendarBuilders(
           markerBuilder: (context, date, events) {
             if (events.isEmpty) return null;
-            final hasLive = events.any((m) => (m as SoccerMatch).isLive);
+            final hasLive = events.any((m) => m.isLive);
             return Positioned(
               bottom: 1,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: events.map((event) {
-                  final m = event as SoccerMatch;
+                  final m = event;
                   return Container(
                     width: 6, height: 6,
                     margin: const EdgeInsets.symmetric(horizontal: 0.5),

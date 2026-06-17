@@ -51,12 +51,12 @@ class _PlayersScreenState extends State<PlayersScreen> {
         }
 
         // Rating filter
-        if (player.rating != null && player.rating < minRating) {
+        if (player.rating < minRating) {
           return false;
         }
 
         // Minutes filter (mock - dovrebbe venire da API)
-        final playerMinutes = (player.rating ?? 0) * 100; // Mock calculation
+        final playerMinutes = player.rating * 100; // Mock calculation
         if (playerMinutes < minMinutes) {
           return false;
         }
@@ -93,7 +93,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
       filteredPlayers.sort((a, b) {
         switch (sortBy) {
           case 'rating':
-            return (b.rating ?? 0).compareTo(a.rating ?? 0);
+            return b.rating.compareToa.rating;
           case 'goals':
             return (b.goals ?? 0).compareTo(a.goals ?? 0);
           case 'assists':
@@ -111,12 +111,12 @@ class _PlayersScreenState extends State<PlayersScreen> {
     final badges = <String>[];
 
     // Mock data - dovrebbe venire da API
-    final appearances = (player.rating ?? 0) * 15; // Mock
+    final appearances = player.rating * 15; // Mock
     if (appearances >= 100) badges.add('100_appearances');
     if ((player.goals ?? 0) >= 10) badges.add('10_goals');
     if ((player.assists ?? 0) >= 5) badges.add('5_assists');
-    if ((player.rating ?? 0) >= 8.0) badges.add('motm');
-    if (player.position == 'Goalkeeper' && (player.rating ?? 0) > 7.5)
+    if (player.rating >= 8.0) badges.add('motm');
+    if (player.position == 'Goalkeeper' && player.rating > 7.5)
       badges.add('clean_sheet');
 
     return badges;

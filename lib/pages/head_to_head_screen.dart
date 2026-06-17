@@ -799,7 +799,7 @@ class _HeadToHeadScreenState extends State<HeadToHeadScreen>
                 ),
 
                 // Venue
-                if (match.venue != null) ...[
+                ...[
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

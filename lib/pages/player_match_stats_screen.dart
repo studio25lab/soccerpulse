@@ -364,7 +364,7 @@ class _PlayerMatchStatsScreenState extends State<PlayerMatchStatsScreen>
         children: [
           Expanded(
             child: _buildStatCard(
-              '${widget.match.homeTeamName} ${widget.match.homeScore ?? 0} - ${widget.match.awayScore ?? 0} ${widget.match.awayTeamName}',
+              '${widget.match.homeTeamName} ${widget.match.homeScore} - ${widget.match.awayScore} ${widget.match.awayTeamName}',
               '20 gen',
               isDark,
             ),

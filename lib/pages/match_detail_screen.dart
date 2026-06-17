@@ -774,7 +774,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                 border:
                     Border.all(color: Colors.white.withOpacity(0.3), width: 2)),
             child: Text(
-                '${widget.match.homeScore ?? 0} - ${widget.match.awayScore ?? 0}',
+                '${widget.match.homeScore} - ${widget.match.awayScore}',
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 40,
