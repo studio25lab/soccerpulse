@@ -61,8 +61,6 @@ class AttackView extends StatelessWidget {
     // ── Palette unificata Avanzate (= Difensiva) ──
     const homeColor = Color(0xFF4CAF50); // verde Material (Lazio)
     const awayColor = Color(0xFF1565C0); // blu scuro (Milan)
-    final homeName = homeTeamName;
-    final awayName = awayTeamName;
 
     // ══════ DERIVE ALL STATS FROM mockAttackMomentum (single source of truth) ══════
     // Filtro periodo: minute e' in d[0]. Quando arriveranno dati API reali,

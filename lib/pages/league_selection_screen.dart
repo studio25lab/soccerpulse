@@ -5,7 +5,6 @@ import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../generated/l10n.dart';
 import '../services/haptic_service.dart';
 import '../widgets/glassmorphic_card.dart';
 
