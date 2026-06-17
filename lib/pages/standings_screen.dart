@@ -906,61 +906,6 @@ class _StandingsScreenState extends State<StandingsScreen>
   Widget _cell(String t, Color tx) => SizedBox(width: 28, child: Center(
       child: Text(t, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: tx))));
 
-  Widget _legendDot(Color color, String label) => Padding(
-    padding: const EdgeInsets.only(left: 8),
-    child: Row(mainAxisSize: MainAxisSize.min, children: [
-      Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-      const SizedBox(width: 4),
-      Text(label, style: TextStyle(fontSize: 9, color: color, fontWeight: FontWeight.w600)),
-    ]),
-  );
-
-  Color _posColor(int pos) {
-    if (pos <= 4) return const Color(0xFF4CAF50); // Champions League
-    if (pos == 5 || pos == 6) return const Color(0xFF2196F3); // Europa League
-    if (pos == 7) return const Color(0xFFFFA726); // Conference League
-    if (pos >= 18) return const Color(0xFFE53935); // Retrocessione
-    return Colors.grey;
-  }
-
-
-  String _formTooltipText(String teamName, String result, int index) {
-    const opponents = ['Juventus', 'Milan', 'Inter', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Bologna', 'Fiorentina', 'Torino'];
-    final opp = opponents[(teamName.hashCode.abs() + index) % opponents.length];
-    final actual = opp == teamName ? 'Monza' : opp;
-    final isHome = index % 2 == 0;
-    String score;
-    if (result == 'W') { score = isHome ? '2:0' : '0:1'; }
-    else if (result == 'D') { score = '1:1'; }
-    else { score = isHome ? '0:2' : '1:3'; }
-    final home = isHome ? teamName : actual;
-    final away = isHome ? actual : teamName;
-    final day = 28 - index * 7;
-    final month = day > 0 ? '03' : '02';
-    final d = day > 0 ? day : day + 28;
-    return '$score ($home - $away)\n${d.toString().padLeft(2, "0")}.$month.2024';
-  }
-
-  void _navigateToFormMatch(BuildContext context, String teamName, String result, int index) {
-    const opponents = ['Juventus', 'Milan', 'Inter', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Bologna', 'Fiorentina', 'Torino'];
-    final opp = opponents[(teamName.hashCode.abs() + index) % opponents.length];
-    final actual = opp == teamName ? 'Monza' : opp;
-    final isHome = index % 2 == 0;
-    int hs, as_;
-    if (result == 'W') { hs = isHome ? 2 : 0; as_ = isHome ? 0 : 1; }
-    else if (result == 'D') { hs = 1; as_ = 1; }
-    else { hs = isHome ? 0 : 1; as_ = isHome ? 2 : 3; }
-    if (!isHome) { final tmp = hs; hs = as_; as_ = tmp; }
-    final home = isHome ? teamName : actual;
-    final away = isHome ? actual : teamName;
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MatchDetailScreen(
-      match: SoccerMatch(id: (teamName + actual + index.toString()).hashCode.abs(),
-        date: DateTime.now(), time: '20:45', status: 'FT', venue: '',
-        homeTeamId: 0, awayTeamId: 0, homeTeamName: home, awayTeamName: away,
-        homeScore: hs, awayScore: as_, leagueName: 'Serie A', season: 2023, round: 'Giornata ${35 - index}'),
-    )));
-  }
-
   Widget _legendRow(Color color, String label) {
     return Row(mainAxisSize: MainAxisSize.min, children: [
       Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),

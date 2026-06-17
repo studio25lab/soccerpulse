@@ -676,12 +676,6 @@ class _SearchScreenState extends State<SearchScreen>
         const SizedBox(height: 16),      ]),
     );
   }
-
-  Widget _buildCategoryCard({
-    required IconData icon, required String label, required String subtitle,
-    required Color color, required String query, required bool isDark,
-    required Color tx, required Color lb, bool compact = false,
-  }) {
     return GestureDetector(
       onTap: () { _haptic.lightImpact(); _searchController.text = query; _performSearch(query); },
       child: Container(

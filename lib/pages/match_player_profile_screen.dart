@@ -2651,9 +2651,6 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       ),
     );
   }
-
-  Widget _statBox(String label, String value, Color cardBg, Color tx, Color lb,
-      {Color? valueColor}) {
     final isDarkLocal = tx == Colors.white || tx == const Color(0xFFFFFFFF);
     return Expanded(
         child: Container(
