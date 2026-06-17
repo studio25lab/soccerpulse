@@ -352,7 +352,8 @@ class LineupsTab extends StatelessWidget {
       double pitchH, Color teamColor, bool isDark,
       {List<LocalLineupPlayer> allPlayers = const []}) {
     final x = pos.dx * pitchW;
-    final y = (1.0 - pos.dy) * pitchH;
+    // [FAV-fix-gk-name] padding bottom 35px per nome portiere visibile
+    final y = (1.0 - pos.dy) * (pitchH - 35);
     // Responsive dot size: BIG — min 46, max 58
     final dotSize = (pitchH * 0.12).clamp(46.0, 58.0);
 
