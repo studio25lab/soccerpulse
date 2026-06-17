@@ -93,7 +93,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
       filteredPlayers.sort((a, b) {
         switch (sortBy) {
           case 'rating':
-            return b.rating.compareToa.rating;
+            return b.rating.compareTo(a.rating);
           case 'goals':
             return (b.goals ?? 0).compareTo(a.goals ?? 0);
           case 'assists':
