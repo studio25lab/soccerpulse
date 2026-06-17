@@ -65,6 +65,13 @@ Future<void> showMatchNotificationDialogV2(
 
           void toggle(String key, bool value) {
             haptic.lightImpact();
+            // [FAV-toggle-auto-master] se utente attiva un singolo toggle
+            // e il master e' OFF, attiviamo prima il master automaticamente
+            if (value && !getSettings().enabled) {
+              final masterOn = getSettings().copyWith(enabled: true);
+              setSettings(masterOn);
+              service.saveSettingsForMatch(masterOn);
+            }
             onUpdateFromKey(key, value);
             refresh();
           }
@@ -171,7 +178,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle:
                             tr(context, 'Notifica con marcatore e minuto'),
                         value: s.notifyHomeGoals,
-                        enabled: en,
                         onChanged: (v) => toggle('goals', v),
                       ),
                       NotifSwitchRow(
@@ -181,7 +187,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle: tr(context,
                             'Rigori assegnati, segnati e sbagliati'),
                         value: s.notifyPenalties,
-                        enabled: en,
                         onChanged: (v) => toggle('penalties', v),
                       ),
                       NotifSwitchRow(
@@ -191,7 +196,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle: tr(context,
                             'Revisioni e decisioni arbitrali al VAR'),
                         value: s.notifyVarDecisions,
-                        enabled: en,
                         onChanged: (v) => toggle('var', v),
                       ),
                       NotifSectionHeader(
@@ -205,7 +209,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle:
                             tr(context, 'Calcio d\'inizio 1° e 2° tempo'),
                         value: s.notifyMatchStart,
-                        enabled: en,
                         onChanged: (v) => toggle('kickoff', v),
                       ),
                       NotifSwitchRow(
@@ -215,7 +218,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle: tr(context,
                             'Risultato parziale all\'intervallo'),
                         value: s.notifyHalfTime,
-                        enabled: en,
                         onChanged: (v) => toggle('halftime', v),
                       ),
                       NotifSwitchRow(
@@ -225,7 +227,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle:
                             tr(context, 'Risultato finale della partita'),
                         value: s.notifyMatchEnd,
-                        enabled: en,
                         onChanged: (v) => toggle('fulltime', v),
                       ),
                       NotifSectionHeader(
@@ -238,7 +239,6 @@ Future<void> showMatchNotificationDialogV2(
                         title: tr(context, 'Cartellini gialli'),
                         subtitle: tr(context, 'Ammonizioni e doppi gialli'),
                         value: s.notifyYellowCards,
-                        enabled: en,
                         onChanged: (v) => toggle('yellowCards', v),
                       ),
                       NotifSwitchRow(
@@ -248,7 +248,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle: tr(context,
                             'Espulsioni dirette e per doppio giallo'),
                         value: s.notifyRedCards,
-                        enabled: en,
                         onChanged: (v) => toggle('redCards', v),
                       ),
                       NotifSectionHeader(
@@ -262,7 +261,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle: tr(context,
                             'Cambi effettuati da entrambe le squadre'),
                         value: s.notifySubstitutions,
-                        enabled: en,
                         onChanged: (v) => toggle('substitutions', v),
                       ),
                       NotifSwitchRow(
@@ -272,7 +270,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle: tr(context,
                             'Corner battuti da entrambe le squadre'),
                         value: s.notifyCorners,
-                        enabled: en,
                         onChanged: (v) => toggle('corners', v),
                       ),
                       NotifSwitchRow(
@@ -282,7 +279,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle:
                             tr(context, 'Posizioni di offside segnalate'),
                         value: s.notifyOffsides,
-                        enabled: en,
                         onChanged: (v) => toggle('offsides', v),
                       ),
                       NotifSwitchRow(
@@ -292,7 +288,6 @@ Future<void> showMatchNotificationDialogV2(
                         subtitle: tr(context,
                             'Tiri nello specchio della porta'),
                         value: s.notifyShotsOnTarget,
-                        enabled: en,
                         onChanged: (v) => toggle('shotsOnTarget', v),
                       ),
                       NotifSwitchRow(
@@ -301,7 +296,6 @@ Future<void> showMatchNotificationDialogV2(
                         title: tr(context, 'Falli'),
                         subtitle: tr(context, 'Falli commessi in campo'),
                         value: s.notifyFouls,
-                        enabled: en,
                         onChanged: (v) => toggle('fouls', v),
                       ),
                     ],
