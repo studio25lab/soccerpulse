@@ -73,6 +73,7 @@ void showPlayerMatchStats(
   final events = generateEvents();
   LocalMatchEvent? subEvent;
   LocalLineupPlayer? linkedPlayer;
+  bool wasSubbedIn = false;
   bool wasSubbedOut = false;
 
   // Check if this player was subbed OUT (starter replaced)
