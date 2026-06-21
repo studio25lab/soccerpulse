@@ -44,6 +44,14 @@ class MatchDataService {
       return _cache[matchId]!;
     }
 
+    // [FAV-demo-mock] matchId=9001 (Lazio vs Milan demo) ha id collidente
+    // con una partita reale di API-Football. Forza mock locale.
+    if (matchId == 9001) {
+      print('📦 Demo match 9001 -> using MOCK data directly');
+      final mock = _generateMockMatchData(matchId);
+      _cache[matchId] = mock;
+      return mock;
+    }
     print('🔄 Loading MatchData for match $matchId from API...');
 
     try {
