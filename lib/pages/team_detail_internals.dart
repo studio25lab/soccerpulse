@@ -6,6 +6,7 @@
 // // [FAV-extract-td-internals]
 
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 
 class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   final TabBar tabBar;
@@ -30,7 +31,7 @@ class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
 
 
 // ─── Mock matchday data generator ───
-List<Map<String, dynamic>> _generateMockMatchdays(int wins, int draws, int losses, int gf, int ga) {
+List<Map<String, dynamic>> generateMockMatchdays(int wins, int draws, int losses, int gf, int ga) {
   final total = wins + draws + losses;
   if (total == 0) return [];
 

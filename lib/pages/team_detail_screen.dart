@@ -1528,7 +1528,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                   size: Size(t.played * 16.0 + 40, 160),
                   painter: MatchdayBarPainter(
                     isDark: isDark,
-                    matchdays: _generateMockMatchdays(t.wins, t.draws, t.losses, t.goalsFor, t.goalsAgainst),
+                    matchdays: generateMockMatchdays(t.wins, t.draws, t.losses, t.goalsFor, t.goalsAgainst),
                   ),
                 ),
               ),
