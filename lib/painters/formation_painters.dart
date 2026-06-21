@@ -8,6 +8,7 @@
 
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 class SofaScoreHeatmapPainter extends CustomPainter {
   @override
