@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../generated/l10n.dart';
 import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
-import '../services/theme_service.dart';
 import 'home_screen.dart';
 import 'calendar_screen.dart';
 import 'favorites_screen.dart';

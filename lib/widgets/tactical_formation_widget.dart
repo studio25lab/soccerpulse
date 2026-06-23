@@ -3,16 +3,9 @@
 import 'package:flutter/material.dart';
 import '../../utils/l10n_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/soccer_match.dart';
 import '../models/player.dart';
-import '../pages/player_profile_screen.dart';
-import '../pages/player_comparison_screen.dart';
 import 'football_field_painter.dart';
-import 'dart:math' as math;
-import 'dart:convert';
-import 'dart:ui' as ui;
-import '../painters/formation_painters.dart';
 import '../pages/player_stats_screen.dart';
 
 class TacticalFormationWidget extends StatefulWidget {

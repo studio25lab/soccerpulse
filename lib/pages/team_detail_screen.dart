@@ -1,4 +1,3 @@
-import "dart:ui" as ui;
 // lib/pages/team_detail_screen.dart
 
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ import '../widgets/team_form_section.dart';
 import '../utils/mock_form_data.dart';
 import '../models/team_standing.dart';
 import '../models/player.dart';
-import '../api/api_service.dart';
 import '../services/favorites_service.dart';
 import '../services/team_notification_preferences_service.dart';
 import '../widgets/team_notification_settings_bottom_sheet.dart';

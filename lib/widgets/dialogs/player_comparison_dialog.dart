@@ -10,7 +10,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:math' as math;
 import '../../utils/l10n_helper.dart';
 import '../../models/player_detail.dart';
-import '../../painters/player_detail_painters.dart';
 
 class PlayerComparisonDialog extends StatefulWidget {
   final PlayerDetail currentPlayer;

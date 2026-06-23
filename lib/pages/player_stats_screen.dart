@@ -9,9 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:math' as math;
 import 'dart:convert';
-import 'dart:ui' as ui;
 import '../utils/l10n_helper.dart';
 import '../models/player.dart';
 import '../painters/formation_painters.dart';

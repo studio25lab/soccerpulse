@@ -6,7 +6,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../models/soccer_match.dart';
-import '../api/api_service.dart';
 import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
 import '../services/match_notification_preferences_service.dart';
