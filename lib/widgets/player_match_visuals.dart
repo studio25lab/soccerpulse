@@ -1315,19 +1315,6 @@ class _PlayerShotMapPainter extends CustomPainter {
         canvas.drawLine(Offset(sx + xS, sy - xS), Offset(sx - xS, sy + xS), xP);
       }
 
-      // ── xG label ──
-      if (shot.xG > 0.05 && (selectedIndex == null || isSel)) {
-        final tp = TextPainter(
-          text: TextSpan(
-              text: shot.xG.toStringAsFixed(2),
-              style: TextStyle(
-                  fontSize: isSel ? 12 : 10,
-                  color: Colors.white.withOpacity(0.85),
-                  fontWeight: FontWeight.w600)),
-          textDirection: TextDirection.ltr,
-        )..layout();
-        tp.paint(canvas, Offset(sx + radius + 4, sy - tp.height / 2));
-      }
     }
 
     // Legend
