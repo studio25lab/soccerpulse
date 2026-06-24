@@ -117,7 +117,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   // Misc
   // ── Notification preferences (backed by service) ──
   late MatchNotificationSettings _matchNotifSettings;
-  Map<String, bool> get _notifPrefs => _matchNotifSettingsToMap();
   bool get _matchNotificationsEnabled =>
       _matchNotifSettings.hasActiveNotifications;
 
@@ -1823,32 +1822,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     );
   }
 
-  void _showPlayerComparisonPicker(LocalLineupPlayer player1, Color teamColor, bool isDark, List<LocalLineupPlayer> allPlayers) {
-    showPlayerComparisonPicker(
-      context,
-      player1: player1,
-      teamColor: teamColor,
-      isDark: isDark,
-      allPlayers: allPlayers,
-      homeTeamName: widget.match.homeTeamName,
-      awayTeamName: widget.match.awayTeamName,
-      homeShotsData: _homeShotsData,
-      awayShotsData: _awayShotsData,
-      homeDefensiveActions: _homeDefensiveActions,
-      awayDefensiveActions: _awayDefensiveActions,
-    );
-  }
 
-  Future<void> _showMatchPlayerNotifDialog(LocalLineupPlayer player, Color teamColor, bool isDark) async {
-    await showMatchPlayerNotifDialog(
-      context,
-      player: player,
-      teamColor: teamColor,
-      isDark: isDark,
-      matchId: widget.match.id,
-      onShowPlayerStats: (p) => _showPlayerMatchStats(p, teamColor, isDark),
-    );
-  }
 
 
 
@@ -1995,80 +1969,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   }
 
 
-  List<Map<String, String>> _getCoachCareer(String coachName) {
-    const careers = {
-      'José Mourinho': [
-        {'team': 'Roma', 'period': '2021-2024', 'trophy': '🏆 Conference League', 'role': 'Allenatore'},
-        {'team': 'Tottenham', 'period': '2019-2021', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Manchester United', 'period': '2016-2018', 'trophy': '🏆 Europa League', 'role': 'Allenatore'},
-        {'team': 'Chelsea', 'period': '2013-2015', 'trophy': '🏆 Premier League', 'role': 'Allenatore'},
-        {'team': 'Real Madrid', 'period': '2010-2013', 'trophy': '🏆 Liga', 'role': 'Allenatore'},
-        {'team': 'Inter', 'period': '2008-2010', 'trophy': '🏆 Triplete', 'role': 'Allenatore'},
-        {'team': 'Chelsea', 'period': '2004-2007', 'trophy': '🏆🏆 Premier League', 'role': 'Allenatore'},
-        {'team': 'Porto', 'period': '2002-2004', 'trophy': '🏆 Champions League', 'role': 'Allenatore'},
-      ],
-      'Thiago Motta': [
-        {'team': 'Bologna', 'period': '2022-2024', 'trophy': '🏆 Qualificazione UCL', 'role': 'Allenatore'},
-        {'team': 'Spezia', 'period': '2021-2022', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Genoa U19', 'period': '2019-2021', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'PSG', 'period': '2012-2018', 'trophy': '🏆🏆 Ligue 1', 'role': 'Giocatore'},
-        {'team': 'Inter', 'period': '2009-2012', 'trophy': '🏆 Triplete', 'role': 'Giocatore'},
-        {'team': 'Genoa', 'period': '2008-2009', 'trophy': '', 'role': 'Giocatore'},
-        {'team': 'Atletico Madrid', 'period': '2007-2008', 'trophy': '', 'role': 'Giocatore'},
-        {'team': 'Barcelona', 'period': '1999-2007', 'trophy': '🏆🏆 Liga', 'role': 'Giocatore'},
-      ],
-      'Simone Inzaghi': [
-        {'team': 'Inter', 'period': '2021-oggi', 'trophy': '🏆 Scudetto 2024', 'role': 'Allenatore'},
-        {'team': 'Lazio', 'period': '2016-2021', 'trophy': '🏆 Coppa Italia', 'role': 'Allenatore'},
-        {'team': 'Lazio Primavera', 'period': '2014-2016', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Lazio', 'period': '1999-2010', 'trophy': '🏆 Coppa Italia', 'role': 'Giocatore'},
-      ],
-      'Stefano Pioli': [
-        {'team': 'Milan', 'period': '2019-2024', 'trophy': '🏆 Scudetto 2022', 'role': 'Allenatore'},
-        {'team': 'Fiorentina', 'period': '2017-2019', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Inter', 'period': '2016-2017', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Lazio', 'period': '2014-2016', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Bologna', 'period': '2011-2014', 'trophy': '', 'role': 'Allenatore'},
-      ],
-      'Massimiliano Allegri': [
-        {'team': 'Juventus', 'period': '2021-2024', 'trophy': '🏆 Coppa Italia', 'role': 'Allenatore'},
-        {'team': 'Juventus', 'period': '2014-2019', 'trophy': '🏆🏆🏆🏆🏆 Scudetti', 'role': 'Allenatore'},
-        {'team': 'Milan', 'period': '2010-2014', 'trophy': '🏆 Scudetto 2011', 'role': 'Allenatore'},
-        {'team': 'Cagliari', 'period': '2008-2010', 'trophy': '', 'role': 'Allenatore'},
-      ],
-      'Luciano Spalletti': [
-        {'team': 'Napoli', 'period': '2021-2023', 'trophy': '🏆 Scudetto 2023', 'role': 'Allenatore'},
-        {'team': 'Inter', 'period': '2017-2019', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Roma', 'period': '2005-2009', 'trophy': '🏆 Coppa Italia', 'role': 'Allenatore'},
-        {'team': 'Udinese', 'period': '2002-2005', 'trophy': '', 'role': 'Allenatore'},
-      ],
-      'Maurizio Sarri': [
-        {'team': 'Lazio', 'period': '2021-2024', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Juventus', 'period': '2019-2020', 'trophy': '🏆 Scudetto', 'role': 'Allenatore'},
-        {'team': 'Chelsea', 'period': '2018-2019', 'trophy': '🏆 Europa League', 'role': 'Allenatore'},
-        {'team': 'Napoli', 'period': '2015-2018', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Empoli', 'period': '2012-2015', 'trophy': '', 'role': 'Allenatore'},
-      ],
-      'Gian Piero Gasperini': [
-        {'team': 'Atalanta', 'period': '2016-oggi', 'trophy': '🏆 Europa League 2024', 'role': 'Allenatore'},
-        {'team': 'Inter', 'period': '2011', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Genoa', 'period': '2006-2011', 'trophy': '', 'role': 'Allenatore'},
-      ],
-      'Vincenzo Italiano': [
-        {'team': 'Fiorentina', 'period': '2021-2024', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Spezia', 'period': '2019-2021', 'trophy': '🏆 Promozione Serie A', 'role': 'Allenatore'},
-        {'team': 'Trapani', 'period': '2018-2019', 'trophy': '', 'role': 'Allenatore'},
-      ],
-      'Ivan Juric': [
-        {'team': 'Torino', 'period': '2021-2024', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Verona', 'period': '2019-2021', 'trophy': '', 'role': 'Allenatore'},
-        {'team': 'Genoa', 'period': '2016-2019', 'trophy': '', 'role': 'Allenatore'},
-      ],
-    };
-    return (careers[coachName] ?? [
-      {'team': 'Squadra attuale', 'period': '2023-oggi', 'trophy': '', 'role': 'Allenatore'},
-    ]).map((e) => Map<String, String>.from(e)).toList();
-  }
 
 
 
