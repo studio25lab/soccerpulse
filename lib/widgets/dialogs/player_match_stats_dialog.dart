@@ -363,10 +363,12 @@ void showPlayerMatchStats(
           // Confronta
           Expanded(child: GestureDetector(
             onTap: () {
+              // [FAV-confronta-fix] cattura context valido prima del pop
+              final rootContext = Navigator.of(context, rootNavigator: true).context;
               Navigator.pop(context);
               Future.delayed(const Duration(milliseconds: 300), () {
                 showPlayerComparisonPicker(
-                  context,
+                  rootContext,
                   player1: player,
                   teamColor: teamColor,
                   isDark: isDark,

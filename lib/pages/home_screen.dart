@@ -459,7 +459,7 @@ class _HomeScreenState extends State<HomeScreen>
                       .fadeIn(duration: 800.ms).then().fadeOut(duration: 800.ms),
                   const SizedBox(height: 6),
                 ],
-                if (!isLive) ...[
+                if (isScheduled) ...[
                   Text(match.time, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: tx)),
                   const SizedBox(height: 3),
                   Text(_formatDate(match.date), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: lb)),
