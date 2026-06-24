@@ -40,13 +40,11 @@ class _MainNavigationState extends State<MainNavigation>
     with TickerProviderStateMixin {
 
   final HapticService _haptic = HapticService();
-  late final FavoritesService _favoritesService;
 
   late int _selectedIndex;
   late PageController _pageController;
   late AnimationController _fabAnimationController;
   late AnimationController _bottomNavAnimationController;
-  late Animation<double> _fabScaleAnimation;
   late Animation<double> _bottomNavSlideAnimation;
 
   bool _isFabExpanded = false;
@@ -63,7 +61,6 @@ class _MainNavigationState extends State<MainNavigation>
   @override
   void initState() {
     super.initState();
-    _favoritesService = context.read<FavoritesService>();
     _selectedIndex = widget.initialIndex;
     _pageController = PageController(initialPage: _selectedIndex);
     _initAnimations();
@@ -74,10 +71,6 @@ class _MainNavigationState extends State<MainNavigation>
     _fabAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
-    );
-    _fabScaleAnimation = CurvedAnimation(
-      parent: _fabAnimationController,
-      curve: Curves.easeInOut,
     );
 
     _bottomNavAnimationController = AnimationController(
@@ -99,53 +92,9 @@ class _MainNavigationState extends State<MainNavigation>
     if (isFirstLaunch && mounted) {
       // Show onboarding or tutorial
       await prefs.setBool('first_launch', false);
-      // _showWelcomeDialog(); // Disabilitato per ora
     }
   }
 
-  void _showWelcomeDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: const Text(
-          'Benvenuto in SoccerPulse! ⚽',
-          textAlign: TextAlign.center,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.sports_soccer,
-              size: 80,
-              color: Colors.green,
-            ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
-            const SizedBox(height: 16),
-            const Text(
-              'Segui le tue squadre preferite, ricevi aggiornamenti in tempo reale e non perdere mai una partita!',
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _showQuickTour();
-            },
-            child: Text(tr(context, 'Tour Rapido')),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(tr(context, 'Inizia')),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _showQuickTour() {
     // Show tooltips or overlays for main features
