@@ -548,45 +548,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     ]);
   }
 
-  Widget _buildStatCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-    bool isDark,
-  ) {
-    return Container(
-      width: 120,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      child: GlassmorphicCard(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: color, size: 20),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-              ),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.2, end: 0);
-  }
 
   Widget _buildMatchesTab(ThemeData theme, bool isDark, S s) {
     return FutureBuilder<List<SoccerMatch>>(
@@ -1666,44 +1627,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     ]);
   }
 
-  Widget _buildFormRow(String label, String form, bool isDark) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(fontSize: 14, color: isDark ? Colors.grey[400] : Colors.grey[600])),
-          Row(
-            children: form.split('').asMap().entries.map((entry) {
-              final fi = entry.key;
-              final c = entry.value;
-              final color = c == 'W' ? const Color(0xFF4CAF50) : c == 'D' ? const Color(0xFFF9A825) : const Color(0xFFE53935);
-              final label = formInitial(context, c);
-              return GestureDetector(
-                onTap: () => _navigateToFormMatch(context, widget.teamStanding.teamName, c, fi),
-                child: Tooltip(
-                  message: _formTooltipText(widget.teamStanding.teamName, c, fi),
-                  decoration: BoxDecoration(color: const Color(0xFF1A1A2E), borderRadius: BorderRadius.circular(8)),
-                  textStyle: const TextStyle(color: Colors.white, fontSize: 11),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Container(
-                    width: 36, height: 36,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: color.withOpacity(0.3)),
-                    ),
-                    child: Center(child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: color))),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildPlayersTab(ThemeData theme, bool isDark, S s) {
     return FutureBuilder<List<Player>>(
@@ -1989,11 +1912,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     return (hash % 40) + 1;
   }
 
-  Widget _playerPlaceholder(Player p, bool isDark) {
-    final roleColor = _roleColor(p.position);
-    final jerseyNum = p.id % 100;
-    return _playerNumberAvatar(jerseyNum, roleColor, isDark);
-  }
 
   Widget _playerNumberAvatar(int number, Color roleColor, bool isDark) {
     return Container(
@@ -2454,23 +2372,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     return stadiums[teamName] ?? 'Stadio';
   }
 
-  String _getStadiumPhotoUrl(String teamName) {
-    teamName = _normalizeTeamName(teamName);
-    // Wikipedia/Commons stadium photos (public domain)
-    const photos = {
-      'Napoli': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Stadio_Diego_Armando_Maradona_2021.jpg/1280px-Stadio_Diego_Armando_Maradona_2021.jpg',
-      'Roma': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Stadio_Olimpico_2008.JPG/1280px-Stadio_Olimpico_2008.JPG',
-      'Lazio': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Stadio_Olimpico_2008.JPG/1280px-Stadio_Olimpico_2008.JPG',
-      'Inter': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/SanSiro_Meazza.jpg/1280px-SanSiro_Meazza.jpg',
-      'Milan': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/SanSiro_Meazza.jpg/1280px-SanSiro_Meazza.jpg',
-      'Juventus': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Juventus_Stadium_2017.jpg/1280px-Juventus_Stadium_2017.jpg',
-      'Atalanta': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Gewiss_Stadium_2020.jpg/1280px-Gewiss_Stadium_2020.jpg',
-      'Bologna': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Bologna_Renato_Dall%27Ara.jpg/1280px-Bologna_Renato_Dall%27Ara.jpg',
-      'Fiorentina': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Stadio_Artemio_Franchi_Firenze_Jan_2021_%28cropped%29.jpg/1280px-Stadio_Artemio_Franchi_Firenze_Jan_2021_%28cropped%29.jpg',
-      'Torino': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Stadio_olimpico_torino_2009.JPG/1280px-Stadio_olimpico_torino_2009.JPG',
-    };
-    return photos[teamName] ?? '';
-  }
 
   String _getTeamCapacity(String teamName) {
     teamName = _normalizeTeamName(teamName);
@@ -2560,13 +2461,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     return coaches[teamName] ?? 'Allenatore';
   }
 
-  String _getZoneLabel(int pos) {
-    if (pos <= 4) return 'Champions League';
-    if (pos <= 6) return 'Europa League';
-    if (pos == 7) return 'Conference League';
-    if (pos >= 18) return 'Retrocessione';
-    return '';
-  }
 
   Color _getPositionColor(int position) {
     if (position <= 4) return Colors.green;
