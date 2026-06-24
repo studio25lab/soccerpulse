@@ -96,19 +96,6 @@ class _MainNavigationState extends State<MainNavigation>
   }
 
 
-  void _showQuickTour() {
-    // Show tooltips or overlays for main features
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(tr(context, 'Swipe tra le pagine o usa la barra in basso')),
-        duration: const Duration(seconds: 3),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {},
-        ),
-      ),
-    );
-  }
 
   void _onItemTapped(int index) {
     if (index == _selectedIndex) return;
