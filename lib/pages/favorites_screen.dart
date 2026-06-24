@@ -2311,20 +2311,6 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     );
   }
 
-  Widget _buildStatChip(IconData icon, String value, String label) {
-    return Row(children: [
-      Icon(icon, size: 16, color: Colors.grey),
-      const SizedBox(width: 4),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-          Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
-        ],
-      ),
-    ]);
-  }
-
   // ── Serie A Teams ──
   static const List<Map<String, dynamic>> _serieATeams = [
     {'name': 'Napoli', 'id': 492, 'logo': 'https://media.api-sports.io/football/teams/492.png', 'city': 'Napoli', 'pos': 1, 'pts': 90, 'p': 38, 'w': 28, 'd': 6, 'l': 4, 'gf': 77, 'ga': 28},

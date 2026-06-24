@@ -2201,35 +2201,6 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
     );
   }
 
-  Widget _statBox(String label, String value, Color cardBg, Color tx, Color lb,
-      {Color? valueColor}) {
-    final isDarkLocal = tx == Colors.white || tx == const Color(0xFFFFFFFF);
-    return Expanded(
-        child: Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-      decoration: BoxDecoration(
-          color: valueColor != null
-              ? valueColor.withOpacity(isDarkLocal ? 0.08 : 0.05)
-              : cardBg,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-              color: valueColor?.withOpacity(0.2) ??
-                  (isDarkLocal ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)))),
-      child: Column(children: [
-        Text(value,
-            style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                color: valueColor ?? tx)),
-        const SizedBox(height: 4),
-        Text(label,
-            style: TextStyle(fontSize: 10, color: lb, fontWeight: FontWeight.w500,
-                letterSpacing: 0.2),
-            textAlign: TextAlign.center),
-      ]),
-    ));
-  }
-
   Widget _profileStatRow(
       String label, String value, Color tx, Color lb, Color divider,
       {Color? valueColor}) {
