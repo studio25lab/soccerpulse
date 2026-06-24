@@ -1919,7 +1919,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
   Color _getStatColor(int val) {
     if (val >= 80) return const Color(0xFF4CAF50); // Green
     if (val >= 70) return const Color(0xFF8BC34A); // Light green
-    if (val >= 60) return const Color(0xFFFFC107); // Amber
+    if (val >= 60) return const Color(0xFFF9A825); // Amber 800 (contrasto su chiaro)
     if (val >= 50) return const Color(0xFFFF9800); // Orange
     return const Color(0xFFF44336); // Red
   }

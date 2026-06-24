@@ -559,7 +559,7 @@ class _PlayerShotMapCardState extends State<PlayerShotMapCard> {
   Color _shotColor(String type) {
     switch (type) {
       case 'goal': return const Color(0xFF4CAF50);
-      case 'on_target': return const Color(0xFFFFEB3B);
+      case 'on_target': return const Color(0xFFE6A700);
       case 'off_target': return const Color(0xFFFF5722);
       case 'blocked': return const Color(0xFF9E9E9E);
       default: return Colors.white;
@@ -1181,7 +1181,7 @@ class _PlayerShotMapPainter extends CustomPainter {
           radius = isSel ? 16 : 14;
           break;
         case 'on_target':
-          col = const Color(0xFFFFEB3B);
+          col = const Color(0xFFE6A700);
           radius = isSel ? 13 : 11;
           break;
         case 'off_target':
@@ -1292,7 +1292,7 @@ class _PlayerShotMapPainter extends CustomPainter {
     final legendY = h - 18.0;
     final items = [
       ('Gol', Color(0xFF4CAF50)),
-      ('In porta', Color(0xFFFFEB3B)),
+      ('In porta', Color(0xFFE6A700)),
       ('Fuori', const Color(0xFFFF5722)),
       ('Bloccato', const Color(0xFF9E9E9E)),
     ];
