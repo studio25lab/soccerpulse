@@ -213,14 +213,6 @@ class _HomeScreenState extends State<HomeScreen>
     return '${now.day} ${months[now.month - 1]}';
   }
 
-  Widget _summaryChip(String text, IconData icon, {bool isLive = false}) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Icon(icon, size: isLive ? 8 : 12, color: isLive ? Colors.red : Colors.white.withOpacity(0.6)),
-      const SizedBox(width: 4),
-      Text(text, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8))),
-    ]);
-  }
-
   Widget _buildTabBar(ThemeData theme, bool isDark, Color tx, Color lb) {
     return Container(
       decoration: BoxDecoration(
@@ -825,16 +817,6 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   // ── Mock scorers ──
-  Map<String, dynamic>? _getScorers(SoccerMatch match) {
-    final data = <int, Map<String, List<String>>>{
-      9001: {'home': ["Immobile 23'", "Immobile 67'"], 'away': ["Leao 38'"]},
-      2: {'home': ["Gonzalez 12'", "Bonaventura 55'", "Nico G. 78'"], 'away': ["Lookman 33'", "Muriel 88'"]},
-      8003: {'home': ["Osimhen 61'"], 'away': ["Vlahovic 45'"]},
-      8004: {'home': ["Lautaro 29'", "Barella 72'"], 'away': <String>[]},
-    };
-    return data[match.id];
-  }
-
   int _getTeamPosition(String teamName) {
     final positions = {
       'Inter': 1, 'Milan': 2, 'Juventus': 3, 'Atalanta': 4, 'Bologna': 5,
