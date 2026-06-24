@@ -642,10 +642,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 icon: const Icon(Icons.home_rounded, size: 22),
                 tooltip: 'Home',
                 onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const MainScreen()),
-                    (route) => false,
-                  );
+                  Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
                 },
               ),
             // Cuore preferiti

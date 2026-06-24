@@ -709,10 +709,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                   color: Colors.white, size: 24),
               tooltip: 'Home',
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const MainScreen()),
-                  (route) => false,
-                );
+                Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
               }),
         ]),
         const SizedBox(height: 24),
