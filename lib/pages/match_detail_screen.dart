@@ -120,24 +120,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   bool get _matchNotificationsEnabled =>
       _matchNotifSettings.hasActiveNotifications;
 
-  Map<String, bool> _matchNotifSettingsToMap() {
-    return {
-      'goals': _matchNotifSettings.notifyHomeGoals || _matchNotifSettings.notifyAwayGoals,
-      'kickoff': _matchNotifSettings.notifyMatchStart,
-      'halftime': _matchNotifSettings.notifyHalfTime,
-      'fulltime': _matchNotifSettings.notifyMatchEnd,
-      'yellowCards': _matchNotifSettings.notifyYellowCards,
-      'redCards': _matchNotifSettings.notifyRedCards,
-      'substitutions': _matchNotifSettings.notifySubstitutions,
-      'corners': _matchNotifSettings.notifyCorners,
-      'offsides': _matchNotifSettings.notifyOffsides,
-      'shotsOnTarget': _matchNotifSettings.notifyShotsOnTarget,
-      'fouls': _matchNotifSettings.notifyFouls,
-      'penalties': _matchNotifSettings.notifyPenalties,
-      'var': _matchNotifSettings.notifyVarDecisions,
-    };
-  }
-
   void _updateMatchNotifFromKey(String key, bool value) {
     switch (key) {
       case 'goals':

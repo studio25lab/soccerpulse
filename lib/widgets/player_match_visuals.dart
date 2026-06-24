@@ -1000,35 +1000,6 @@ class _PlayerHeatmapPainter extends CustomPainter {
     }
   }
 
-  void _drawArrow(Canvas canvas, Size size) {
-    final w = size.width, h = size.height;
-    final arrowY = h * 0.06;
-
-    // SofaScore style: thick bold white arrow
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.70)
-      ..strokeWidth = 3.0
-      ..strokeCap = StrokeCap.round;
-
-    final startX = isHome ? w * 0.35 : w * 0.65;
-    final endX = isHome ? w * 0.62 : w * 0.38;
-
-    // Shaft
-    canvas.drawLine(Offset(startX, arrowY), Offset(endX, arrowY), paint);
-
-    // Arrowhead — filled triangle
-    final dir = isHome ? 1.0 : -1.0;
-    final tipX = endX + dir * 2;
-    final headLen = 16.0;
-    final headW = 9.0;
-    final path = Path()
-      ..moveTo(tipX, arrowY)
-      ..lineTo(tipX - headLen * dir, arrowY - headW)
-      ..lineTo(tipX - headLen * dir, arrowY + headW)
-      ..close();
-    canvas.drawPath(path, Paint()..color = Colors.white.withOpacity(0.70));
-  }
-
   void _paintField(Canvas canvas, Size size) {
     // SofaScore: light mint green, NOT dark forest green
     final bgColor = isDark
