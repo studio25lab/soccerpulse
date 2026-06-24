@@ -361,9 +361,7 @@ class MainScreen extends StatefulWidget {
   static int? pendingStandingsTab;
   static void switchTab(int index, {int? subTab}) {
     pendingStandingsTab = subTab;
-    globalKey.currentState?.setState(() {
-      globalKey.currentState!._currentIndex = index;
-    });
+    // _onPageChanged esegue setState() dall'interno dello State (legale)
     globalKey.currentState?._onPageChanged(index);
   }
   const MainScreen({Key? key}) : super(key: key);
