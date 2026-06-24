@@ -80,13 +80,11 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   bool _isShowingNotification = false;
 
   MatchData? _matchData;
-  bool _isLoadingMatchData = false;
 
   late TabController _tabController;
   late AnimationController _headerAnimationController;
   late AnimationController _statsAnimationController;
   late AnimationController _advancedStatsAnimationController;
-  late Animation<double> _headerAnimation;
 
   // Advanced Stats
   String _advancedStatsFilter = 'shotmap';
@@ -216,7 +214,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     _matchNotifService.saveSettingsForMatch(_matchNotifSettings);
   }
   final TextEditingController _playerSearchController = TextEditingController();
-  String _playerSearchQuery = '';
   int _currentMatchMinute = 67;
 
   // ==========================================
@@ -379,8 +376,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         duration: const Duration(milliseconds: 800), vsync: this);
     _advancedStatsAnimationController = AnimationController(
         duration: const Duration(milliseconds: 1200), vsync: this);
-    _headerAnimation = CurvedAnimation(
-        parent: _headerAnimationController, curve: Curves.easeOutCubic);
     _headerAnimationController.forward();
 
     _tabController.addListener(() {
@@ -397,10 +392,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     _loadMatchData();
     _loadShotData();
 
-    _playerSearchController.addListener(() {
-      setState(() =>
-          _playerSearchQuery = _playerSearchController.text.toLowerCase());
-    });
     // ── Carica impostazioni notifiche dal service ──
     _matchNotifSettings = _matchNotifService.getSettingsForMatch(widget.match.id);
     _matchNotifService.loadSettings().then((_) {
@@ -589,16 +580,11 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   }
 
   Future<void> _loadMatchData() async {
-    setState(() => _isLoadingMatchData = true);
     try {
       final matchData = await _matchDataService.loadMatchData(widget.match.id,
           forceRefresh: false);
-      setState(() {
-        _matchData = matchData;
-        _isLoadingMatchData = false;
-      });
+      setState(() => _matchData = matchData);
     } catch (e) {
-      setState(() => _isLoadingMatchData = false);
     }
   }
 
