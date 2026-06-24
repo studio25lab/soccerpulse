@@ -7,14 +7,18 @@
 // I dati standings sono inline (mock). Loghi e colori squadra vengono
 // risolti tramite callback passati dal padre (helper condivisi).
 //
-// // [FAV-standings-tab]
+// Filtri: Totale / Casa / Trasferta - ricalcolano dati con percentuali
+// realistiche (squadre vincono di piu in casa, prendono meno gol).
+//
+// [FAV-standings-tab]
+// [FAV-standings-filter] - convertito a StatefulWidget per filtri attivi
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../utils/l10n_helper.dart';
 import '../../models/soccer_match.dart';
 
-class StandingsComparisonTab extends StatelessWidget {
+class StandingsComparisonTab extends StatefulWidget {
   final String homeName;
   final String awayName;
 
@@ -43,21 +47,125 @@ class StandingsComparisonTab extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<StandingsComparisonTab> createState() =>
+      _StandingsComparisonTabState();
+}
+
+class _StandingsComparisonTabState extends State<StandingsComparisonTab> {
+  // Filtro corrente: 'totale' | 'casa' | 'trasferta'
+  String _filter = 'totale';
+
+  // Proxy ai widget callbacks per ridurre il diff dai vecchi metodi
+  String get homeName => widget.homeName;
+  String get awayName => widget.awayName;
+  Color Function(String) get getTeamColor => widget.getTeamColor;
+  String Function(String) get getTeamLogoUrl => widget.getTeamLogoUrl;
+  void Function(int, String, String?) get onTeamTap => widget.onTeamTap;
+  void Function(SoccerMatch) get onMatchTap => widget.onMatchTap;
+
+  /// Genera dati Casa/Trasferta dai totali con percentuali realistiche.
+  /// Le squadre tendono a vincere di piu in casa e a prendere meno gol.
+  ///
+  /// Percentuali (casa):
+  ///   - Vittorie: 62% del totale
+  ///   - Pareggi: 50% del totale
+  ///   - Sconfitte: 40% del totale
+  ///   - Gol fatti: 58% del totale
+  ///   - Gol subiti: 42% del totale
+  ///   - Partite: 50% del totale (~17-18 home games su 35)
+  ///
+  /// Trasferta = totale - casa, quindi simmetrico.
+  List<Map<String, dynamic>> _computeFiltered(
+      List<Map<String, dynamic>> standings) {
+    if (_filter == 'totale') return standings;
+
+    final isHome = _filter == 'casa';
+
+    final result = standings.map<Map<String, dynamic>>((s) {
+      final p = s['p'] as int;
+      final w = s['w'] as int;
+      final d = s['d'] as int;
+      final l = s['l'] as int;
+      final gf = s['gf'] as int;
+      final ga = s['ga'] as int;
+
+      final hpW = (w * 0.62).round();
+      final hpD = (d * 0.50).round();
+      final hpL = (l * 0.40).round();
+      final hpGf = (gf * 0.58).round();
+      final hpGa = (ga * 0.42).round();
+      final hpP = (p / 2).round();
+
+      final apW = w - hpW;
+      final apD = d - hpD;
+      final apL = l - hpL;
+      final apGf = gf - hpGf;
+      final apGa = ga - hpGa;
+      final apP = p - hpP;
+
+      final nW = isHome ? hpW : apW;
+      final nD = isHome ? hpD : apD;
+      final nL = isHome ? hpL : apL;
+      final nGf = isHome ? hpGf : apGf;
+      final nGa = isHome ? hpGa : apGa;
+      final nP = isHome ? hpP : apP;
+      final nPts = nW * 3 + nD;
+      final nGd = nGf - nGa;
+      final nGdStr = nGd >= 0 ? '+$nGd' : '$nGd';
+
+      return {
+        'pos': s['pos'],
+        'team': s['team'],
+        'pts': nPts,
+        'p': nP,
+        'w': nW,
+        'd': nD,
+        'l': nL,
+        'gf': nGf,
+        'ga': nGa,
+        'gd': nGdStr,
+        'form': s['form'],
+      };
+    }).toList();
+
+    // Sort decrescente per pts, poi gd, poi gf
+    result.sort((a, b) {
+      final pa = a['pts'] as int;
+      final pb = b['pts'] as int;
+      if (pa != pb) return pb.compareTo(pa);
+      final gda = (a['gf'] as int) - (a['ga'] as int);
+      final gdb = (b['gf'] as int) - (b['ga'] as int);
+      if (gda != gdb) return gdb.compareTo(gda);
+      return (b['gf'] as int).compareTo(a['gf'] as int);
+    });
+
+    // Riassegna pos in base al nuovo ordine
+    for (int i = 0; i < result.length; i++) {
+      result[i] = {...result[i], 'pos': i + 1};
+    }
+
+    return result;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     return _buildStandingsComparisonTab(context, theme, isDark);
   }
 
-  Widget _buildStandingsComparisonTab(BuildContext context, ThemeData theme, bool isDark) {
+  Widget _buildStandingsComparisonTab(
+      BuildContext context, ThemeData theme, bool isDark) {
     final bg = isDark ? Colors.grey[900]! : const Color(0xFFF5F6FA);
     final cardBg = isDark ? const Color(0xFF1E1E2A) : Colors.white;
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+    final divider = isDark
+        ? Colors.white.withOpacity(0.06)
+        : Colors.grey.withOpacity(0.1);
 
     // Full Serie A standings
-    final standings = [
+    final standings = <Map<String, dynamic>>[
       {'pos': 1, 'team': 'Inter', 'pts': 83, 'p': 35, 'w': 26, 'd': 5, 'l': 4, 'gf': 78, 'ga': 25, 'gd': '+53', 'form': 'WWDWW'},
       {'pos': 2, 'team': 'Milan', 'pts': 72, 'p': 35, 'w': 22, 'd': 6, 'l': 7, 'gf': 65, 'ga': 38, 'gd': '+27', 'form': 'WLWWD'},
       {'pos': 3, 'team': 'Juventus', 'pts': 68, 'p': 35, 'w': 20, 'd': 8, 'l': 7, 'gf': 55, 'ga': 30, 'gd': '+25', 'form': 'DDWWL'},
@@ -80,6 +188,9 @@ class StandingsComparisonTab extends StatelessWidget {
       {'pos': 20, 'team': 'Salernitana', 'pts': 16, 'p': 35, 'w': 3, 'd': 7, 'l': 25, 'gf': 22, 'ga': 68, 'gd': '-46', 'form': 'LLLLL'},
     ];
 
+    // Applica filtro Casa/Trasferta/Totale
+    final filteredStandings = _computeFiltered(standings);
+
     return Container(
       color: bg,
       child: ListView(padding: const EdgeInsets.all(12), children: [
@@ -87,11 +198,20 @@ class StandingsComparisonTab extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Row(children: [
-            _standingsFilterChip(tr(context, 'Totale'), true, theme),
+            _standingsFilterChip(tr(context, 'Totale'),
+                _filter == 'totale', theme, () {
+              setState(() => _filter = 'totale');
+            }),
             const SizedBox(width: 6),
-            _standingsFilterChip(tr(context, 'Casa'), false, theme),
+            _standingsFilterChip(tr(context, 'Casa'),
+                _filter == 'casa', theme, () {
+              setState(() => _filter = 'casa');
+            }),
             const SizedBox(width: 6),
-            _standingsFilterChip(tr(context, 'Trasferta'), false, theme),
+            _standingsFilterChip(tr(context, 'Trasferta'),
+                _filter == 'trasferta', theme, () {
+              setState(() => _filter = 'trasferta');
+            }),
             const Spacer(),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
@@ -134,14 +254,14 @@ class StandingsComparisonTab extends StatelessWidget {
         Container(
           color: cardBg,
           child: Column(children: [
-            ...standings.asMap().entries.map((entry) {
+            ...filteredStandings.asMap().entries.map((entry) {
               final i = entry.key;
               final s = entry.value;
               final teamName = s['team'] as String;
               final isMatch = teamName == homeName || teamName == awayName;
               final teamColor = getTeamColor(teamName);
               final pos = s['pos'] as int;
-              final isLast = i == standings.length - 1;
+              final isLast = i == filteredStandings.length - 1;
 
               // Zone colors
               Color? zoneBar;
@@ -257,18 +377,22 @@ class StandingsComparisonTab extends StatelessWidget {
     );
   }
 
-  Widget _standingsFilterChip(String label, bool active, ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: active ? theme.primaryColor : Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: active ? theme.primaryColor : Colors.grey.withOpacity(0.3)),
+  Widget _standingsFilterChip(String label, bool active,
+      ThemeData theme, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: active ? theme.primaryColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: active ? theme.primaryColor : Colors.grey.withOpacity(0.3)),
+        ),
+        child: Text(label, style: TextStyle(
+          fontSize: 12, fontWeight: FontWeight.w600,
+          color: active ? Colors.white : Colors.grey[500],
+        )),
       ),
-      child: Text(label, style: TextStyle(
-        fontSize: 12, fontWeight: FontWeight.w600,
-        color: active ? Colors.white : Colors.grey[500],
-      )),
     );
   }
 
