@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../utils/l10n_helper.dart';
 import '../../models/soccer_match.dart';
+import '../dialogs/rendimento_dialog.dart';
 
 class StandingsComparisonTab extends StatefulWidget {
   final String homeName;
@@ -213,18 +214,25 @@ class _StandingsComparisonTabState extends State<StandingsComparisonTab> {
               setState(() => _filter = 'trasferta');
             }),
             const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-              decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
+            GestureDetector(
+              onTap: () => showRendimento(
+                context, theme, isDark, tx, lb,
+                highlightTeams: [homeName, awayName],
+                getTeamColor: getTeamColor,
               ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.trending_up_rounded, size: 14, color: theme.primaryColor),
-                const SizedBox(width: 4),
-                Text(tr(context, 'Rendimento'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: theme.primaryColor)),
-              ]),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.trending_up_rounded, size: 14, color: theme.primaryColor),
+                  const SizedBox(width: 4),
+                  Text(tr(context, 'Rendimento'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: theme.primaryColor)),
+                ]),
+              ),
             ),
           ]),
         ),
