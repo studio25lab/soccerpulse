@@ -51,41 +51,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     },
   ];
 
-  
-  String _localizeNotifText(BuildContext context, String text) {
-    final isEn = Localizations.localeOf(context).languageCode == 'en';
-    if (!isEn) {
-      // Decode back to Italian for display
-      if (text == 'MATCH_STARTED') return 'Partita iniziata';
-      if (text == 'MATCH_REMINDER') return 'Promemoria partita';
-      if (text.startsWith('GOAL_NOTIFICATION:')) {
-        final parts = text.split(':');
-        return '${parts[1]} ha segnato al ${parts[2]}\'';
-      }
-      if (text.startsWith('MATCH_STARTED_MSG:')) {
-        return '${text.split(':')[1]} è iniziata';
-      }
-      if (text.startsWith('MATCH_REMINDER_MSG:')) {
-        return '${text.split(':')[1]} inizia tra 30 minuti';
-      }
-      return text;
-    }
-    // English
-    if (text == 'MATCH_STARTED') return 'Match started';
-    if (text == 'MATCH_REMINDER') return 'Match reminder';
-    if (text.startsWith('GOAL_NOTIFICATION:')) {
-      final parts = text.split(':');
-      return '${parts[1]} scored at ${parts[2]}\'';
-    }
-    if (text.startsWith('MATCH_STARTED_MSG:')) {
-      return '${text.split(':')[1]} has started';
-    }
-    if (text.startsWith('MATCH_REMINDER_MSG:')) {
-      return '${text.split(':')[1]} starts in 30 minutes';
-    }
-    return text;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

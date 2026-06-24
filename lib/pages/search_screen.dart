@@ -677,48 +677,6 @@ class _SearchScreenState extends State<SearchScreen>
     );
   }
 
-  Widget _buildCategoryCard({
-    required IconData icon, required String label, required String subtitle,
-    required Color color, required String query, required bool isDark,
-    required Color tx, required Color lb, bool compact = false,
-  }) {
-    return GestureDetector(
-      onTap: () { _haptic.lightImpact(); _searchController.text = query; _performSearch(query); },
-      child: Container(
-        padding: EdgeInsets.all(compact ? 16 : 18),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              isDark ? color.withOpacity(0.12) : color.withOpacity(0.06),
-              isDark ? color.withOpacity(0.04) : color.withOpacity(0.02),
-            ],
-            begin: Alignment.topLeft, end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: color.withOpacity(isDark ? 0.2 : 0.15)),
-          boxShadow: [BoxShadow(color: color.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 3))],
-        ),
-        child: Row(children: [
-          Container(
-            width: compact ? 42 : 48, height: compact ? 42 : 48,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.18),
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: [BoxShadow(color: color.withOpacity(0.1), blurRadius: 6)],
-            ),
-            child: Icon(icon, size: compact ? 22 : 26, color: color),
-          ),
-          const SizedBox(width: 12),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(label, style: TextStyle(fontSize: compact ? 13 : 15, fontWeight: FontWeight.w700, color: tx)),
-            Text(subtitle, style: TextStyle(fontSize: 11, color: lb)),
-          ])),
-          Icon(Icons.chevron_right_rounded, size: 20, color: lb.withOpacity(0.4)),
-        ]),
-      ),
-    );
-  }
-
 
   Widget _buildInlineSuggestions(ThemeData theme, bool isDark, Color tx, Color lb) {
     final suggestions = <Map<String, dynamic>>[];
