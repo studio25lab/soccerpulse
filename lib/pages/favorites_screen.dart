@@ -2077,37 +2077,6 @@ class _FavoritesScreenState extends State<FavoritesScreen>
 
 
   // Helper: salva notifiche per tutti gli ID possibili di un giocatore
-  void _saveNotifForAllIds(PlayerNotificationPreferencesService svc, PlayerNotificationSettings settings, String playerName, int primaryId) {
-    // Salva con l'ID primario
-    svc.saveSettingsForPlayer(settings);
-    // Trova tutti gli ID esistenti per questo giocatore e aggiornali
-    final allExisting = svc.exportSettings();
-    try {
-      final Map<String, dynamic> decoded = Map<String, dynamic>.from(
-        (allExisting.isNotEmpty) ? Map.castFrom(jsonDecode(allExisting)) : {},
-      );
-      for (final key in decoded.keys) {
-        final entry = decoded[key];
-        if (entry is Map && entry['playerName'] == playerName) {
-          final existingId = entry['playerId'] as int? ?? primaryId;
-          if (existingId != settings.playerId) {
-            final synced = PlayerNotificationSettings(
-              playerId: existingId, playerName: settings.playerName,
-              matchId: entry['matchId'] != null ? entry['matchId'] as int : null,
-              enabled: settings.enabled, notifyGoals: settings.notifyGoals,
-              notifyAssists: settings.notifyAssists, notifyShotsOnTarget: settings.notifyShotsOnTarget,
-              notifyShotsOffTarget: settings.notifyShotsOffTarget,
-              notifyYellowCard: settings.notifyYellowCard, notifyRedCard: settings.notifyRedCard,
-              notifyFoulCommitted: settings.notifyFoulCommitted, notifyFoulSuffered: settings.notifyFoulSuffered,
-              notifyKeyPasses: settings.notifyKeyPasses, notifyOffsides: settings.notifyOffsides,
-            );
-            svc.saveSettingsForPlayer(synced);
-          }
-        }
-      }
-    } catch (_) {}
-  }
-
   Future<void> _showPlayerNotificationSheet(Map<String, dynamic> p, ThemeData theme, bool isDark) async {
     final playerId = p['number'] as int? ?? (p['id'] as int);
     final playerName = p['name'] as String;
