@@ -12,6 +12,7 @@ import 'match_detail_screen.dart';
 import '../services/favorites_service.dart';
 import 'package:provider/provider.dart';
 import '../services/match_notification_preferences_service.dart';
+import '../widgets/dialogs/match_notification_dialog.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({Key? key}) : super(key: key);
@@ -554,10 +555,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                 final settings = notifSvc.getSettingsForMatch(match.id);
                                 final hasNotif = settings.enabled && (settings.notifyHomeGoals || settings.notifyAwayGoals);
                                 return GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
                                     HapticService().lightImpact();
-                                    if (!hasNotif) { notifSvc.enableBasicNotifications(match.id); }
-                                    else { notifSvc.disableAllNotifications(match.id); }
+                                    await _showMatchNotifDialog(match);
                                     (bellCtx as Element).markNeedsBuild();
                                   },
                                   child: Container(
@@ -615,6 +615,99 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showMatchNotifDialog(SoccerMatch match) async {
+    final notifSvc = context.read<MatchNotificationPreferencesService>();
+
+    void updateFromKey(String key, bool value) {
+      var s = notifSvc.getSettingsForMatch(match.id);
+      switch (key) {
+        case 'goals':
+          s = s.copyWith(notifyHomeGoals: value, notifyAwayGoals: value);
+          break;
+        case 'kickoff':
+          s = s.copyWith(notifyMatchStart: value);
+          break;
+        case 'halftime':
+          s = s.copyWith(notifyHalfTime: value);
+          break;
+        case 'fulltime':
+          s = s.copyWith(notifyMatchEnd: value);
+          break;
+        case 'yellowCards':
+          s = s.copyWith(notifyYellowCards: value);
+          break;
+        case 'redCards':
+          s = s.copyWith(notifyRedCards: value);
+          break;
+        case 'substitutions':
+          s = s.copyWith(notifySubstitutions: value);
+          break;
+        case 'corners':
+          s = s.copyWith(notifyCorners: value);
+          break;
+        case 'offsides':
+          s = s.copyWith(notifyOffsides: value);
+          break;
+        case 'shotsOnTarget':
+          s = s.copyWith(notifyShotsOnTarget: value);
+          break;
+        case 'fouls':
+          s = s.copyWith(notifyFouls: value);
+          break;
+        case 'penalties':
+          s = s.copyWith(notifyPenalties: value);
+          break;
+        case 'var':
+          s = s.copyWith(notifyVarDecisions: value);
+          break;
+      }
+      if (value && !s.enabled) {
+        s = s.copyWith(enabled: true);
+      }
+      notifSvc.saveSettingsForMatch(s);
+    }
+
+    void setAll(bool value) {
+      var s = notifSvc.getSettingsForMatch(match.id);
+      s = s.copyWith(
+        enabled: value,
+        notifyHomeGoals: value,
+        notifyAwayGoals: value,
+        notifyYellowCards: value,
+        notifyRedCards: value,
+        notifySubstitutions: value,
+        notifyShotsOnTarget: value,
+        notifyCorners: value,
+        notifyPenalties: value,
+        notifyFouls: value,
+        notifyOffsides: value,
+        notifyMatchStart: value,
+        notifyHalfTime: value,
+        notifySecondHalfStart: value,
+        notifyMatchEnd: value,
+        notifyVarDecisions: value,
+      );
+      notifSvc.saveSettingsForMatch(s);
+    }
+
+    await showMatchNotificationDialogV2(
+      context,
+      match: match,
+      getSettings: () => notifSvc.getSettingsForMatch(match.id),
+      setSettings: (s) {
+        notifSvc.saveSettingsForMatch(s);
+      },
+      service: notifSvc,
+      haptic: HapticService(),
+      onUpdateFromKey: (key, value) {
+        updateFromKey(key, value);
+      },
+      onSetAll: (value) {
+        setAll(value);
+      },
     );
   }
 }

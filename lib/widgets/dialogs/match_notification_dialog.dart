@@ -108,9 +108,15 @@ Future<void> showMatchNotificationDialogV2(
 
           void setMaster(bool value) {
             haptic.lightImpact();
-            final next = s.copyWith(enabled: value);
-            setSettings(next);
-            service.saveSettingsForMatch(next);
+            if (!value) {
+              // Master OFF: spegne TUTTI i sotto-toggle (non solo il flag).
+              onSetAll(false);
+            } else {
+              // Master ON: riattiva solo il flag, l'utente mantiene i suoi toggle.
+              final next = s.copyWith(enabled: true);
+              setSettings(next);
+              service.saveSettingsForMatch(next);
+            }
             refresh();
           }
 
