@@ -16,7 +16,6 @@ import '../services/favorites_service.dart';
 import '../services/team_notification_preferences_service.dart';
 import '../widgets/team_notification_settings_bottom_sheet.dart';
 import '../services/haptic_service.dart';
-import '../widgets/glassmorphic_card.dart';
 import '../widgets/loading_state_widget.dart';
 import 'match_detail_screen.dart';
 import 'coach_profile_screen.dart';

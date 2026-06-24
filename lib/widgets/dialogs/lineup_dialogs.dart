@@ -433,25 +433,6 @@ Future<void> showMatchPlayerNotifDialog(BuildContext context, {required LocalLin
   final tx = isDark ? Colors.white : Colors.black87;
   final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
 
-  // Notification types for match context
-  final categories = {
-    'Gol & Tiri': {
-      'goals': [S.of(context)!.gol, 'Notifica quando segna', Icons.sports_soccer],
-      'shotsOnTarget': [localizeShotData(context, 'Tiri in porta'), tr(context, 'Notifica tiri in porta'), Icons.gps_fixed],
-      'shotsOffTarget': [localizeShotData(context, 'Tiri totali'), tr(context, 'Notifica tutti i tiri'), Icons.gps_not_fixed],
-    },
-    S.of(context)!.disciplinaLabel: {
-      'yellowCard': ['Cartellino giallo', 'Notifica ammonizione', Icons.square],
-      'redCard': ['Cartellino rosso', 'Notifica espulsione', Icons.square],
-      'foulCommitted': ['Fallo commesso', 'Notifica falli commessi', Icons.front_hand],
-      'foulSuffered': ['Fallo subito', 'Notifica falli subiti', Icons.personal_injury],
-    },
-    'Gioco': {
-      'keyPasses': [S.of(context)!.passaggiChiave, 'Notifica passaggi decisivi', Icons.swap_calls],
-      'dribblesSuccessful': [tr(context, 'Dribbling riusciti'), tr(context, 'Notifica dribbling'), Icons.directions_run],
-      'offsides': [tr(context, 'Fuorigioco'), 'Notifica fuorigioco', Icons.flag],
-    },
-  };
 
   Map<String, bool> getPrefs() => {
     'goals': settings.notifyGoals,

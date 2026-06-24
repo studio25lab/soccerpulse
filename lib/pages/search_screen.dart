@@ -806,12 +806,12 @@ class _SearchScreenState extends State<SearchScreen>
         final sub = s['sub'] as String;
         final icon = s['icon'] as IconData;
         final logo = s['logo'] as String?;
-        Color typeColor; String typeLabel;
+        Color typeColor;
         switch (type) {
-          case 'team': typeColor = Color(0xFF00BFA5); typeLabel = tr(context, 'Squadra'); break;
-          case 'coach': typeColor = Color(0xFF9C27B0); typeLabel = tr(context, 'Allenatore'); break;
-          case 'player': typeColor = Color(0xFF2196F3); typeLabel = tr(context, 'Giocatore'); break;
-          default: typeColor = const Color(0xFFFFA726); typeLabel = tr(context, 'Partita'); break;
+          case 'team': typeColor = const Color(0xFF00BFA5); break;
+          case 'coach': typeColor = const Color(0xFF9C27B0); break;
+          case 'player': typeColor = const Color(0xFF2196F3); break;
+          default: typeColor = const Color(0xFFFFA726); break;
         }
         return GestureDetector(
           onTap: () {

@@ -73,7 +73,6 @@ void showPlayerMatchStats(
   final events = generateEvents();
   LocalMatchEvent? subEvent;
   LocalLineupPlayer? linkedPlayer;
-  bool wasSubbedIn = false;
   bool wasSubbedOut = false;
 
   // Check if this player was subbed OUT (starter replaced)
@@ -94,7 +93,6 @@ void showPlayerMatchStats(
     for (final e in events) {
       if (e.type == 'substitution' && e.detail == player.name) {
         subEvent = e;
-        wasSubbedIn = true;
         // Find the player who went OUT (playerName = outgoing player)
         final matches = allPlayers.where((p) => p.name == e.playerName);
         if (matches.isNotEmpty) linkedPlayer = matches.first;
