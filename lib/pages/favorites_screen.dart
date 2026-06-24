@@ -1,4 +1,3 @@
-import 'dart:convert';
 // lib/pages/favorites_screen.dart
 
 import 'package:flutter/material.dart';
