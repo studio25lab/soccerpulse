@@ -513,7 +513,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   color: Colors.white.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.person_rounded, size: 18, color: Colors.white),
+                child: const Icon(Icons.settings, size: 18, color: Colors.white),
               ),
             ),
             const SizedBox(width: 8),
