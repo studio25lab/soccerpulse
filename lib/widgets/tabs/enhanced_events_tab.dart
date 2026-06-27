@@ -80,6 +80,41 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     'substitution'
   };
 
+  final ScrollController _scrollController = ScrollController();
+  final Map<int, GlobalKey> _eventKeys = {};
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToMinute(int minute) {
+    final key = _eventKeys[minute];
+    final ctx = key?.currentContext;
+    if (ctx != null) {
+      // Percorso principale: singola animazione fluida.
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOutCubic,
+        alignment: 0.25,
+      );
+    } else {
+      // Fallback raro (item molto lontano non ancora montato nonostante
+      // il cacheExtent). In Crono 0' in cima, 90' in fondo; in Recenti invertito.
+      final max = _scrollController.position.maxScrollExtent;
+      var frac = (minute / 90).clamp(0.0, 1.0);
+      if (!_eventsChronologicalOrder) frac = 1.0 - frac;
+      final target = frac * max;
+      _scrollController.animateTo(
+        target,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -90,6 +125,10 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
   Widget _buildEnhancedEventsTab(ThemeData theme, bool isDark) {
     final allEvents = widget.getEvents();
     allEvents.sort((a, b) => a.minute.compareTo(b.minute));
+
+    // Le GlobalKey vengono rigenerate a ogni build: l'ordine (Crono/Recenti)
+    // cambia le posizioni, quindi le key vecchie non sono piu' valide.
+    _eventKeys.clear();
 
     // Filter by active event types
     final filteredEvents =
@@ -127,7 +166,9 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                   child: Text(tr(context, 'Nessun evento trovato'),
                       style: TextStyle(fontSize: 16, color: Colors.grey[500])))
               : ListView.builder(
+                  controller: _scrollController,
                   padding: EdgeInsets.zero,
+                  cacheExtent: 3000,
                   itemCount: filteredEvents.length + 3,
                   itemBuilder: (context, index) {
                     final isChrono = _eventsChronologicalOrder;
@@ -158,7 +199,9 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                         needsHT = prevEvent.minute > 45 && event.minute <= 45;
                       }
                     }
-                    return Column(children: [
+                    final eventKey =
+                        _eventKeys.putIfAbsent(event.minute, () => GlobalKey());
+                    return Column(key: eventKey, children: [
                       if (needsHT) _buildMatchMarker(S.of(context)!.intervallo, 45, isDark),
                       _buildCentralTimelineEvent(
                           event, score, isDark, homeColor, awayColor),
@@ -341,21 +384,27 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                   left: xPos - 8,
                   top: e.isHomeTeam ? 0 : null,
                   bottom: e.isHomeTeam ? null : 0,
-                  child: Container(
-                    width: 16, height: 16,
-                    decoration: BoxDecoration(
-                      color: e.isHomeTeam ? homeColor : awayColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: cardBg, width: 1.5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: (e.isHomeTeam ? homeColor : awayColor).withOpacity(0.4),
-                          blurRadius: 6,
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => _scrollToMinute(e.minute),
+                      child: Container(
+                        width: 16, height: 16,
+                        decoration: BoxDecoration(
+                          color: e.isHomeTeam ? homeColor : awayColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: cardBg, width: 1.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: (e.isHomeTeam ? homeColor : awayColor).withOpacity(0.4),
+                              blurRadius: 6,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.sports_soccer, size: 8, color: Colors.white),
+                        child: const Center(
+                          child: Icon(Icons.sports_soccer, size: 8, color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
                 );
@@ -369,17 +418,28 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                   left: xPos - 4,
                   top: e.isHomeTeam ? 4 : null,
                   bottom: e.isHomeTeam ? null : 4,
-                  child: Container(
-                    width: 8, height: 11,
-                    decoration: BoxDecoration(
-                      color: isRed ? Colors.red : Colors.amber,
-                      borderRadius: BorderRadius.circular(1.5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: (isRed ? Colors.red : Colors.amber).withOpacity(0.4),
-                          blurRadius: 4,
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => _scrollToMinute(e.minute),
+                      // area di tap leggermente piu' ampia del marker
+                      child: Container(
+                        padding: const EdgeInsets.all(3),
+                        color: Colors.transparent,
+                        child: Container(
+                          width: 8, height: 11,
+                          decoration: BoxDecoration(
+                            color: isRed ? Colors.red : Colors.amber,
+                            borderRadius: BorderRadius.circular(1.5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: (isRed ? Colors.red : Colors.amber).withOpacity(0.4),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 );
