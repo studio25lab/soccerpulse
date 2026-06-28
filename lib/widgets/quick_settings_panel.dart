@@ -1,6 +1,7 @@
 // lib/widgets/quick_settings_panel.dart
 
 import 'package:flutter/material.dart';
+import 'package:country_flags/country_flags.dart';
 import '../../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -322,11 +323,9 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
           const SizedBox(height: 12),
           Row(
             children: [
-              _buildLanguageOption('🇮🇹', 'Italiano', 'it', theme),
+              _buildLanguageOption('it', 'Italiano', 'it', theme),
               const SizedBox(width: 8),
-              _buildLanguageOption('🇬🇧', 'English', 'en', theme),
-              const SizedBox(width: 8),
-              _buildLanguageOption('🇪🇸', 'Español', 'es', theme),
+              _buildLanguageOption('gb', 'English', 'en', theme),
             ],
           ),
         ],
@@ -335,7 +334,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
   }
 
   Widget _buildLanguageOption(
-      String flag, String label, String code, ThemeData theme) {
+      String countryCode, String label, String code, ThemeData theme) {
     final isSelected = _selectedLanguage == code;
 
     return Expanded(
@@ -350,8 +349,6 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
             context.read<ThemeService>().setLocale(const Locale('it', 'IT'));
           } else if (code == 'en') {
             context.read<ThemeService>().setLocale(const Locale('en', 'US'));
-          } else if (code == 'es') {
-            context.read<ThemeService>().setLocale(const Locale('es', 'ES'));
           }
         },
         borderRadius: BorderRadius.circular(8),
@@ -370,7 +367,10 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
           ),
           child: Column(
             children: [
-              Text(flag, style: const TextStyle(fontSize: 20)),
+              CountryFlag.fromCountryCode(countryCode,
+                  theme: const ImageTheme(
+                      height: 22, width: 32,
+                      shape: RoundedRectangle(4))),
               const SizedBox(height: 4),
               Text(
                 label,

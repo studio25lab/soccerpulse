@@ -38,6 +38,7 @@ dependencies:
 
   # Material Design Icons
   cupertino_icons: ^1.0.6
+  country_flags: ^4.1.2
 
 dev_dependencies:
   flutter_test:

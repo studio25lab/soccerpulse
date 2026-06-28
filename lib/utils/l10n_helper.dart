@@ -967,6 +967,9 @@ String localizeShotData(BuildContext context, String? text) {
     'Tiri totali': 'Total shots',
     'Tocchi area avversaria': 'Touches in penalty area',
     'Vedi profilo completo': 'View full profile',
+    'Tiro parato': 'Saved shot',
+    'Tiro fuori': 'Shot off target',
+    'Tiro bloccato': 'Blocked shot',
     };
     return map[text] ?? text;
   }

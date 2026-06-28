@@ -1,6 +1,7 @@
 // lib/pages/settings_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../services/theme_service.dart';
@@ -391,7 +392,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Text('🇮🇹', style: TextStyle(fontSize: 24)),
+              leading: CountryFlag.fromLanguageCode('it',
+                  theme: const ImageTheme(
+                      height: 22, width: 32,
+                      shape: RoundedRectangle(4))),
               title: const Text('Italiano'),
               onTap: () {
                 themeService.setLocale(const Locale('it', 'IT'));
@@ -399,7 +403,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             ListTile(
-              leading: const Text('🇬🇧', style: TextStyle(fontSize: 24)),
+              leading: CountryFlag.fromCountryCode('GB',
+                  theme: const ImageTheme(
+                      height: 22, width: 32,
+                      shape: RoundedRectangle(4))),
               title: const Text('English'),
               onTap: () {
                 themeService.setLocale(const Locale('en', 'US'));
