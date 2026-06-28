@@ -64,7 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         value: isDark,
                         onChanged: (value) {
                           _haptic.lightImpact();
-                          themeService.toggleTheme();
+                          themeService.toggleTheme(context);
                         },
                       ),
                     ),

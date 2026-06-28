@@ -91,15 +91,12 @@ class ThemeService extends ChangeNotifier {
   }
 
   // Toggle tema
-  void toggleTheme() {
-    if (_themeMode == ThemeMode.light) {
-      setThemeMode(ThemeMode.dark);
-    } else if (_themeMode == ThemeMode.dark) {
-      setThemeMode(ThemeMode.light);
-    } else {
-      // Se è system, passa a light
-      setThemeMode(ThemeMode.light);
-    }
+  void toggleTheme(BuildContext context) {
+    // Decide in base al tema EFFETTIVAMENTE visibile: isDarkMode risolve
+    // anche 'system' guardando la brightness di sistema. Cosi un solo tap
+    // inverte sempre cio' che l'utente vede, da qualunque stato di partenza.
+    final currentlyDark = isDarkMode(context);
+    setThemeMode(currentlyDark ? ThemeMode.light : ThemeMode.dark);
   }
 
   // Helper per verificare se è dark mode
