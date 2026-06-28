@@ -3,8 +3,8 @@
 // Tab "Formazioni" della partita: campo verticale con giocatori posizionati
 // per modulo, panchina, profilo allenatore. Estratta da match_detail_screen.dart.
 //
-// Implementata come StatelessWidget perche il toggle _showHomeLineup
-// resta gestito dal padre (e usato anche da _showPlayerMatchStats).
+// StatefulWidget: gestisce internamente il toggle Campo/Lista (_lineupViewMode).
+// Il toggle Casa/Trasferta (showHomeLineup) resta gestito dal padre via callback.
 //
 // // [FAV-lineups-tab]
 
@@ -15,7 +15,10 @@ import '../../models/match_data.dart';
 import '../../painters/match_detail_painters.dart';
 import '../../pages/match_player_profile_screen.dart';
 
-class LineupsTab extends StatelessWidget {
+/// Modalita' di visualizzazione delle formazioni.
+enum _LineupViewMode { field, list }
+
+class LineupsTab extends StatefulWidget {
   final String homeTeamName;
   final String awayTeamName;
   final MatchData? matchData;
@@ -56,6 +59,13 @@ class LineupsTab extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<LineupsTab> createState() => _LineupsTabState();
+}
+
+class _LineupsTabState extends State<LineupsTab> {
+  _LineupViewMode _viewMode = _LineupViewMode.field;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -65,8 +75,8 @@ class LineupsTab extends StatelessWidget {
   Widget _buildLineupsTab(BuildContext context, ThemeData theme, bool isDark) {
     List<LocalLineupPlayer> homeLineup = [];
     List<LocalLineupPlayer> awayLineup = [];
-    if (matchData != null) {
-      homeLineup = matchData!.homeLineup
+    if (widget.matchData != null) {
+      homeLineup = widget.matchData!.homeLineup
           .map((p) => LocalLineupPlayer(
               number: p.number,
               name: p.name,
@@ -84,7 +94,7 @@ class LineupsTab extends StatelessWidget {
               yellowCards: p.yellowCards,
               redCards: p.redCards))
           .toList();
-      awayLineup = matchData!.awayLineup
+      awayLineup = widget.matchData!.awayLineup
           .map((p) => LocalLineupPlayer(
               number: p.number,
               name: p.name,
@@ -103,8 +113,8 @@ class LineupsTab extends StatelessWidget {
               redCards: p.redCards))
           .toList();
     }
-    if (homeLineup.isEmpty) homeLineup = generateLineup(true);
-    if (awayLineup.isEmpty) awayLineup = generateLineup(false);
+    if (homeLineup.isEmpty) homeLineup = widget.generateLineup(true);
+    if (awayLineup.isEmpty) awayLineup = widget.generateLineup(false);
 
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
@@ -112,17 +122,17 @@ class LineupsTab extends StatelessWidget {
 
     final homeFormation = '4-3-3';
     final awayFormation = '4-2-3-1';
-    final homeBench = generateBench(true);
-    final awayBench = generateBench(false);
+    final homeBench = widget.generateBench(true);
+    final awayBench = widget.generateBench(false);
     final homeCoach = 'Maurizio Sarri';
     final awayCoach = 'Stefano Pioli';
 
-    final lineup = showHomeLineup ? homeLineup : awayLineup;
-    final formation = showHomeLineup ? homeFormation : awayFormation;
-    final bench = showHomeLineup ? homeBench : awayBench;
-    final coach = showHomeLineup ? homeCoach : awayCoach;
+    final lineup = widget.showHomeLineup ? homeLineup : awayLineup;
+    final formation = widget.showHomeLineup ? homeFormation : awayFormation;
+    final bench = widget.showHomeLineup ? homeBench : awayBench;
+    final coach = widget.showHomeLineup ? homeCoach : awayCoach;
     final teamColor =
-        showHomeLineup ? const Color(0xFF1565C0) : const Color(0xFFD32F2F);
+        widget.showHomeLineup ? const Color(0xFF1565C0) : const Color(0xFFD32F2F);
     final allPlayers = [...lineup, ...bench];
 
     // Average rating
@@ -146,174 +156,275 @@ class LineupsTab extends StatelessWidget {
       color: isDark ? const Color(0xFF121212) : const Color(0xFFF5F6FA),
       child: Column(children: [
         // Team selector — same style as other sections
-        buildTeamSelector(showHomeLineup,
-            onToggleHome, isDark,
+        widget.buildTeamSelector(widget.showHomeLineup,
+            widget.onToggleHome, isDark,
             showTutti: false),
 
-        // Visual pitch + bench + coach
+        // Toggle Campo / Lista
+        _buildViewModeToggle(isDark, tx, lb),
+
+        // Contenuto: campo (con bench/coach) oppure lista
         Expanded(
-            child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Column(children: [
-            // ── VISUAL PITCH ──
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4))
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(14),
-                child: Column(children: [
-                  // Team header bar
+          child: _viewMode == _LineupViewMode.field
+              ? _buildFieldView(context, isDark, tx, lb, cardBg, lineup, bench,
+                  formation, coach, teamColor, avgRating, avgRatingBg,
+                  allPlayers)
+              : _buildListView(context, isDark, tx, lb, cardBg, homeLineup,
+                  awayLineup, homeBench, awayBench),
+        ),
+      ]),
+    );
+  }
+
+  // ── Toggle Campo / Lista ──
+  Widget _buildViewModeToggle(bool isDark, Color tx, Color lb) {
+    final selBg = isDark ? const Color(0xFF1565C0) : const Color(0xFF1565C0);
+    final trackBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+
+    Widget seg(String label, IconData icon, _LineupViewMode mode) {
+      final selected = _viewMode == mode;
+      return Expanded(
+        child: GestureDetector(
+          onTap: () => setState(() => _viewMode = mode),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            padding: const EdgeInsets.symmetric(vertical: 9),
+            decoration: BoxDecoration(
+              color: selected ? selBg : Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(icon,
+                  size: 16, color: selected ? Colors.white : lb),
+              const SizedBox(width: 6),
+              Text(label,
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: selected ? Colors.white : lb)),
+            ]),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 10, 12, 4),
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: trackBg,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+            color: isDark ? Colors.grey[800]! : Colors.grey[200]!),
+      ),
+      child: Row(children: [
+        seg(localizeShotData(context, 'Campo'), Icons.stadium_outlined,
+            _LineupViewMode.field),
+        seg(localizeShotData(context, 'Lista'), Icons.format_list_bulleted,
+            _LineupViewMode.list),
+      ]),
+    );
+  }
+
+  // ── VISTA LISTA (placeholder — Passo 2 la implementa) ──
+  Widget _buildListView(
+      BuildContext context,
+      bool isDark,
+      Color tx,
+      Color lb,
+      Color cardBg,
+      List<LocalLineupPlayer> homeLineup,
+      List<LocalLineupPlayer> awayLineup,
+      List<LocalLineupPlayer> homeBench,
+      List<LocalLineupPlayer> awayBench) {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Icon(Icons.format_list_bulleted, size: 48, color: lb),
+        const SizedBox(height: 12),
+        Text(localizeShotData(context, 'Vista lista in arrivo'),
+            style: TextStyle(fontSize: 14, color: lb)),
+      ]),
+    );
+  }
+
+  // ── VISTA CAMPO (identica all'originale) ──
+  Widget _buildFieldView(
+      BuildContext context,
+      bool isDark,
+      Color tx,
+      Color lb,
+      Color cardBg,
+      List<LocalLineupPlayer> lineup,
+      List<LocalLineupPlayer> bench,
+      String formation,
+      String coach,
+      Color teamColor,
+      double avgRating,
+      Color avgRatingBg,
+      List<LocalLineupPlayer> allPlayers) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(children: [
+        // ── VISUAL PITCH ──
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4))
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: Column(children: [
+              // Team header bar
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 10),
+                color: const Color(0xFF1B5E20),
+                child: Row(children: [
+                  // Team shield
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                        color: teamColor.withOpacity(0.15),
+                        shape: BoxShape.circle),
+                    child: Icon(Icons.shield, color: teamColor, size: 16),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                      widget.showHomeLineup
+                          ? widget.homeTeamName
+                          : widget.awayTeamName,
+                      style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white)),
+                  const SizedBox(width: 10),
+                  // Avg rating badge
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    color: const Color(0xFF1B5E20),
-                    child: Row(children: [
-                      // Team shield
-                      Container(
-                        width: 28,
-                        height: 28,
-                        decoration: BoxDecoration(
-                            color: teamColor.withOpacity(0.15),
-                            shape: BoxShape.circle),
-                        child: Icon(Icons.shield, color: teamColor, size: 16),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                          showHomeLineup
-                              ? homeTeamName
-                              : awayTeamName,
-                          style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white)),
-                      const SizedBox(width: 10),
-                      // Avg rating badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                            color: avgRatingBg,
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Text(avgRating.toStringAsFixed(2),
-                            style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white)),
-                      ),
-                      const Spacer(),
-                      // Formation label
-                      Text(formation,
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white70,
-                              letterSpacing: 1)),
-                    ]),
-                  ),
-                  // Pitch — responsive: max 420px height, wider on desktop
-                  LayoutBuilder(builder: (context, outerConstraints) {
-                    final maxH = 460.0;
-                    // On narrow screens (mobile) use 0.75, on wide (desktop) use 0.85
-                    final ratio = outerConstraints.maxWidth > 600 ? 0.85 : 0.75;
-                    final calcH = outerConstraints.maxWidth / ratio;
-                    final pitchH = calcH > maxH ? maxH : calcH;
-                    return SizedBox(
-                      height: pitchH,
-                      child: CustomPaint(
-                        painter: FormationPitchPainter(isDark: isDark),
-                        child: LayoutBuilder(builder: (context, constraints) {
-                          final w = constraints.maxWidth;
-                          final h = constraints.maxHeight;
-                          final positions = _getFormationPositions(formation);
-
-                          return Stack(clipBehavior: Clip.none, children: [
-                            for (int i = 0;
-                                i < lineup.length && i < positions.length;
-                                i++)
-                              _buildPitchPlayer(
-                                lineup[i],
-                                positions[i],
-                                w,
-                                h,
-                                teamColor,
-                                isDark,
-                                allPlayers: allPlayers,
-                              ),
-                          ]);
-                        }),
-                      ),
-                    );
-                  }),
-                ]),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // ── COACH ──
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: cardBg,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                    color: isDark ? Colors.grey[800]! : Colors.grey[200]!),
-              ),
-              child: GestureDetector(
-                onTap: () => showCoachProfile(coach, showHomeLineup, teamColor, isDark),
-                child: Row(children: [
-                  Container(
-                    width: 40,
-                    height: 40,
+                        horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: teamColor.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(Icons.person_outline_rounded,
-                        color: teamColor, size: 22),
+                        color: avgRatingBg,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Text(avgRating.toStringAsFixed(2),
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white)),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(localizeShotData(context, localizeShotData(context, 'Allenatore')),
-                          style: TextStyle(
-                              fontSize: 11,
-                              color: lb,
-                              fontWeight: FontWeight.w500)),
-                      Text(coach,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: tx)),
-                    ]),
-                  ),
-                  Icon(Icons.chevron_right_rounded, color: lb, size: 20),
+                  const Spacer(),
+                  // Formation label
+                  Text(formation,
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white70,
+                          letterSpacing: 1)),
                 ]),
               ),
-            ),
-            const SizedBox(height: 16),
+              // Pitch — responsive: max 420px height, wider on desktop
+              LayoutBuilder(builder: (context, outerConstraints) {
+                final maxH = 460.0;
+                // On narrow screens (mobile) use 0.75, on wide (desktop) use 0.85
+                final ratio = outerConstraints.maxWidth > 600 ? 0.85 : 0.75;
+                final calcH = outerConstraints.maxWidth / ratio;
+                final pitchH = calcH > maxH ? maxH : calcH;
+                return SizedBox(
+                  height: pitchH,
+                  child: CustomPaint(
+                    painter: FormationPitchPainter(isDark: isDark),
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      final w = constraints.maxWidth;
+                      final h = constraints.maxHeight;
+                      final positions = _getFormationPositions(formation);
 
-            // ── PANCHINA ──
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(localizeShotData(context, 'Panchina'),
-                  style: TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.w800, color: tx)),
-            ),
-            const SizedBox(height: 10),
-            ...bench.map((p) => _buildBenchPlayerItem(context, 
-                p, teamColor, isDark, tx, lb, cardBg,
-                allPlayers: allPlayers)),
-            const SizedBox(height: 20),
-          ]),
-        )),
+                      return Stack(clipBehavior: Clip.none, children: [
+                        for (int i = 0;
+                            i < lineup.length && i < positions.length;
+                            i++)
+                          _buildPitchPlayer(
+                            lineup[i],
+                            positions[i],
+                            w,
+                            h,
+                            teamColor,
+                            isDark,
+                            allPlayers: allPlayers,
+                          ),
+                      ]);
+                    }),
+                  ),
+                );
+              }),
+            ]),
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // ── COACH ──
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+                color: isDark ? Colors.grey[800]! : Colors.grey[200]!),
+          ),
+          child: GestureDetector(
+            onTap: () => widget.showCoachProfile(
+                coach, widget.showHomeLineup, teamColor, isDark),
+            child: Row(children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: teamColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.person_outline_rounded,
+                    color: teamColor, size: 22),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(localizeShotData(context, localizeShotData(context, 'Allenatore')),
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: lb,
+                          fontWeight: FontWeight.w500)),
+                  Text(coach,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: tx)),
+                ]),
+              ),
+              Icon(Icons.chevron_right_rounded, color: lb, size: 20),
+            ]),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // ── PANCHINA ──
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(localizeShotData(context, 'Panchina'),
+              style: TextStyle(
+                  fontSize: 15, fontWeight: FontWeight.w800, color: tx)),
+        ),
+        const SizedBox(height: 10),
+        ...bench.map((p) => _buildBenchPlayerItem(context,
+            p, teamColor, isDark, tx, lb, cardBg,
+            allPlayers: allPlayers)),
+        const SizedBox(height: 20),
       ]),
     );
   }
@@ -385,7 +496,7 @@ class LineupsTab extends StatelessWidget {
       left: x - dotSize / 2 - 16,
       top: y - dotSize / 2 - 4,
       child: GestureDetector(
-        onTap: () => showPlayerMatchStats(player, teamColor, isDark,
+        onTap: () => widget.showPlayerMatchStats(player, teamColor, isDark,
             allPlayers: allPlayers),
         child: SizedBox(
           width: dotSize + 32,
@@ -532,16 +643,12 @@ class LineupsTab extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           if (player.minutesPlayed > 0) {
-            showPlayerMatchStats(player, teamColor, isDark, allPlayers: allPlayers);
+            widget.showPlayerMatchStats(player, teamColor, isDark, allPlayers: allPlayers);
           } else {
-            final teamName = showHomeLineup ? homeTeamName : awayTeamName;
+            final teamName = widget.showHomeLineup ? widget.homeTeamName : widget.awayTeamName;
             Navigator.of(context).push(MaterialPageRoute(builder: (_) => MatchPlayerProfileScreen(player: player, teamName: teamName, teamColor: teamColor)));
           }
         },
-
-
-
-
         child: Container(
           margin: const EdgeInsets.only(bottom: 6),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
