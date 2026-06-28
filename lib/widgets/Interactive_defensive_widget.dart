@@ -117,6 +117,7 @@ class InteractiveDefensiveWidget extends StatefulWidget {
   final Color homeColor;
   final Color awayColor;
   final bool isDark;
+  final void Function(String name, bool isHome, bool isDark)? openPlayerProfile;
 
   const InteractiveDefensiveWidget({
     super.key,
@@ -129,6 +130,7 @@ class InteractiveDefensiveWidget extends StatefulWidget {
     this.homeColor = const Color(0xFF4CAF50),
     this.awayColor = const Color(0xFF1565C0),
     this.isDark = false,
+    this.openPlayerProfile,
   });
 
   @override
@@ -1121,6 +1123,26 @@ class _InteractiveDefensiveWidgetState
             Text('${p.total}',
                 style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.w800, color: tx)),
+            if (widget.openPlayerProfile != null) ...[
+              const SizedBox(width: 10),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => widget.openPlayerProfile!(
+                      p.name, p.isHome, widget.isDark),
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: teamColor.withOpacity(dk ? 0.18 : 0.10),
+                    ),
+                    child: Icon(Icons.person_outline,
+                        size: 17, color: teamColor),
+                  ),
+                ),
+              ),
+            ],
           ]),
           const SizedBox(height: 8),
           // Barra proporzionale

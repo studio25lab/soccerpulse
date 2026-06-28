@@ -1309,6 +1309,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
           homeColor: const Color(0xFF4CAF50),
           awayColor: const Color(0xFF1565C0),
           isDark: isDark,
+          openPlayerProfile: _openPlayerStatsFromEvent,
         );
       default:
         return Container();
