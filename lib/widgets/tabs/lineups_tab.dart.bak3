@@ -14,7 +14,6 @@ import '../../models/local_match_models.dart';
 import '../../models/match_data.dart';
 import '../../painters/match_detail_painters.dart';
 import '../../pages/match_player_profile_screen.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 /// Modalita' di visualizzazione delle formazioni.
 enum _LineupViewMode { field, list }
@@ -24,8 +23,6 @@ class LineupsTab extends StatefulWidget {
   final String awayTeamName;
   final MatchData? matchData;
   final bool showHomeLineup;
-  final String? homeLogoUrl;
-  final String? awayLogoUrl;
 
   /// Callback per cambiare il toggle Casa/Trasferta.
   final ValueChanged<bool?> onToggleHome;
@@ -53,8 +50,6 @@ class LineupsTab extends StatefulWidget {
     required this.awayTeamName,
     required this.matchData,
     required this.showHomeLineup,
-    this.homeLogoUrl,
-    this.awayLogoUrl,
     required this.onToggleHome,
     required this.generateLineup,
     required this.generateBench,
@@ -186,7 +181,7 @@ class _LineupsTabState extends State<LineupsTab> {
     final selBg = isDark ? const Color(0xFF1565C0) : const Color(0xFF1565C0);
     final trackBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
 
-    Widget seg(String label, Widget icon, _LineupViewMode mode) {
+    Widget seg(String label, IconData icon, _LineupViewMode mode) {
       final selected = _viewMode == mode;
       return Expanded(
         child: GestureDetector(
@@ -199,7 +194,8 @@ class _LineupsTabState extends State<LineupsTab> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              icon,
+              Icon(icon,
+                  size: 16, color: selected ? Colors.white : lb),
               const SizedBox(width: 6),
               Text(label,
                   style: TextStyle(
@@ -222,26 +218,9 @@ class _LineupsTabState extends State<LineupsTab> {
             color: isDark ? Colors.grey[800]! : Colors.grey[200]!),
       ),
       child: Row(children: [
-        seg(
-            localizeShotData(context, 'Campo'),
-            SizedBox(
-              width: 17,
-              height: 17,
-              child: CustomPaint(
-                painter: _SoccerFieldIcon(
-                    color: _viewMode == _LineupViewMode.field
-                        ? Colors.white
-                        : lb),
-              ),
-            ),
+        seg(localizeShotData(context, 'Campo'), Icons.stadium_outlined,
             _LineupViewMode.field),
-        seg(
-            localizeShotData(context, 'Lista'),
-            Icon(Icons.format_list_bulleted,
-                size: 16,
-                color: _viewMode == _LineupViewMode.list
-                    ? Colors.white
-                    : lb),
+        seg(localizeShotData(context, 'Lista'), Icons.format_list_bulleted,
             _LineupViewMode.list),
       ]),
     );
@@ -272,7 +251,7 @@ class _LineupsTabState extends State<LineupsTab> {
           Expanded(
             child: _buildListColumn(
               context, isDark, tx, lb, cardBg,
-              widget.homeTeamName, widget.homeLogoUrl, homeColor, true,
+              widget.homeTeamName, homeColor, true,
               homeLineup, homeBench, homeAll),
           ),
           const SizedBox(width: 8),
@@ -280,7 +259,7 @@ class _LineupsTabState extends State<LineupsTab> {
           Expanded(
             child: _buildListColumn(
               context, isDark, tx, lb, cardBg,
-              widget.awayTeamName, widget.awayLogoUrl, awayColor, false,
+              widget.awayTeamName, awayColor, false,
               awayLineup, awayBench, awayAll),
           ),
         ],
@@ -295,7 +274,6 @@ class _LineupsTabState extends State<LineupsTab> {
       Color lb,
       Color cardBg,
       String teamName,
-      String? logoUrl,
       Color teamColor,
       bool isHome,
       List<LocalLineupPlayer> lineup,
@@ -309,7 +287,7 @@ class _LineupsTabState extends State<LineupsTab> {
             color: isDark ? Colors.grey[800]! : Colors.grey[200]!),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        // Header squadra con LOGO reale
+        // Header squadra
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
           decoration: BoxDecoration(
@@ -317,7 +295,12 @@ class _LineupsTabState extends State<LineupsTab> {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(11)),
           ),
           child: Row(children: [
-            _teamLogoSmall(logoUrl, teamColor),
+            Container(
+              width: 22, height: 22,
+              decoration: BoxDecoration(
+                  color: teamColor.withOpacity(0.18), shape: BoxShape.circle),
+              child: Icon(Icons.shield, color: teamColor, size: 13),
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(teamName,
@@ -330,10 +313,9 @@ class _LineupsTabState extends State<LineupsTab> {
             ),
           ]),
         ),
-        // Titolari (zebra via index)
-        ...lineup.asMap().entries.map((e) => _buildListPlayerRow(
-            context, e.value, teamColor, isHome, isDark, tx, lb, allPlayers,
-            e.key.isOdd)),
+        // Titolari
+        ...lineup.map((p) => _buildListPlayerRow(
+            context, p, teamColor, isHome, isDark, tx, lb, allPlayers)),
         // Separatore panchina
         if (bench.isNotEmpty) ...[
           Container(
@@ -346,35 +328,10 @@ class _LineupsTabState extends State<LineupsTab> {
                     color: lb,
                     letterSpacing: 0.5)),
           ),
-          ...bench.asMap().entries.map((e) => _buildListPlayerRow(
-              context, e.value, teamColor, isHome, isDark, tx, lb, allPlayers,
-              e.key.isOdd)),
+          ...bench.map((p) => _buildListPlayerRow(
+              context, p, teamColor, isHome, isDark, tx, lb, allPlayers)),
         ],
       ]),
-    );
-  }
-
-  // Logo squadra piccolo con fallback a scudo
-  Widget _teamLogoSmall(String? logoUrl, Color teamColor) {
-    if (logoUrl != null && logoUrl.isNotEmpty) {
-      return ClipOval(
-        child: CachedNetworkImage(
-          imageUrl: logoUrl,
-          width: 22, height: 22, fit: BoxFit.contain,
-          errorWidget: (_, __, ___) => Container(
-            width: 22, height: 22,
-            decoration: BoxDecoration(
-                color: teamColor.withOpacity(0.18), shape: BoxShape.circle),
-            child: Icon(Icons.shield, color: teamColor, size: 13),
-          ),
-        ),
-      );
-    }
-    return Container(
-      width: 22, height: 22,
-      decoration: BoxDecoration(
-          color: teamColor.withOpacity(0.18), shape: BoxShape.circle),
-      child: Icon(Icons.shield, color: teamColor, size: 13),
     );
   }
 
@@ -386,30 +343,12 @@ class _LineupsTabState extends State<LineupsTab> {
       bool isDark,
       Color tx,
       Color lb,
-      List<LocalLineupPlayer> allPlayers,
-      bool zebra) {
+      List<LocalLineupPlayer> allPlayers) {
     final hasYellow = player.yellowCards > 0;
     final hasRed = player.redCards > 0;
     final hasGoal = player.goals > 0;
     final wasSubbed = player.minutesPlayed < 90 && player.minutesPlayed > 0;
     final didNotPlay = player.minutesPlayed == 0;
-
-    // Rating badge color per fascia
-    Color ratingBg;
-    if (player.rating >= 8.0)
-      ratingBg = const Color(0xFF1B5E20);
-    else if (player.rating >= 7.0)
-      ratingBg = const Color(0xFF388E3C);
-    else if (player.rating >= 6.5)
-      ratingBg = const Color(0xFFF9A825);
-    else if (player.rating >= 6.0)
-      ratingBg = const Color(0xFFEF6C00);
-    else
-      ratingBg = const Color(0xFFD32F2F);
-
-    final zebraBg = zebra
-        ? (isDark ? Colors.white.withOpacity(0.02) : Colors.grey.withOpacity(0.04))
-        : Colors.transparent;
 
     return InkWell(
       onTap: () {
@@ -425,27 +364,26 @@ class _LineupsTabState extends State<LineupsTab> {
         }
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
-        color: zebraBg,
-        child: Row(children: [
-          // Numero in cerchietto
-          Container(
-            width: 22, height: 22,
-            decoration: BoxDecoration(
-              color: didNotPlay
-                  ? (isDark ? Colors.grey[800] : Colors.grey[200])
-                  : teamColor.withOpacity(0.14),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text('${player.number}',
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      color: didNotPlay ? lb : teamColor)),
-            ),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+                color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.10),
+                width: 0.5),
           ),
-          const SizedBox(width: 8),
+        ),
+        child: Row(children: [
+          // Numero
+          SizedBox(
+            width: 22,
+            child: Text('${player.number}',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: didNotPlay ? lb : teamColor),
+                textAlign: TextAlign.center),
+          ),
+          const SizedBox(width: 6),
           // Nome
           Expanded(
             child: Text(_shortName(player.name),
@@ -484,22 +422,6 @@ class _LineupsTabState extends State<LineupsTab> {
                     : const Color(0xFFF9A825),
                 borderRadius: BorderRadius.circular(1.5),
               ),
-            ),
-          ],
-          // Rating badge a destra
-          if (!didNotPlay && player.rating > 0) ...[
-            const SizedBox(width: 6),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-              decoration: BoxDecoration(
-                color: ratingBg,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(player.rating.toStringAsFixed(1),
-                  style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white)),
             ),
           ],
         ]),
@@ -981,41 +903,4 @@ class _LineupsTabState extends State<LineupsTab> {
     // "Luis Alberto" → "L. Alberto", "Theo Hernandez" → "T. Hernandez"
     return '${parts.first[0]}. ${parts.last}';
   }
-}
-
-
-// Mini campo da calcio per il toggle: perimetro + meta' campo + cerchio.
-class _SoccerFieldIcon extends CustomPainter {
-  final Color color;
-  _SoccerFieldIcon({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final p = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.4
-      ..strokeJoin = StrokeJoin.round
-      ..isAntiAlias = true;
-
-    final w = size.width;
-    final h = size.height;
-    final r = RRect.fromRectAndRadius(
-        Rect.fromLTWH(0.7, 0.7, w - 1.4, h - 1.4), const Radius.circular(1.5));
-    // Perimetro
-    canvas.drawRRect(r, p);
-    // Linea di meta' campo (verticale)
-    canvas.drawLine(Offset(w / 2, 0.7), Offset(w / 2, h - 0.7), p);
-    // Cerchio di centrocampo
-    canvas.drawCircle(Offset(w / 2, h / 2), w * 0.15, p);
-    // Aree di rigore (rettangolini ai lati corti)
-    final boxH = h * 0.44;
-    final boxW = w * 0.18;
-    final boxTop = (h - boxH) / 2;
-    canvas.drawRect(Rect.fromLTWH(0.7, boxTop, boxW, boxH), p);
-    canvas.drawRect(Rect.fromLTWH(w - 0.7 - boxW, boxTop, boxW, boxH), p);
-  }
-
-  @override
-  bool shouldRepaint(_SoccerFieldIcon old) => old.color != color;
 }

@@ -1757,6 +1757,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       awayTeamName: widget.match.awayTeamName,
       matchData: _matchData,
       showHomeLineup: _showHomeLineup,
+      homeLogoUrl: _getTeamLogoUrl(widget.match.homeTeamName),
+      awayLogoUrl: _getTeamLogoUrl(widget.match.awayTeamName),
       onToggleHome: (val) => setState(() => _showHomeLineup = val!),
       generateLineup: _generateMockLocalLineup,
       generateBench: _generateMockBench,
