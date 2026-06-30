@@ -3,13 +3,17 @@
 import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
 import '../models/team_standing.dart';
 import '../api/api_service.dart';
 import '../services/haptic_service.dart';
+import '../services/favorites_service.dart';
 import '../generated/l10n.dart';
+import 'team_detail_screen.dart';
 import '../main.dart';
 import 'match_player_profile_screen.dart'; // [FAV-extract4]
 import 'package:soccerpulse/models/local_match_models.dart';
+import '../widgets/dialogs/rendimento_dialog.dart';
 import '../widgets/standings_list_view.dart';
 
 class StandingsScreen extends StatefulWidget {
@@ -23,8 +27,10 @@ class _StandingsScreenState extends State<StandingsScreen>
   final ApiService _apiService = ApiService();
   final HapticService _haptic = HapticService();
   late TabController _tabController;
+  late FavoritesService _favoritesService;
 
   Future<List<TeamStanding>>? _standingsFuture;
+  int _filterIndex = 0; // 0=Totale, 1=Casa, 2=Trasferta
 
   // Filter labels are now localized in build
 
@@ -32,6 +38,7 @@ class _StandingsScreenState extends State<StandingsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 6, vsync: this);
+    _favoritesService = context.read<FavoritesService>();
     _loadStandings();
     // Check if navigated from search with specific sub-tab
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -151,6 +158,7 @@ class _StandingsScreenState extends State<StandingsScreen>
         final standings = snapshot.data ?? [];
         if (standings.isEmpty) return Center(child: Text(S.of(context)!.nessunDato, style: TextStyle(color: lb)));
 
+        final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
 
         return StandingsListView(standings: standings);
       },
