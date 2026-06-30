@@ -53,3 +53,8 @@ app.*.map.json
 # Backup files
 *.bak
 *.bak_*
+
+# Backup creati dagli script di patch
+*.bak
+*.bak[0-9]
+*.bak[0-9][a-z]
