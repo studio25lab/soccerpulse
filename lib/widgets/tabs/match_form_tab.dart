@@ -152,23 +152,45 @@ class _MatchFormTabState extends State<MatchFormTab> {
       );
     }
 
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(22),
+    return Column(
+      children: [
+        Text(
+          tr(context, 'Forma recente'),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: tx,
+          ),
         ),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          chip('5', 5),
-          const SizedBox(width: 4),
-          chip('10', 10),
-          const SizedBox(width: 4),
-          chip('20', 20),
-          const SizedBox(width: 4),
-          chip(tr(context, 'Tutte'), null),
-        ]),
-      ),
+        const SizedBox(height: 2),
+        Text(
+          tr(context, 'Partite considerate per squadra'),
+          style: TextStyle(
+            fontSize: 11.5,
+            fontWeight: FontWeight.w500,
+            color: lb,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Center(
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              chip('5', 5),
+              const SizedBox(width: 4),
+              chip('10', 10),
+              const SizedBox(width: 4),
+              chip('20', 20),
+              const SizedBox(width: 4),
+              chip(tr(context, 'Tutte'), null),
+            ]),
+          ),
+        ),
+      ],
     );
   }
 

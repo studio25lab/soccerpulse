@@ -777,6 +777,8 @@ const _map = <String, String>{
   'eventi attivi': 'active events',
   'Probabili': 'Probable',
   'Forma': 'Form',
+  'Forma recente': 'Recent form',
+  'Partite considerate per squadra': 'Matches counted per team',
   'Tiri per partita': 'Shots per match',
   'Probabili Formazioni': 'Probable Lineups',
   'Risultati': 'Results',
