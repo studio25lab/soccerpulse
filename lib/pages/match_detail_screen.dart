@@ -609,8 +609,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             _buildLineupsTab(theme, isDark),
             _buildAdvancedStatsTab(theme, isDark),
             _buildStandingsComparisonTab(theme, isDark),
-            _buildInfoTab(theme, isDark),
             _buildH2HTab(theme, isDark),
+            _buildInfoTab(theme, isDark),
           ],
         ])),
       ]),
@@ -947,8 +947,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             _buildTab(Icons.sports_soccer, S.of(context)!.formazioni),
             _buildTab(Icons.analytics, S.of(context)!.advanced),
             _buildTab(Icons.leaderboard_rounded, S.of(context)!.classifica),
-            _buildTab(Icons.info_outline, S.of(context)!.info),
             _buildTab(Icons.compare_arrows_rounded, S.of(context)!.h2h),
+            _buildTab(Icons.info_outline, S.of(context)!.info),
           ]),
     );
   }
