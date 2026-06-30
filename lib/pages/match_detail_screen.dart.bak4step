@@ -37,6 +37,7 @@ import '../widgets/tabs/pre_match_info_tab.dart';
 import '../widgets/tabs/h2h_tab.dart';
 import '../widgets/tabs/probable_lineups_tab.dart';
 import '../widgets/tabs/statistics_tab.dart';
+import '../widgets/tabs/standings_comparison_tab.dart';
 import '../widgets/tabs/info_tab.dart';
 import '../widgets/tabs/enhanced_events_tab.dart';
 import '../widgets/tabs/lineups_tab.dart';
@@ -350,7 +351,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: widget.match.isScheduled ? 5 : 7, vsync: this);
+    _tabController = TabController(length: widget.match.isScheduled ? 5 : 6, vsync: this);
     _headerAnimationController = AnimationController(
         duration: const Duration(milliseconds: 1200), vsync: this);
     _statsAnimationController = AnimationController(
@@ -608,7 +609,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             _buildStatisticsTab(theme, isDark),
             _buildLineupsTab(theme, isDark),
             _buildAdvancedStatsTab(theme, isDark),
-            _buildStandingsComparisonTab(theme, isDark),
             _buildInfoTab(theme, isDark),
             _buildH2HTab(theme, isDark),
           ],
@@ -946,7 +946,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             _buildTab(Icons.bar_chart, S.of(context)!.statistics),
             _buildTab(Icons.sports_soccer, S.of(context)!.formazioni),
             _buildTab(Icons.analytics, S.of(context)!.advanced),
-            _buildTab(Icons.leaderboard_rounded, S.of(context)!.classifica),
             _buildTab(Icons.info_outline, S.of(context)!.info),
             _buildTab(Icons.compare_arrows_rounded, S.of(context)!.h2h),
           ]),

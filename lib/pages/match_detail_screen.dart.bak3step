@@ -20,7 +20,6 @@ import '../generated/l10n.dart';
 import 'team_detail_screen.dart';
 import '../api/api_service.dart';
 import '../models/team_standing.dart';
-import '../widgets/standings_list_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -37,6 +36,7 @@ import '../widgets/tabs/pre_match_info_tab.dart';
 import '../widgets/tabs/h2h_tab.dart';
 import '../widgets/tabs/probable_lineups_tab.dart';
 import '../widgets/tabs/statistics_tab.dart';
+import '../widgets/tabs/standings_comparison_tab.dart';
 import '../widgets/tabs/info_tab.dart';
 import '../widgets/tabs/enhanced_events_tab.dart';
 import '../widgets/tabs/lineups_tab.dart';
@@ -350,7 +350,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: widget.match.isScheduled ? 5 : 7, vsync: this);
+    _tabController = TabController(length: widget.match.isScheduled ? 5 : 6, vsync: this);
     _headerAnimationController = AnimationController(
         duration: const Duration(milliseconds: 1200), vsync: this);
     _statsAnimationController = AnimationController(
@@ -372,7 +372,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
 
     _loadMatchData();
     _loadShotData();
-    _loadStandings();
 
     // ── Carica impostazioni notifiche dal service ──
     _matchNotifSettings = _matchNotifService.getSettingsForMatch(widget.match.id);
@@ -608,7 +607,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             _buildStatisticsTab(theme, isDark),
             _buildLineupsTab(theme, isDark),
             _buildAdvancedStatsTab(theme, isDark),
-            _buildStandingsComparisonTab(theme, isDark),
             _buildInfoTab(theme, isDark),
             _buildH2HTab(theme, isDark),
           ],
@@ -821,14 +819,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     ));
   }
 
-  Future<List<TeamStanding>>? _standingsFuture;
-
-  void _loadStandings() {
-    setState(() {
-      _standingsFuture = ApiService().fetchStandings(135);
-    });
-  }
-
   Widget _buildTeamLogo(String? logoUrl) {
     if (logoUrl != null && logoUrl.isNotEmpty) {
       return CachedNetworkImage(
@@ -946,7 +936,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             _buildTab(Icons.bar_chart, S.of(context)!.statistics),
             _buildTab(Icons.sports_soccer, S.of(context)!.formazioni),
             _buildTab(Icons.analytics, S.of(context)!.advanced),
-            _buildTab(Icons.leaderboard_rounded, S.of(context)!.classifica),
             _buildTab(Icons.info_outline, S.of(context)!.info),
             _buildTab(Icons.compare_arrows_rounded, S.of(context)!.h2h),
           ]),
@@ -2035,31 +2024,15 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   // ══════════════════════════════════════════════════════════════════
 
   Widget _buildStandingsComparisonTab(ThemeData theme, bool isDark) {
-    final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
-    return FutureBuilder<List<TeamStanding>>(
-      future: _standingsFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 12),
-              Text('Errore: ${snapshot.error}', style: TextStyle(color: lb)),
-              const SizedBox(height: 12),
-              ElevatedButton(onPressed: _loadStandings, child: const Text('Riprova')),
-            ]),
-          );
-        }
-        final standings = snapshot.data ?? [];
-        return StandingsListView(
-          standings: standings,
-          highlightTeams: [
-            widget.match.homeTeamName,
-            widget.match.awayTeamName,
-          ],
+    return StandingsComparisonTab(
+      homeName: widget.match.homeTeamName,
+      awayName: widget.match.awayTeamName,
+      getTeamColor: _getTeamColor,
+      getTeamLogoUrl: _getTeamLogoUrl,
+      onTeamTap: _navigateToTeamDetail,
+      onMatchTap: (m) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => MatchDetailScreen(match: m)),
         );
       },
     );

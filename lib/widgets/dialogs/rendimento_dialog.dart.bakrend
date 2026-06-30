@@ -279,21 +279,16 @@ void showRendimento(
                       // [FAV-rendimento-highlight] evidenzia squadre match
                       final teamName = r['team'] as String;
                       final isMatchTeam = highlightTeams != null &&
-                          highlightTeams.any((h) =>
-                              h == teamName ||
-                              teamName.contains(h) ||
-                              h.contains(teamName));
-                      final matchColor = isMatchTeam
-                          ? (getTeamColor != null
-                              ? getTeamColor(teamName)
-                              : theme.primaryColor)
+                          highlightTeams.contains(teamName);
+                      final matchColor = isMatchTeam && getTeamColor != null
+                          ? getTeamColor(teamName)
                           : null;
                       return Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 10),
                         decoration: BoxDecoration(
                             color: isMatchTeam && matchColor != null
-                                ? matchColor.withOpacity(isDark ? 0.24 : 0.14)
+                                ? matchColor.withOpacity(isDark ? 0.15 : 0.08)
                                 : isTop3
                                     ? pColor.withOpacity(isDark ? 0.06 : 0.03)
                                     : isRetro
@@ -301,11 +296,7 @@ void showRendimento(
                                             .withOpacity(isDark ? 0.04 : 0.02)
                                         : null,
                             border: Border(
-                                left: BorderSide(
-                                    width: isMatchTeam && matchColor != null ? 5 : 3,
-                                    color: isMatchTeam && matchColor != null
-                                        ? matchColor
-                                        : pColor),
+                                left: BorderSide(width: 3, color: pColor),
                                 bottom:
                                     BorderSide(width: 0.5, color: divider))),
                         child: Row(children: [

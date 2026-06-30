@@ -218,10 +218,8 @@ class _StandingsListViewState extends State<StandingsListView> {
               final t = sorted[i];
               final posColor = _posColor(i + 1);
               final isFav = favoritesService.isTeamFavorite(t.teamId);
-              final isHighlight = widget.highlightTeams.any((h) =>
-                  h == t.teamName ||
-                  t.teamName.contains(h) ||
-                  h.contains(t.teamName));
+              final isHighlight =
+                  widget.highlightTeams.contains(t.teamName);
               final form = (t.form ?? 'WDLWW').split('').take(5).toList();
               final fPlayed = _filterIndex == 1
                   ? t.home.played
@@ -259,17 +257,12 @@ class _StandingsListViewState extends State<StandingsListView> {
               // Background: highlight (squadra del match) ha priorita', poi preferito
               Color? rowBg;
               if (isHighlight) {
-                rowBg = theme.primaryColor.withOpacity(isDark ? 0.22 : 0.13);
+                rowBg = theme.primaryColor.withOpacity(isDark ? 0.10 : 0.06);
               } else if (isFav) {
                 rowBg = isDark
                     ? Colors.amber.withOpacity(0.04)
                     : Colors.amber.withOpacity(0.03);
               }
-
-              // Bordo sinistro: spesso e colorato per le squadre del match.
-              final leftBorder = isHighlight
-                  ? BorderSide(width: 5, color: theme.primaryColor)
-                  : BorderSide(width: 3, color: posColor);
 
               return InkWell(
                 onTap: () {
@@ -291,7 +284,7 @@ class _StandingsListViewState extends State<StandingsListView> {
                   decoration: BoxDecoration(
                     color: rowBg,
                     border: Border(
-                      left: leftBorder,
+                      left: BorderSide(width: 3, color: posColor),
                       bottom: BorderSide(width: 0.5, color: divider),
                     ),
                   ),
