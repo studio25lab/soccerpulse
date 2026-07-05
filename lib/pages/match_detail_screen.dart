@@ -399,6 +399,12 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         }
         _lastProcessedEventCount = events.length;
       }
+      // [TEST-LIVE] refresh UI (minuto, punteggio, tab Eventi)
+      if (mounted) {
+        setState(() {
+          _currentMatchMinute = updatedMatch.elapsed ?? _currentMatchMinute;
+        });
+      }
     });
   }
 
@@ -1688,7 +1694,65 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   // (mock estratto in mock_match_events.dart)
   // Quando arrivera l'API, sostituire con chiamata API.
   List<LocalMatchEvent> _generateDetailedMockEvents() {
+    // [TEST-LIVE] partita di test 9999 -> eventi dal simulatore a copione
+    if (widget.match.id == 9999) {
+      final live = _liveSimulator.getMatchEvents(widget.match.id);
+      return _convertLiveEventsToLocal(live);
+    }
     return generateMockMatchEvents(context);
+  }
+
+  // [TEST-LIVE-B2] genera il momentum live dagli eventi del copione.
+  // Per ogni minuto 1..90 produce [minuto, isHome, intensita].
+  // L'intensita sale vicino agli eventi della squadra corrispondente.
+  List<List<dynamic>> _buildLiveMomentum() {
+    final events = _liveSimulator.getMatchEvents(9999);
+    final result = <List<dynamic>>[];
+    for (int m = 1; m <= 90; m++) {
+      // trova l'evento piu vicino entro 3 minuti
+      double intensity = 0.25;
+      bool isHome = m.isEven; // default alternato
+      for (final e in events) {
+        final dist = (e.minute - m).abs();
+        if (dist <= 3) {
+          isHome = e.teamType == 'home';
+          // gol/rigore = picco; altri eventi = intensita media
+          final strong = e.type == 'goal' || e.type == 'penalty';
+          final base = strong ? 1.0 : 0.6;
+          final falloff = 1.0 - (dist / 4.0);
+          final val = base * falloff;
+          if (val > intensity) {
+            intensity = val;
+          }
+        }
+      }
+      // piccola oscillazione per non essere piatto
+      if (intensity <= 0.25) {
+        intensity = 0.2 + ((m * 7) % 5) / 10.0; // 0.2..0.6 pseudo-vario
+        isHome = (m % 3) != 0;
+      }
+      result.add([m, isHome, intensity.clamp(0.0, 1.0)]);
+    }
+    return result;
+  }
+
+  // [TEST-LIVE] converte LiveMatchEvent -> LocalMatchEvent
+  List<LocalMatchEvent> _convertLiveEventsToLocal(List<LiveMatchEvent> live) {
+    return live.map((e) {
+      String type = e.type;
+      if (e.type == 'penalty' &&
+          (e.details ?? '').toLowerCase().contains('sbagl')) {
+        type = 'penaltyMiss';
+      }
+      return LocalMatchEvent(
+        type: type,
+        minute: e.minute,
+        playerName: e.playerName,
+        detail: e.assistBy,
+        subDetail: e.details,
+        isHomeTeam: e.teamType == 'home',
+      );
+    }).toList();
   }
 
   // ============================================================================
@@ -1701,6 +1765,9 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       homeShotsTotal: _homeShotsTotal,
       awayShotsTotal: _awayShotsTotal,
       mockAttackMomentum: _mockAttackMomentum,
+      // [TEST-LIVE-B2] partita test 9999: momentum + minuto live
+      liveMinute: widget.match.id == 9999 ? _currentMatchMinute : null,
+      liveMomentum: widget.match.id == 9999 ? _buildLiveMomentum() : null,
       getEvents: _generateDetailedMockEvents,
       generateLineup: _generateMockLocalLineup,
       generateBench: _generateMockBench,

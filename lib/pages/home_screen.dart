@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../models/soccer_match.dart';
+import '../services/live_match_simulator.dart'; // [TEST-LIVE]
 import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
 import '../services/match_notification_preferences_service.dart';
@@ -22,6 +23,35 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
+
+  // [TEST-LIVE] avvia la partita di test a copione e apre il dettaglio
+  void _startTestMatch() {
+    final testMatch = SoccerMatch(
+      id: 9999,
+      homeTeamId: 999001,
+      awayTeamId: 999002,
+      homeTeamName: 'Test United',
+      awayTeamName: 'Demo City',
+      homeScore: 0,
+      awayScore: 0,
+      status: 'LIVE',
+      elapsed: 1,
+      date: DateTime.now(),
+      time: '20:45',
+      venue: 'Stadio Simulazione',
+      leagueId: 135,
+      leagueName: 'Serie A',
+      round: 'Test Live',
+      homeTeamLogo: 'https://media.api-sports.io/football/teams/505.png',
+      awayTeamLogo: 'https://media.api-sports.io/football/teams/489.png',
+    );
+    LiveMatchSimulator().stopLiveSimulation(9999);
+    LiveMatchSimulator().startScriptedSimulation(testMatch);
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => MatchDetailScreen(match: testMatch)),
+    );
+  }
+
   final HapticService _haptic = HapticService();
   late TabController _tabController;
   late FavoritesService _favoritesService;
@@ -150,6 +180,13 @@ class _HomeScreenState extends State<HomeScreen>
     final bg = isDark ? const Color(0xFF0D0D1A) : const Color(0xFFF5F6FA);
 
     return Scaffold(
+      // [TEST-LIVE] tasto di prova — RIMUOVERE PRIMA DEL DEPLOY
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _startTestMatch,
+        backgroundColor: Colors.deepPurple,
+        icon: const Icon(Icons.science),
+        label: const Text('TEST LIVE'),
+      ),
       backgroundColor: bg,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {

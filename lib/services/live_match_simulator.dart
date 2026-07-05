@@ -255,6 +255,89 @@ class LiveMatchSimulator extends ChangeNotifier {
     stopAllSimulations();
     super.dispose();
   }
+
+  // [TEST-LIVE] ─── modalità COPIONE per la partita di test ───────────
+  final Map<int, int> _scriptedNextIdx = {};
+
+  void startScriptedSimulation(SoccerMatch match) {
+    if (_matchTimers.containsKey(match.id)) return;
+    _matchMinutes[match.id] = 1;
+    _matchEvents[match.id] = [];
+    _scriptedNextIdx[match.id] = 0;
+    _matchStreams[match.id] = StreamController<SoccerMatch>.broadcast();
+    var liveMatch = match.copyWith(status: 'LIVE', elapsed: 1);
+    _matchStreams[match.id]?.add(liveMatch);
+    _matchTimers[match.id] =
+        Timer.periodic(const Duration(milliseconds: 3300), (timer) {
+      final minute = _matchMinutes[match.id]!;
+      if (minute == 45) {
+        liveMatch = liveMatch.copyWith(elapsed: 45, status: 'HT');
+        _matchStreams[match.id]?.add(liveMatch);
+        _matchMinutes[match.id] = 46;
+        notifyListeners();
+        return;
+      }
+      if (minute >= 90) {
+        liveMatch = _fireScriptedEvents(match.id, minute, liveMatch);
+        timer.cancel();
+        _matchTimers.remove(match.id);
+        liveMatch = liveMatch.copyWith(elapsed: 90, status: 'FT');
+        _matchStreams[match.id]?.add(liveMatch);
+        notifyListeners();
+        return;
+      }
+      liveMatch = _fireScriptedEvents(match.id, minute, liveMatch);
+      _matchMinutes[match.id] = minute + 1;
+      liveMatch = liveMatch.copyWith(elapsed: minute);
+      _matchStreams[match.id]?.add(liveMatch);
+      notifyListeners();
+    });
+  }
+
+  SoccerMatch _fireScriptedEvents(int matchId, int minute, SoccerMatch current) {
+    var live = current;
+    final script = _buildScript();
+    var idx = _scriptedNextIdx[matchId] ?? 0;
+    while (idx < script.length && script[idx].minute <= minute) {
+      final event = script[idx].build();
+      _matchEvents[matchId]?.add(event);
+      final isGoal = event.type == 'goal' ||
+          (event.type == 'penalty' &&
+              (event.details ?? '').toLowerCase().contains('trasform'));
+      if (isGoal) {
+        if (event.teamType == 'home') {
+          live = live.copyWith(homeScore: live.homeScore + 1);
+        } else if (event.teamType == 'away') {
+          live = live.copyWith(awayScore: live.awayScore + 1);
+        }
+      }
+      idx++;
+    }
+    _scriptedNextIdx[matchId] = idx;
+    return live;
+  }
+
+  List<_ScriptedEntry> _buildScript() => [
+        _ScriptedEntry(4, () => LiveMatchEvent(type: 'foul', teamType: 'away', playerName: 'Rossi', minute: 4, details: 'Fallo a centrocampo')),
+        _ScriptedEntry(8, () => LiveMatchEvent(type: 'corner', teamType: 'home', playerName: 'Bianchi', minute: 8)),
+        _ScriptedEntry(12, () => LiveMatchEvent(type: 'goal', teamType: 'home', playerName: 'Bianchi', minute: 12, assistBy: 'Verdi')),
+        _ScriptedEntry(17, () => LiveMatchEvent(type: 'yellowCard', teamType: 'away', playerName: 'Neri', minute: 17, details: 'Fallo tattico')),
+        _ScriptedEntry(23, () => LiveMatchEvent(type: 'offside', teamType: 'home', playerName: 'Verdi', minute: 23)),
+        _ScriptedEntry(29, () => LiveMatchEvent(type: 'goal', teamType: 'away', playerName: 'Gialli', minute: 29, details: 'Di testa')),
+        _ScriptedEntry(34, () => LiveMatchEvent(type: 'foul', teamType: 'home', playerName: 'Verdi', minute: 34)),
+        _ScriptedEntry(41, () => LiveMatchEvent(type: 'penalty', teamType: 'home', playerName: 'Bianchi', minute: 41, details: 'Trasformato')),
+        _ScriptedEntry(49, () => LiveMatchEvent(type: 'yellowCard', teamType: 'home', playerName: 'Ferrari', minute: 49, details: 'Proteste')),
+        _ScriptedEntry(55, () => LiveMatchEvent(type: 'substitution', teamType: 'away', playerName: 'Gialli', minute: 55, assistBy: 'Marroni')),
+        _ScriptedEntry(61, () => LiveMatchEvent(type: 'corner', teamType: 'away', playerName: 'Marroni', minute: 61)),
+        _ScriptedEntry(66, () => LiveMatchEvent(type: 'var', teamType: 'away', playerName: 'VAR', minute: 66, details: 'Gol annullato per fuorigioco')),
+        _ScriptedEntry(72, () => LiveMatchEvent(type: 'redCard', teamType: 'away', playerName: 'Neri', minute: 72, details: 'Somma di ammonizioni')),
+        _ScriptedEntry(78, () => LiveMatchEvent(type: 'offside', teamType: 'away', playerName: 'Marroni', minute: 78)),
+        _ScriptedEntry(84, () => LiveMatchEvent(type: 'substitution', teamType: 'home', playerName: 'Verdi', minute: 84, assistBy: 'Colombo')),
+        _ScriptedEntry(88, () => LiveMatchEvent(type: 'goal', teamType: 'home', playerName: 'Colombo', minute: 88, assistBy: 'Bianchi')),
+        _ScriptedEntry(90, () => LiveMatchEvent(type: 'foul', teamType: 'away', playerName: 'Rossi', minute: 90)),
+      ];
+  // [TEST-LIVE] ─── fine modalità copione ─────────────────────────────
+
 }
 
 // ✅ EXTENSION CORRETTA - Usa i nomi dei campi VERI del modello
@@ -310,4 +393,12 @@ extension SoccerMatchCopyWith on SoccerMatch {
       round: round ?? this.round,
     );
   }
+}
+
+
+// [TEST-LIVE] classe di supporto per il copione — RIMUOVERE PRIMA DEL DEPLOY
+class _ScriptedEntry {
+  final int minute;
+  final LiveMatchEvent Function() build;
+  const _ScriptedEntry(this.minute, this.build);
 }

@@ -20,6 +20,9 @@ class EnhancedEventsTab extends StatefulWidget {
   final int homeShotsTotal;
   final int awayShotsTotal;
   final List<List<dynamic>> mockAttackMomentum;
+  // [TEST-LIVE-B2] parametri opzionali per la partita di test live
+  final int? liveMinute;
+  final List<List<dynamic>>? liveMomentum;
 
   /// Callback per ottenere la lista di eventi della partita.
   final List<LocalMatchEvent> Function() getEvents;
@@ -49,6 +52,8 @@ class EnhancedEventsTab extends StatefulWidget {
     required this.homeShotsTotal,
     required this.awayShotsTotal,
     required this.mockAttackMomentum,
+    this.liveMinute,        // [TEST-LIVE-B2]
+    this.liveMomentum,      // [TEST-LIVE-B2]
     required this.getEvents,
     required this.generateLineup,
     required this.generateBench,
@@ -162,9 +167,11 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
         _buildEventsControls(theme, isDark, allEvents),
         Expanded(
           child: filteredEvents.isEmpty
-              ? Center(
-                  child: Text(tr(context, 'Nessun evento trovato'),
-                      style: TextStyle(fontSize: 16, color: Colors.grey[500])))
+              ? (widget.liveMinute != null // [TEST-LIVE-B2P2] live: mostra sempre timeline
+                  ? _buildLiveEmptyTimeline(isDark)
+                  : Center(
+                      child: Text(tr(context, 'Nessun evento trovato'),
+                          style: TextStyle(fontSize: 16, color: Colors.grey[500]))))
               : ListView.builder(
                   controller: _scrollController,
                   padding: EdgeInsets.zero,
@@ -182,11 +189,18 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                           isChrono ? 0 : 90,
                           isDark);
                     // Last item: FT if chrono, KO if reverse
-                    if (index == filteredEvents.length + 2)
+                    if (index == filteredEvents.length + 2) {
+                      // [TEST-LIVE-B2P2] live: nascondi 'Fine Partita' finché < 90'
+                      final showFT = widget.liveMinute == null ||
+                          widget.liveMinute! >= 90;
+                      if (isChrono && !showFT) {
+                        return const SizedBox.shrink();
+                      }
                       return _buildMatchMarker(
                           isChrono ? S.of(context)!.finePartita : S.of(context)!.calcioInizio,
                           isChrono ? 90 : 0,
                           isDark);
+                    }
                     final event = filteredEvents[index - 2];
                     final score = scoreAtMinute[event.minute] ?? [0, 0];
                     // HT separator: detect crossing between 1st and 2nd half
@@ -219,7 +233,12 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
     final dividerColor = isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.12);
-    final data = widget.mockAttackMomentum;
+    // [TEST-LIVE-B2] partita test: usa momentum live troncato al minuto corrente
+    final data = (widget.liveMomentum != null && widget.liveMinute != null)
+        ? widget.liveMomentum!
+            .where((e) => (e[0] as int) <= widget.liveMinute!)
+            .toList()
+        : widget.mockAttackMomentum;
     final segCount = data.length;
 
     // Eventi per i marker
@@ -759,6 +778,23 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
           );
         },
       ),
+    );
+  }
+
+  // [TEST-LIVE-B2P2] timeline minima per partita live a lista vuota:
+  // mostra la barra momentum e il "Calcio d'inizio" fin dal 1' minuto.
+  Widget _buildLiveEmptyTimeline(bool isDark) {
+    final theme = Theme.of(context);
+    final homeColor = theme.colorScheme.primary;
+    final awayColor = const Color(0xFFEF5350);
+    return ListView(
+      controller: _scrollController,
+      padding: EdgeInsets.zero,
+      children: [
+        _buildMomentumBar(const <LocalMatchEvent>[], isDark, homeColor, awayColor),
+        _buildMatchMarker(S.of(context)!.calcioInizio, 0, isDark),
+        const SizedBox(height: 24),
+      ],
     );
   }
 
