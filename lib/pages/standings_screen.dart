@@ -75,7 +75,7 @@ class _StandingsScreenState extends State<StandingsScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Text('2023/24', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
@@ -159,7 +159,7 @@ class _StandingsScreenState extends State<StandingsScreen>
 
   Widget _buildPlayerRankingTab(String type, ThemeData theme, bool isDark, Color tx, Color lb, Color cardBg) {
     final players = _getPlayerRanking(type);
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
 
     String title;
     String statLabel;
@@ -189,7 +189,7 @@ class _StandingsScreenState extends State<StandingsScreen>
       // Colonne header
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        color: isDark ? Colors.white.withOpacity(0.03) : Colors.grey.withOpacity(0.05),
+        color: isDark ? Colors.white.withValues(alpha: 0.03) : Colors.grey.withValues(alpha: 0.05),
         child: Row(children: [
           SizedBox(width: 28, child: Center(child: Text('#', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: lb)))),
           SizedBox(width: 48), // foto
@@ -226,7 +226,7 @@ class _StandingsScreenState extends State<StandingsScreen>
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isTop3 ? accentColor.withOpacity(isDark ? 0.06 : 0.03) : null,
+                  color: isTop3 ? accentColor.withValues(alpha: isDark ? 0.06 : 0.03) : null,
                   border: Border(bottom: BorderSide(width: 0.5, color: divider)),
                 ),
                 child: Row(children: [
@@ -252,7 +252,7 @@ class _StandingsScreenState extends State<StandingsScreen>
                     width: 36, height: 36, fit: BoxFit.cover,
                     errorWidget: (_, __, ___) => Container(
                       width: 36, height: 36,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.withOpacity(0.15)),
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.withValues(alpha: 0.15)),
                       child: Icon(Icons.person, size: 20, color: lb),
                     ),
                   ),

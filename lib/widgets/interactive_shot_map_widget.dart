@@ -201,7 +201,7 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
     final bg = dk ? const Color(0xFF1E1E1E) : Colors.white;
     final tx = dk ? Colors.white : const Color(0xFF1A1A1A);
     final lb = Colors.grey[500]!;
-    final dv = dk ? Colors.white.withOpacity(0.08) : Colors.grey[200]!;
+    final dv = dk ? Colors.white.withValues(alpha: 0.08) : Colors.grey[200]!;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -394,7 +394,7 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
                   shape: BoxShape.circle,
                   color: s.type == 'off_target'
                       ? Colors.transparent
-                      : c.withOpacity(0.2),
+                      : c.withValues(alpha: 0.2),
                   border: Border.all(color: c, width: 2.5)),
               child: s.type == 'off_target'
                   ? null
@@ -468,7 +468,7 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
               border: Border.all(color: darken, width: bw),
               boxShadow: [
                 BoxShadow(
-                    color: col.withOpacity(sel ? 0.5 : 0.35),
+                    color: col.withValues(alpha: sel ? 0.5 : 0.35),
                     blurRadius: sel ? 12 : 8)
               ]),
           child: Center(
@@ -484,7 +484,7 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
               color: Colors.white,
               border: Border.all(color: col, width: bw),
               boxShadow: sel
-                  ? [BoxShadow(color: col.withOpacity(0.4), blurRadius: 10)]
+                  ? [BoxShadow(color: col.withValues(alpha: 0.4), blurRadius: 10)]
                   : null),
           child: Center(
               child: Container(
@@ -502,7 +502,7 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
               color: Colors.white,
               border: Border.all(color: col, width: bw),
               boxShadow: sel
-                  ? [BoxShadow(color: col.withOpacity(0.4), blurRadius: 10)]
+                  ? [BoxShadow(color: col.withValues(alpha: 0.4), blurRadius: 10)]
                   : null),
           child: Center(
               child: Icon(Icons.close,
@@ -514,10 +514,10 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
           height: sz,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.0),
+              color: Colors.white.withValues(alpha: 0.0),
               border: Border.all(color: col, width: bw),
               boxShadow: sel
-                  ? [BoxShadow(color: col.withOpacity(0.3), blurRadius: 10)]
+                  ? [BoxShadow(color: col.withValues(alpha: 0.3), blurRadius: 10)]
                   : null));
     }
   }
@@ -556,7 +556,7 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
           color: const Color(0xFF4CAF50),
           boxShadow: [
             BoxShadow(
-                color: const Color(0xFF4CAF50).withOpacity(0.4),
+                color: const Color(0xFF4CAF50).withValues(alpha: 0.4),
                 blurRadius: 4)
           ]),
       child: const Center(
@@ -598,7 +598,7 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
     final bg = dk ? const Color(0xFF1E1E1E) : Colors.white;
     final tx = dk ? Colors.white : const Color(0xFF1A1A1A);
     final lb = Colors.grey[500]!;
-    final dv = dk ? Colors.white.withOpacity(0.06) : Colors.grey[200]!;
+    final dv = dk ? Colors.white.withValues(alpha: 0.06) : Colors.grey[200]!;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -610,7 +610,7 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
           boxShadow: [
             if (!dk)
               BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 8,
                   offset: const Offset(0, 2))
           ]),
@@ -740,11 +740,11 @@ class _GoalPainter extends CustomPainter {
     final aT = gB + 3;
 
     canvas.drawRect(Rect.fromLTRB(aL, aT, aL + aW, size.height - 6),
-        Paint()..color = const Color(0xFFE8F5E9).withOpacity(0.5));
+        Paint()..color = const Color(0xFFE8F5E9).withValues(alpha: 0.5));
     canvas.drawRect(
         Rect.fromLTRB(aL, aT, aL + aW, size.height - 6),
         Paint()
-          ..color = Colors.white.withOpacity(0.7)
+          ..color = Colors.white.withValues(alpha: 0.7)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.5);
     // ── Limita la linea ai confini dell'area (no sporgenza laterale) ──
@@ -752,14 +752,14 @@ class _GoalPainter extends CustomPainter {
         Offset(aL, size.height - 6),
         Offset(aL + aW, size.height - 6),
         Paint()
-          ..color = Colors.white.withOpacity(0.5)
+          ..color = Colors.white.withValues(alpha: 0.5)
           ..strokeWidth = 1.5);
 
     canvas.drawRect(Rect.fromLTRB(gL + 2, gT + 2, gR - 2, gB),
         Paint()..color = const Color(0xFFE0E0E0));
 
     final np = Paint()
-      ..color = Colors.grey.withOpacity(0.25)
+      ..color = Colors.grey.withValues(alpha: 0.25)
       ..strokeWidth = 0.5;
     for (int i = 1; i < 16; i++) {
       final x = gL + (i / 16) * gW;
@@ -886,7 +886,7 @@ class _UnifiedLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final p = Paint()
-      ..color = const Color(0xFF212121).withOpacity(0.65)
+      ..color = const Color(0xFF212121).withValues(alpha: 0.65)
       ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
 
@@ -928,7 +928,7 @@ class _UnifiedLinePainter extends CustomPainter {
 
     if (type == 'blocked') {
       final bp = Paint()
-        ..color = const Color(0xFF212121).withOpacity(0.6)
+        ..color = const Color(0xFF212121).withValues(alpha: 0.6)
         ..strokeWidth = 3.0
         ..strokeCap = StrokeCap.round;
       canvas.drawLine(

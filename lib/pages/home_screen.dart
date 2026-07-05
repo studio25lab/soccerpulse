@@ -209,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(_todayFormatted(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
@@ -254,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1A1A2E) : Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2))],
       ),
       child: TabBar(
         controller: _tabController,
@@ -278,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.15),
+                  color: Colors.red.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text('${_liveMatches.length}',
@@ -293,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.12),
+                  color: theme.primaryColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text('${_finishedMatches.length}',
@@ -308,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.12),
+                  color: theme.primaryColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text('${_scheduledMatches.length}',
@@ -362,14 +362,14 @@ class _HomeScreenState extends State<HomeScreen>
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: isLive
-                ? const Color(0xFFFF1744).withOpacity(0.3)
-                : isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.12),
+                ? const Color(0xFFFF1744).withValues(alpha: 0.3)
+                : isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.12),
           ),
           boxShadow: [
             BoxShadow(
               color: isLive
-                  ? const Color(0xFFFF1744).withOpacity(0.08)
-                  : Colors.black.withOpacity(isDark ? 0.2 : 0.06),
+                  ? const Color(0xFFFF1744).withValues(alpha: 0.08)
+                  : Colors.black.withValues(alpha: isDark ? 0.2 : 0.06),
               blurRadius: isLive ? 20 : 12,
               offset: const Offset(0, 4),
             ),
@@ -378,7 +378,7 @@ class _HomeScreenState extends State<HomeScreen>
         child: Column(children: [
           // ── Header: League + Heart + Bell ──
           Row(children: [
-            Icon(Icons.emoji_events_rounded, size: 13, color: theme.primaryColor.withOpacity(0.6)),
+            Icon(Icons.emoji_events_rounded, size: 13, color: theme.primaryColor.withValues(alpha: 0.6)),
             const SizedBox(width: 5),
             Text('${match.leagueName ?? 'Serie A'} • ${(match.round ?? '').replaceAll('Giornata', Localizations.localeOf(context).languageCode == 'en' ? 'Matchday' : 'Giornata')}',
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: lb)),
@@ -432,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen>
                 padding: const EdgeInsets.all(4),
                 child: Icon(
                   isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                  size: 20, color: isFav ? Colors.red : lb.withOpacity(0.4),
+                  size: 20, color: isFav ? Colors.red : lb.withValues(alpha: 0.4),
                 ),
               ),
             ),
@@ -452,7 +452,7 @@ class _HomeScreenState extends State<HomeScreen>
                   padding: const EdgeInsets.all(4),
                   child: Icon(
                     hasNotif ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
-                    size: 20, color: hasNotif ? const Color(0xFF4CAF50) : lb.withOpacity(0.4),
+                    size: 20, color: hasNotif ? const Color(0xFF4CAF50) : lb.withValues(alpha: 0.4),
                   ),
                 ),
               );
@@ -510,7 +510,7 @@ class _HomeScreenState extends State<HomeScreen>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                       decoration: BoxDecoration(
-                        color: isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.1),
+                        color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text('FT', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: lb)),
@@ -535,7 +535,7 @@ class _HomeScreenState extends State<HomeScreen>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.04),
+                color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.04),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(children: [
@@ -874,7 +874,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text('${pos}°', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
@@ -886,7 +886,7 @@ class _HomeScreenState extends State<HomeScreen>
       return Container(
         width: size, height: size,
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.1),
+          color: Colors.grey.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(size * 0.15),
         ),
         child: Icon(Icons.shield_rounded, size: size * 0.6, color: Colors.grey),
@@ -897,7 +897,7 @@ class _HomeScreenState extends State<HomeScreen>
       errorWidget: (_, __, ___) => Container(
         width: size, height: size,
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.1),
+          color: Colors.grey.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(size * 0.15),
         ),
         child: Icon(Icons.shield_rounded, size: size * 0.6, color: Colors.grey),
@@ -922,10 +922,10 @@ class _HomeScreenState extends State<HomeScreen>
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: theme.primaryColor.withOpacity(0.08),
+            color: theme.primaryColor.withValues(alpha: 0.08),
             shape: BoxShape.circle,
           ),
-          child: Icon(Icons.sports_soccer_rounded, size: 48, color: theme.primaryColor.withOpacity(0.4)),
+          child: Icon(Icons.sports_soccer_rounded, size: 48, color: theme.primaryColor.withValues(alpha: 0.4)),
         ),
         SizedBox(height: 24),
         Text(tr(context, 'Nessuna partita'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: tx)),

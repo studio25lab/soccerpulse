@@ -300,7 +300,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         color: isDark ? Colors.grey[850] : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -332,7 +332,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.1),
+                  color: theme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -355,10 +355,10 @@ class _FavoritesScreenState extends State<FavoritesScreen>
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: theme.primaryColor.withOpacity(0.1),
+                color: theme.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: theme.primaryColor.withOpacity(0.3),
+                  color: theme.primaryColor.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -389,7 +389,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1A1A2E) : Colors.white,
         border: Border(bottom: BorderSide(
-          color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1),
+          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1),
         )),
       ),
       child: TabBar(
@@ -439,7 +439,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
       margin: const EdgeInsets.only(left: 6),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
       decoration: BoxDecoration(
-        color: theme.primaryColor.withOpacity(0.15),
+        color: theme.primaryColor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
@@ -524,10 +524,10 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               )),
               const SizedBox(height: 4),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Icon(Icons.access_time_rounded, size: 11, color: lb.withOpacity(0.4)),
+                Icon(Icons.access_time_rounded, size: 11, color: lb.withValues(alpha: 0.4)),
                 const SizedBox(width: 5),
                 Text(tr(context, 'Le partite finite vengono rimosse dopo 3 giorni'),
-                    style: TextStyle(fontSize: 10, color: lb.withOpacity(0.4))),
+                    style: TextStyle(fontSize: 10, color: lb.withValues(alpha: 0.4))),
               ]),
               const SizedBox(height: 8),
             ],
@@ -548,17 +548,17 @@ class _FavoritesScreenState extends State<FavoritesScreen>
             color: color,
             shape: BoxShape.circle,
             boxShadow: color == const Color(0xFFFF1744)
-                ? [BoxShadow(color: color.withOpacity(0.4), blurRadius: 6)]
+                ? [BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 6)]
                 : [],
           ),
         ),
         const SizedBox(width: 8),
         Text(title, style: TextStyle(
-            fontSize: 12, fontWeight: FontWeight.w800, color: tx.withOpacity(0.6),
+            fontSize: 12, fontWeight: FontWeight.w800, color: tx.withValues(alpha: 0.6),
             letterSpacing: 0.8)),
         const Spacer(),
         Text('$count', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-            color: tx.withOpacity(0.35))),
+            color: tx.withValues(alpha: 0.35))),
       ]),
     );
   }
@@ -576,7 +576,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         errorWidget: (_, __, ___) => Container(
           width: size, height: size,
           decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(size * 0.15),
           ),
           child: Icon(Icons.shield_rounded, size: size * 0.6, color: Colors.grey),
@@ -604,7 +604,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 24),
         decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.12),
+          color: Colors.red.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -648,14 +648,14 @@ class _FavoritesScreenState extends State<FavoritesScreen>
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isLive
-                ? const Color(0xFFFF1744).withOpacity(0.3)
-                : (isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.12)),
+                ? const Color(0xFFFF1744).withValues(alpha: 0.3)
+                : (isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.12)),
           ),
           boxShadow: [
             BoxShadow(
               color: isLive
-                  ? const Color(0xFFFF1744).withOpacity(0.08)
-                  : Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                  ? const Color(0xFFFF1744).withValues(alpha: 0.08)
+                  : Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
               blurRadius: isLive ? 16 : 8,
               offset: const Offset(0, 2),
             ),
@@ -665,7 +665,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
           // ── Header: League info (left) + Heart (right) ──
           Row(children: [
             Icon(Icons.emoji_events_rounded, size: 13,
-                color: theme.primaryColor.withOpacity(0.6)),
+                color: theme.primaryColor.withValues(alpha: 0.6)),
             const SizedBox(width: 5),
             Text(
               '${m['league'] ?? 'Serie A'} • ${m['round'] ?? ''}',
@@ -682,13 +682,13 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: isFav ? Colors.red.withOpacity(0.08) : Colors.transparent,
+                  color: isFav ? Colors.red.withValues(alpha: 0.08) : Colors.transparent,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
                   size: 20,
-                  color: isFav ? Colors.red : lb.withOpacity(0.4),
+                  color: isFav ? Colors.red : lb.withValues(alpha: 0.4),
                 ),
               ),
             ),
@@ -714,7 +714,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                     child: Icon(
                       _hasNotif ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
                       size: 20,
-                      color: _hasNotif ? const Color(0xFF4CAF50) : lb.withOpacity(0.4),
+                      color: _hasNotif ? const Color(0xFF4CAF50) : lb.withValues(alpha: 0.4),
                     ),
                   ),
                 );
@@ -774,7 +774,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                       decoration: BoxDecoration(
                         color: isLiveMatch
                             ? const Color(0xFFFF1744)
-                            : (isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.1)),
+                            : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.withValues(alpha: 0.1)),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -859,9 +859,9 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         margin: const EdgeInsets.fromLTRB(16, 4, 16, 12),
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: theme.primaryColor.withOpacity(0.08),
+          color: theme.primaryColor.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: theme.primaryColor.withOpacity(0.2)),
+          border: Border.all(color: theme.primaryColor.withValues(alpha: 0.2)),
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(Icons.add_rounded, size: 18, color: theme.primaryColor),
@@ -878,7 +878,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final bg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08);
 
     // Solo partite prossime (no live, no finite)
     final upcomingMatches = _mockMatches.where((m) {
@@ -911,7 +911,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: theme.primaryColor.withOpacity(0.1),
+                    color: theme.primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(Icons.calendar_today_rounded, size: 18, color: theme.primaryColor),
@@ -926,7 +926,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+                    color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text('${upcomingMatches.length} ${tr(context, 'partite')}',
@@ -1007,12 +1007,12 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                                   duration: const Duration(milliseconds: 200),
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: isFav ? Colors.red.withOpacity(0.08) : Colors.transparent,
+                                    color: isFav ? Colors.red.withValues(alpha: 0.08) : Colors.transparent,
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
                                     isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                                    color: isFav ? Colors.red : lb.withOpacity(0.4),
+                                    color: isFav ? Colors.red : lb.withValues(alpha: 0.4),
                                     size: 22,
                                   ),
                                 ),
@@ -1127,11 +1127,11 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       decoration: BoxDecoration(
-                        color: isOn ? color.withOpacity(isDark ? 0.12 : 0.06) : Colors.transparent,
+                        color: isOn ? color.withValues(alpha: isDark ? 0.12 : 0.06) : Colors.transparent,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color: isOn
-                              ? color.withOpacity(isDark ? 0.3 : 0.2)
+                              ? color.withValues(alpha: isDark ? 0.3 : 0.2)
                               : isDark ? Colors.white10 : Colors.grey[200]!,
                           width: isOn ? 1.5 : 1,
                         ),
@@ -1140,7 +1140,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                         Container(
                           width: 40, height: 40,
                           decoration: BoxDecoration(
-                            color: color.withOpacity(isOn ? 0.15 : 0.08),
+                            color: color.withValues(alpha: isOn ? 0.15 : 0.08),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(icon, size: 20,
@@ -1195,7 +1195,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               decoration: BoxDecoration(
                 color: bg,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, -5))],
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, -5))],
               ),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Container(
@@ -1209,7 +1209,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: theme.primaryColor.withOpacity(0.1),
+                        color: theme.primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(Icons.notifications_active, color: theme.primaryColor, size: 24),
@@ -1370,9 +1370,9 @@ class _FavoritesScreenState extends State<FavoritesScreen>
             margin: const EdgeInsets.fromLTRB(16, 4, 16, 12),
             padding: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
-              color: theme.primaryColor.withOpacity(0.08),
+              color: theme.primaryColor.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: theme.primaryColor.withOpacity(0.2)),
+              border: Border.all(color: theme.primaryColor.withValues(alpha: 0.2)),
             ),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(Icons.add_rounded, size: 18, color: theme.primaryColor),
@@ -1470,11 +1470,11 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+                      color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text('${entry.value.length}', style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w700, color: tx.withOpacity(0.5))),
+                        fontSize: 12, fontWeight: FontWeight.w700, color: tx.withValues(alpha: 0.5))),
                   ),
                 ]),
               ),
@@ -1500,7 +1500,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 24),
         decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.12),
+          color: Colors.red.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -1523,7 +1523,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF1E1E30) : Colors.white;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08);
     final id = p['id'] as int;
     final name = p['name'] as String;
     final position = p['position'] as String;
@@ -1586,8 +1586,8 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.12)),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.2 : 0.05), blurRadius: 8, offset: const Offset(0, 2))],
+          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.12)),
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: Column(children: [
           // ── Header: league-style row con heart + bell a destra ──
@@ -1602,7 +1602,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               child: Padding(
                 padding: const EdgeInsets.all(4),
                 child: Icon(isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                    size: 20, color: isFav ? Colors.red : lb.withOpacity(0.4)),
+                    size: 20, color: isFav ? Colors.red : lb.withValues(alpha: 0.4)),
               ),
             ),
             const SizedBox(width: 2),
@@ -1620,7 +1620,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   padding: const EdgeInsets.all(4),
                   child: Icon(
                     hasNotif ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
-                    size: 20, color: hasNotif ? const Color(0xFF4CAF50) : lb.withOpacity(0.4)),
+                    size: 20, color: hasNotif ? const Color(0xFF4CAF50) : lb.withValues(alpha: 0.4)),
                 ),
               );
             }),
@@ -1636,7 +1636,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: posColor.withOpacity(0.4), width: 2),
+                    border: Border.all(color: posColor.withValues(alpha: 0.4), width: 2),
                   ),
                   child: ClipOval(
                     child: CachedNetworkImage(
@@ -1644,7 +1644,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                       width: 56, height: 56, fit: BoxFit.cover,
                       errorWidget: (_, __, ___) => Container(
                         width: 56, height: 56,
-                        decoration: BoxDecoration(shape: BoxShape.circle, color: posColor.withOpacity(0.08)),
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: posColor.withValues(alpha: 0.08)),
                         child: Icon(Icons.person, size: 30, color: lb),
                       ),
                     ),
@@ -1656,7 +1656,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                     decoration: BoxDecoration(
                       color: ratingBg, borderRadius: BorderRadius.circular(8),
-                      boxShadow: [BoxShadow(color: ratingBg.withOpacity(0.5), blurRadius: 6)],
+                      boxShadow: [BoxShadow(color: ratingBg.withValues(alpha: 0.5), blurRadius: 6)],
                       border: Border.all(color: cardBg, width: 2),
                     ),
                     child: Text(rating.toStringAsFixed(1),
@@ -1676,7 +1676,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: posColor.withOpacity(0.12),
+                      color: posColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(posAbbr, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: posColor)),
@@ -1692,7 +1692,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                 // Forma recente con chip V/P/S
                 if (form.isNotEmpty)
                   Row(children: [
-                    Text('${tr(context, 'Forma')} ', style: TextStyle(fontSize: 10, color: lb.withOpacity(0.6))),
+                    Text('${tr(context, 'Forma')} ', style: TextStyle(fontSize: 10, color: lb.withValues(alpha: 0.6))),
                     const SizedBox(width: 4),
                     ...form.split('').take(5).map((c) {
                       String label;
@@ -1706,7 +1706,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                         width: 20, height: 20,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: bgColor.withOpacity(isDark ? 0.8 : 0.85),
+                          color: bgColor.withValues(alpha: isDark ? 0.8 : 0.85),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: fgColor)),
@@ -1756,9 +1756,9 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF4CAF50).withOpacity(isDark ? 0.12 : 0.06),
+                    color: const Color(0xFF4CAF50).withValues(alpha: isDark ? 0.12 : 0.06),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFF4CAF50).withOpacity(0.3)),
+                    border: Border.all(color: const Color(0xFF4CAF50).withValues(alpha: 0.3)),
                   ),
                   child: Row(children: [
                     // Pallino LIVE pulsante
@@ -1767,7 +1767,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                       decoration: BoxDecoration(
                         color: const Color(0xFF4CAF50),
                         shape: BoxShape.circle,
-                        boxShadow: [BoxShadow(color: const Color(0xFF4CAF50).withOpacity(0.5), blurRadius: 6)],
+                        boxShadow: [BoxShadow(color: const Color(0xFF4CAF50).withValues(alpha: 0.5), blurRadius: 6)],
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -1780,14 +1780,14 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF4CAF50).withOpacity(0.15),
+                        color: const Color(0xFF4CAF50).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text("${liveMatch['minute']}'",
                           style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF4CAF50))),
                     ),
                     const SizedBox(width: 6),
-                    Icon(Icons.chevron_right_rounded, size: 18, color: const Color(0xFF4CAF50).withOpacity(0.7)),
+                    Icon(Icons.chevron_right_rounded, size: 18, color: const Color(0xFF4CAF50).withValues(alpha: 0.7)),
                   ]),
                 ),
               ),
@@ -1822,11 +1822,11 @@ class _FavoritesScreenState extends State<FavoritesScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
         decoration: BoxDecoration(
-          color: color.withOpacity(isDark ? 0.08 : 0.04),
+          color: color.withValues(alpha: isDark ? 0.08 : 0.04),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(children: [
-          Icon(icon, size: 16, color: color.withOpacity(0.7)),
+          Icon(icon, size: 16, color: color.withValues(alpha: 0.7)),
           const SizedBox(height: 4),
           Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800,
               color: isDark ? Colors.white : const Color(0xFF1A1A1A))),
@@ -1845,22 +1845,22 @@ class _FavoritesScreenState extends State<FavoritesScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
         decoration: BoxDecoration(
-          color: (isDark ? Colors.white : Colors.grey).withOpacity(0.04),
+          color: (isDark ? Colors.white : Colors.grey).withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(children: [
-          Icon(Icons.style_rounded, size: 16, color: lb.withOpacity(0.5)),
+          Icon(Icons.style_rounded, size: 16, color: lb.withValues(alpha: 0.5)),
           const SizedBox(height: 4),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(width: 12, height: 16, decoration: BoxDecoration(
               color: const Color(0xFFFFCA28), borderRadius: BorderRadius.circular(2),
-              boxShadow: [BoxShadow(color: const Color(0xFFFFCA28).withOpacity(0.3), blurRadius: 3)])),
+              boxShadow: [BoxShadow(color: const Color(0xFFFFCA28).withValues(alpha: 0.3), blurRadius: 3)])),
             const SizedBox(width: 3),
             Text('$yellow', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: tx)),
             const SizedBox(width: 10),
             Container(width: 12, height: 16, decoration: BoxDecoration(
               color: const Color(0xFFE53935), borderRadius: BorderRadius.circular(2),
-              boxShadow: [BoxShadow(color: const Color(0xFFE53935).withOpacity(0.3), blurRadius: 3)])),
+              boxShadow: [BoxShadow(color: const Color(0xFFE53935).withValues(alpha: 0.3), blurRadius: 3)])),
             const SizedBox(width: 3),
             Text('$red', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: tx)),
           ]),
@@ -1881,9 +1881,9 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         margin: const EdgeInsets.fromLTRB(16, 4, 16, 12),
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: theme.primaryColor.withOpacity(0.08),
+          color: theme.primaryColor.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: theme.primaryColor.withOpacity(0.2)),
+          border: Border.all(color: theme.primaryColor.withValues(alpha: 0.2)),
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(Icons.add_rounded, size: 18, color: theme.primaryColor),
@@ -1900,7 +1900,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final bg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08);
     String searchQuery = '';
 
     showModalBottomSheet(
@@ -1930,7 +1930,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                 child: Row(children: [
                   Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(color: theme.primaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(color: theme.primaryColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
                     child: Icon(Icons.person_search_rounded, size: 18, color: theme.primaryColor),
                   ),
                   SizedBox(width: 12),
@@ -1941,7 +1941,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+                      color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(8)),
                     child: Text('${filtered.length} ${tr(context, 'giocatori')}',
                         style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: lb)),
@@ -1956,10 +1956,10 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   style: TextStyle(fontSize: 14, color: tx),
                   decoration: InputDecoration(
                     hintText: tr(context, tr(context, 'Cerca per nome o squadra...')),
-                    hintStyle: TextStyle(fontSize: 13, color: lb.withOpacity(0.5)),
-                    prefixIcon: Icon(Icons.search_rounded, size: 20, color: lb.withOpacity(0.5)),
+                    hintStyle: TextStyle(fontSize: 13, color: lb.withValues(alpha: 0.5)),
+                    prefixIcon: Icon(Icons.search_rounded, size: 20, color: lb.withValues(alpha: 0.5)),
                     filled: true,
-                    fillColor: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.06),
+                    fillColor: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.06),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   ),
@@ -1995,7 +1995,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                                   ClipOval(child: CachedNetworkImage(
                                     imageUrl: p['photo'] as String? ?? '', width: 40, height: 40, fit: BoxFit.cover,
                                     errorWidget: (_, __, ___) => Container(width: 40, height: 40,
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.withOpacity(0.15)),
+                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.withValues(alpha: 0.15)),
                                         child: Icon(Icons.person, size: 20, color: lb)),
                                   )),
                                   const SizedBox(width: 12),
@@ -2012,7 +2012,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: _ratingColor(p['rating'] as num).withOpacity(0.15),
+                                      color: _ratingColor(p['rating'] as num).withValues(alpha: 0.15),
                                       borderRadius: BorderRadius.circular(6)),
                                     child: Text('${(p['rating'] as num).toStringAsFixed(1)}',
                                         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800,
@@ -2023,10 +2023,10 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                                     duration: const Duration(milliseconds: 200),
                                     padding: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
-                                      color: isFav ? Colors.red.withOpacity(0.08) : Colors.transparent,
+                                      color: isFav ? Colors.red.withValues(alpha: 0.08) : Colors.transparent,
                                       shape: BoxShape.circle),
                                     child: Icon(isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                                        color: isFav ? Colors.red : lb.withOpacity(0.4), size: 22),
+                                        color: isFav ? Colors.red : lb.withValues(alpha: 0.4), size: 22),
                                   ),
                                 ]),
                               ),
@@ -2168,12 +2168,12 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
-                      color: isOn ? color.withOpacity(isDark ? 0.12 : 0.06) : Colors.transparent,
+                      color: isOn ? color.withValues(alpha: isDark ? 0.12 : 0.06) : Colors.transparent,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: isOn ? color.withOpacity(isDark ? 0.3 : 0.2) : isDark ? Colors.white10 : Colors.grey[200]!, width: isOn ? 1.5 : 1)),
+                      border: Border.all(color: isOn ? color.withValues(alpha: isDark ? 0.3 : 0.2) : isDark ? Colors.white10 : Colors.grey[200]!, width: isOn ? 1.5 : 1)),
                     child: Row(children: [
                       Container(width: 40, height: 40, decoration: BoxDecoration(
-                          color: color.withOpacity(isOn ? 0.15 : 0.08), borderRadius: BorderRadius.circular(10)),
+                          color: color.withValues(alpha: isOn ? 0.15 : 0.08), borderRadius: BorderRadius.circular(10)),
                         child: Icon(icon, size: 20, color: isOn ? color : isDark ? Colors.white30 : Colors.grey[400])),
                       const SizedBox(width: 14),
                       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -2209,14 +2209,14 @@ class _FavoritesScreenState extends State<FavoritesScreen>
             return Container(
               constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
               decoration: BoxDecoration(color: bg, borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, -5))]),
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, -5))]),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Container(margin: const EdgeInsets.only(top: 12), width: 40, height: 4,
                     decoration: BoxDecoration(color: isDark ? Colors.white24 : Colors.grey[300], borderRadius: BorderRadius.circular(2))),
                 Padding(padding: const EdgeInsets.fromLTRB(20, 20, 20, 8), child: Row(children: [
                   ClipOval(child: CachedNetworkImage(imageUrl: p['photo'] as String? ?? '', width: 44, height: 44, fit: BoxFit.cover,
                       errorWidget: (_, __, ___) => Container(width: 44, height: 44,
-                          decoration: BoxDecoration(shape: BoxShape.circle, color: theme.primaryColor.withOpacity(0.1)),
+                          decoration: BoxDecoration(shape: BoxShape.circle, color: theme.primaryColor.withValues(alpha: 0.1)),
                           child: Icon(Icons.person, color: theme.primaryColor, size: 24)))),
                   const SizedBox(width: 14),
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -2272,7 +2272,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
       margin: const EdgeInsets.only(right: 4),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
+        color: color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(text, style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.bold)),
@@ -2307,7 +2307,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final bg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
 
     showModalBottomSheet(
       context: context,
@@ -2404,7 +2404,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: isFav ? Colors.red.withOpacity(0.1) : Colors.transparent,
+                            color: isFav ? Colors.red.withValues(alpha: 0.1) : Colors.transparent,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -2453,10 +2453,10 @@ class _FavoritesScreenState extends State<FavoritesScreen>
             Container(
               width: 80, height: 80,
               decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.06),
+                color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.06),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, size: 36, color: lb.withOpacity(0.5)),
+              child: Icon(icon, size: 36, color: lb.withValues(alpha: 0.5)),
             ),
             const SizedBox(height: 20),
             Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: tx)),
@@ -2480,7 +2480,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   color: theme.primaryColor,
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
-                    BoxShadow(color: theme.primaryColor.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4)),
+                    BoxShadow(color: theme.primaryColor.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4)),
                   ],
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [

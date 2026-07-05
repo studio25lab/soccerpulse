@@ -239,10 +239,10 @@ class MatchCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: _getStatusColor().withOpacity(0.1),
+                    color: _getStatusColor().withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: _getStatusColor().withOpacity(0.3),
+                      color: _getStatusColor().withValues(alpha: 0.3),
                     ),
                   ),
                   child: Text(
@@ -264,9 +264,9 @@ class MatchCard extends StatelessWidget {
 
   Color _getScoreBackgroundColor(bool isDark) {
     if (match.isLive) {
-      return Colors.red.withOpacity(0.1);
+      return Colors.red.withValues(alpha: 0.1);
     } else if (match.isFinished) {
-      return Colors.green.withOpacity(0.1);
+      return Colors.green.withValues(alpha: 0.1);
     } else {
       return isDark ? Colors.grey[800]! : Colors.grey[200]!;
     }

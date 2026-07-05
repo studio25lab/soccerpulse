@@ -186,7 +186,7 @@ class AttackView extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withValues(alpha: 0.08),
                   blurRadius: 8,
                   offset: const Offset(0, 2))
             ],
@@ -331,7 +331,7 @@ class AttackView extends StatelessWidget {
                   width: constraints.maxWidth * homeRatio,
                   decoration: BoxDecoration(
                       color:
-                          homeHigher ? homeColor : homeColor.withOpacity(0.30),
+                          homeHigher ? homeColor : homeColor.withValues(alpha: 0.30),
                       borderRadius: BorderRadius.circular(3)),
                 ),
               ),
@@ -350,7 +350,7 @@ class AttackView extends StatelessWidget {
                 height: 6,
                 width: constraints.maxWidth * awayRatio,
                 decoration: BoxDecoration(
-                    color: awayHigher ? awayColor : awayColor.withOpacity(0.30),
+                    color: awayHigher ? awayColor : awayColor.withValues(alpha: 0.30),
                     borderRadius: BorderRadius.circular(3)),
               ),
             ]);

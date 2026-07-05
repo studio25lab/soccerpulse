@@ -30,7 +30,7 @@ void showCoachProfile(BuildContext context, {required String coachName, required
   final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
   final tx = isDark ? Colors.white : Colors.black87;
   final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
-  final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+  final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
   final sectionBg = isDark ? const Color(0xFF16162A) : const Color(0xFFF8F9FA);
 
   // Dati coach (demo realistici 2022-23)
@@ -120,11 +120,11 @@ void showCoachProfile(BuildContext context, {required String coachName, required
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [teamColor, teamColor.withOpacity(0.7)],
+                      colors: [teamColor, teamColor.withValues(alpha: 0.7)],
                     ),
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [
-                      BoxShadow(color: teamColor.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4)),
+                      BoxShadow(color: teamColor.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4)),
                     ],
                   ),
                   child: Center(
@@ -170,9 +170,9 @@ void showCoachProfile(BuildContext context, {required String coachName, required
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                   decoration: BoxDecoration(
-                    color: teamColor.withOpacity(0.15),
+                    color: teamColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: teamColor.withOpacity(0.3)),
+                    border: Border.all(color: teamColor.withValues(alpha: 0.3)),
                   ),
                   child: Text('${data['formation']}',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: teamColor)),
@@ -297,7 +297,7 @@ void showCoachProfile(BuildContext context, {required String coachName, required
                 decoration: BoxDecoration(
                   color: sectionBg,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: teamColor.withOpacity(0.15)),
+                  border: Border.all(color: teamColor.withValues(alpha: 0.15)),
                 ),
                 child: Row(children: [
                   Icon(Icons.person_search_rounded, size: 18, color: teamColor),
@@ -305,7 +305,7 @@ void showCoachProfile(BuildContext context, {required String coachName, required
                   Text(localizeShotData(context, 'Vedi profilo completo'),
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: teamColor)),
                   const Spacer(),
-                  Icon(Icons.chevron_right_rounded, size: 20, color: teamColor.withOpacity(0.6)),
+                  Icon(Icons.chevron_right_rounded, size: 20, color: teamColor.withValues(alpha: 0.6)),
                 ]),
               ),
             ),
@@ -322,14 +322,14 @@ Widget _coachStatBox(String label, String value, Color color, bool isDark) {
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Column(children: [
         Text(value, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: color)),
         const SizedBox(height: 2),
-        Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color.withOpacity(0.8))),
+        Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color.withValues(alpha: 0.8))),
       ]),
     ),
   );
@@ -377,8 +377,8 @@ void showPlayerComparisonPicker(BuildContext context, {required LocalLineupPlaye
               leading: Container(
                 width: 52, height: 52,
                 decoration: BoxDecoration(
-                  color: pColor.withOpacity(0.12), shape: BoxShape.circle,
-                  border: Border.all(color: pColor.withOpacity(0.3)),
+                  color: pColor.withValues(alpha: 0.12), shape: BoxShape.circle,
+                  border: Border.all(color: pColor.withValues(alpha: 0.3)),
                 ),
                 child: Center(child: Text('${p2.number}',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: pColor))),
@@ -553,20 +553,20 @@ Future<void> showMatchPlayerNotifDialog(BuildContext context, {required LocalLin
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
-                  color: isOn ? color.withOpacity(isDark ? 0.12 : 0.06) : Colors.transparent,
+                  color: isOn ? color.withValues(alpha: isDark ? 0.12 : 0.06) : Colors.transparent,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: isOn ? color.withOpacity(isDark ? 0.3 : 0.2) : isDark ? Colors.white10 : Colors.grey[200]!, width: isOn ? 1.5 : 1)),
+                  border: Border.all(color: isOn ? color.withValues(alpha: isDark ? 0.3 : 0.2) : isDark ? Colors.white10 : Colors.grey[200]!, width: isOn ? 1.5 : 1)),
                 child: Row(children: [
                   Container(width: 40, height: 40, decoration: BoxDecoration(
-                      color: color.withOpacity(isOn ? 0.15 : 0.08), borderRadius: BorderRadius.circular(10)),
+                      color: color.withValues(alpha: isOn ? 0.15 : 0.08), borderRadius: BorderRadius.circular(10)),
                     child: key == 'yellowCard'
                       ? Center(child: Container(width: 14, height: 18, decoration: BoxDecoration(
                           color: const Color(0xFFFDD835), borderRadius: BorderRadius.circular(2),
-                          boxShadow: [BoxShadow(color: Colors.amber.withOpacity(0.3), blurRadius: 4)])))
+                          boxShadow: [BoxShadow(color: Colors.amber.withValues(alpha: 0.3), blurRadius: 4)])))
                       : key == 'redCard'
                         ? Center(child: Container(width: 14, height: 18, decoration: BoxDecoration(
                             color: const Color(0xFFE53935), borderRadius: BorderRadius.circular(2),
-                            boxShadow: [BoxShadow(color: Colors.red.withOpacity(0.3), blurRadius: 4)])))
+                            boxShadow: [BoxShadow(color: Colors.red.withValues(alpha: 0.3), blurRadius: 4)])))
                         : Icon(icon, size: 20, color: isOn ? color : isDark ? Colors.white30 : Colors.grey[400])),
                   const SizedBox(width: 14),
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -604,7 +604,7 @@ Future<void> showMatchPlayerNotifDialog(BuildContext context, {required LocalLin
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1A1A2E) : Colors.white,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, -5))]),
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, -5))]),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             // Handle + Back + Close
             Padding(
@@ -628,8 +628,8 @@ Future<void> showMatchPlayerNotifDialog(BuildContext context, {required LocalLin
             // Header
             Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 8), child: Row(children: [
               Container(width: 44, height: 44,
-                decoration: BoxDecoration(color: teamColor.withOpacity(0.15), borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: teamColor.withOpacity(0.3))),
+                decoration: BoxDecoration(color: teamColor.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: teamColor.withValues(alpha: 0.3))),
                 child: Center(child: Text('${player.number}',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: teamColor)))),
               const SizedBox(width: 14),
@@ -653,8 +653,8 @@ Future<void> showMatchPlayerNotifDialog(BuildContext context, {required LocalLin
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(color: Colors.orange.withOpacity(0.1), borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.orange.withOpacity(0.3))),
+                decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.orange.withValues(alpha: 0.3))),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.timer_outlined, size: 14, color: Colors.orange[700]),
                   const SizedBox(width: 6),

@@ -30,8 +30,8 @@ void showRendimento(
   RangeValues selectedRange = RangeValues(1, currentMatchday.toDouble());
   final bg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
   final divider = isDark
-      ? Colors.white.withOpacity(0.06)
-      : Colors.grey.withOpacity(0.1);
+      ? Colors.white.withValues(alpha: 0.06)
+      : Colors.grey.withValues(alpha: 0.1);
 
   // Dati reali Serie A 2023/24 (mock con totali finali)
   final teamsData = <Map<String, dynamic>>[
@@ -216,7 +216,7 @@ void showRendimento(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                    color: theme.primaryColor.withOpacity(0.08),
+                    color: theme.primaryColor.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(12)),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -293,12 +293,12 @@ void showRendimento(
                             horizontal: 20, vertical: 10),
                         decoration: BoxDecoration(
                             color: isMatchTeam && matchColor != null
-                                ? matchColor.withOpacity(isDark ? 0.24 : 0.14)
+                                ? matchColor.withValues(alpha: isDark ? 0.24 : 0.14)
                                 : isTop3
-                                    ? pColor.withOpacity(isDark ? 0.06 : 0.03)
+                                    ? pColor.withValues(alpha: isDark ? 0.06 : 0.03)
                                     : isRetro
                                         ? Colors.red
-                                            .withOpacity(isDark ? 0.04 : 0.02)
+                                            .withValues(alpha: isDark ? 0.04 : 0.02)
                                         : null,
                             border: Border(
                                 left: BorderSide(
@@ -363,7 +363,7 @@ void showRendimento(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 4),
                               decoration: BoxDecoration(
-                                  color: pColor.withOpacity(0.12),
+                                  color: pColor.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(8)),
                               child: Text('${r['pts']}',
                                   style: TextStyle(

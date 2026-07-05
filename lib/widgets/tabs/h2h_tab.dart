@@ -39,8 +39,8 @@ class H2HTab extends StatelessWidget {
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final divider = isDark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.grey.withOpacity(0.1);
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.grey.withValues(alpha: 0.1);
 
     final h2hMatches = _getH2HMatches(homeName, awayName);
 
@@ -83,11 +83,11 @@ class H2HTab extends StatelessWidget {
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [
-                _teamGradient(homeName)[0].withOpacity(isDark ? 0.22 : 0.18),
-                _teamGradient(homeName)[1].withOpacity(isDark ? 0.10 : 0.08),
+                _teamGradient(homeName)[0].withValues(alpha: isDark ? 0.22 : 0.18),
+                _teamGradient(homeName)[1].withValues(alpha: isDark ? 0.10 : 0.08),
                 cardBg,
-                _teamGradient(awayName)[0].withOpacity(isDark ? 0.10 : 0.08),
-                _teamGradient(awayName)[1].withOpacity(isDark ? 0.22 : 0.18),
+                _teamGradient(awayName)[0].withValues(alpha: isDark ? 0.10 : 0.08),
+                _teamGradient(awayName)[1].withValues(alpha: isDark ? 0.22 : 0.18),
               ],
             ),
             borderRadius: BorderRadius.circular(16),
@@ -115,9 +115,9 @@ class H2HTab extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 18, vertical: 8),
                   decoration: BoxDecoration(
-                    color: homeColor.withOpacity(0.1),
+                    color: homeColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: homeColor.withOpacity(0.25)),
+                    border: Border.all(color: homeColor.withValues(alpha: 0.25)),
                   ),
                   child: Text('$homeWins',
                       style: TextStyle(
@@ -130,7 +130,7 @@ class H2HTab extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
-                        color: homeColor.withOpacity(0.8))),
+                        color: homeColor.withValues(alpha: 0.8))),
                 const SizedBox(height: 2),
                 Text(homeName,
                     style: TextStyle(
@@ -144,8 +144,8 @@ class H2HTab extends StatelessWidget {
                       horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.white.withOpacity(0.05)
-                        : Colors.grey.withOpacity(0.06),
+                        ? Colors.white.withValues(alpha: 0.05)
+                        : Colors.grey.withValues(alpha: 0.06),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: divider),
                   ),
@@ -165,9 +165,9 @@ class H2HTab extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 18, vertical: 8),
                   decoration: BoxDecoration(
-                    color: awayColor.withOpacity(0.1),
+                    color: awayColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: awayColor.withOpacity(0.25)),
+                    border: Border.all(color: awayColor.withValues(alpha: 0.25)),
                   ),
                   child: Text('$awayWins',
                       style: TextStyle(
@@ -180,7 +180,7 @@ class H2HTab extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
-                        color: awayColor.withOpacity(0.8))),
+                        color: awayColor.withValues(alpha: 0.8))),
                 const SizedBox(height: 2),
                 Text(awayName,
                     style: TextStyle(
@@ -202,7 +202,7 @@ class H2HTab extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(colors: [
                               homeColor,
-                              homeColor.withOpacity(0.7)
+                              homeColor.withValues(alpha: 0.7)
                             ]),
                           ),
                         )),
@@ -210,14 +210,14 @@ class H2HTab extends StatelessWidget {
                     Expanded(
                         flex: draws,
                         child: Container(
-                            color: Colors.grey.withOpacity(0.5))),
+                            color: Colors.grey.withValues(alpha: 0.5))),
                   if (awayWins > 0)
                     Expanded(
                         flex: awayWins,
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(colors: [
-                              awayColor.withOpacity(0.7),
+                              awayColor.withValues(alpha: 0.7),
                               awayColor
                             ]),
                           ),
@@ -231,8 +231,8 @@ class H2HTab extends StatelessWidget {
                   vertical: 10, horizontal: 12),
               decoration: BoxDecoration(
                 color: isDark
-                    ? Colors.white.withOpacity(0.03)
-                    : Colors.grey.withOpacity(0.04),
+                    ? Colors.white.withValues(alpha: 0.03)
+                    : Colors.grey.withValues(alpha: 0.04),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
@@ -369,8 +369,8 @@ class H2HTab extends StatelessWidget {
                           margin: const EdgeInsets.symmetric(horizontal: 8),
                           decoration: BoxDecoration(
                             color: isDark
-                                ? Colors.white.withOpacity(0.06)
-                                : Colors.grey.withOpacity(0.08),
+                                ? Colors.white.withValues(alpha: 0.06)
+                                : Colors.grey.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text('$hs - $as_',
@@ -434,7 +434,7 @@ class H2HTab extends StatelessWidget {
                 ? Icons.favorite_rounded
                 : Icons.favorite_border_rounded,
             size: 16,
-            color: isFav ? Colors.red : lb.withOpacity(0.3),
+            color: isFav ? Colors.red : lb.withValues(alpha: 0.3),
           ),
         ),
       );

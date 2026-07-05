@@ -331,7 +331,7 @@ class _InteractiveDefensiveWidgetState
           boxShadow: active
               ? [
                   BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 8,
                       offset: const Offset(0, 2))
                 ]
@@ -372,11 +372,11 @@ class _InteractiveDefensiveWidgetState
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: active
-                ? color.withOpacity(0.15)
+                ? color.withValues(alpha: 0.15)
                 : (dk ? Colors.grey[850] : Colors.grey[100]),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: active ? color.withOpacity(0.5) : Colors.transparent,
+              color: active ? color.withValues(alpha: 0.5) : Colors.transparent,
               width: 1.5,
             ),
           ),
@@ -431,7 +431,7 @@ class _InteractiveDefensiveWidgetState
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: const Color(0xFF1565C0).withOpacity(0.12),
+                color: const Color(0xFF1565C0).withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -464,15 +464,15 @@ class _InteractiveDefensiveWidgetState
         decoration: BoxDecoration(
           color: active
               ? (dk
-                  ? Colors.white.withOpacity(0.12)
-                  : const Color(0xFF424242).withOpacity(0.08))
+                  ? Colors.white.withValues(alpha: 0.12)
+                  : const Color(0xFF424242).withValues(alpha: 0.08))
               : (dk ? Colors.grey[850] : Colors.grey[100]),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: active
                 ? (dk
-                    ? Colors.white.withOpacity(0.3)
-                    : const Color(0xFF424242).withOpacity(0.3))
+                    ? Colors.white.withValues(alpha: 0.3)
+                    : const Color(0xFF424242).withValues(alpha: 0.3))
                 : Colors.transparent,
             width: 1.5,
           ),
@@ -498,7 +498,7 @@ class _InteractiveDefensiveWidgetState
     final bg = dk ? const Color(0xFF1E1E1E) : Colors.white;
     final tx = dk ? Colors.white : const Color(0xFF1A1A1A);
     final lb = Colors.grey[500]!;
-    final dv = dk ? Colors.white.withOpacity(0.08) : Colors.grey[200]!;
+    final dv = dk ? Colors.white.withValues(alpha: 0.08) : Colors.grey[200]!;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -619,10 +619,10 @@ class _InteractiveDefensiveWidgetState
             height: size,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [color, color.withOpacity(0.8)]),
+              gradient: RadialGradient(colors: [color, color.withValues(alpha: 0.8)]),
               boxShadow: [
                 BoxShadow(
-                    color: color.withOpacity(sel ? 0.5 : 0.3),
+                    color: color.withValues(alpha: sel ? 0.5 : 0.3),
                     blurRadius: sel ? 10 : 5)
               ],
             ),
@@ -667,11 +667,11 @@ class _InteractiveDefensiveWidgetState
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [color, color.withOpacity(0.8)],
+                colors: [color, color.withValues(alpha: 0.8)],
               ),
               boxShadow: [
                 BoxShadow(
-                    color: color.withOpacity(sel ? 0.5 : 0.3),
+                    color: color.withValues(alpha: sel ? 0.5 : 0.3),
                     blurRadius: sel ? 10 : 5)
               ],
             ),
@@ -753,7 +753,7 @@ class _InteractiveDefensiveWidgetState
     final bg = dk ? const Color(0xFF1E1E1E) : Colors.white;
     final tx = dk ? Colors.white : const Color(0xFF1A1A1A);
     final lb = Colors.grey[500]!;
-    final dv = dk ? Colors.white.withOpacity(0.06) : Colors.grey[200]!;
+    final dv = dk ? Colors.white.withValues(alpha: 0.06) : Colors.grey[200]!;
     final teamColor = a.isHomeTeam ? widget.homeColor : widget.awayColor;
     final teamName = a.isHomeTeam ? widget.homeTeamName : widget.awayTeamName;
 
@@ -767,7 +767,7 @@ class _InteractiveDefensiveWidgetState
           boxShadow: [
             if (!dk)
               BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 8,
                   offset: const Offset(0, 2))
           ]),
@@ -835,7 +835,7 @@ class _InteractiveDefensiveWidgetState
   Widget _badge(String text, Color color) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
-            color: color.withOpacity(0.15),
+            color: color.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(4)),
         child: Text(text,
             style: TextStyle(
@@ -856,8 +856,8 @@ class _InteractiveDefensiveWidgetState
       height: 44,
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: a.typeColor.withOpacity(0.15),
-          border: Border.all(color: a.typeColor.withOpacity(0.4), width: 1.5)),
+          color: a.typeColor.withValues(alpha: 0.15),
+          border: Border.all(color: a.typeColor.withValues(alpha: 0.4), width: 1.5)),
       child: a.playerPhoto != null && a.playerPhoto!.isNotEmpty
           ? ClipOval(
               child: Image.network(a.playerPhoto!,
@@ -943,7 +943,7 @@ class _InteractiveDefensiveWidgetState
             child: CircularProgressIndicator(
                 value: pct / 100,
                 strokeWidth: 8,
-                backgroundColor: color.withOpacity(0.15),
+                backgroundColor: color.withValues(alpha: 0.15),
                 valueColor: AlwaysStoppedAnimation(color),
                 strokeCap: StrokeCap.round)),
         Text('$pct%',
@@ -993,7 +993,7 @@ class _InteractiveDefensiveWidgetState
                     child: Container(
                         height: 8,
                         decoration: BoxDecoration(
-                            color: widget.awayColor.withOpacity(0.35),
+                            color: widget.awayColor.withValues(alpha: 0.35),
                             borderRadius: BorderRadius.circular(4)))))),
       ]),
     ]);
@@ -1071,11 +1071,11 @@ class _InteractiveDefensiveWidgetState
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: isFiltered
-              ? teamColor.withOpacity(0.10)
+              ? teamColor.withValues(alpha: 0.10)
               : (dk ? Colors.grey[850] : Colors.white),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: isFiltered ? teamColor.withOpacity(0.4) : Colors.transparent,
+            color: isFiltered ? teamColor.withValues(alpha: 0.4) : Colors.transparent,
             width: 1.5,
           ),
         ),
@@ -1087,7 +1087,7 @@ class _InteractiveDefensiveWidgetState
               height: 32,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: teamColor.withOpacity(0.15),
+                color: teamColor.withValues(alpha: 0.15),
               ),
               child: Center(
                   child: Text(
@@ -1135,7 +1135,7 @@ class _InteractiveDefensiveWidgetState
                     height: 30,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: teamColor.withOpacity(dk ? 0.18 : 0.10),
+                      color: teamColor.withValues(alpha: dk ? 0.18 : 0.10),
                     ),
                     child: Icon(Icons.person_outline,
                         size: 17, color: teamColor),
@@ -1156,7 +1156,7 @@ class _InteractiveDefensiveWidgetState
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                        colors: [teamColor, teamColor.withOpacity(0.5)]),
+                        colors: [teamColor, teamColor.withValues(alpha: 0.5)]),
                   ),
                 ),
               ),
@@ -1275,7 +1275,7 @@ class _TriangleMarkerPainter extends CustomPainter {
       canvas.drawPath(
           path,
           Paint()
-            ..color = color.withOpacity(0.4)
+            ..color = color.withValues(alpha: 0.4)
             ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6));
     }
 

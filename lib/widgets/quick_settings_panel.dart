@@ -109,7 +109,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -128,7 +128,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
                             gradient: LinearGradient(
                               colors: [
                                 theme.primaryColor,
-                                theme.primaryColor.withOpacity(0.8),
+                                theme.primaryColor.withValues(alpha: 0.8),
                               ],
                             ),
                           ),
@@ -264,13 +264,13 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: isSelected
-                ? theme.primaryColor.withOpacity(0.1)
+                ? theme.primaryColor.withValues(alpha: 0.1)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isSelected
                   ? theme.primaryColor
-                  : Colors.grey.withOpacity(0.3),
+                  : Colors.grey.withValues(alpha: 0.3),
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -356,13 +356,13 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: isSelected
-                ? theme.primaryColor.withOpacity(0.1)
+                ? theme.primaryColor.withValues(alpha: 0.1)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isSelected
                   ? theme.primaryColor
-                  : Colors.grey.withOpacity(0.3),
+                  : Colors.grey.withValues(alpha: 0.3),
             ),
           ),
           child: Column(
@@ -541,7 +541,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
             border: Border.all(
               color: isSelected
                   ? theme.primaryColor
-                  : Colors.grey.withOpacity(0.3),
+                  : Colors.grey.withValues(alpha: 0.3),
             ),
           ),
           child: Text(
@@ -631,7 +631,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(

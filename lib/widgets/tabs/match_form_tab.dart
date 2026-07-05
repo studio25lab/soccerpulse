@@ -68,8 +68,8 @@ class _MatchFormTabState extends State<MatchFormTab> {
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final divider = isDark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.grey.withOpacity(0.1);
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.grey.withValues(alpha: 0.1);
 
     return Container(
       color: bg,
@@ -135,7 +135,7 @@ class _MatchFormTabState extends State<MatchFormTab> {
             boxShadow: active
                 ? [
                     BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 8,
                         offset: const Offset(0, 2))
                   ]

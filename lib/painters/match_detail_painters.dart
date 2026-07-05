@@ -31,10 +31,10 @@ class FormationPitchPainter extends CustomPainter {
     }
 
     final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.50)
+      ..color = Colors.white.withValues(alpha: 0.50)
       ..strokeWidth = 1.4
       ..style = PaintingStyle.stroke;
-    final dotPaint = Paint()..color = Colors.white.withOpacity(0.50);
+    final dotPaint = Paint()..color = Colors.white.withValues(alpha: 0.50);
 
     // Margins — generous for visual breathing room
     final mx = w * 0.08;
@@ -120,8 +120,8 @@ class PassFieldLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final lineColor = isDark
-        ? Colors.white.withOpacity(0.35)
-        : Colors.white.withOpacity(0.55);
+        ? Colors.white.withValues(alpha: 0.35)
+        : Colors.white.withValues(alpha: 0.55);
     final lp = Paint()
       ..color = lineColor
       ..style = PaintingStyle.stroke
@@ -148,7 +148,7 @@ class PassFieldLinePainter extends CustomPainter {
     // Divisione terzi (tratteggiata)
     final thirdW = size.width / 3;
     final dashPaint = Paint()
-      ..color = (isDark ? Colors.white : Colors.white).withOpacity(0.2)
+      ..color = (isDark ? Colors.white : Colors.white).withValues(alpha: 0.2)
       ..strokeWidth = 1;
     _drawDashedLine(canvas, Offset(thirdW, 0), Offset(thirdW, size.height),
         dashPaint, 6, 4);
@@ -263,7 +263,7 @@ class DonutChartPainter extends CustomPainter {
         center,
         radius,
         Paint()
-          ..color = (isDark ? Colors.white : Colors.grey).withOpacity(0.08)
+          ..color = (isDark ? Colors.white : Colors.grey).withValues(alpha: 0.08)
           ..style = PaintingStyle.stroke
           ..strokeWidth = strokeWidth);
 
@@ -423,7 +423,7 @@ class AttackHeatmapPainter extends CustomPainter {
 
     // Field markings
     final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.65)
+      ..color = Colors.white.withValues(alpha: 0.65)
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 
@@ -434,7 +434,7 @@ class AttackHeatmapPainter extends CustomPainter {
     // Center circle
     canvas.drawCircle(Offset(w / 2, h / 2), h * 0.18, linePaint);
     // Center dot
-    final dotPaint = Paint()..color = Colors.white.withOpacity(0.65);
+    final dotPaint = Paint()..color = Colors.white.withValues(alpha: 0.65);
     canvas.drawCircle(Offset(w / 2, h / 2), 3, dotPaint);
 
     // Penalty boxes
@@ -469,7 +469,7 @@ class AttackHeatmapPainter extends CustomPainter {
 
     // Direction arrows
     final arrowPaint = Paint()
-      ..color = Colors.white.withOpacity(0.55)
+      ..color = Colors.white.withValues(alpha: 0.55)
       ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -535,7 +535,7 @@ class PossessionBarPainter extends CustomPainter {
     // Home bar
     final homePaint = Paint()
       ..shader = LinearGradient(
-        colors: [homeColor.withOpacity(0.6), homeColor],
+        colors: [homeColor.withValues(alpha: 0.6), homeColor],
       ).createShader(Rect.fromLTWH(0, barY, splitX - gap / 2, barHeight));
 
     final homeRect = RRect.fromLTRBR(
@@ -546,7 +546,7 @@ class PossessionBarPainter extends CustomPainter {
     // Home glow
     if (homePercent > 0.5) {
       final glowPaint = Paint()
-        ..color = homeColor.withOpacity(0.15)
+        ..color = homeColor.withValues(alpha: 0.15)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
       canvas.drawRRect(homeRect, glowPaint);
     }
@@ -554,7 +554,7 @@ class PossessionBarPainter extends CustomPainter {
     // Away bar
     final awayPaint = Paint()
       ..shader = LinearGradient(
-        colors: [awayColor, awayColor.withOpacity(0.6)],
+        colors: [awayColor, awayColor.withValues(alpha: 0.6)],
       ).createShader(Rect.fromLTWH(splitX + gap / 2, barY, w - splitX - gap / 2, barHeight));
 
     final awayRect = RRect.fromLTRBR(
@@ -565,14 +565,14 @@ class PossessionBarPainter extends CustomPainter {
     // Away glow
     if (homePercent < 0.5) {
       final glowPaint = Paint()
-        ..color = awayColor.withOpacity(0.15)
+        ..color = awayColor.withValues(alpha: 0.15)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
       canvas.drawRRect(awayRect, glowPaint);
     }
 
     // Center divider dot
     final dotPaint = Paint()
-      ..color = isDark ? Colors.white.withOpacity(0.2) : Colors.grey.withOpacity(0.3);
+      ..color = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
     canvas.drawCircle(Offset(splitX, h / 2), 2, dotPaint);
   }
 
@@ -596,7 +596,7 @@ class MomentumGridPainter extends CustomPainter {
 
     // Center line (stronger)
     final centerPaint = Paint()
-      ..color = isDark ? Colors.white.withOpacity(0.12) : Colors.grey.withOpacity(0.18)
+      ..color = isDark ? Colors.white.withValues(alpha: 0.12) : Colors.grey.withValues(alpha: 0.18)
       ..strokeWidth = 1.0;
     canvas.drawLine(
       Offset(0, size.height / 2),
@@ -699,7 +699,7 @@ class MomentumCurvePainter extends CustomPainter {
       ..shader = ui.Gradient.linear(
         Offset(0, 0),
         Offset(0, midY),
-        [homeColor.withOpacity(0.45), homeColor.withOpacity(0.05)],
+        [homeColor.withValues(alpha: 0.45), homeColor.withValues(alpha: 0.05)],
       );
     canvas.drawPath(homePath, homeFillPaint);
 
@@ -708,13 +708,13 @@ class MomentumCurvePainter extends CustomPainter {
       ..shader = ui.Gradient.linear(
         Offset(0, midY),
         Offset(0, h),
-        [awayColor.withOpacity(0.05), awayColor.withOpacity(0.45)],
+        [awayColor.withValues(alpha: 0.05), awayColor.withValues(alpha: 0.45)],
       );
     canvas.drawPath(awayPath, awayFillPaint);
 
     // Draw home stroke
     final homeStrokePaint = Paint()
-      ..color = homeColor.withOpacity(0.8)
+      ..color = homeColor.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5
       ..strokeJoin = StrokeJoin.round;
@@ -722,7 +722,7 @@ class MomentumCurvePainter extends CustomPainter {
 
     // Draw away stroke
     final awayStrokePaint = Paint()
-      ..color = awayColor.withOpacity(0.8)
+      ..color = awayColor.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5
       ..strokeJoin = StrokeJoin.round;
@@ -730,7 +730,7 @@ class MomentumCurvePainter extends CustomPainter {
 
     // Home glow
     final homeGlowPaint = Paint()
-      ..color = homeColor.withOpacity(0.15)
+      ..color = homeColor.withValues(alpha: 0.15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
@@ -738,7 +738,7 @@ class MomentumCurvePainter extends CustomPainter {
 
     // Away glow
     final awayGlowPaint = Paint()
-      ..color = awayColor.withOpacity(0.15)
+      ..color = awayColor.withValues(alpha: 0.15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
@@ -760,7 +760,7 @@ class MiniHeatmapPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Campo
-    final fieldPaint = Paint()..color = Colors.white.withOpacity(0.15)..style = PaintingStyle.stroke..strokeWidth = 0.5;
+    final fieldPaint = Paint()..color = Colors.white.withValues(alpha: 0.15)..style = PaintingStyle.stroke..strokeWidth = 0.5;
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fieldPaint);
     canvas.drawLine(Offset(size.width / 2, 0), Offset(size.width / 2, size.height), fieldPaint);
     canvas.drawCircle(Offset(size.width / 2, size.height / 2), size.height * 0.2, fieldPaint);
@@ -788,7 +788,7 @@ class MiniHeatmapPainter extends CustomPainter {
     final gradient = RadialGradient(
       center: Alignment(cx * 2 - 1, cy * 2 - 1),
       radius: 0.5,
-      colors: [teamColor.withOpacity(0.6), teamColor.withOpacity(0.15), Colors.transparent],
+      colors: [teamColor.withValues(alpha: 0.6), teamColor.withValues(alpha: 0.15), Colors.transparent],
       stops: const [0.0, 0.5, 1.0],
     );
     final rect = Rect.fromCircle(center: center, radius: radius);
@@ -796,7 +796,7 @@ class MiniHeatmapPainter extends CustomPainter {
     canvas.drawCircle(center, radius, paint);
 
     // Punto centrale
-    final dotPaint = Paint()..color = Colors.white.withOpacity(0.8);
+    final dotPaint = Paint()..color = Colors.white.withValues(alpha: 0.8);
     canvas.drawCircle(center, 3, dotPaint);
   }
 
@@ -812,7 +812,7 @@ class PreMatchFieldPainter extends CustomPainter {
 
     // Grass stripes first (background)
     final stripePaint = Paint()
-      ..color = Colors.white.withOpacity(0.04)
+      ..color = Colors.white.withValues(alpha: 0.04)
       ..style = PaintingStyle.fill;
     final stripeH = h / 14;
     for (int i = 0; i < 14; i += 2) {
@@ -820,7 +820,7 @@ class PreMatchFieldPainter extends CustomPainter {
     }
 
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.30)
+      ..color = Colors.white.withValues(alpha: 0.30)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
@@ -1077,7 +1077,7 @@ void paintHeatmap(Canvas canvas, Size size, List<int> zones, int srcCols,
 
       canvas.drawRect(
         Rect.fromLTWH(col * cellW, row * cellH, cellW + 1.0, cellH + 1.0),
-        Paint()..color = color.withOpacity(alpha),
+        Paint()..color = color.withValues(alpha: alpha),
       );
     }
   }
@@ -1101,7 +1101,7 @@ void paintHeatmap(Canvas canvas, Size size, List<int> zones, int srcCols,
       canvas.drawRect(
         Rect.fromLTWH(
             col * cellW, row * cellH, cellW * 2 + 1.0, cellH * 2 + 1.0),
-        Paint()..color = color.withOpacity(alpha),
+        Paint()..color = color.withValues(alpha: alpha),
       );
     }
   }

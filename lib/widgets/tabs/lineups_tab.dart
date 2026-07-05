@@ -313,7 +313,7 @@ class _LineupsTabState extends State<LineupsTab> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
           decoration: BoxDecoration(
-            color: teamColor.withOpacity(isDark ? 0.18 : 0.10),
+            color: teamColor.withValues(alpha: isDark ? 0.18 : 0.10),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(11)),
           ),
           child: Row(children: [
@@ -338,7 +338,7 @@ class _LineupsTabState extends State<LineupsTab> {
         if (bench.isNotEmpty) ...[
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            color: isDark ? Colors.white.withOpacity(0.03) : Colors.grey.withOpacity(0.06),
+            color: isDark ? Colors.white.withValues(alpha: 0.03) : Colors.grey.withValues(alpha: 0.06),
             child: Text(localizeShotData(context, 'Panchina'),
                 style: TextStyle(
                     fontSize: 10,
@@ -364,7 +364,7 @@ class _LineupsTabState extends State<LineupsTab> {
           errorWidget: (_, __, ___) => Container(
             width: 22, height: 22,
             decoration: BoxDecoration(
-                color: teamColor.withOpacity(0.18), shape: BoxShape.circle),
+                color: teamColor.withValues(alpha: 0.18), shape: BoxShape.circle),
             child: Icon(Icons.shield, color: teamColor, size: 13),
           ),
         ),
@@ -373,7 +373,7 @@ class _LineupsTabState extends State<LineupsTab> {
     return Container(
       width: 22, height: 22,
       decoration: BoxDecoration(
-          color: teamColor.withOpacity(0.18), shape: BoxShape.circle),
+          color: teamColor.withValues(alpha: 0.18), shape: BoxShape.circle),
       child: Icon(Icons.shield, color: teamColor, size: 13),
     );
   }
@@ -408,7 +408,7 @@ class _LineupsTabState extends State<LineupsTab> {
       ratingBg = const Color(0xFFD32F2F);
 
     final zebraBg = zebra
-        ? (isDark ? Colors.white.withOpacity(0.02) : Colors.grey.withOpacity(0.04))
+        ? (isDark ? Colors.white.withValues(alpha: 0.02) : Colors.grey.withValues(alpha: 0.04))
         : Colors.transparent;
 
     return InkWell(
@@ -434,7 +434,7 @@ class _LineupsTabState extends State<LineupsTab> {
             decoration: BoxDecoration(
               color: didNotPlay
                   ? (isDark ? Colors.grey[800] : Colors.grey[200])
-                  : teamColor.withOpacity(0.14),
+                  : teamColor.withValues(alpha: 0.14),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -531,7 +531,7 @@ class _LineupsTabState extends State<LineupsTab> {
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
+                  color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 12,
                   offset: const Offset(0, 4))
             ],
@@ -550,7 +550,7 @@ class _LineupsTabState extends State<LineupsTab> {
                     width: 28,
                     height: 28,
                     decoration: BoxDecoration(
-                        color: teamColor.withOpacity(0.15),
+                        color: teamColor.withValues(alpha: 0.15),
                         shape: BoxShape.circle),
                     child: Icon(Icons.shield, color: teamColor, size: 16),
                   ),
@@ -644,7 +644,7 @@ class _LineupsTabState extends State<LineupsTab> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: teamColor.withOpacity(0.12),
+                  color: teamColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(Icons.person_outline_rounded,
@@ -777,7 +777,7 @@ class _LineupsTabState extends State<LineupsTab> {
                     border: Border.all(color: teamColor, width: 2.5),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
+                          color: Colors.black.withValues(alpha: 0.4),
                           blurRadius: 8,
                           offset: const Offset(0, 3))
                     ],
@@ -807,7 +807,7 @@ class _LineupsTabState extends State<LineupsTab> {
                         borderRadius: BorderRadius.circular(2),
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.black.withOpacity(0.4),
+                              color: Colors.black.withValues(alpha: 0.4),
                               blurRadius: 3)
                         ],
                       ),
@@ -826,7 +826,7 @@ class _LineupsTabState extends State<LineupsTab> {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.black.withOpacity(0.5),
+                              color: Colors.black.withValues(alpha: 0.5),
                               blurRadius: 3)
                         ],
                       ),
@@ -848,7 +848,7 @@ class _LineupsTabState extends State<LineupsTab> {
                   borderRadius: BorderRadius.circular(6),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black.withOpacity(0.5), blurRadius: 4)
+                        color: Colors.black.withValues(alpha: 0.5), blurRadius: 4)
                   ],
                 ),
                 child: Text(
@@ -869,9 +869,9 @@ class _LineupsTabState extends State<LineupsTab> {
                 style: TextStyle(
                   fontSize: nameFontSize,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white.withOpacity(0.85),
+                  color: Colors.white.withValues(alpha: 0.85),
                   shadows: [
-                    Shadow(color: Colors.black.withOpacity(0.9), blurRadius: 4)
+                    Shadow(color: Colors.black.withValues(alpha: 0.9), blurRadius: 4)
                   ],
                 ),
                 textAlign: TextAlign.center,
@@ -923,7 +923,7 @@ class _LineupsTabState extends State<LineupsTab> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: teamColor.withOpacity(0.12),
+                color: teamColor.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
               child: Center(

@@ -48,8 +48,8 @@ class PreMatchInfoTab extends StatelessWidget {
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final divider = isDark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.grey.withOpacity(0.1);
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.grey.withValues(alpha: 0.1);
 
     return Container(
       color: bg,
@@ -229,7 +229,7 @@ class PreMatchInfoTab extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: accent.withOpacity(0.08),
+            color: accent.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 16, color: accent),
@@ -272,10 +272,10 @@ class PreMatchInfoTab extends StatelessWidget {
               child: Row(children: [
                 Expanded(
                     flex: (hPct * 100).round(),
-                    child: Container(color: homeColor.withOpacity(0.7))),
+                    child: Container(color: homeColor.withValues(alpha: 0.7))),
                 Expanded(
                     flex: ((1 - hPct) * 100).round(),
-                    child: Container(color: awayColor.withOpacity(0.7))),
+                    child: Container(color: awayColor.withValues(alpha: 0.7))),
               ])),
         ),
       ]),

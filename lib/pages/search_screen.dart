@@ -465,7 +465,7 @@ class _SearchScreenState extends State<SearchScreen>
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.06),
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.06),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -481,7 +481,7 @@ class _SearchScreenState extends State<SearchScreen>
                 ),
                 Icon(
                   Icons.search_rounded, size: 18,
-                  color: _searchFocus.hasFocus ? theme.primaryColor : lb.withOpacity(0.5),
+                  color: _searchFocus.hasFocus ? theme.primaryColor : lb.withValues(alpha: 0.5),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -493,7 +493,7 @@ class _SearchScreenState extends State<SearchScreen>
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: tx),
                     decoration: InputDecoration(
                       hintText: tr(context, 'Cerca squadre, giocatori, partite...'),
-                      hintStyle: TextStyle(fontSize: 14, color: lb.withOpacity(0.45)),
+                      hintStyle: TextStyle(fontSize: 14, color: lb.withValues(alpha: 0.45)),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
                     ),
@@ -509,7 +509,7 @@ class _SearchScreenState extends State<SearchScreen>
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: lb.withOpacity(0.15),
+                          color: lb.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(Icons.close_rounded, size: 16, color: lb),
@@ -568,13 +568,13 @@ class _SearchScreenState extends State<SearchScreen>
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.white.withOpacity(0.08) : Colors.white,
+                  color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white,
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.12) : Colors.grey.withOpacity(0.18)),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 1))],
+                  border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.12) : Colors.grey.withValues(alpha: 0.18)),
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 4, offset: const Offset(0, 1))],
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.history_rounded, size: 15, color: theme.primaryColor.withOpacity(0.6)),
+                  Icon(Icons.history_rounded, size: 15, color: theme.primaryColor.withValues(alpha: 0.6)),
                   const SizedBox(width: 7),
                   Text(s, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: tx)),
                 ]),
@@ -736,9 +736,9 @@ class _SearchScreenState extends State<SearchScreen>
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.06),
+                  color: theme.primaryColor.withValues(alpha: 0.06),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: theme.primaryColor.withOpacity(0.15)),
+                  border: Border.all(color: theme.primaryColor.withValues(alpha: 0.15)),
                 ),
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Icon(Icons.search_rounded, size: 16, color: theme.primaryColor),
@@ -823,7 +823,7 @@ class _SearchScreenState extends State<SearchScreen>
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF141B2D) : Colors.white,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.08)),
+              border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.08)),
             ),
             child: Row(children: [
               if (logo != null && logo.isNotEmpty)
@@ -831,12 +831,12 @@ class _SearchScreenState extends State<SearchScreen>
                   borderRadius: BorderRadius.circular(type == 'player' ? 20 : 8),
                   child: CachedNetworkImage(imageUrl: logo, width: 36, height: 36, fit: BoxFit.cover,
                       errorWidget: (_, __, ___) => Container(width: 36, height: 36,
-                          decoration: BoxDecoration(color: typeColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                          decoration: BoxDecoration(color: typeColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                           child: Icon(icon, size: 18, color: typeColor))),
                 )
               else
                 Container(width: 36, height: 36,
-                    decoration: BoxDecoration(color: typeColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(color: typeColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                     child: Icon(icon, size: 18, color: typeColor)),
               const SizedBox(width: 12),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -871,7 +871,7 @@ class _SearchScreenState extends State<SearchScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text('${pos}°', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
@@ -894,7 +894,7 @@ class _SearchScreenState extends State<SearchScreen>
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+                color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: tx),
@@ -915,13 +915,13 @@ class _SearchScreenState extends State<SearchScreen>
             decoration: BoxDecoration(
               color: cardBg,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08)),
+              border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08)),
             ),
             child: Row(children: [
               Container(
                 width: 28, height: 28,
                 decoration: BoxDecoration(
-                  color: index < 3 ? const Color(0xFFFFD700).withOpacity(0.15) : (isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.06)),
+                  color: index < 3 ? const Color(0xFFFFD700).withValues(alpha: 0.15) : (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.06)),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Center(child: Text('${index + 1}', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: index < 3 ? const Color(0xFFFFB300) : lb))),
@@ -941,7 +941,7 @@ class _SearchScreenState extends State<SearchScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4CAF50).withOpacity(0.12),
+                  color: const Color(0xFF4CAF50).withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text('${p.goals ?? 0} ⚽', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF2E7D32))),
@@ -990,7 +990,7 @@ class _SearchScreenState extends State<SearchScreen>
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+                color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(Icons.arrow_back_rounded, size: 18, color: lb),
@@ -1037,8 +1037,8 @@ class _SearchScreenState extends State<SearchScreen>
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xFF141B2D) : Colors.white,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.15 : 0.03), blurRadius: 6, offset: const Offset(0, 2))],
+                border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1)),
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.03), blurRadius: 6, offset: const Offset(0, 2))],
               ),
               child: Column(children: [
                 // Header: tag + round + date
@@ -1046,7 +1046,7 @@ class _SearchScreenState extends State<SearchScreen>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: tagColor.withOpacity(0.12),
+                      color: tagColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(m['tag'] as String, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: tagColor)),
@@ -1076,7 +1076,7 @@ class _SearchScreenState extends State<SearchScreen>
                       },
                       child: Icon(
                         isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                        size: 20, color: isFav ? Colors.red : lb.withOpacity(0.4),
+                        size: 20, color: isFav ? Colors.red : lb.withValues(alpha: 0.4),
                       ),
                     );
                   }),
@@ -1094,7 +1094,7 @@ class _SearchScreenState extends State<SearchScreen>
                       },
                       child: Icon(
                         on_ ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
-                        size: 20, color: on_ ? const Color(0xFF4CAF50) : lb.withOpacity(0.4),
+                        size: 20, color: on_ ? const Color(0xFF4CAF50) : lb.withValues(alpha: 0.4),
                       ),
                     );
                   }),
@@ -1126,7 +1126,7 @@ class _SearchScreenState extends State<SearchScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.04),
+                    color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.04),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(children: [
@@ -1203,7 +1203,7 @@ class _SearchScreenState extends State<SearchScreen>
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+                color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(Icons.arrow_back_rounded, size: 18, color: lb),
@@ -1271,8 +1271,8 @@ class _SearchScreenState extends State<SearchScreen>
                 decoration: BoxDecoration(
                   color: isDark ? const Color(0xFF141B2D) : Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.15 : 0.03), blurRadius: 6, offset: const Offset(0, 2))],
+                  border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1)),
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.03), blurRadius: 6, offset: const Offset(0, 2))],
                 ),
                 child: Row(children: [
                   // Posizione
@@ -1291,7 +1291,7 @@ class _SearchScreenState extends State<SearchScreen>
                     child: CachedNetworkImage(
                       imageUrl: p['photo'] as String, width: 44, height: 44, fit: BoxFit.cover,
                       errorWidget: (_, __, ___) => Container(width: 44, height: 44,
-                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.withOpacity(0.15)),
+                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.withValues(alpha: 0.15)),
                           child: Icon(Icons.person, size: 24, color: lb)),
                     ),
                   ),
@@ -1304,7 +1304,7 @@ class _SearchScreenState extends State<SearchScreen>
                     Row(children: [
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(color: posColor(pos).withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
+                        decoration: BoxDecoration(color: posColor(pos).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(4)),
                         child: Text(pos, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: posColor(pos))),
                       ),
                       const SizedBox(width: 6),
@@ -1319,17 +1319,17 @@ class _SearchScreenState extends State<SearchScreen>
                     Row(mainAxisSize: MainAxisSize.min, children: [
                       Text('${p['goals']}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: tx)),
                       const SizedBox(width: 2),
-                      Icon(Icons.sports_soccer, size: 12, color: lb.withOpacity(0.5)),
+                      Icon(Icons.sports_soccer, size: 12, color: lb.withValues(alpha: 0.5)),
                       const SizedBox(width: 8),
                       Text('${p['assists']}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: tx)),
                       const SizedBox(width: 2),
-                      Text('A', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: lb.withOpacity(0.5))),
+                      Text('A', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: lb.withValues(alpha: 0.5))),
                     ]),
                     const SizedBox(height: 4),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: ratingColor(rating).withOpacity(0.12),
+                        color: ratingColor(rating).withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(rating.toStringAsFixed(1),
@@ -1357,13 +1357,13 @@ class _SearchScreenState extends State<SearchScreen>
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [gradient[0].withOpacity(0.15), gradient[1].withOpacity(0.08)]
-                : [gradient[0].withOpacity(0.08), gradient[1].withOpacity(0.04)],
+                ? [gradient[0].withValues(alpha: 0.15), gradient[1].withValues(alpha: 0.08)]
+                : [gradient[0].withValues(alpha: 0.08), gradient[1].withValues(alpha: 0.04)],
             begin: Alignment.topLeft, end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: gradient[0].withOpacity(isDark ? 0.2 : 0.15)),
-          boxShadow: [BoxShadow(color: gradient[0].withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 3))],
+          border: Border.all(color: gradient[0].withValues(alpha: isDark ? 0.2 : 0.15)),
+          boxShadow: [BoxShadow(color: gradient[0].withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 3))],
         ),
         child: Row(children: [
           Container(
@@ -1371,7 +1371,7 @@ class _SearchScreenState extends State<SearchScreen>
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: gradient, begin: Alignment.topLeft, end: Alignment.bottomRight),
               borderRadius: BorderRadius.circular(14),
-              boxShadow: [BoxShadow(color: gradient[0].withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 3))],
+              boxShadow: [BoxShadow(color: gradient[0].withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 3))],
             ),
             child: Icon(icon, size: compact ? 22 : 26, color: Colors.white),
           ),
@@ -1386,7 +1386,7 @@ class _SearchScreenState extends State<SearchScreen>
           Container(
             width: 28, height: 28,
             decoration: BoxDecoration(
-              color: gradient[0].withOpacity(isDark ? 0.2 : 0.1),
+              color: gradient[0].withValues(alpha: isDark ? 0.2 : 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(Icons.arrow_forward_rounded, size: 16, color: gradient[0]),
@@ -1418,10 +1418,10 @@ class _SearchScreenState extends State<SearchScreen>
                 width: 56, height: 56,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.white.withOpacity(0.06) : Colors.white,
+                  color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: color.withOpacity(0.2), width: 1.5),
-                  boxShadow: [BoxShadow(color: color.withOpacity(0.08), blurRadius: 8, offset: const Offset(0, 2))],
+                  border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
+                  boxShadow: [BoxShadow(color: color.withValues(alpha: 0.08), blurRadius: 8, offset: const Offset(0, 2))],
                 ),
                 child: CachedNetworkImage(
                   imageUrl: logo, fit: BoxFit.contain,
@@ -1435,7 +1435,7 @@ class _SearchScreenState extends State<SearchScreen>
                   decoration: BoxDecoration(
                     color: color,
                     borderRadius: BorderRadius.circular(6),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 3)],
+                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 3)],
                   ),
                   child: Text(position, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.white)),
                 ),
@@ -1454,8 +1454,8 @@ class _SearchScreenState extends State<SearchScreen>
     return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
       Container(
         padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(color: lb.withOpacity(0.08), shape: BoxShape.circle),
-        child: Icon(Icons.search_off_rounded, size: 48, color: lb.withOpacity(0.4)),
+        decoration: BoxDecoration(color: lb.withValues(alpha: 0.08), shape: BoxShape.circle),
+        child: Icon(Icons.search_off_rounded, size: 48, color: lb.withValues(alpha: 0.4)),
       ),
       const SizedBox(height: 20),
       Text(tr(context, 'Nessun risultato'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: tx)),
@@ -1504,7 +1504,7 @@ class _SearchScreenState extends State<SearchScreen>
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF141B2D) : Colors.white,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
+            border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1)),
           ),
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -1513,7 +1513,7 @@ class _SearchScreenState extends State<SearchScreen>
                 : const Icon(Icons.shield, size: 44),
             title: Text(team.name, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
             subtitle: Text(team.country ?? 'Italia', style: TextStyle(fontSize: 12, color: lb)),
-            trailing: Icon(Icons.chevron_right_rounded, color: lb.withOpacity(0.4)),
+            trailing: Icon(Icons.chevron_right_rounded, color: lb.withValues(alpha: 0.4)),
             onTap: () {
               _haptic.lightImpact();
               // Find matching TeamStanding from standings data
@@ -1553,15 +1553,15 @@ class _SearchScreenState extends State<SearchScreen>
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF141B2D) : Colors.white,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: isLive ? const Color(0xFFFF1744).withOpacity(0.3)
-                  : isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.12 : 0.03),
+              border: Border.all(color: isLive ? const Color(0xFFFF1744).withValues(alpha: 0.3)
+                  : isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1)),
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.12 : 0.03),
                   blurRadius: 6, offset: const Offset(0, 2))],
             ),
             child: Column(children: [
               // Header: league + round + status
               Row(children: [
-                Icon(Icons.emoji_events_rounded, size: 12, color: theme.primaryColor.withOpacity(0.5)),
+                Icon(Icons.emoji_events_rounded, size: 12, color: theme.primaryColor.withValues(alpha: 0.5)),
                 const SizedBox(width: 4),
                 Text('${m.leagueName ?? "Serie A"} \u2022 ${m.round ?? ""}',
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: lb)),
@@ -1577,13 +1577,13 @@ class _SearchScreenState extends State<SearchScreen>
                 ),
                 if (isFT) Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(color: isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.08),
+                  decoration: BoxDecoration(color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(4)),
                   child: Text('FT', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: lb)),
                 ),
                 if (!isLive && !isFT) Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(color: theme.primaryColor.withOpacity(0.08),
+                  decoration: BoxDecoration(color: theme.primaryColor.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(4)),
                   child: Text(tr(context, 'PROSSIMA'), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: theme.primaryColor)),
                 ),
@@ -1658,7 +1658,7 @@ class _SearchScreenState extends State<SearchScreen>
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF141B2D) : Colors.white,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
+            border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1)),
           ),
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

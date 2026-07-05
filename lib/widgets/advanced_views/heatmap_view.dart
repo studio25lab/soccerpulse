@@ -122,8 +122,8 @@ class _HeatmapViewState extends State<HeatmapView> {
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF262626) : const Color(0xFFF5F5F0);
     final cardBorder = isDark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.black.withOpacity(0.04);
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.black.withValues(alpha: 0.04);
 
     const homeColor = Color(0xFF1B5E20);
     const awayColor = Color(0xFF1565C0);
@@ -276,15 +276,15 @@ class _HeatmapViewState extends State<HeatmapView> {
         decoration: BoxDecoration(
           color: active
               ? (isDark
-                  ? Colors.white.withOpacity(0.12)
-                  : const Color(0xFF424242).withOpacity(0.08))
+                  ? Colors.white.withValues(alpha: 0.12)
+                  : const Color(0xFF424242).withValues(alpha: 0.08))
               : (isDark ? const Color(0xFF2A2A2A) : Colors.grey[100]),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: active
                 ? (isDark
-                    ? Colors.white.withOpacity(0.3)
-                    : const Color(0xFF424242).withOpacity(0.3))
+                    ? Colors.white.withValues(alpha: 0.3)
+                    : const Color(0xFF424242).withValues(alpha: 0.3))
                 : Colors.transparent,
             width: 1.5,
           ),
@@ -336,7 +336,7 @@ class _HeatmapViewState extends State<HeatmapView> {
                                 decoration: BoxDecoration(
                                     gradient: LinearGradient(colors: [
                               homeColor,
-                              homeColor.withOpacity(0.75)
+                              homeColor.withValues(alpha: 0.75)
                             ])))),
                         Container(
                             width: 2,
@@ -348,8 +348,8 @@ class _HeatmapViewState extends State<HeatmapView> {
                             child: Container(
                                 decoration: BoxDecoration(
                                     gradient: LinearGradient(colors: [
-                              awayColor.withOpacity(0.4),
-                              awayColor.withOpacity(0.3)
+                              awayColor.withValues(alpha: 0.4),
+                              awayColor.withValues(alpha: 0.3)
                             ])))),
                       ]),
                     ))),
@@ -424,7 +424,7 @@ class _HeatmapViewState extends State<HeatmapView> {
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(colors: [
                             color,
-                            color.withOpacity(0.75)
+                            color.withValues(alpha: 0.75)
                           ])))),
                       Container(
                           width: 2,
@@ -435,8 +435,8 @@ class _HeatmapViewState extends State<HeatmapView> {
                           child: Container(
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(colors: [
-                            oppColor.withOpacity(0.35),
-                            oppColor.withOpacity(0.25)
+                            oppColor.withValues(alpha: 0.35),
+                            oppColor.withValues(alpha: 0.25)
                           ])))),
                     ])))),
         const SizedBox(width: 8),
@@ -531,8 +531,8 @@ class _HeatmapViewState extends State<HeatmapView> {
                 width: 1,
                 height: 80,
                 color: isDark
-                    ? Colors.white.withOpacity(0.06)
-                    : Colors.black.withOpacity(0.04)),
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : Colors.black.withValues(alpha: 0.04)),
             Expanded(
                 child: Column(children: [
               Text(localizeShotData(context, 'Territorio'),
@@ -572,7 +572,7 @@ class _HeatmapViewState extends State<HeatmapView> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-                color: teamColor.withOpacity(0.12),
+                color: teamColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12)),
             child: Icon(Icons.whatshot, color: teamColor, size: 24),
           ),
@@ -637,7 +637,7 @@ class _HeatmapViewState extends State<HeatmapView> {
     final isWinning = value > oppValue;
     final isDraw = value == oppValue;
     return Row(children: [
-      Icon(icon, size: 18, color: color.withOpacity(0.7)),
+      Icon(icon, size: 18, color: color.withValues(alpha: 0.7)),
       const SizedBox(width: 10),
       Expanded(
           child: Text(label,
@@ -654,7 +654,7 @@ class _HeatmapViewState extends State<HeatmapView> {
               color: (isWinning
                       ? const Color(0xFF4CAF50)
                       : const Color(0xFFF44336))
-                  .withOpacity(0.12),
+                  .withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(4)),
           child: Icon(isWinning ? Icons.arrow_drop_up : Icons.arrow_drop_down,
               size: 16,
@@ -684,13 +684,13 @@ class _HeatmapViewState extends State<HeatmapView> {
                 borderRadius: BorderRadius.circular(5),
                 child: Stack(children: [
                   Container(
-                      color: Colors.grey.withOpacity(isDark ? 0.15 : 0.12)),
+                      color: Colors.grey.withValues(alpha: isDark ? 0.15 : 0.12)),
                   FractionallySizedBox(
                       widthFactor: (value / max).clamp(0.0, 1.0),
                       child: Container(
                         decoration: BoxDecoration(
                             gradient: LinearGradient(
-                                colors: [color, color.withOpacity(0.7)]),
+                                colors: [color, color.withValues(alpha: 0.7)]),
                             borderRadius: BorderRadius.circular(5)),
                       )),
                 ]),

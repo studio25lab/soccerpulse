@@ -15,7 +15,6 @@ import '../generated/l10n.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
 import '../widgets/interactive_shot_map_widget.dart';
 import '../widgets/Interactive_defensive_widget.dart';
-import 'package:soccerpulse/main.dart';
 import '../widgets/player_match_visuals.dart';
 
 class MatchPlayerComparisonScreen extends StatefulWidget {
@@ -103,8 +102,8 @@ class _MatchPlayerComparisonScreenState extends State<MatchPlayerComparisonScree
                 dense: true,
                 leading: Container(
                   width: 52, height: 52,
-                  decoration: BoxDecoration(color: c.withOpacity(0.12), shape: BoxShape.circle,
-                      border: Border.all(color: c.withOpacity(0.3))),
+                  decoration: BoxDecoration(color: c.withValues(alpha: 0.12), shape: BoxShape.circle,
+                      border: Border.all(color: c.withValues(alpha: 0.3))),
                   child: Center(child: Text('${p.number}',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: c))),
                 ),
@@ -132,7 +131,7 @@ class _MatchPlayerComparisonScreenState extends State<MatchPlayerComparisonScree
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0D0D1A) : const Color(0xFFF0F2F5);
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
 
     return Scaffold(
       backgroundColor: bg,
@@ -142,7 +141,7 @@ class _MatchPlayerComparisonScreenState extends State<MatchPlayerComparisonScree
         leading: IconButton(
           icon: Container(
             padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(color: isDark ? Colors.white10 : Colors.grey.withOpacity(0.1),
+            decoration: BoxDecoration(color: isDark ? Colors.white10 : Colors.grey.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10)),
             child: Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: tx),
           ),
@@ -162,7 +161,7 @@ class _MatchPlayerComparisonScreenState extends State<MatchPlayerComparisonScree
             IconButton(
               icon: Container(
                 padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(color: const Color(0xFF1565C0).withOpacity(0.1),
+                decoration: BoxDecoration(color: const Color(0xFF1565C0).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10)),
                 child: const Icon(Icons.person_add_rounded, size: 18, color: Color(0xFF1565C0)),
               ),
@@ -240,7 +239,7 @@ class _MatchPlayerComparisonColumnState extends State<MatchPlayerComparisonColum
     final teamColor = widget.teamColor;
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
     final sectionBg = isDark ? const Color(0xFF222222) : const Color(0xFFF8F8F8);
 
     Color ratingColor;
@@ -268,7 +267,7 @@ class _MatchPlayerComparisonColumnState extends State<MatchPlayerComparisonColum
             Container(
               width: 48, height: 48,
               decoration: BoxDecoration(
-                color: teamColor.withOpacity(0.15), shape: BoxShape.circle,
+                color: teamColor.withValues(alpha: 0.15), shape: BoxShape.circle,
                 border: Border.all(color: teamColor, width: 2),
               ),
               child: Center(child: Text('${p.number}',
@@ -299,7 +298,7 @@ class _MatchPlayerComparisonColumnState extends State<MatchPlayerComparisonColum
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           decoration: BoxDecoration(
-            color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.06),
+            color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(children: [
@@ -428,7 +427,7 @@ class _MatchPlayerComparisonColumnState extends State<MatchPlayerComparisonColum
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: isOn ? tc.withOpacity(0.15) : Colors.transparent,
+              color: isOn ? tc.withValues(alpha: 0.15) : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(mainAxisSize: MainAxisSize.min, children: [

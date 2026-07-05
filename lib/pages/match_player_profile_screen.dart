@@ -9,7 +9,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:soccerpulse/main.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
 import '../utils/l10n_helper.dart';
 import '../generated/l10n.dart';
@@ -174,7 +173,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                     const BorderRadius.vertical(top: Radius.circular(24)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 20,
                     offset: const Offset(0, -5),
                   ),
@@ -204,10 +203,10 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                           width: 44,
                           height: 44,
                           decoration: BoxDecoration(
-                            color: widget.teamColor.withOpacity(0.15),
+                            color: widget.teamColor.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: widget.teamColor.withOpacity(0.3),
+                              color: widget.teamColor.withValues(alpha: 0.3),
                             ),
                           ),
                           child: Center(
@@ -474,12 +473,12 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
               color: isOn
-                  ? color.withOpacity(isDark ? 0.12 : 0.06)
+                  ? color.withValues(alpha: isDark ? 0.12 : 0.06)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: isOn
-                    ? color.withOpacity(isDark ? 0.3 : 0.2)
+                    ? color.withValues(alpha: isDark ? 0.3 : 0.2)
                     : isDark
                         ? Colors.white10
                         : Colors.grey[200]!,
@@ -491,7 +490,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(isOn ? 0.15 : 0.08),
+                  color: color.withValues(alpha: isOn ? 0.15 : 0.08),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon,
@@ -553,7 +552,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
+                          color: Colors.black.withValues(alpha: 0.15),
                           blurRadius: 4,
                           offset: const Offset(0, 1),
                         ),
@@ -654,7 +653,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 icon: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: isFav ? Colors.red.withOpacity(0.3) : Colors.black26,
+                    color: isFav ? Colors.red.withValues(alpha: 0.3) : Colors.black26,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -693,7 +692,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: _playerNotifEnabled
-                      ? widget.teamColor.withOpacity(0.3)
+                      ? widget.teamColor.withValues(alpha: 0.3)
                       : Colors.black26,
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -716,8 +715,8 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    widget.teamColor.withOpacity(0.9),
-                    widget.teamColor.withOpacity(0.6),
+                    widget.teamColor.withValues(alpha: 0.9),
+                    widget.teamColor.withValues(alpha: 0.6),
                     bg,
                   ],
                   stops: const [0.0, 0.6, 1.0],
@@ -733,11 +732,11 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                       width: 90,
                       height: 90,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 8)),
+                          BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, 8)),
                         ],
                       ),
                       child: Center(
@@ -754,14 +753,14 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                     const SizedBox(height: 6),
                     // Team name
                     Text(widget.teamName,
-                        style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.8))),
+                        style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.8))),
                     const SizedBox(height: 10),
                     // Info chips + rating
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       if (isCoach) Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
+                          color: Colors.white.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(tr(context, 'Allenatore'),
@@ -770,7 +769,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                       if (!isCoach) Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
+                          color: Colors.white.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(p.position,
@@ -784,7 +783,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                           color: ratingBg,
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
-                            BoxShadow(color: ratingBg.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 2)),
+                            BoxShadow(color: ratingBg.withValues(alpha: 0.4), blurRadius: 8, offset: const Offset(0, 2)),
                           ],
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -925,13 +924,13 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 const SizedBox(height: 3),
                 Container(width: 48, height: 48,
                   decoration: BoxDecoration(
-                    color: r['res'] == 'W' ? const Color(0xFF2E7D32).withOpacity(0.15)
-                        : r['res'] == 'D' ? const Color(0xFFF9A825).withOpacity(0.15)
-                        : const Color(0xFFD32F2F).withOpacity(0.15),
+                    color: r['res'] == 'W' ? const Color(0xFF2E7D32).withValues(alpha: 0.15)
+                        : r['res'] == 'D' ? const Color(0xFFF9A825).withValues(alpha: 0.15)
+                        : const Color(0xFFD32F2F).withValues(alpha: 0.15),
                     shape: BoxShape.circle,
-                    border: Border.all(color: r['res'] == 'W' ? const Color(0xFF2E7D32).withOpacity(0.4)
-                        : r['res'] == 'D' ? const Color(0xFFF9A825).withOpacity(0.4)
-                        : const Color(0xFFD32F2F).withOpacity(0.4))),
+                    border: Border.all(color: r['res'] == 'W' ? const Color(0xFF2E7D32).withValues(alpha: 0.4)
+                        : r['res'] == 'D' ? const Color(0xFFF9A825).withValues(alpha: 0.4)
+                        : const Color(0xFFD32F2F).withValues(alpha: 0.4))),
                   child: Center(child: Text(r['score'] as String, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800,
                     color: r['res'] == 'W' ? const Color(0xFF2E7D32) : r['res'] == 'D' ? const Color(0xFFF9A825) : const Color(0xFFD32F2F))))),
                 const SizedBox(height: 3),
@@ -947,9 +946,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
             Column(children: [
               Container(width: 44, height: 44,
                 decoration: BoxDecoration(
-                  color: (data['recentForm'] as List)[i] == 'W' ? const Color(0xFF2E7D32).withOpacity(0.15)
-                      : (data['recentForm'] as List)[i] == 'D' ? const Color(0xFFF9A825).withOpacity(0.15)
-                      : const Color(0xFFD32F2F).withOpacity(0.15),
+                  color: (data['recentForm'] as List)[i] == 'W' ? const Color(0xFF2E7D32).withValues(alpha: 0.15)
+                      : (data['recentForm'] as List)[i] == 'D' ? const Color(0xFFF9A825).withValues(alpha: 0.15)
+                      : const Color(0xFFD32F2F).withValues(alpha: 0.15),
                   shape: BoxShape.circle),
                 child: Center(child: Text((data['recentRatings'] as List)[i].toStringAsFixed(1),
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
@@ -1046,7 +1045,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
+          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1)),
         ),
         child: Column(
           children: [
@@ -1171,7 +1170,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                                       color: const Color(0xFFFDD835),
                                       borderRadius: BorderRadius.circular(1.5),
                                       boxShadow: [
-                                        BoxShadow(color: Colors.amber.withOpacity(0.3), blurRadius: 3),
+                                        BoxShadow(color: Colors.amber.withValues(alpha: 0.3), blurRadius: 3),
                                       ],
                                     ),
                                   );
@@ -1268,9 +1267,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       Container(
         width: 20, height: 20,
         decoration: BoxDecoration(
-          color: colors[0].withOpacity(0.15),
+          color: colors[0].withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: colors[0].withOpacity(0.3), width: 0.5),
+          border: Border.all(color: colors[0].withValues(alpha: 0.3), width: 0.5),
         ),
         child: Center(
           child: Text(
@@ -1609,17 +1608,17 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
             end: Alignment.bottomRight,
             colors: isDark
                 ? [
-                    tierColor.withOpacity(0.15),
-                    tierColor.withOpacity(0.05),
+                    tierColor.withValues(alpha: 0.15),
+                    tierColor.withValues(alpha: 0.05),
                   ]
                 : [
-                    tierColor.withOpacity(0.12),
-                    tierColor.withOpacity(0.04),
+                    tierColor.withValues(alpha: 0.12),
+                    tierColor.withValues(alpha: 0.04),
                   ],
           ),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: tierColor.withOpacity(isDark ? 0.3 : 0.25),
+            color: tierColor.withValues(alpha: isDark ? 0.3 : 0.25),
             width: 1.5,
           ),
         ),
@@ -1628,7 +1627,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: tierColor.withOpacity(0.2),
+              color: tierColor.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -1659,7 +1658,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: tx.withOpacity(0.5),
+              color: tx.withValues(alpha: 0.5),
               letterSpacing: 3,
             ),
           ),
@@ -1675,11 +1674,11 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: _getStatColor(val).withOpacity(isDark ? 0.15 : 0.1),
+                  color: _getStatColor(val).withValues(alpha: isDark ? 0.15 : 0.1),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color:
-                        _getStatColor(val).withOpacity(isDark ? 0.3 : 0.2),
+                        _getStatColor(val).withValues(alpha: isDark ? 0.3 : 0.2),
                   ),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -1688,7 +1687,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: tx.withOpacity(0.6),
+                      color: tx.withValues(alpha: 0.6),
                     ),
                   ),
                   const SizedBox(width: 6),
@@ -1716,7 +1715,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
+          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1)),
         ),
         child: Builder(builder: (ctx) {
           final pos = widget.player.position;
@@ -1736,7 +1735,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   border: isLast ? null : Border(bottom: BorderSide(
-                    color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1),
+                    color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1),
                   )),
                 ),
                 child: Row(children: [
@@ -1744,9 +1743,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                   Container(
                     width: 42, height: 28,
                     decoration: BoxDecoration(
-                      color: fitColor.withOpacity(0.12),
+                      color: fitColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: fitColor.withOpacity(0.3)),
+                      border: Border.all(color: fitColor.withValues(alpha: 0.3)),
                     ),
                     child: Center(
                       child: Text(r['pos'] as String,
@@ -1783,7 +1782,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: tx.withOpacity(0.7),
+                  color: tx.withValues(alpha: 0.7),
                 ),
               ),
             ),
@@ -1795,8 +1794,8 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                   height: 8,
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.white.withOpacity(0.08)
-                        : Colors.black.withOpacity(0.06),
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.black.withValues(alpha: 0.06),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -1809,7 +1808,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                       gradient: LinearGradient(
                         colors: [
                           color,
-                          color.withOpacity(0.7),
+                          color.withValues(alpha: 0.7),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(4),
@@ -2021,7 +2020,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: widget.teamColor.withOpacity(0.08),
+              color: widget.teamColor.withValues(alpha: 0.08),
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
             ),
@@ -2074,9 +2073,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                           width: 24,
                           height: 24,
                           decoration: BoxDecoration(
-                            color: colors[0].withOpacity(0.15),
+                            color: colors[0].withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: colors[0].withOpacity(0.3), width: 0.5),
+                            border: Border.all(color: colors[0].withValues(alpha: 0.3), width: 0.5),
                           ),
                           child: Center(
                             child: Text(abbr,
@@ -2116,7 +2115,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: widget.teamColor.withOpacity(0.05),
+              color: widget.teamColor.withValues(alpha: 0.05),
               borderRadius:
                   const BorderRadius.vertical(bottom: Radius.circular(12)),
             ),
@@ -2181,12 +2180,12 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
         decoration: BoxDecoration(
-          color: color.withOpacity(isDarkLocal ? 0.08 : 0.04),
+          color: color.withValues(alpha: isDarkLocal ? 0.08 : 0.04),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: color.withOpacity(0.2)),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Column(children: [
-          Icon(icon, size: 16, color: color.withOpacity(0.7)),
+          Icon(icon, size: 16, color: color.withValues(alpha: 0.7)),
           const SizedBox(height: 6),
           Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: tx)),
           const SizedBox(height: 2),

@@ -30,7 +30,7 @@ class MPPRadarChartPainter extends CustomPainter {
 
     // Draw grid rings
     final gridPaint = Paint()
-      ..color = (isDark ? Colors.white : Colors.black).withOpacity(0.1)
+      ..color = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.1)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -60,7 +60,7 @@ class MPPRadarChartPainter extends CustomPainter {
     // Draw value polygon
     final valuePath = Path();
     final fillPaint = Paint()
-      ..color = color.withOpacity(0.2)
+      ..color = color.withValues(alpha: 0.2)
       ..style = PaintingStyle.fill;
     final strokePaint = Paint()
       ..color = color

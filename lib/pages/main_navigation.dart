@@ -170,7 +170,7 @@ class _MainNavigationState extends State<MainNavigation>
               GestureDetector(
                 onTap: _toggleFab,
                 child: Container(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                 ),
               ).animate().fadeIn(duration: 200.ms),
           ],
@@ -181,7 +181,7 @@ class _MainNavigationState extends State<MainNavigation>
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(0, -2),
               ),
@@ -196,7 +196,7 @@ class _MainNavigationState extends State<MainNavigation>
               selectedIndex: _selectedIndex,
               onDestinationSelected: _onItemTapped,
               backgroundColor: isDark ? Colors.grey[900] : Colors.white,
-              indicatorColor: theme.primaryColor.withOpacity(0.1),
+              indicatorColor: theme.primaryColor.withValues(alpha: 0.1),
               destinations: [
                 NavigationDestination(
                   icon: const Icon(Icons.home_outlined),

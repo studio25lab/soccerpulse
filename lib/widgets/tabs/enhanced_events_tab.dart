@@ -232,7 +232,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     final tx = isDark ? Colors.white : Colors.black87;
     final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
-    final dividerColor = isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.12);
+    final dividerColor = isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.withValues(alpha: 0.12);
     // [TEST-LIVE-B2] partita test: usa momentum live troncato al minuto corrente
     final data = (widget.liveMomentum != null && widget.liveMinute != null)
         ? widget.liveMomentum!
@@ -253,7 +253,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.35 : 0.07),
+            color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.07),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -265,7 +265,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+              color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(Icons.show_chart_rounded, size: 14, color: lb),
@@ -312,7 +312,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                 left: 0, right: 0,
                 child: Container(
                   height: 1,
-                  color: isDark ? Colors.white.withOpacity(0.12) : Colors.grey.withOpacity(0.18),
+                  color: isDark ? Colors.white.withValues(alpha: 0.12) : Colors.grey.withValues(alpha: 0.18),
                 ),
               ),
               Positioned(
@@ -347,13 +347,13 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                                 begin: Alignment.bottomCenter,
                                 end: Alignment.topCenter,
                                 colors: [
-                                  color.withOpacity(0.3 + intensity * 0.4),
-                                  color.withOpacity(0.5 + intensity * 0.45),
+                                  color.withValues(alpha: 0.3 + intensity * 0.4),
+                                  color.withValues(alpha: 0.5 + intensity * 0.45),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(1.5),
                               boxShadow: isHighIntensity
-                                  ? [BoxShadow(color: color.withOpacity(0.3), blurRadius: 4, offset: const Offset(0, -1))]
+                                  ? [BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 4, offset: const Offset(0, -1))]
                                   : null,
                             ),
                           ),
@@ -370,13 +370,13 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  color.withOpacity(0.3 + intensity * 0.4),
-                                  color.withOpacity(0.5 + intensity * 0.45),
+                                  color.withValues(alpha: 0.3 + intensity * 0.4),
+                                  color.withValues(alpha: 0.5 + intensity * 0.45),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(1.5),
                               boxShadow: isHighIntensity
-                                  ? [BoxShadow(color: color.withOpacity(0.3), blurRadius: 4, offset: const Offset(0, 1))]
+                                  ? [BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 4, offset: const Offset(0, 1))]
                                   : null,
                             ),
                           ),
@@ -392,7 +392,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                 top: 0, bottom: 0,
                 child: Container(
                   width: 1,
-                  color: isDark ? Colors.white.withOpacity(0.15) : Colors.grey.withOpacity(0.25),
+                  color: isDark ? Colors.white.withValues(alpha: 0.15) : Colors.grey.withValues(alpha: 0.25),
                 ),
               ),
 
@@ -415,7 +415,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                           border: Border.all(color: cardBg, width: 1.5),
                           boxShadow: [
                             BoxShadow(
-                              color: (e.isHomeTeam ? homeColor : awayColor).withOpacity(0.4),
+                              color: (e.isHomeTeam ? homeColor : awayColor).withValues(alpha: 0.4),
                               blurRadius: 6,
                             ),
                           ],
@@ -452,7 +452,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                             borderRadius: BorderRadius.circular(1.5),
                             boxShadow: [
                               BoxShadow(
-                                color: (isRed ? Colors.red : Colors.amber).withOpacity(0.4),
+                                color: (isRed ? Colors.red : Colors.amber).withValues(alpha: 0.4),
                                 blurRadius: 4,
                               ),
                             ],
@@ -484,7 +484,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
           Container(
             width: 10, height: 10,
             decoration: BoxDecoration(
-              color: lb.withOpacity(0.4),
+              color: lb.withValues(alpha: 0.4),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -525,7 +525,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
-          boxShadow: [BoxShadow(color: color.withOpacity(0.3), blurRadius: 4)],
+          boxShadow: [BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 4)],
         ),
       ),
       const SizedBox(width: 5),
@@ -563,7 +563,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
               blurRadius: 8,
               offset: const Offset(0, 2))
         ],
@@ -592,7 +592,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 7, vertical: 2),
                       decoration: BoxDecoration(
-                          color: accent.withOpacity(0.15),
+                          color: accent.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(8)),
                       child: Text('$filteredCount',
                           style: TextStyle(
@@ -746,7 +746,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                             horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
                           color: isActive
-                              ? color.withOpacity(0.15)
+                              ? color.withValues(alpha: 0.15)
                               : (isDark ? Colors.grey[800] : Colors.grey[100]),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
@@ -824,7 +824,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
             height: 1,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [lb.withOpacity(0.0), lb.withOpacity(0.3)],
+                colors: [lb.withValues(alpha: 0.0), lb.withValues(alpha: 0.3)],
               ),
             ),
           ),
@@ -835,10 +835,10 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
           decoration: BoxDecoration(
             color: isDark ? Colors.grey[850] : Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: accent.withOpacity(0.35), width: 1.2),
+            border: Border.all(color: accent.withValues(alpha: 0.35), width: 1.2),
             boxShadow: [
               BoxShadow(
-                color: accent.withOpacity(isDark ? 0.18 : 0.12),
+                color: accent.withValues(alpha: isDark ? 0.18 : 0.12),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -857,7 +857,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: accent.withOpacity(0.14),
+                color: accent.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Text("${minute}\'",
@@ -874,7 +874,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
             height: 1,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [lb.withOpacity(0.3), lb.withOpacity(0.0)],
+                colors: [lb.withValues(alpha: 0.3), lb.withValues(alpha: 0.0)],
               ),
             ),
           ),
@@ -898,17 +898,17 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
       decoration: BoxDecoration(
         color: isGoal
             ? teamColor
-            : (isKey ? teamColor.withOpacity(0.15) : Colors.transparent),
+            : (isKey ? teamColor.withValues(alpha: 0.15) : Colors.transparent),
         shape: BoxShape.circle,
         border: Border.all(
             color: isGoal
                 ? teamColor
-                : (isKey ? teamColor.withOpacity(0.5) : timelineColor),
+                : (isKey ? teamColor.withValues(alpha: 0.5) : timelineColor),
             width: isGoal ? 2.5 : 1.5),
         boxShadow: isGoal
             ? [
                 BoxShadow(
-                    color: teamColor.withOpacity(0.35),
+                    color: teamColor.withValues(alpha: 0.35),
                     blurRadius: 10,
                     spreadRadius: 1)
               ]
@@ -968,12 +968,12 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: teamColor.withOpacity(isDark ? 0.15 : 0.08),
+        color: teamColor.withValues(alpha: isDark ? 0.15 : 0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: teamColor.withOpacity(0.3), width: 1.5),
+        border: Border.all(color: teamColor.withValues(alpha: 0.3), width: 1.5),
         boxShadow: [
           BoxShadow(
-              color: teamColor.withOpacity(0.1),
+              color: teamColor.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 2))
         ],
@@ -1038,12 +1038,12 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
             color: cardColor,
             borderRadius: BorderRadius.circular(2.5),
             border: Border.all(
-              color: cardColor.withOpacity(0.5),
+              color: cardColor.withValues(alpha: 0.5),
               width: 0.8,
             ),
             boxShadow: [
               BoxShadow(
-                color: cardColor.withOpacity(0.4),
+                color: cardColor.withValues(alpha: 0.4),
                 blurRadius: 6,
                 offset: const Offset(0, 1),
               ),
@@ -1056,10 +1056,10 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
       decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: cardColor.withOpacity(0.18), width: 1),
+          border: Border.all(color: cardColor.withValues(alpha: 0.18), width: 1),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
                 blurRadius: 4,
                 offset: const Offset(0, 1))
           ]),
@@ -1101,9 +1101,9 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
           width: 26,
           height: 26,
           decoration: BoxDecoration(
-            color: teamColor.withOpacity(isDark ? 0.18 : 0.12),
+            color: teamColor.withValues(alpha: isDark ? 0.18 : 0.12),
             shape: BoxShape.circle,
-            border: Border.all(color: teamColor.withOpacity(0.35), width: 1),
+            border: Border.all(color: teamColor.withValues(alpha: 0.35), width: 1),
           ),
           child: Icon(Icons.swap_vert_rounded,
               size: 16, color: teamColor),
@@ -1157,10 +1157,10 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
       decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: teamColor.withOpacity(0.18), width: 1),
+          border: Border.all(color: teamColor.withValues(alpha: 0.18), width: 1),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
                 blurRadius: 4,
                 offset: const Offset(0, 1))
           ]),
@@ -1208,7 +1208,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
           mainAxisAlignment:
               isHome ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
-            if (!isHome) Icon(icon, size: 13, color: color.withOpacity(0.7)),
+            if (!isHome) Icon(icon, size: 13, color: color.withValues(alpha: 0.7)),
             if (!isHome) const SizedBox(width: 5),
             Flexible(
                 child: Text(
@@ -1220,7 +1220,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
               overflow: TextOverflow.ellipsis,
             )),
             if (isHome) const SizedBox(width: 5),
-            if (isHome) Icon(icon, size: 13, color: color.withOpacity(0.7)),
+            if (isHome) Icon(icon, size: 13, color: color.withValues(alpha: 0.7)),
           ]),
     );
   }

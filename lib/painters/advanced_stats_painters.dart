@@ -48,7 +48,7 @@ class RealisticSoccerFieldPainter extends CustomPainter {
         ..shader = ui.Gradient.linear(
           Offset(size.width / 2, 0),
           Offset(size.width / 2, size.height * 0.3),
-          [Colors.black.withOpacity(0.25), Colors.transparent],
+          [Colors.black.withValues(alpha: 0.25), Colors.transparent],
         ),
     );
 
@@ -58,7 +58,7 @@ class RealisticSoccerFieldPainter extends CustomPainter {
         ..shader = ui.Gradient.radial(
           Offset(size.width / 2, size.height / 2),
           size.width * 0.4,
-          [Colors.white.withOpacity(0.08), Colors.transparent],
+          [Colors.white.withValues(alpha: 0.08), Colors.transparent],
         ),
     );
 
@@ -68,7 +68,7 @@ class RealisticSoccerFieldPainter extends CustomPainter {
         ..shader = ui.Gradient.linear(
           Offset(size.width / 2, size.height * 0.7),
           Offset(size.width / 2, size.height),
-          [Colors.transparent, Colors.black.withOpacity(0.15)],
+          [Colors.transparent, Colors.black.withValues(alpha: 0.15)],
         ),
     );
   }
@@ -251,16 +251,16 @@ class AnimatedShotMapPainter extends CustomPainter {
           Offset(size.width / 2, 0),
           Offset(size.width / 2, size.height),
           [
-            Colors.black.withOpacity(0.2),
+            Colors.black.withValues(alpha: 0.2),
             Colors.transparent,
-            Colors.black.withOpacity(0.05)
+            Colors.black.withValues(alpha: 0.05)
           ],
           [0.0, 0.3, 1.0],
         ),
     );
 
     final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.9)
+      ..color = Colors.white.withValues(alpha: 0.9)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
@@ -287,7 +287,7 @@ class AnimatedShotMapPainter extends CustomPainter {
 
     // Rete porta
     final netPaint = Paint()
-      ..color = Colors.white.withOpacity(0.4)
+      ..color = Colors.white.withValues(alpha: 0.4)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -364,7 +364,7 @@ class AnimatedShotMapPainter extends CustomPainter {
         shot['position'],
         14 * scale,
         Paint()
-          ..color = shotColor.withOpacity(0.3 * opacity)
+          ..color = shotColor.withValues(alpha: 0.3 * opacity)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
       );
 
@@ -377,8 +377,8 @@ class AnimatedShotMapPainter extends CustomPainter {
             shot['position'],
             11 * scale,
             [
-              shotColor.withOpacity(opacity),
-              shotColor.withOpacity(0.7 * opacity),
+              shotColor.withValues(alpha: opacity),
+              shotColor.withValues(alpha: 0.7 * opacity),
             ],
           ),
       );
@@ -388,7 +388,7 @@ class AnimatedShotMapPainter extends CustomPainter {
         shot['position'],
         11 * scale,
         Paint()
-          ..color = Colors.white.withOpacity(opacity)
+          ..color = Colors.white.withValues(alpha: opacity)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.5,
       );
@@ -491,7 +491,7 @@ class GradientPassNetworkPainter extends CustomPainter {
             pos1,
             pos2,
             Paint()
-              ..color = Colors.white.withOpacity(0.3 * animationValue)
+              ..color = Colors.white.withValues(alpha: 0.3 * animationValue)
               ..strokeWidth = thickness + 6
               ..strokeCap = StrokeCap.round
               ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
@@ -501,7 +501,7 @@ class GradientPassNetworkPainter extends CustomPainter {
             pos1,
             pos2,
             Paint()
-              ..color = Colors.blue[400]!.withOpacity(opacity)
+              ..color = Colors.blue[400]!.withValues(alpha: opacity)
               ..strokeWidth = thickness
               ..strokeCap = StrokeCap.round,
           );
@@ -525,7 +525,7 @@ class GradientPassNetworkPainter extends CustomPainter {
       position + const Offset(3, 3),
       22 * scale,
       Paint()
-        ..color = Colors.black.withOpacity(0.5 * scale)
+        ..color = Colors.black.withValues(alpha: 0.5 * scale)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
     );
 
@@ -537,7 +537,7 @@ class GradientPassNetworkPainter extends CustomPainter {
       position,
       22 * scale,
       Paint()
-        ..color = Colors.white.withOpacity(scale)
+        ..color = Colors.white.withValues(alpha: scale)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3,
     );
@@ -547,7 +547,7 @@ class GradientPassNetworkPainter extends CustomPainter {
       text: TextSpan(
         text: number.toString(),
         style: TextStyle(
-          color: Colors.white.withOpacity(scale),
+          color: Colors.white.withValues(alpha: scale),
           fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
@@ -682,8 +682,8 @@ class Advanced3DHeatmapPainter extends CustomPainter {
           position + Offset(width / 2, height / 2),
           width / 2,
           [
-            color.withOpacity(intensity * 0.7),
-            color.withOpacity(intensity * 0.3),
+            color.withValues(alpha: intensity * 0.7),
+            color.withValues(alpha: intensity * 0.3),
             Colors.transparent,
           ],
           [0.0, 0.7, 1.0],
@@ -746,7 +746,7 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
       position,
       12 * scale,
       Paint()
-        ..color = Colors.red.withOpacity(0.4 * scale)
+        ..color = Colors.red.withValues(alpha: 0.4 * scale)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
     );
 
@@ -757,7 +757,7 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
         ..shader = ui.Gradient.radial(
           position,
           10 * scale,
-          [Colors.red.withOpacity(scale), Colors.red[700]!.withOpacity(scale)],
+          [Colors.red.withValues(alpha: scale), Colors.red[700]!.withValues(alpha: scale)],
         ),
     );
 
@@ -765,13 +765,13 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
       position,
       10 * scale,
       Paint()
-        ..color = Colors.white.withOpacity(scale)
+        ..color = Colors.white.withValues(alpha: scale)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
 
     final iconPaint = Paint()
-      ..color = Colors.white.withOpacity(scale)
+      ..color = Colors.white.withValues(alpha: scale)
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
@@ -804,7 +804,7 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = Colors.orange.withOpacity(0.4 * scale)
+        ..color = Colors.orange.withValues(alpha: 0.4 * scale)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
     );
 
@@ -815,8 +815,8 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
           position + Offset(0, -10 * scale),
           position + Offset(0, 10 * scale),
           [
-            Colors.orange.withOpacity(scale),
-            Colors.orange[700]!.withOpacity(scale)
+            Colors.orange.withValues(alpha: scale),
+            Colors.orange[700]!.withValues(alpha: scale)
           ],
         ),
     );
@@ -824,7 +824,7 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = Colors.white.withOpacity(scale)
+        ..color = Colors.white.withValues(alpha: scale)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
@@ -834,7 +834,7 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
     canvas.drawRect(
       Rect.fromCenter(center: position, width: 20 * scale, height: 20 * scale),
       Paint()
-        ..color = Colors.yellow.withOpacity(0.4 * scale)
+        ..color = Colors.yellow.withValues(alpha: 0.4 * scale)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
     );
 
@@ -845,8 +845,8 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
           position + Offset(-10 * scale, 0),
           position + Offset(10 * scale, 0),
           [
-            Colors.yellow[700]!.withOpacity(scale),
-            Colors.yellow.withOpacity(scale)
+            Colors.yellow[700]!.withValues(alpha: scale),
+            Colors.yellow.withValues(alpha: scale)
           ],
         ),
     );
@@ -854,13 +854,13 @@ class DetailedDefensiveActionsPainter extends CustomPainter {
     canvas.drawRect(
       Rect.fromCenter(center: position, width: 16 * scale, height: 16 * scale),
       Paint()
-        ..color = Colors.white.withOpacity(scale)
+        ..color = Colors.white.withValues(alpha: scale)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
 
     final arrowPaint = Paint()
-      ..color = Colors.white.withOpacity(scale)
+      ..color = Colors.white.withValues(alpha: scale)
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 

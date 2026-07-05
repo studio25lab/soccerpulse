@@ -486,8 +486,8 @@ class _PlayerShotMapCardState extends State<PlayerShotMapCard> {
                       color: isSel
                           ? _shotColor(s.type)
                           : (widget.isDark
-                              ? Colors.white.withOpacity(0.08)
-                              : Colors.black.withOpacity(0.06)),
+                              ? Colors.white.withValues(alpha: 0.08)
+                              : Colors.black.withValues(alpha: 0.06)),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text("${s.minute}'",
@@ -599,8 +599,8 @@ class _PlayerShotMapCardState extends State<PlayerShotMapCard> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: widget.isDark
-                ? Colors.white.withOpacity(0.04)
-                : Colors.black.withOpacity(0.03),
+                ? Colors.white.withValues(alpha: 0.04)
+                : Colors.black.withValues(alpha: 0.03),
           ),
           padding: const EdgeInsets.all(8),
           child: SizedBox(
@@ -642,7 +642,7 @@ class _PlayerShotMapCardState extends State<PlayerShotMapCard> {
         decoration: BoxDecoration(
           color: detailBg,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: col.withOpacity(0.25), width: 1),
+          border: Border.all(color: col.withValues(alpha: 0.25), width: 1),
         ),
         child: Row(children: [
           Container(
@@ -650,7 +650,7 @@ class _PlayerShotMapCardState extends State<PlayerShotMapCard> {
             height: 36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: col.withOpacity(0.15),
+              color: col.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text("${shot.minute}'",
@@ -683,9 +683,9 @@ class _PlayerShotMapCardState extends State<PlayerShotMapCard> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: col.withOpacity(0.15),
+              color: col.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: col.withOpacity(0.3), width: 1),
+              border: Border.all(color: col.withValues(alpha: 0.3), width: 1),
             ),
             child: Text(esito,
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: col)),
@@ -763,7 +763,7 @@ class _GoalFramePainter extends CustomPainter {
 
     // Net pattern
     final netPaint = Paint()
-      ..color = (isDark ? Colors.white : Colors.grey[500]!).withOpacity(0.12)
+      ..color = (isDark ? Colors.white : Colors.grey[500]!).withValues(alpha: 0.12)
       ..strokeWidth = 0.5;
     for (double x = inner.left; x <= inner.right; x += 12) {
       canvas.drawLine(Offset(x, inner.top), Offset(x, inner.bottom), netPaint);
@@ -774,7 +774,7 @@ class _GoalFramePainter extends CustomPainter {
 
     // Goal frame (posts + crossbar)
     final framePaint = Paint()
-      ..color = isDark ? Colors.white.withOpacity(0.85) : const Color(0xFF424242)
+      ..color = isDark ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF424242)
       ..strokeWidth = postW
       ..style = PaintingStyle.stroke
       ..strokeJoin = StrokeJoin.round;
@@ -791,8 +791,8 @@ class _GoalFramePainter extends CustomPainter {
         Offset(frameRight + 8, frameBottom),
         Paint()
           ..color = isDark
-              ? const Color(0xFF2E7D32).withOpacity(0.6)
-              : const Color(0xFF4CAF50).withOpacity(0.4)
+              ? const Color(0xFF2E7D32).withValues(alpha: 0.6)
+              : const Color(0xFF4CAF50).withValues(alpha: 0.4)
           ..strokeWidth = 3);
 
     // ── Impact dot ──
@@ -828,7 +828,7 @@ class _GoalFramePainter extends CustomPainter {
 
   void _drawDot(Canvas canvas, double dx, double dy, Color col, bool isGoal) {
     // Glow
-    canvas.drawCircle(Offset(dx, dy), 11, Paint()..color = col.withOpacity(0.2));
+    canvas.drawCircle(Offset(dx, dy), 11, Paint()..color = col.withValues(alpha: 0.2));
     // Shadow
     canvas.drawCircle(Offset(dx, dy + 1), 6, Paint()..color = Colors.black26);
     // Fill
@@ -838,7 +838,7 @@ class _GoalFramePainter extends CustomPainter {
         Offset(dx, dy),
         6,
         Paint()
-          ..color = Colors.white.withOpacity(0.9)
+          ..color = Colors.white.withValues(alpha: 0.9)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.5);
     if (isGoal) {
@@ -868,7 +868,7 @@ class _AttackArrowPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
     final y = h / 2;
-    final color = isDark ? Colors.white.withOpacity(0.6) : const Color(0xFF424242);
+    final color = isDark ? Colors.white.withValues(alpha: 0.6) : const Color(0xFF424242);
 
     // Shaft
     canvas.drawLine(
@@ -961,7 +961,7 @@ class _PlayerHeatmapPainter extends CustomPainter {
             cellW * 2.0,
             cellH * 2.0,
           ),
-          Paint()..color = _heatColor(t).withOpacity(alpha),
+          Paint()..color = _heatColor(t).withValues(alpha: alpha),
         );
       }
     }
@@ -1013,7 +1013,7 @@ class _PlayerHeatmapPainter extends CustomPainter {
     for (int i = 0; i < 16; i++) {
       if (i.isEven) {
         canvas.drawRect(Rect.fromLTWH(0, i * sH, size.width, sH),
-            Paint()..color = Colors.white.withOpacity(isDark ? 0.015 : 0.025));
+            Paint()..color = Colors.white.withValues(alpha: isDark ? 0.015 : 0.025));
       }
     }
   }
@@ -1021,10 +1021,10 @@ class _PlayerHeatmapPainter extends CustomPainter {
   void _paintFieldLines(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
     final lp = Paint()
-      ..color = Colors.white.withOpacity(isDark ? 0.30 : 0.40)
+      ..color = Colors.white.withValues(alpha: isDark ? 0.30 : 0.40)
       ..strokeWidth = 1.2
       ..style = PaintingStyle.stroke;
-    final dp = Paint()..color = Colors.white.withOpacity(isDark ? 0.30 : 0.40);
+    final dp = Paint()..color = Colors.white.withValues(alpha: isDark ? 0.30 : 0.40);
 
     // Boundary
     canvas.drawRect(Rect.fromLTWH(1, 1, w - 2, h - 2), lp);
@@ -1109,15 +1109,15 @@ class _PlayerShotMapPainter extends CustomPainter {
     for (int i = 0; i < 8; i++) {
       if (i.isEven) {
         canvas.drawRect(Rect.fromLTWH(i * stripeW, 0, stripeW, h),
-            Paint()..color = Colors.white.withOpacity(0.025));
+            Paint()..color = Colors.white.withValues(alpha: 0.025));
       }
     }
 
     final lp = Paint()
-      ..color = Colors.white.withOpacity(0.35)
+      ..color = Colors.white.withValues(alpha: 0.35)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
-    final dp = Paint()..color = Colors.white.withOpacity(0.35);
+    final dp = Paint()..color = Colors.white.withValues(alpha: 0.35);
 
     canvas.drawRect(Rect.fromLTWH(0, 0, w, h), lp);
 
@@ -1148,7 +1148,7 @@ class _PlayerShotMapPainter extends CustomPainter {
     final goalLeft = (w - goalW) / 2;
     final goalH = h * 0.03;
     canvas.drawRect(Rect.fromLTWH(goalLeft, -goalH, goalW, goalH),
-        Paint()..color = Colors.white.withOpacity(0.2));
+        Paint()..color = Colors.white.withValues(alpha: 0.2));
     canvas.drawRect(Rect.fromLTWH(goalLeft, -goalH, goalW, goalH), lp);
 
     // Half-way arc
@@ -1201,7 +1201,7 @@ class _PlayerShotMapPainter extends CustomPainter {
       // ── Trajectory — ONLY for selected shot ──
       if (isSel) {
         final trajPaint = Paint()
-          ..color = col.withOpacity(0.7)
+          ..color = col.withValues(alpha: 0.7)
           ..strokeWidth = 3.0
           ..style = PaintingStyle.stroke;
 
@@ -1241,7 +1241,7 @@ class _PlayerShotMapPainter extends CustomPainter {
           // X at block point
           const xSz = 6.0;
           final xP = Paint()
-            ..color = isDark ? Colors.white.withOpacity(0.9) : const Color(0xFF333333)
+            ..color = isDark ? Colors.white.withValues(alpha: 0.9) : const Color(0xFF333333)
             ..strokeWidth = 3.0
             ..strokeCap = StrokeCap.round;
           canvas.drawLine(Offset(ex - xSz, ey - xSz), Offset(ex + xSz, ey + xSz), xP);
@@ -1253,7 +1253,7 @@ class _PlayerShotMapPainter extends CustomPainter {
       if (isSel) {
         canvas.drawCircle(Offset(sx, sy), radius + 5,
             Paint()
-              ..color = col.withOpacity(0.25)
+              ..color = col.withValues(alpha: 0.25)
               ..style = PaintingStyle.stroke
               ..strokeWidth = 3);
       }
@@ -1264,7 +1264,7 @@ class _PlayerShotMapPainter extends CustomPainter {
         canvas.drawCircle(Offset(sx, sy), radius, Paint()..color = col);
         canvas.drawCircle(Offset(sx, sy), radius,
             Paint()
-              ..color = Colors.white.withOpacity(0.8)
+              ..color = Colors.white.withValues(alpha: 0.8)
               ..style = PaintingStyle.stroke
               ..strokeWidth = 1.5);
         if (shot.type == 'goal') {
@@ -1279,7 +1279,7 @@ class _PlayerShotMapPainter extends CustomPainter {
               ..strokeWidth = 2.5);
         final xS = radius * 0.45;
         final xP = Paint()
-          ..color = col.withOpacity(0.8)
+          ..color = col.withValues(alpha: 0.8)
           ..strokeWidth = 2.0
           ..strokeCap = StrokeCap.round;
         canvas.drawLine(Offset(sx - xS, sy - xS), Offset(sx + xS, sy + xS), xP);
@@ -1302,7 +1302,7 @@ class _PlayerShotMapPainter extends CustomPainter {
       canvas.drawCircle(Offset(lx, legendY), 4, Paint()..color = items[i].$2);
       final tp = TextPainter(
         text: TextSpan(text: items[i].$1,
-            style: TextStyle(fontSize: 9, color: Colors.white.withOpacity(0.75), fontWeight: FontWeight.w500)),
+            style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.75), fontWeight: FontWeight.w500)),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas, Offset(lx + 7, legendY - tp.height / 2));
@@ -1483,8 +1483,8 @@ class _PlayerPassMapCardState extends State<PlayerPassMapCard> {
           color: sel
               ? (widget.isDark ? Colors.white : const Color(0xFF1A1A1A))
               : (widget.isDark
-                  ? Colors.white.withOpacity(0.08)
-                  : Colors.black.withOpacity(0.06)),
+                  ? Colors.white.withValues(alpha: 0.08)
+                  : Colors.black.withValues(alpha: 0.06)),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Text(label,
@@ -1658,7 +1658,7 @@ class _PlayerPassMapPainter extends CustomPainter {
     for (int i = 0; i < 12; i++) {
       if (i.isEven) {
         canvas.drawRect(Rect.fromLTWH(0, i * stripeH, w, stripeH),
-            Paint()..color = Colors.white.withOpacity(0.025));
+            Paint()..color = Colors.white.withValues(alpha: 0.025));
       }
     }
 
@@ -1688,7 +1688,7 @@ class _PlayerPassMapPainter extends CustomPainter {
       }
 
       final paint = Paint()
-        ..color = arrowColor.withOpacity(0.8)
+        ..color = arrowColor.withValues(alpha: 0.8)
         ..strokeWidth = strokeW
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round;
@@ -1706,7 +1706,7 @@ class _PlayerPassMapPainter extends CustomPainter {
       final p2y = ey - headLen * sin(angle + headAngle);
 
       final headPaint = Paint()
-        ..color = arrowColor.withOpacity(0.8)
+        ..color = arrowColor.withValues(alpha: 0.8)
         ..strokeWidth = strokeW
         ..style = PaintingStyle.fill;
       final headPath = Path()
@@ -1718,16 +1718,16 @@ class _PlayerPassMapPainter extends CustomPainter {
 
       // Start dot
       canvas.drawCircle(
-          Offset(sx, sy), 2.0, Paint()..color = arrowColor.withOpacity(0.6));
+          Offset(sx, sy), 2.0, Paint()..color = arrowColor.withValues(alpha: 0.6));
     }
   }
 
   void _paintFieldLines(Canvas canvas, double w, double h) {
     final lp = Paint()
-      ..color = Colors.white.withOpacity(0.35)
+      ..color = Colors.white.withValues(alpha: 0.35)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
-    final dp = Paint()..color = Colors.white.withOpacity(0.35);
+    final dp = Paint()..color = Colors.white.withValues(alpha: 0.35);
 
     // Border
     canvas.drawRect(Rect.fromLTWH(0, 0, w, h), lp);
@@ -1949,9 +1949,9 @@ class PlayerDefensiveMapCard extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient:
-                  RadialGradient(colors: [color, color.withOpacity(0.8)]),
+                  RadialGradient(colors: [color, color.withValues(alpha: 0.8)]),
               boxShadow: [
-                BoxShadow(color: color.withOpacity(0.3), blurRadius: 5)
+                BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 5)
               ],
             ),
             child: const Center(

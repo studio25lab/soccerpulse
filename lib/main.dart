@@ -231,7 +231,7 @@ class SoccerPulseApp extends StatelessWidget {
       // Chip Theme
       chipTheme: ChipThemeData(
         backgroundColor: Colors.grey[200],
-        selectedColor: primaryColor.withOpacity(0.2),
+        selectedColor: primaryColor.withValues(alpha: 0.2),
         labelStyle: const TextStyle(fontSize: 12),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       ),
@@ -346,7 +346,7 @@ class SoccerPulseApp extends StatelessWidget {
       // Chip Theme
       chipTheme: ChipThemeData(
         backgroundColor: const Color(0xFF2A2A2A),
-        selectedColor: primaryColor.withOpacity(0.3),
+        selectedColor: primaryColor.withValues(alpha: 0.3),
         labelStyle: const TextStyle(fontSize: 12, color: Colors.white),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       ),
@@ -510,7 +510,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 width: 32, height: 32,
                 margin: const EdgeInsets.only(right: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.settings, size: 18, color: Colors.white),
@@ -547,7 +547,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: const Offset(0, -2),
               ),

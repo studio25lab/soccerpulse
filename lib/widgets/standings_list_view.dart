@@ -51,7 +51,7 @@ class _StandingsListViewState extends State<StandingsListView> {
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final favoritesService = context.watch<FavoritesService>();
     final divider =
-        isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+        isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
 
     final standings = widget.standings;
     if (standings.isEmpty) {
@@ -81,8 +81,8 @@ class _StandingsListViewState extends State<StandingsListView> {
                           color: _filterIndex == i
                               ? theme.primaryColor
                               : (isDark
-                                  ? Colors.white.withOpacity(0.06)
-                                  : Colors.grey.withOpacity(0.08)),
+                                  ? Colors.white.withValues(alpha: 0.06)
+                                  : Colors.grey.withValues(alpha: 0.08)),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -109,10 +109,10 @@ class _StandingsListViewState extends State<StandingsListView> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
                 color: isDark
-                    ? Colors.white.withOpacity(0.06)
-                    : Colors.grey.withOpacity(0.08),
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : Colors.grey.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
+                border: Border.all(color: theme.primaryColor.withValues(alpha: 0.3)),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.trending_up_rounded,
@@ -134,8 +134,8 @@ class _StandingsListViewState extends State<StandingsListView> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isDark
-              ? Colors.white.withOpacity(0.03)
-              : Colors.grey.withOpacity(0.05),
+              ? Colors.white.withValues(alpha: 0.03)
+              : Colors.grey.withValues(alpha: 0.05),
           border: const Border(
               left: BorderSide(width: 3, color: Colors.transparent)),
         ),
@@ -259,11 +259,11 @@ class _StandingsListViewState extends State<StandingsListView> {
               // Background: highlight (squadra del match) ha priorita', poi preferito
               Color? rowBg;
               if (isHighlight) {
-                rowBg = theme.primaryColor.withOpacity(isDark ? 0.22 : 0.13);
+                rowBg = theme.primaryColor.withValues(alpha: isDark ? 0.22 : 0.13);
               } else if (isFav) {
                 rowBg = isDark
-                    ? Colors.amber.withOpacity(0.04)
-                    : Colors.amber.withOpacity(0.03);
+                    ? Colors.amber.withValues(alpha: 0.04)
+                    : Colors.amber.withValues(alpha: 0.03);
               }
 
               // Bordo sinistro: spesso e colorato per le squadre del match.

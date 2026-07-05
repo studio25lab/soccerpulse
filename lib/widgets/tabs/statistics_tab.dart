@@ -95,7 +95,7 @@ class StatisticsTab extends StatelessWidget {
     final awayColor = const Color(0xFFE53935);
     final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
     final sectionBg = isDark ? const Color(0xFF16162A) : const Color(0xFFF8F9FA);
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
     final tx = isDark ? Colors.white : Colors.black87;
     final txSub = isDark ? Colors.white54 : Colors.grey[600]!;
 
@@ -315,7 +315,7 @@ class StatisticsTab extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -409,7 +409,7 @@ class StatisticsTab extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -563,14 +563,14 @@ class StatisticsTab extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(3),
                                     gradient: LinearGradient(
                                       colors: homeWins || isDraw
-                                          ? [homeColor.withOpacity(0.5), homeColor]
+                                          ? [homeColor.withValues(alpha: 0.5), homeColor]
                                           : [
-                                              isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.15),
-                                              isDark ? Colors.white.withOpacity(0.15) : Colors.grey.withOpacity(0.25),
+                                              isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.withValues(alpha: 0.15),
+                                              isDark ? Colors.white.withValues(alpha: 0.15) : Colors.grey.withValues(alpha: 0.25),
                                             ],
                                     ),
                                     boxShadow: homeWins
-                                        ? [BoxShadow(color: homeColor.withOpacity(0.3), blurRadius: 6, offset: const Offset(0, 1))]
+                                        ? [BoxShadow(color: homeColor.withValues(alpha: 0.3), blurRadius: 6, offset: const Offset(0, 1))]
                                         : null,
                                   ),
                                 ),
@@ -594,14 +594,14 @@ class StatisticsTab extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(3),
                                     gradient: LinearGradient(
                                       colors: awayWins || isDraw
-                                          ? [awayColor, awayColor.withOpacity(0.5)]
+                                          ? [awayColor, awayColor.withValues(alpha: 0.5)]
                                           : [
-                                              isDark ? Colors.white.withOpacity(0.15) : Colors.grey.withOpacity(0.25),
-                                              isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.15),
+                                              isDark ? Colors.white.withValues(alpha: 0.15) : Colors.grey.withValues(alpha: 0.25),
+                                              isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.withValues(alpha: 0.15),
                                             ],
                                     ),
                                     boxShadow: awayWins
-                                        ? [BoxShadow(color: awayColor.withOpacity(0.3), blurRadius: 6, offset: const Offset(0, 1))]
+                                        ? [BoxShadow(color: awayColor.withValues(alpha: 0.3), blurRadius: 6, offset: const Offset(0, 1))]
                                         : null,
                                   ),
                                 ),

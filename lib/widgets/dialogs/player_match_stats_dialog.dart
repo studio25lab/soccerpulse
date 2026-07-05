@@ -154,7 +154,7 @@ void showPlayerMatchStats(
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: teamColor.withOpacity(0.12),
+                color: teamColor.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
                 border: Border.all(color: teamColor, width: 2.5),
               ),
@@ -252,13 +252,13 @@ void showPlayerMatchStats(
                     margin: const EdgeInsets.only(right: 8),
                     decoration: BoxDecoration(
                       color: isFav
-                          ? Colors.red.withOpacity(0.15)
-                          : (isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08)),
+                          ? Colors.red.withValues(alpha: 0.15)
+                          : (isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08)),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: isFav
-                            ? Colors.red.withOpacity(0.4)
-                            : (isDark ? Colors.white.withOpacity(0.1) : Colors.grey.withOpacity(0.15)),
+                            ? Colors.red.withValues(alpha: 0.4)
+                            : (isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.15)),
                       ),
                     ),
                     child: Icon(
@@ -316,13 +316,13 @@ void showPlayerMatchStats(
                     width: 38, height: 38,
                     decoration: BoxDecoration(
                       color: mOn
-                          ? teamColor.withOpacity(0.15)
-                          : (isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08)),
+                          ? teamColor.withValues(alpha: 0.15)
+                          : (isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08)),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: mOn
-                            ? teamColor.withOpacity(0.4)
-                            : (isDark ? Colors.white.withOpacity(0.1) : Colors.grey.withOpacity(0.15)),
+                            ? teamColor.withValues(alpha: 0.4)
+                            : (isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.15)),
                       ),
                     ),
                     child: Icon(
@@ -476,10 +476,10 @@ void showPlayerMatchStats(
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: teamColor.withOpacity(0.12),
+                      color: teamColor.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color: teamColor.withOpacity(0.4), width: 1.5),
+                          color: teamColor.withValues(alpha: 0.4), width: 1.5),
                     ),
                     child: Center(
                         child: Text('${linkedPlayer.number}',
@@ -523,8 +523,8 @@ void showPlayerMatchStats(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.white.withOpacity(0.06)
-                        : Colors.black.withOpacity(0.05),
+                        ? Colors.white.withValues(alpha: 0.06)
+                        : Colors.black.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(children: [
@@ -738,11 +738,11 @@ Widget _visualTabBtn(String label, IconData icon, bool isSelected, VoidCallback 
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
               color: isSelected
-                  ? (isDark ? Colors.white.withOpacity(0.12) : Colors.white)
+                  ? (isDark ? Colors.white.withValues(alpha: 0.12) : Colors.white)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               boxShadow: isSelected
-                  ? [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 4, offset: const Offset(0, 1))]
+                  ? [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 4, offset: const Offset(0, 1))]
                   : null,
             ),
             child: Column(mainAxisSize: MainAxisSize.min, children: [

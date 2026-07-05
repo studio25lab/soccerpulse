@@ -100,7 +100,7 @@ class TeamFormSection extends StatelessWidget {
         border: Border.all(color: divider),
         boxShadow: [
           BoxShadow(
-              color: teamColor.withOpacity(0.06),
+              color: teamColor.withValues(alpha: 0.06),
               blurRadius: 12,
               offset: const Offset(0, 4))
         ],
@@ -145,7 +145,7 @@ class TeamFormSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                      color: c.withOpacity(0.3),
+                      color: c.withValues(alpha: 0.3),
                       blurRadius: 4,
                       offset: const Offset(0, 2))
                 ],
@@ -214,9 +214,9 @@ class TeamFormSection extends StatelessWidget {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: rc.withOpacity(0.12),
+                    color: rc.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: rc.withOpacity(0.3)),
+                    border: Border.all(color: rc.withValues(alpha: 0.3)),
                   ),
                   child: Center(
                       child: Text(rLabel,
@@ -237,7 +237,7 @@ class TeamFormSection extends StatelessWidget {
                       width: 28,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: oppColor.withOpacity(0.12),
+                        color: oppColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(7),
                       ),
                       child: Center(
@@ -284,7 +284,7 @@ class TeamFormSection extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: rc.withOpacity(0.08),
+                    color: rc.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(m['score'] as String,
@@ -307,9 +307,9 @@ class TeamFormSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Text('$count$label',
           style: TextStyle(

@@ -154,8 +154,8 @@ class MatchdayBarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (matchdays.isEmpty) return;
 
-    final labelColor = (isDark ? Colors.white : Colors.black).withOpacity(0.4);
-    final faintGrid = (isDark ? Colors.white : Colors.black).withOpacity(0.15);
+    final labelColor = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.4);
+    final faintGrid = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.15);
 
     // Layout zones
     final baselineY = size.height * 0.46;
@@ -179,7 +179,7 @@ class MatchdayBarPainter extends CustomPainter {
     canvas.drawLine(
       Offset(_padLeft - 4, baselineY),
       Offset(size.width, baselineY),
-      Paint()..color = (isDark ? Colors.white : Colors.black).withOpacity(0.12)..strokeWidth = 1,
+      Paint()..color = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.12)..strokeWidth = 1,
     );
 
     // ── Y-axis labels + grid lines (goals scored - above baseline) ──
@@ -232,7 +232,7 @@ class MatchdayBarPainter extends CustomPainter {
           RRect.fromRectAndRadius(rect, const Radius.circular(3)),
           Paint()..shader = ui.Gradient.linear(
             Offset(x, baselineY - h), Offset(x, baselineY),
-            [greenColor.withOpacity(0.9), greenColor.withOpacity(0.5)],
+            [greenColor.withValues(alpha: 0.9), greenColor.withValues(alpha: 0.5)],
           ),
         );
       }
@@ -245,7 +245,7 @@ class MatchdayBarPainter extends CustomPainter {
           RRect.fromRectAndRadius(rect, const Radius.circular(3)),
           Paint()..shader = ui.Gradient.linear(
             Offset(x, baselineY + 2), Offset(x, baselineY + 2 + h),
-            [redColor.withOpacity(0.5), redColor.withOpacity(0.9)],
+            [redColor.withValues(alpha: 0.5), redColor.withValues(alpha: 0.9)],
           ),
         );
       }

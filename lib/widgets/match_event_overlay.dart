@@ -125,18 +125,18 @@ class _MatchEventOverlayState extends State<MatchEventOverlay>
                       : Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: notif.color.withOpacity(0.4),
+                    color: notif.color.withValues(alpha: 0.4),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: notif.color.withOpacity(0.25),
+                      color: notif.color.withValues(alpha: 0.25),
                       blurRadius: 20,
                       spreadRadius: 2,
                       offset: const Offset(0, 4),
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
+                      color: Colors.black.withValues(alpha: 0.15),
                       blurRadius: 10,
                       offset: const Offset(0, 2),
                     ),
@@ -149,10 +149,10 @@ class _MatchEventOverlayState extends State<MatchEventOverlay>
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: notif.color.withOpacity(0.15),
+                        color: notif.color.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: notif.color.withOpacity(0.3),
+                          color: notif.color.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Icon(
@@ -198,7 +198,7 @@ class _MatchEventOverlayState extends State<MatchEventOverlay>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: notif.color.withOpacity(0.12),
+                        color: notif.color.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(

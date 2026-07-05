@@ -53,7 +53,6 @@ import '../services/live_match_simulator.dart';
 import '../models/match_notification_settings.dart';
 import 'dart:async';
 import 'package:soccerpulse/models/local_match_models.dart';
-import 'package:soccerpulse/main.dart';
 
 
 class MatchDetailScreen extends StatefulWidget {
@@ -636,12 +635,12 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [
           theme.primaryColor,
-          theme.primaryColor.withOpacity(0.85),
-          theme.primaryColor.withOpacity(0.7)
+          theme.primaryColor.withValues(alpha: 0.85),
+          theme.primaryColor.withValues(alpha: 0.7)
         ]),
         boxShadow: [
           BoxShadow(
-              color: theme.primaryColor.withOpacity(0.3),
+              color: theme.primaryColor.withValues(alpha: 0.3),
               blurRadius: 20,
               offset: const Offset(0, 10))
         ],
@@ -740,10 +739,10 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(20),
                 border:
-                    Border.all(color: Colors.white.withOpacity(0.3), width: 2)),
+                    Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2)),
             child: Text(
                 '${widget.match.homeScore} - ${widget.match.awayScore}',
                 style: const TextStyle(
@@ -879,25 +878,25 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       icon = Icons.pause;
     } else if (widget.match.isFinished) {
       label = 'FT';
-      bgColor = Colors.white.withOpacity(0.2);
+      bgColor = Colors.white.withValues(alpha: 0.2);
       icon = null;
     } else if (widget.match.isScheduled) {
       label = widget.match.time;
-      bgColor = Colors.white.withOpacity(0.2);
+      bgColor = Colors.white.withValues(alpha: 0.2);
       icon = Icons.access_time;
     } else {
       label = widget.match.status;
-      bgColor = Colors.white.withOpacity(0.2);
+      bgColor = Colors.white.withValues(alpha: 0.2);
       icon = null;
     }
 
     final badge = Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: bgColor.withOpacity(pulse ? 0.9 : 0.3),
+        color: bgColor.withValues(alpha: pulse ? 0.9 : 0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Colors.white.withOpacity(0.3),
+          color: Colors.white.withValues(alpha: 0.3),
           width: pulse ? 2 : 1,
         ),
       ),
@@ -932,7 +931,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
           color: isDark ? Colors.grey[900] : Colors.white,
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2))
           ]),
@@ -1089,7 +1088,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             gradient: isSelected
                 ? LinearGradient(colors: [
                     theme.primaryColor,
-                    theme.primaryColor.withOpacity(0.7)
+                    theme.primaryColor.withValues(alpha: 0.7)
                   ])
                 : null,
             color: isSelected ? null : Colors.grey[200],
@@ -1132,7 +1131,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             boxShadow: active
                 ? [
                     BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 8,
                         offset: const Offset(0, 2))
                   ]
@@ -1194,7 +1193,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             boxShadow: active
                 ? [
                     BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 8,
                         offset: const Offset(0, 2))
                   ]
@@ -1486,7 +1485,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
               child: CircularProgressIndicator(
                   value: progress,
                   strokeWidth: 5.5,
-                  backgroundColor: Colors.grey.withOpacity(0.25),
+                  backgroundColor: Colors.grey.withValues(alpha: 0.25),
                   valueColor: AlwaysStoppedAnimation<Color>(color),
                   strokeCap: StrokeCap.round)),
           Text(label,

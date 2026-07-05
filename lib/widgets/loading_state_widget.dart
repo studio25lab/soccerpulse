@@ -60,8 +60,8 @@ class LoadingStateWidget extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Theme.of(context).primaryColor.withOpacity(0.2),
-                  Theme.of(context).primaryColor.withOpacity(0.05),
+                  Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                  Theme.of(context).primaryColor.withValues(alpha: 0.05),
                 ],
               ),
             ),
@@ -114,7 +114,7 @@ class LoadingStateWidget extends StatelessWidget {
                 height: 60,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                 ),
               )
                   .animate(onPlay: (controller) => controller.repeat())

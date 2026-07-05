@@ -259,7 +259,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: theme.primaryColor.withOpacity(0.1),
+                          color: theme.primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -317,7 +317,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icon(
                     Icons.sports_soccer,
                     size: 48,
-                    color: theme.primaryColor.withOpacity(0.3),
+                    color: theme.primaryColor.withValues(alpha: 0.3),
                   ),
                   const SizedBox(height: 8),
                   Text(

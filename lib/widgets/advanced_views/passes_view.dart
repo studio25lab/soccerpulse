@@ -161,8 +161,8 @@ class _PassesViewState extends State<PassesView> {
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF262626) : const Color(0xFFF5F5F0);
     final cardBorder = isDark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.black.withOpacity(0.04);
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.black.withValues(alpha: 0.04);
 
     const homeColor = Color(0xFF1B5E20);
     const awayColor = Color(0xFF1565C0);
@@ -353,8 +353,8 @@ class _PassesViewState extends State<PassesView> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xFFC8E6C9).withOpacity(zoneOpacity(leftPct)),
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(leftPct) - 0.10)
+                const Color(0xFFC8E6C9).withValues(alpha: zoneOpacity(leftPct)),
+                const Color(0xFF66BB6A).withValues(alpha: zoneOpacity(leftPct) - 0.10)
               ],
             )))),
             Expanded(
@@ -364,9 +364,9 @@ class _PassesViewState extends State<PassesView> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(centerPct)),
+                const Color(0xFF66BB6A).withValues(alpha: zoneOpacity(centerPct)),
                 const Color(0xFF2E7D32)
-                    .withOpacity(zoneOpacity(centerPct) + 0.05)
+                    .withValues(alpha: zoneOpacity(centerPct) + 0.05)
               ],
             )))),
             Expanded(
@@ -376,9 +376,9 @@ class _PassesViewState extends State<PassesView> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xFFC8E6C9).withOpacity(zoneOpacity(rightPct)),
+                const Color(0xFFC8E6C9).withValues(alpha: zoneOpacity(rightPct)),
                 const Color(0xFF66BB6A)
-                    .withOpacity(zoneOpacity(rightPct) - 0.10)
+                    .withValues(alpha: zoneOpacity(rightPct) - 0.10)
               ],
             )))),
           ]),
@@ -405,10 +405,10 @@ class _PassesViewState extends State<PassesView> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.12),
+              color: Colors.black.withValues(alpha: 0.12),
               blurRadius: 8,
               offset: const Offset(0, 2)),
-          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 2),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 2),
         ],
       ),
       child: Text(text,
@@ -433,7 +433,7 @@ class _PassesViewState extends State<PassesView> {
                 child: CircularProgressIndicator(
                   value: pct / 100,
                   strokeWidth: 5,
-                  backgroundColor: Colors.grey.withOpacity(0.25),
+                  backgroundColor: Colors.grey.withValues(alpha: 0.25),
                   valueColor: AlwaysStoppedAnimation<Color>(color),
                   strokeCap: StrokeCap.round,
                 )),
@@ -518,8 +518,8 @@ class _PassesViewState extends State<PassesView> {
                       value: accPct / 100,
                       strokeWidth: 6,
                       backgroundColor: isDark
-                          ? Colors.white.withOpacity(0.15)
-                          : Colors.grey.withOpacity(0.25),
+                          ? Colors.white.withValues(alpha: 0.15)
+                          : Colors.grey.withValues(alpha: 0.25),
                       valueColor: AlwaysStoppedAnimation<Color>(teamColor),
                       strokeCap: StrokeCap.round,
                     )),
@@ -696,8 +696,8 @@ class _PassesViewState extends State<PassesView> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xFFC8E6C9).withOpacity(zoneOpacity(left)),
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(left) - 0.10)
+                const Color(0xFFC8E6C9).withValues(alpha: zoneOpacity(left)),
+                const Color(0xFF66BB6A).withValues(alpha: zoneOpacity(left) - 0.10)
               ],
             )))),
             Expanded(
@@ -707,8 +707,8 @@ class _PassesViewState extends State<PassesView> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(center)),
-                const Color(0xFF2E7D32).withOpacity(zoneOpacity(center) + 0.05)
+                const Color(0xFF66BB6A).withValues(alpha: zoneOpacity(center)),
+                const Color(0xFF2E7D32).withValues(alpha: zoneOpacity(center) + 0.05)
               ],
             )))),
             Expanded(
@@ -718,8 +718,8 @@ class _PassesViewState extends State<PassesView> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xFFC8E6C9).withOpacity(zoneOpacity(right)),
-                const Color(0xFF66BB6A).withOpacity(zoneOpacity(right) - 0.10)
+                const Color(0xFFC8E6C9).withValues(alpha: zoneOpacity(right)),
+                const Color(0xFF66BB6A).withValues(alpha: zoneOpacity(right) - 0.10)
               ],
             )))),
           ]),
@@ -735,13 +735,13 @@ class _PassesViewState extends State<PassesView> {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               if (!isHome)
                 Icon(Icons.arrow_back_rounded,
-                    size: 14, color: Colors.white.withOpacity(0.5)),
+                    size: 14, color: Colors.white.withValues(alpha: 0.5)),
               const SizedBox(width: 4),
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.22),
+                    color: Colors.black.withValues(alpha: 0.22),
                     borderRadius: BorderRadius.circular(10)),
                 child: Text(
                   isHome
@@ -750,13 +750,13 @@ class _PassesViewState extends State<PassesView> {
                   style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white.withOpacity(0.7)),
+                      color: Colors.white.withValues(alpha: 0.7)),
                 ),
               ),
               const SizedBox(width: 4),
               if (isHome)
                 Icon(Icons.arrow_forward_rounded,
-                    size: 14, color: Colors.white.withOpacity(0.5)),
+                    size: 14, color: Colors.white.withValues(alpha: 0.5)),
             ]),
           ),
           // Badge percentuali tappabili
@@ -794,11 +794,11 @@ class _PassesViewState extends State<PassesView> {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.black.withOpacity(0.12),
+                      color: Colors.black.withValues(alpha: 0.12),
                       blurRadius: 8,
                       offset: const Offset(0, 2)),
                   BoxShadow(
-                      color: Colors.black.withOpacity(0.04), blurRadius: 2)
+                      color: Colors.black.withValues(alpha: 0.04), blurRadius: 2)
                 ]),
             child: Text('$pct%',
                 style: const TextStyle(
@@ -821,7 +821,7 @@ class _PassesViewState extends State<PassesView> {
                 Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                        color: teamColor.withOpacity(0.15),
+                        color: teamColor.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10)),
                     child: Icon(Icons.location_on, color: teamColor, size: 22)),
                 const SizedBox(width: 12),
@@ -851,14 +851,14 @@ class _PassesViewState extends State<PassesView> {
                     child: SizedBox(
                         height: 10,
                         child: Stack(children: [
-                          Container(color: Colors.grey.withOpacity(0.12)),
+                          Container(color: Colors.grey.withValues(alpha: 0.12)),
                           FractionallySizedBox(
                               widthFactor: acc / 100,
                               child: Container(
                                   decoration: BoxDecoration(
                                       gradient: LinearGradient(colors: [
                                         teamColor,
-                                        teamColor.withOpacity(0.7)
+                                        teamColor.withValues(alpha: 0.7)
                                       ]),
                                       borderRadius: BorderRadius.circular(6)))),
                         ]))),
@@ -900,7 +900,7 @@ class _PassesViewState extends State<PassesView> {
       Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-              color: color.withOpacity(0.12),
+              color: color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10)),
           child: Icon(icon, size: 18, color: color)),
       const SizedBox(width: 12),
@@ -929,7 +929,7 @@ class _PassesViewState extends State<PassesView> {
               color: (isWinning
                       ? const Color(0xFF4CAF50)
                       : const Color(0xFFF44336))
-                  .withOpacity(0.12),
+                  .withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(4)),
           child: Icon(isWinning ? Icons.arrow_drop_up : Icons.arrow_drop_down,
               size: 16,
@@ -998,7 +998,7 @@ class _PassesViewState extends State<PassesView> {
                           child: Container(
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(
-                                      colors: [color, color.withOpacity(0.75)]),
+                                      colors: [color, color.withValues(alpha: 0.75)]),
                                   borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(5),
                                       bottomLeft: Radius.circular(5))))),
@@ -1011,8 +1011,8 @@ class _PassesViewState extends State<PassesView> {
                           child: Container(
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(colors: [
-                                    oppColor.withOpacity(0.35),
-                                    oppColor.withOpacity(0.25)
+                                    oppColor.withValues(alpha: 0.35),
+                                    oppColor.withValues(alpha: 0.25)
                                   ]),
                                   borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(5),
@@ -1145,7 +1145,7 @@ class _PassesViewState extends State<PassesView> {
               child: CircularProgressIndicator(
                   value: progress,
                   strokeWidth: 5.5,
-                  backgroundColor: Colors.grey.withOpacity(0.25),
+                  backgroundColor: Colors.grey.withValues(alpha: 0.25),
                   valueColor: AlwaysStoppedAnimation<Color>(color),
                   strokeCap: StrokeCap.round)),
           Text(label,

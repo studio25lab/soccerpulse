@@ -437,8 +437,8 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: isDark
-              ? [theme.primaryColor.withOpacity(0.15), const Color(0xFF0D0D1A)]
-              : [theme.primaryColor.withOpacity(0.08), Colors.grey[50]!],
+              ? [theme.primaryColor.withValues(alpha: 0.15), const Color(0xFF0D0D1A)]
+              : [theme.primaryColor.withValues(alpha: 0.08), Colors.grey[50]!],
         ),
       ),
       child: Column(
@@ -510,7 +510,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
   Widget _buildStatsCards(ThemeData theme, bool isDark, S s) {
     final t = widget.teamStanding;
     final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -519,7 +519,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
         color: cardBg,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: divider),
-        boxShadow: [BoxShadow(color: theme.primaryColor.withOpacity(0.05), blurRadius: 12, offset: const Offset(0, 4))],
+        boxShadow: [BoxShadow(color: theme.primaryColor.withValues(alpha: 0.05), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(children: [
         Row(children: [
@@ -539,7 +539,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
 
   Widget _modernStatItem(IconData icon, String value, String label, Color color, bool isDark) {
     return Column(children: [
-      Icon(icon, size: 18, color: color.withOpacity(0.7)),
+      Icon(icon, size: 18, color: color.withValues(alpha: 0.7)),
       const SizedBox(height: 4),
       Text(value, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: isDark ? Colors.white : const Color(0xFF1A1A1A))),
       const SizedBox(height: 2),
@@ -657,7 +657,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
             boxShadow: active
                 ? [
                     BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 6,
                         offset: const Offset(0, 2))
                   ]
@@ -701,7 +701,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     if (results.isEmpty) return const SizedBox.shrink();
     final teamName = widget.teamStanding.teamName;
     final divider =
-        isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+        isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
 
     // Converto List<SoccerMatch> in List<Map<String, dynamic>> per uniformita
     // con il formato accettato da TeamFormSection.
@@ -770,7 +770,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
           decoration: BoxDecoration(
-            color: isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.1),
+            color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text('$count', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: lb)),
@@ -788,7 +788,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
         Container(
           width: 3, height: 14,
           decoration: BoxDecoration(
-            color: isDark ? Colors.white.withOpacity(0.15) : Colors.grey.withOpacity(0.3),
+            color: isDark ? Colors.white.withValues(alpha: 0.15) : Colors.grey.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(2),
           ),
         ),
@@ -933,11 +933,11 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       decoration: BoxDecoration(
-                        color: isOn ? color.withOpacity(isDark ? 0.12 : 0.06) : Colors.transparent,
+                        color: isOn ? color.withValues(alpha: isDark ? 0.12 : 0.06) : Colors.transparent,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color: isOn
-                              ? color.withOpacity(isDark ? 0.3 : 0.2)
+                              ? color.withValues(alpha: isDark ? 0.3 : 0.2)
                               : isDark ? Colors.white10 : Colors.grey[200]!,
                           width: isOn ? 1.5 : 1,
                         ),
@@ -946,7 +946,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                         Container(
                           width: 40, height: 40,
                           decoration: BoxDecoration(
-                            color: color.withOpacity(isOn ? 0.15 : 0.08),
+                            color: color.withValues(alpha: isOn ? 0.15 : 0.08),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(icon, size: 20,
@@ -1001,7 +1001,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               decoration: BoxDecoration(
                 color: bg,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, -5))],
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, -5))],
               ),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Container(
@@ -1015,7 +1015,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: theme.primaryColor.withOpacity(0.1),
+                        color: theme.primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(Icons.notifications_active, color: theme.primaryColor, size: 24),
@@ -1118,7 +1118,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.08)),
+          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.08)),
         ),
         child: IntrinsicHeight(
           child: Row(
@@ -1126,7 +1126,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               Container(
                 width: 3.5,
                 decoration: BoxDecoration(
-                  color: accent.withOpacity(0.5),
+                  color: accent.withValues(alpha: 0.5),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
                 ),
@@ -1145,7 +1145,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                   ],
                 ),
               ),
-              Container(width: 0.5, color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.12)),
+              Container(width: 0.5, color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.12)),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
@@ -1277,7 +1277,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.08)),
+          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.08)),
         ),
         child: IntrinsicHeight(
           child: Row(
@@ -1308,14 +1308,14 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                       style: TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.w500,
-                        color: match.isLive ? const Color(0xFFE53935) : lb.withOpacity(0.7),
+                        color: match.isLive ? const Color(0xFFE53935) : lb.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
                 ),
               ),
               // ── Divider verticale ──
-              Container(width: 0.5, color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.12)),
+              Container(width: 0.5, color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.12)),
               // ── Squadre ──
               Expanded(
                 child: Padding(
@@ -1373,7 +1373,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                     child: Container(
                       width: 26, height: 26,
                       decoration: BoxDecoration(
-                        color: resultColor.withOpacity(isDark ? 0.2 : 0.12),
+                        color: resultColor.withValues(alpha: isDark ? 0.2 : 0.12),
                         borderRadius: BorderRadius.circular(7),
                       ),
                       child: Center(child: Text(resultLetter,
@@ -1392,7 +1392,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     return Container(
       width: 20, height: 20,
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.12),
+        color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(5),
       ),
       child: Center(child: Text(name.isNotEmpty ? name[0] : '?',
@@ -1438,7 +1438,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                   Expanded(flex: t.draws.clamp(1, 100), child: Container(height: 6, color: const Color(0xFFFFA726))),
                   Expanded(flex: t.losses.clamp(1, 100), child: Container(height: 6, color: const Color(0xFFE53935))),
                 ] else
-                  Expanded(child: Container(height: 6, color: Colors.grey.withOpacity(0.2))),
+                  Expanded(child: Container(height: 6, color: Colors.grey.withValues(alpha: 0.2))),
               ]),
             ),
             const SizedBox(height: 8),
@@ -1507,7 +1507,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.06),
+                color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -1544,9 +1544,9 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.1)),
+        border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.withValues(alpha: 0.1)),
         boxShadow: isDark ? null : [
-          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2)),
         ],
       ),
       child: child,
@@ -1583,7 +1583,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
             child: CircularProgressIndicator(
               value: pct,
               strokeWidth: 5,
-              backgroundColor: color.withOpacity(0.1),
+              backgroundColor: color.withValues(alpha: 0.1),
               valueColor: AlwaysStoppedAnimation(color),
             ),
           ),
@@ -1601,7 +1601,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
       SizedBox(width: 90, child: Text(label, style: TextStyle(fontSize: 12, color: lb))),
       Expanded(child: Stack(children: [
         Container(height: 8, decoration: BoxDecoration(
-          color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.08),
+          color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(4),
         )),
         FractionallySizedBox(
@@ -1662,7 +1662,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: _roleColor(role).withOpacity(isDark ? 0.15 : 0.1),
+                        color: _roleColor(role).withValues(alpha: isDark ? 0.15 : 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(_localizeTeam(context, role.toUpperCase()),
@@ -1670,7 +1670,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                               color: _roleColor(role), letterSpacing: 0.5)),
                     ),
                     const SizedBox(width: 8),
-                    Expanded(child: Container(height: 0.5, color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.15))),
+                    Expanded(child: Container(height: 0.5, color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.15))),
                     const SizedBox(width: 8),
                     Text('${groups[role]!.length}', style: TextStyle(fontSize: 11, color: lb)),
                   ]),
@@ -1743,7 +1743,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.08)),
+          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.08)),
         ),
         child: Row(children: [
           // ── Avatar ──
@@ -1790,8 +1790,8 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                     borderRadius: BorderRadius.circular(2),
                     child: LinearProgressIndicator(
                       value: appPct,
-                      backgroundColor: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.12),
-                      valueColor: AlwaysStoppedAnimation(roleColor.withOpacity(0.6)),
+                      backgroundColor: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.12),
+                      valueColor: AlwaysStoppedAnimation(roleColor.withValues(alpha: 0.6)),
                     ),
                   ),
                 ),
@@ -1813,7 +1813,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               margin: const EdgeInsets.only(left: 6),
               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
               decoration: BoxDecoration(
-                color: _ratingColor(p.rating).withOpacity(isDark ? 0.2 : 0.12),
+                color: _ratingColor(p.rating).withValues(alpha: isDark ? 0.2 : 0.12),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(p.rating.toStringAsFixed(1),
@@ -1829,7 +1829,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
       margin: const EdgeInsets.only(right: 3),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+        color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(5),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -1919,10 +1919,10 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [roleColor.withOpacity(0.25), roleColor.withOpacity(0.1)],
+          colors: [roleColor.withValues(alpha: 0.25), roleColor.withValues(alpha: 0.1)],
         ),
         shape: BoxShape.circle,
-        border: Border.all(color: roleColor.withOpacity(0.3), width: 1.5),
+        border: Border.all(color: roleColor.withValues(alpha: 0.3), width: 1.5),
       ),
       child: Center(child: Text('$number',
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: roleColor))),
@@ -1978,7 +1978,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
     final teamName = widget.teamStanding.teamName;
     
     final mockRosters = <String, Map<String, List<Map<String, dynamic>>>>{
@@ -2000,9 +2000,9 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.orange.withOpacity(0.08),
+            color: Colors.orange.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.orange.withOpacity(0.2)),
+            border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
           ),
           child: Row(children: [
             Icon(Icons.info_outline, size: 16, color: Colors.orange),
@@ -2019,7 +2019,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _roleColor(role).withOpacity(isDark ? 0.15 : 0.1),
+                    color: _roleColor(role).withValues(alpha: isDark ? 0.15 : 0.1),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(tr(context, role), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: _roleColor(role))),
@@ -2040,9 +2040,9 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                 Container(
                   width: 32, height: 32,
                   decoration: BoxDecoration(
-                    color: _roleColor(role).withOpacity(0.12),
+                    color: _roleColor(role).withValues(alpha: 0.12),
                     shape: BoxShape.circle,
-                    border: Border.all(color: _roleColor(role).withOpacity(0.3)),
+                    border: Border.all(color: _roleColor(role).withValues(alpha: 0.3)),
                   ),
                   child: Center(child: Text('${p['num']}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: _roleColor(role)))),
                 ),
@@ -2062,7 +2062,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
     final accent = theme.primaryColor;
-    final divider = isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1);
+    final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
 
     // Colore posizione
     Color posColor;
@@ -2121,7 +2121,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                 Container(
                   width: 32, height: 32,
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.06),
+                    color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.06),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(Icons.person_rounded, size: 16, color: lb),
@@ -2160,9 +2160,9 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               Container(
                 width: 56, height: 56,
                 decoration: BoxDecoration(
-                  color: posColor.withOpacity(0.12),
+                  color: posColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: posColor.withOpacity(0.3), width: 2),
+                  border: Border.all(color: posColor.withValues(alpha: 0.3), width: 2),
                 ),
                 child: Center(child: Text('${t.position}°',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: posColor))),
@@ -2179,7 +2179,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: isDark ? Colors.white.withOpacity(0.03) : Colors.grey.withOpacity(0.05),
+              color: isDark ? Colors.white.withValues(alpha: 0.03) : Colors.grey.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
@@ -2220,9 +2220,9 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                     width: 36, height: 36,
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
-                      color: bg.withOpacity(0.15),
+                      color: bg.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: bg.withOpacity(0.4)),
+                      border: Border.all(color: bg.withValues(alpha: 0.4)),
                     ),
                     child: Center(child: Text(letter,
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: bg))),
@@ -2245,7 +2245,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
         Container(
           width: 32, height: 32,
           decoration: BoxDecoration(
-            color: isDark ? Colors.white.withOpacity(0.04) : Colors.grey.withOpacity(0.06),
+            color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.grey.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 16, color: lb),

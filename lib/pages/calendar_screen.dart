@@ -282,7 +282,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         color: isDark ? Colors.grey[850] : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -327,9 +327,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                   decoration: BoxDecoration(
-                    color: theme.primaryColor.withOpacity(0.1),
+                    color: theme.primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
+                    border: Border.all(color: theme.primaryColor.withValues(alpha: 0.3)),
                   ),
                   child: Text(tr(context, 'Oggi'),
                       style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: theme.primaryColor)),
@@ -343,7 +343,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.08),
+                    color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(Icons.keyboard_arrow_up_rounded, size: 20,
@@ -402,7 +402,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             shape: BoxShape.circle,
           ),
           todayDecoration: BoxDecoration(
-            color: theme.primaryColor.withOpacity(0.3),
+            color: theme.primaryColor.withValues(alpha: 0.3),
             shape: BoxShape.circle,
           ),
           markersMaxCount: 3,
@@ -473,7 +473,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               Icon(
                 Icons.sports_soccer,
                 size: 64,
-                color: Colors.grey.withOpacity(0.3),
+                color: Colors.grey.withValues(alpha: 0.3),
               ),
               const SizedBox(height: 16),
               Text(
@@ -563,12 +563,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                   child: Container(
                                     width: 32, height: 32,
                                     decoration: BoxDecoration(
-                                      color: hasNotif ? const Color(0xFF4CAF50).withOpacity(0.15) : Colors.black.withOpacity(0.3),
+                                      color: hasNotif ? const Color(0xFF4CAF50).withValues(alpha: 0.15) : Colors.black.withValues(alpha: 0.3),
                                       shape: BoxShape.circle,
                                     ),
                                     child: Icon(
                                       hasNotif ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
-                                      size: 18, color: hasNotif ? const Color(0xFF4CAF50) : Colors.white.withOpacity(0.8),
+                                      size: 18, color: hasNotif ? const Color(0xFF4CAF50) : Colors.white.withValues(alpha: 0.8),
                                     ),
                                   ),
                                 );
@@ -595,12 +595,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                               child: Container(
                                 width: 32, height: 32,
                                 decoration: BoxDecoration(
-                                  color: isFav ? Colors.red.withOpacity(0.12) : Colors.black.withOpacity(0.3),
+                                  color: isFav ? Colors.red.withValues(alpha: 0.12) : Colors.black.withValues(alpha: 0.3),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
                                   isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                                  size: 18, color: isFav ? Colors.red : Colors.white.withOpacity(0.8),
+                                  size: 18, color: isFav ? Colors.red : Colors.white.withValues(alpha: 0.8),
                                 ),
                               ),
                             ),

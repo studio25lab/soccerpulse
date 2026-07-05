@@ -58,8 +58,8 @@ class ProbableLineupsTab extends StatelessWidget {
     final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final divider = isDark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.grey.withOpacity(0.1);
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.grey.withValues(alpha: 0.1);
 
     final homeFormation = _getPreMatchFormation(homeName);
     final awayFormation = _getPreMatchFormation(awayName);
@@ -84,7 +84,7 @@ class ProbableLineupsTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
               margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
-                color: theme.primaryColor.withOpacity(0.08),
+                color: theme.primaryColor.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(tr(context, 'Probabili Formazioni'),
@@ -114,7 +114,7 @@ class ProbableLineupsTab extends StatelessWidget {
                   height: 40,
                   color: isDark
                       ? Colors.white12
-                      : Colors.grey.withOpacity(0.15)),
+                      : Colors.grey.withValues(alpha: 0.15)),
               Expanded(
                   child: Column(children: [
                 Text(awayName,
@@ -231,7 +231,7 @@ class ProbableLineupsTab extends StatelessWidget {
               border: Border.all(color: Colors.white, width: 2.5),
               boxShadow: [
                 BoxShadow(
-                    color: color.withOpacity(0.5),
+                    color: color.withValues(alpha: 0.5),
                     blurRadius: 6,
                     spreadRadius: 1),
                 const BoxShadow(color: Colors.black26, blurRadius: 4),
@@ -288,7 +288,7 @@ class ProbableLineupsTab extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.12),
+              color: color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(Icons.event_seat_rounded, size: 16, color: color),
@@ -323,10 +323,10 @@ class ProbableLineupsTab extends StatelessWidget {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                   border: Border.all(
-                      color: color.withOpacity(0.3), width: 1.5),
+                      color: color.withValues(alpha: 0.3), width: 1.5),
                 ),
                 child: Icon(Icons.person, size: 16, color: color),
               ),
@@ -341,7 +341,7 @@ class ProbableLineupsTab extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                    color: color.withOpacity(0.08),
+                    color: color.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(4)),
                 child: Text(tr(context, 'Allenatore'),
                     style: TextStyle(
@@ -382,10 +382,10 @@ class ProbableLineupsTab extends StatelessWidget {
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                     border: Border.all(
-                        color: color.withOpacity(0.3), width: 1.5),
+                        color: color.withValues(alpha: 0.3), width: 1.5),
                   ),
                   child: Center(
                       child: Text('${p["number"]}',
