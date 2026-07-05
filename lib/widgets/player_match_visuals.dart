@@ -466,7 +466,7 @@ class _PlayerShotMapCardState extends State<PlayerShotMapCard> {
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
           child: Row(children: [
             Icon(Icons.gps_fixed_rounded, size: 18, color: widget.teamColor),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(tr(context, 'Mappa tiri'),
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: tx)),
             const Spacer(),
@@ -542,13 +542,13 @@ class _PlayerShotMapCardState extends State<PlayerShotMapCard> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(children: [
             if (goals > 0)
-              _statRow('Gol', '$goals', Color(0xFF4CAF50), tx, lb),
+              _statRow('Gol', '$goals', const Color(0xFF4CAF50), tx, lb),
             _statRow('xG totale', totalXg.toStringAsFixed(2), widget.teamColor, tx, lb),
-            _statRow(tr(context, 'Tiri in porta'), '${goals + onTarget}', Color(0xFF2196F3), tx, lb),
+            _statRow(tr(context, 'Tiri in porta'), '${goals + onTarget}', const Color(0xFF2196F3), tx, lb),
             if (offTarget > 0)
-              _statRow(tr(context, 'Tiri fuori'), '$offTarget', Color(0xFFFF9800), tx, lb),
+              _statRow(tr(context, 'Tiri fuori'), '$offTarget', const Color(0xFFFF9800), tx, lb),
             if (blocked > 0)
-              _statRow(tr(context, 'Tiri respinti'), '$blocked', Color(0xFF9E9E9E), tx, lb),
+              _statRow(tr(context, 'Tiri respinti'), '$blocked', const Color(0xFF9E9E9E), tx, lb),
           ]),
         ),
         const SizedBox(height: 14),
@@ -741,14 +741,14 @@ class _GoalFramePainter extends CustomPainter {
     final h = size.height;
 
     // The goal frame is centered, with margin for off-target dots
-    final margin = 28.0;
-    final frameLeft = margin;
+    const margin = 28.0;
+    const frameLeft = margin;
     final frameRight = w - margin;
     final frameW = frameRight - frameLeft;
-    final frameTop = 6.0;
+    const frameTop = 6.0;
     final frameBottom = h - 6.0;
     final frameH = frameBottom - frameTop;
-    final postW = 4.0;
+    const postW = 4.0;
 
     // Goal inner area
     final inner = Rect.fromLTWH(
@@ -920,7 +920,7 @@ class _PlayerHeatmapPainter extends CustomPainter {
 
     // Build KDE density grid
     final grid = List<double>.filled(_gridW * _gridH, 0);
-    final sigma = 15.0; // Large sigma = smooth, spread out heat
+    const sigma = 15.0; // Large sigma = smooth, spread out heat
     final kernelR = (sigma * 2.5).ceil();
 
     for (final p in touchPoints) {
@@ -1291,8 +1291,8 @@ class _PlayerShotMapPainter extends CustomPainter {
     // Legend
     final legendY = h - 18.0;
     final items = [
-      ('Gol', Color(0xFF4CAF50)),
-      ('In porta', Color(0xFFE6A700)),
+      ('Gol', const Color(0xFF4CAF50)),
+      ('In porta', const Color(0xFFE6A700)),
       ('Fuori', const Color(0xFFFF5722)),
       ('Bloccato', const Color(0xFF9E9E9E)),
     ];
@@ -1403,7 +1403,7 @@ class _PlayerPassMapCardState extends State<PlayerPassMapCard> {
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
           child: Row(children: [
             Icon(Icons.swap_calls_rounded, size: 18, color: widget.teamColor),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(tr(context, 'Mappa passaggi'),
                 style: TextStyle(
                     fontSize: 14, fontWeight: FontWeight.w700, color: tx)),
@@ -1453,10 +1453,10 @@ class _PlayerPassMapCardState extends State<PlayerPassMapCard> {
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             _legendItem(tr(context, 'Accurato'), const Color(0xFF4CAF50)),
             const SizedBox(width: 16),
-            _legendItem(tr(context, 'Non accurato'), Color(0xFFEF5350)),
+            _legendItem(tr(context, 'Non accurato'), const Color(0xFFEF5350)),
             if (widget.keyPasses > 0) ...[
-              SizedBox(width: 16),
-              _legendItem(tr(context, 'Passaggio chiave'), Color(0xFFFF9800)),
+              const SizedBox(width: 16),
+              _legendItem(tr(context, 'Passaggio chiave'), const Color(0xFFFF9800)),
             ],
           ]),
         ),
@@ -1556,35 +1556,35 @@ class _PlayerPassMapCardState extends State<PlayerPassMapCard> {
         sxMin = 0.20; sxMax = 0.60; syMin = 0.15; syMax = 0.85; exBias = 0.28;
     }
 
-    double _r(double lo, double hi) => lo + rng.nextDouble() * (hi - lo);
+    double r(double lo, double hi) => lo + rng.nextDouble() * (hi - lo);
 
     int keyCount = 0;
     int crossCount = 0;
 
     // Generate completed passes
     for (int i = 0; i < completedVisible; i++) {
-      double sx = _r(sxMin, sxMax);
-      double sy = _r(syMin, syMax);
+      double sx = r(sxMin, sxMax);
+      double sy = r(syMin, syMax);
       bool isKey = keyCount < keyVisible;
       bool isCross = crossCount < crossCompVisible;
 
       double ex, ey;
       if (isCross) {
         // Cross: dal lato verso area di rigore
-        sx = _r(max(sxMin, 0.55), min(sxMax + 0.15, 0.92));
-        sy = widget.position.contains('L') ? _r(0.70, 0.95) : _r(0.05, 0.30);
-        ex = _r(0.75, 0.92);
-        ey = _r(0.30, 0.70);
+        sx = r(max(sxMin, 0.55), min(sxMax + 0.15, 0.92));
+        sy = widget.position.contains('L') ? r(0.70, 0.95) : r(0.05, 0.30);
+        ex = r(0.75, 0.92);
+        ey = r(0.30, 0.70);
         crossCount++;
       } else if (isKey) {
         // Key pass: verso ultimo terzo
-        ex = _r(max(sx + 0.05, 0.60), 0.95);
-        ey = _r(0.20, 0.80);
+        ex = r(max(sx + 0.05, 0.60), 0.95);
+        ey = r(0.20, 0.80);
         keyCount++;
       } else {
         // Pass normale completato
-        ex = sx + _r(-0.12, exBias);
-        ey = _r(max(0.05, sy - 0.35), min(0.95, sy + 0.35));
+        ex = sx + r(-0.12, exBias);
+        ey = r(max(0.05, sy - 0.35), min(0.95, sy + 0.35));
         ex = ex.clamp(0.02, 0.98);
       }
       ey = ey.clamp(0.03, 0.97);
@@ -1599,20 +1599,20 @@ class _PlayerPassMapCardState extends State<PlayerPassMapCard> {
     int crossIncCount = 0;
     final crossIncVisible = crossVisible - crossCompVisible;
     for (int i = 0; i < incompleteVisible; i++) {
-      double sx = _r(sxMin, sxMax);
-      double sy = _r(syMin, syMax);
+      double sx = r(sxMin, sxMax);
+      double sy = r(syMin, syMax);
       bool isCross = crossIncCount < crossIncVisible;
 
       double ex, ey;
       if (isCross) {
-        sx = _r(max(sxMin, 0.55), min(sxMax + 0.15, 0.92));
-        sy = widget.position.contains('L') ? _r(0.70, 0.95) : _r(0.05, 0.30);
-        ex = _r(0.65, 0.90);
-        ey = _r(0.25, 0.75);
+        sx = r(max(sxMin, 0.55), min(sxMax + 0.15, 0.92));
+        sy = widget.position.contains('L') ? r(0.70, 0.95) : r(0.05, 0.30);
+        ex = r(0.65, 0.90);
+        ey = r(0.25, 0.75);
         crossIncCount++;
       } else {
-        ex = sx + _r(-0.15, exBias + 0.10);
-        ey = _r(max(0.03, sy - 0.40), min(0.97, sy + 0.40));
+        ex = sx + r(-0.15, exBias + 0.10);
+        ey = r(max(0.03, sy - 0.40), min(0.97, sy + 0.40));
         ex = ex.clamp(0.02, 0.98);
       }
       ey = ey.clamp(0.03, 0.97);
@@ -1699,7 +1699,7 @@ class _PlayerPassMapPainter extends CustomPainter {
       // Arrowhead
       final angle = atan2(ey - sy, ex - sx);
       final headLen = a.isKeyPass ? 8.0 : 6.0;
-      final headAngle = 0.45;
+      const headAngle = 0.45;
       final p1x = ex - headLen * cos(angle - headAngle);
       final p1y = ey - headLen * sin(angle - headAngle);
       final p2x = ex - headLen * cos(angle + headAngle);
@@ -1832,7 +1832,7 @@ class PlayerDefensiveMapCard extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
           child: Row(children: [
             Icon(Icons.shield_outlined, size: 18, color: teamColor),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(tr(context, 'Azioni difensive'),
                 style: TextStyle(
                     fontSize: 14, fontWeight: FontWeight.w700, color: tx)),
@@ -1881,7 +1881,7 @@ class PlayerDefensiveMapCard extends StatelessWidget {
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             _legendItem(
                 _buildTackleIcon(14, false), 'Contrasto', lb),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             _legendItem(
                 _buildInterceptionIcon(14), tr(context, 'Intercetto'), lb),
             const SizedBox(width: 16),
@@ -1897,7 +1897,7 @@ class PlayerDefensiveMapCard extends StatelessWidget {
               children: [
                 if (tackles > 0)
                   _miniStat(tr(context, 'Contrasti'), '$tackles',
-                      Color(0xFFE53935), tx, lb),
+                      const Color(0xFFE53935), tx, lb),
                 if (interceptions > 0)
                   _miniStat(tr(context, 'Intercetti'), '$interceptions',
                       const Color(0xFFFF9800), tx, lb),
@@ -1987,9 +1987,9 @@ class PlayerDefensiveMapCard extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFFE53935),
+        color: Color(0xFFE53935),
       ),
       child: Center(
           child:

@@ -21,7 +21,7 @@ import '../models/player_notification_settings.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
 
 class FavoritesScreen extends StatefulWidget {
-  const FavoritesScreen({Key? key}) : super(key: key);
+  const FavoritesScreen({super.key});
 
   @override
   State<FavoritesScreen> createState() => _FavoritesScreenState();
@@ -34,7 +34,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
   late TabController _tabController;
 
   bool _isLoading = false;
-  List<TeamStanding> _favoriteTeams = [];
+  final List<TeamStanding> _favoriteTeams = [];
 
   @override
   void initState() {
@@ -365,7 +365,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               child: Row(
                 children: [
                   Icon(Icons.info_outline, color: theme.primaryColor, size: 20),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       tr(context, 'Tocca il ❤️ su squadre, partite o giocatori per aggiungerli ai preferiti'),
@@ -498,7 +498,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
           physics: const BouncingScrollPhysics(),
           children: [
             if (live.isNotEmpty) ...[
-              _buildSectionHeader(tr(context, 'IN DIRETTA'), Icons.circle, Color(0xFFFF1744), tx, live.length),
+              _buildSectionHeader(tr(context, 'IN DIRETTA'), Icons.circle, const Color(0xFFFF1744), tx, live.length),
               const SizedBox(height: 10),
               ...live.asMap().entries.map((e) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -507,7 +507,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               const SizedBox(height: 8),
             ],
             if (upcoming.isNotEmpty) ...[
-              _buildSectionHeader(tr(context, 'PROSSIME'), Icons.schedule_rounded, Color(0xFF2196F3), tx, upcoming.length),
+              _buildSectionHeader(tr(context, 'PROSSIME'), Icons.schedule_rounded, const Color(0xFF2196F3), tx, upcoming.length),
               const SizedBox(height: 10),
               ...upcoming.asMap().entries.map((e) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -610,7 +610,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const Icon(Icons.delete_outline_rounded, color: Colors.red, size: 24),
           const SizedBox(height: 4),
-          Text(S.of(context)!.rimuovi, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.red)),
+          Text(S.of(context)!.rimuovi, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.red)),
         ]),
       ),
       confirmDismiss: (_) async => true,
@@ -695,13 +695,13 @@ class _FavoritesScreenState extends State<FavoritesScreen>
             const SizedBox(width: 4),
             Builder(
               builder: (ctx) {
-                final _ns = ctx.read<MatchNotificationPreferencesService>();
-                final _s = _ns.getSettingsForMatch(id);
-                final _hasNotif = _s.enabled && (_s.notifyHomeGoals || _s.notifyAwayGoals ||
-                    _s.notifyRedCards || _s.notifyPenalties || _s.notifyMatchStart ||
-                    _s.notifyMatchEnd || _s.notifyVarDecisions || _s.notifyYellowCards ||
-                    _s.notifySubstitutions || _s.notifyCorners || _s.notifyOffsides ||
-                    _s.notifyShotsOnTarget || _s.notifyFouls);
+                final ns = ctx.read<MatchNotificationPreferencesService>();
+                final s = ns.getSettingsForMatch(id);
+                final hasNotif = s.enabled && (s.notifyHomeGoals || s.notifyAwayGoals ||
+                    s.notifyRedCards || s.notifyPenalties || s.notifyMatchStart ||
+                    s.notifyMatchEnd || s.notifyVarDecisions || s.notifyYellowCards ||
+                    s.notifySubstitutions || s.notifyCorners || s.notifyOffsides ||
+                    s.notifyShotsOnTarget || s.notifyFouls);
                 return GestureDetector(
                   onTap: () {
                     _haptic.lightImpact();
@@ -712,9 +712,9 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     child: Icon(
-                      _hasNotif ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
+                      hasNotif ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
                       size: 20,
-                      color: _hasNotif ? const Color(0xFF4CAF50) : lb.withValues(alpha: 0.4),
+                      color: hasNotif ? const Color(0xFF4CAF50) : lb.withValues(alpha: 0.4),
                     ),
                   ),
                 );
@@ -865,7 +865,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(Icons.add_rounded, size: 18, color: theme.primaryColor),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(tr(context, 'Aggiungi Partita'),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: theme.primaryColor)),
         ]),
@@ -916,7 +916,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   ),
                   child: Icon(Icons.calendar_today_rounded, size: 18, color: theme.primaryColor),
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(tr(context, 'Prossime Partite'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: tx)),
@@ -1255,24 +1255,24 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       sectionHeader('Risultato', Icons.sports_score),
-                      notifTile('goals', Icons.sports_soccer, S.of(context)!.goalNotif, 'Notifica con marcatore e minuto', Color(0xFF4CAF50)),
-                      notifTile('penalties', Icons.gps_fixed, 'Rigori', 'Rigori assegnati, segnati e sbagliati', Color(0xFFE91E63)),
+                      notifTile('goals', Icons.sports_soccer, S.of(context)!.goalNotif, 'Notifica con marcatore e minuto', const Color(0xFF4CAF50)),
+                      notifTile('penalties', Icons.gps_fixed, 'Rigori', 'Rigori assegnati, segnati e sbagliati', const Color(0xFFE91E63)),
                       notifTile('var', Icons.videocam, 'Decisioni VAR', 'Revisioni e decisioni arbitrali al VAR', const Color(0xFF2196F3)),
                       const SizedBox(height: 16),
                       sectionHeader('Tempi di gioco', Icons.timer),
-                      notifTile('kickoff', Icons.play_circle_outline, 'Inizio tempo', 'Calcio d\'inizio 1° e 2° tempo', Color(0xFF66BB6A)),
-                      notifTile('halftime', Icons.pause_circle_outline, 'Fine primo tempo', 'Risultato parziale all\'intervallo', Color(0xFFFFA726)),
-                      notifTile('fulltime', Icons.stop_circle_outlined, 'Fischio finale', 'Risultato finale della partita', Color(0xFFEF5350)),
+                      notifTile('kickoff', Icons.play_circle_outline, 'Inizio tempo', 'Calcio d\'inizio 1° e 2° tempo', const Color(0xFF66BB6A)),
+                      notifTile('halftime', Icons.pause_circle_outline, 'Fine primo tempo', 'Risultato parziale all\'intervallo', const Color(0xFFFFA726)),
+                      notifTile('fulltime', Icons.stop_circle_outlined, 'Fischio finale', 'Risultato finale della partita', const Color(0xFFEF5350)),
                       const SizedBox(height: 16),
                       sectionHeader('Disciplina', Icons.style),
                       notifTile('yellowCards', Icons.square_rounded, S.of(context)!.cartelliniGialliNotif, S.of(context)!.ammonizioni2, const Color(0xFFFFCA28)),
-                      notifTile('redCards', Icons.square_rounded, S.of(context)!.cartelliniRossiNotif, S.of(context)!.espulsioniNotif, Color(0xFFE53935)),
-                      SizedBox(height: 16),
+                      notifTile('redCards', Icons.square_rounded, S.of(context)!.cartelliniRossiNotif, S.of(context)!.espulsioniNotif, const Color(0xFFE53935)),
+                      const SizedBox(height: 16),
                       sectionHeader('Eventi di gioco', Icons.analytics),
-                      notifTile('substitutions', Icons.swap_horiz, 'Sostituzioni', 'Cambi effettuati da entrambe le squadre', Color(0xFF42A5F5)),
-                      notifTile('corners', Icons.flag, S.of(context)!.calciAngoloDett, S.of(context)!.cornerDesc, Color(0xFF26A69A)),
-                      notifTile('offsides', Icons.front_hand, S.of(context)!.fuorigiocoLabel, S.of(context)!.posizioniOffside, Color(0xFF7E57C2)),
-                      notifTile('shotsOnTarget', Icons.gps_not_fixed, tr(context, 'Tiri in porta'), 'Tiri nello specchio della porta', Color(0xFFFF7043)),
+                      notifTile('substitutions', Icons.swap_horiz, 'Sostituzioni', 'Cambi effettuati da entrambe le squadre', const Color(0xFF42A5F5)),
+                      notifTile('corners', Icons.flag, S.of(context)!.calciAngoloDett, S.of(context)!.cornerDesc, const Color(0xFF26A69A)),
+                      notifTile('offsides', Icons.front_hand, S.of(context)!.fuorigiocoLabel, S.of(context)!.posizioniOffside, const Color(0xFF7E57C2)),
+                      notifTile('shotsOnTarget', Icons.gps_not_fixed, tr(context, 'Tiri in porta'), 'Tiri nello specchio della porta', const Color(0xFFFF7043)),
                       notifTile('fouls', Icons.warning_amber, S.of(context)!.falliNotif, S.of(context)!.falliDesc, const Color(0xFF8D6E63)),
                     ]),
                   ),
@@ -1506,7 +1506,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const Icon(Icons.delete_outline_rounded, color: Colors.red, size: 24),
           const SizedBox(height: 4),
-          Text(S.of(context)!.rimuovi, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.red)),
+          Text(S.of(context)!.rimuovi, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.red)),
         ]),
       ),
       onDismissed: (_) {
@@ -1771,7 +1771,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text('LIVE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: const Color(0xFF4CAF50), letterSpacing: 1)),
+                    const Text('LIVE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF4CAF50), letterSpacing: 1)),
                     const SizedBox(width: 12),
                     Expanded(child: Text(
                       '${liveMatch['home']} ${liveMatch['homeScore']} - ${liveMatch['awayScore']} ${liveMatch['away']}',
@@ -1814,8 +1814,9 @@ class _FavoritesScreenState extends State<FavoritesScreen>
   Widget _playerStatBox(String emoji, String value, String label, Color color, bool isDark) {
     // Mappa emoji → IconData
     IconData icon;
-    if (emoji == '⚽') icon = Icons.sports_soccer;
-    else if (emoji == '🎯') icon = Icons.assistant_rounded;
+    if (emoji == '⚽') {
+      icon = Icons.sports_soccer;
+    } else if (emoji == '🎯') icon = Icons.assistant_rounded;
     else icon = Icons.calendar_today_rounded;
 
     return Expanded(
@@ -1887,7 +1888,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(Icons.add_rounded, size: 18, color: theme.primaryColor),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(tr(context, 'Aggiungi Giocatore'),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: theme.primaryColor)),
         ]),
@@ -1933,7 +1934,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                     decoration: BoxDecoration(color: theme.primaryColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
                     child: Icon(Icons.person_search_rounded, size: 18, color: theme.primaryColor),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(tr(context, 'Cerca Giocatore'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: tx)),
                     Text('Serie A 2022/23', style: TextStyle(fontSize: 12, color: lb)),
@@ -2014,7 +2015,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                                     decoration: BoxDecoration(
                                       color: _ratingColor(p['rating'] as num).withValues(alpha: 0.15),
                                       borderRadius: BorderRadius.circular(6)),
-                                    child: Text('${(p['rating'] as num).toStringAsFixed(1)}',
+                                    child: Text((p['rating'] as num).toStringAsFixed(1),
                                         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800,
                                             color: _ratingColor(p['rating'] as num))),
                                   ),
@@ -2330,14 +2331,14 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
               child: Row(children: [
                 Icon(Icons.shield_rounded, size: 20, color: theme.primaryColor),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Text(tr(context, 'Squadre Serie A'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: tx)),
                 const Spacer(),
                 Text('2022/23', style: TextStyle(fontSize: 12, color: lb)),
               ]),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Text(tr(context, 'Tocca una squadra per aggiungerla ai preferiti'),
                   style: TextStyle(fontSize: 12, color: lb)),
             ),

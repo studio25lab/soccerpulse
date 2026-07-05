@@ -23,9 +23,9 @@ class FavoritesService extends ChangeNotifier {
   final Map<int, Map<String, dynamic>> _matchDisplayData = {};
 
   // ── Dati completi ──
-  List<TeamStanding> _favoriteTeams = [];
-  List<SoccerMatch> _favoriteMatches = [];
-  List<Player> _favoritePlayers = [];
+  final List<TeamStanding> _favoriteTeams = [];
+  final List<SoccerMatch> _favoriteMatches = [];
+  final List<Player> _favoritePlayers = [];
 
   // ── Getters ──
   List<int> get favoriteTeamIds => _favoriteTeamIds;

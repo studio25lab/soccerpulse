@@ -26,7 +26,7 @@ class MPPRadarChartPainter extends CustomPainter {
     final radius = size.width * 0.38;
     final n = labels.length;
     final angleStep = 2 * math.pi / n;
-    final startAngle = -math.pi / 2;
+    const startAngle = -math.pi / 2;
 
     // Draw grid rings
     final gridPaint = Paint()
@@ -41,10 +41,11 @@ class MPPRadarChartPainter extends CustomPainter {
         final angle = startAngle + angleStep * (i % n);
         final p = Offset(
             center.dx + r * math.cos(angle), center.dy + r * math.sin(angle));
-        if (i == 0)
+        if (i == 0) {
           path.moveTo(p.dx, p.dy);
-        else
+        } else {
           path.lineTo(p.dx, p.dy);
+        }
       }
       canvas.drawPath(path, gridPaint);
     }
@@ -73,10 +74,11 @@ class MPPRadarChartPainter extends CustomPainter {
       final r = radius * values[idx];
       final p = Offset(
           center.dx + r * math.cos(angle), center.dy + r * math.sin(angle));
-      if (i == 0)
+      if (i == 0) {
         valuePath.moveTo(p.dx, p.dy);
-      else
+      } else {
         valuePath.lineTo(p.dx, p.dy);
+      }
     }
     canvas.drawPath(valuePath, fillPaint);
     canvas.drawPath(valuePath, strokePaint);

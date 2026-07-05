@@ -27,7 +27,7 @@ class MatchPlayerComparisonScreen extends StatefulWidget {
   final List<DefensiveActionData> homeDefensiveActions;
   final List<DefensiveActionData> awayDefensiveActions;
 
-  const MatchPlayerComparisonScreen({
+  const MatchPlayerComparisonScreen({super.key, 
     required this.initialPlayers,
     required this.allPlayers,
     required this.homeTeamName,
@@ -88,7 +88,7 @@ class _MatchPlayerComparisonScreenState extends State<MatchPlayerComparisonScree
         Container(margin: const EdgeInsets.only(top: 12), width: 40, height: 4,
             decoration: BoxDecoration(color: Colors.grey[400], borderRadius: BorderRadius.circular(2))),
         Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Text(tr(context, 'Aggiungi giocatore'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: tx)),
         ),
         SizedBox(
@@ -243,8 +243,9 @@ class _MatchPlayerComparisonColumnState extends State<MatchPlayerComparisonColum
     final sectionBg = isDark ? const Color(0xFF222222) : const Color(0xFFF8F8F8);
 
     Color ratingColor;
-    if (p.rating >= 7.5) ratingColor = const Color(0xFF1B5E20);
-    else if (p.rating >= 7.0) ratingColor = const Color(0xFF388E3C);
+    if (p.rating >= 7.5) {
+      ratingColor = const Color(0xFF1B5E20);
+    } else if (p.rating >= 7.0) ratingColor = const Color(0xFF388E3C);
     else if (p.rating >= 6.5) ratingColor = const Color(0xFFF9A825);
     else ratingColor = const Color(0xFFEF6C00);
 
@@ -374,7 +375,7 @@ class _MatchPlayerComparisonColumnState extends State<MatchPlayerComparisonColum
 
         // ── TAB 2: DRIBBLING ──
         if (_tab == 2) ...[
-          _header(S.of(context)!.dribblingLabel, Icons.directions_run_rounded, Color(0xFF7B1FA2), sectionBg),
+          _header(S.of(context)!.dribblingLabel, Icons.directions_run_rounded, const Color(0xFF7B1FA2), sectionBg),
           if (p.dribbles > 0) _row(S.of(context)!.dribblingLabel, '${p.dribblesSuccessful}/${p.dribbles}', tx, lb, divider),
           _row(S.of(context)!.tocchi, '${p.touches}', tx, lb, divider),
           if (p.foulsWon > 0) _row(localizeShotData(context, 'Falli subiti'), '${p.foulsWon}', tx, lb, divider),
@@ -394,15 +395,15 @@ class _MatchPlayerComparisonColumnState extends State<MatchPlayerComparisonColum
               isDark: isDark,
             ),
           ),
-          _header(S.of(context)!.difesaSection, Icons.shield_outlined, Color(0xFFE65100), sectionBg),
+          _header(S.of(context)!.difesaSection, Icons.shield_outlined, const Color(0xFFE65100), sectionBg),
           if (p.tackles > 0) _row(localizeShotData(context, 'Contrasti'), '${p.tacklesWon}/${p.tackles}', tx, lb, divider),
           if (p.interceptions > 0) _row(localizeShotData(context, 'Intercetti'), '${p.interceptions}', tx, lb, divider),
           if (p.clearances > 0) _row(tr(context, 'Chiusure'), '${p.clearances}', tx, lb, divider),
           if (p.recoveries > 0) _row(tr(context, 'Recuperi'), '${p.recoveries}', tx, lb, divider),
           if (p.duelsTotal > 0) _row(S.of(context)!.duelliLabel, '${p.duelsWon}/${p.duelsTotal}', tx, lb, divider),
           if (p.aerialTotal > 0) _row(tr(context, 'Aerei'), '${p.aerialWon}/${p.aerialTotal}', tx, lb, divider),
-          SizedBox(height: 6),
-          _header(S.of(context)!.disciplinaLabel, Icons.style_rounded, Color(0xFFC62828), sectionBg),
+          const SizedBox(height: 6),
+          _header(S.of(context)!.disciplinaLabel, Icons.style_rounded, const Color(0xFFC62828), sectionBg),
           _row(S.of(context)!.falliLabel, '${p.fouls}', tx, lb, divider),
           _row(localizeShotData(context, 'Falli subiti'), '${p.foulsWon}', tx, lb, divider),
           _row(tr(context, 'Gialli'), '${p.yellowCards}', tx, lb, divider,

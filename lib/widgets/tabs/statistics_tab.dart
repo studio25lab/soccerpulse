@@ -50,7 +50,7 @@ class StatisticsTab extends StatelessWidget {
   final DefensiveStats awayDefensiveStats;
 
   const StatisticsTab({
-    Key? key,
+    super.key,
     required this.homeTeamName,
     required this.awayTeamName,
     required this.homePossession,
@@ -81,7 +81,7 @@ class StatisticsTab extends StatelessWidget {
     required this.awayYellowCards,
     required this.homeDefensiveStats,
     required this.awayDefensiveStats,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +91,8 @@ class StatisticsTab extends StatelessWidget {
   }
 
   Widget _buildStatisticsTab(BuildContext context, ThemeData theme, bool isDark) {
-    final homeColor = const Color(0xFF2196F3);
-    final awayColor = const Color(0xFFE53935);
+    const homeColor = Color(0xFF2196F3);
+    const awayColor = Color(0xFFE53935);
     final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
     final sectionBg = isDark ? const Color(0xFF16162A) : const Color(0xFFF8F9FA);
     final divider = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1);
@@ -541,7 +541,7 @@ class StatisticsTab extends StatelessWidget {
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final totalWidth = constraints.maxWidth;
-                    final gap = 3.0;
+                    const gap = 3.0;
                     final availableWidth = (totalWidth - gap) / 2;
                     final homeBarWidth = availableWidth * (isDraw ? 1.0 : (homePercent * 2).clamp(0.0, 1.0));
                     final awayBarWidth = availableWidth * (isDraw ? 1.0 : (awayPercent * 2).clamp(0.0, 1.0));
@@ -578,7 +578,7 @@ class StatisticsTab extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(width: gap),
+                        const SizedBox(width: gap),
                         // Away bar (left-aligned, grows from center to right)
                         Expanded(
                           child: Row(

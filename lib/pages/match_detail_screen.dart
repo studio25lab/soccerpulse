@@ -22,7 +22,6 @@ import '../api/api_service.dart';
 import '../models/team_standing.dart';
 import '../widgets/standings_list_view.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/soccer_match.dart';
@@ -57,7 +56,7 @@ import 'package:soccerpulse/models/local_match_models.dart';
 
 class MatchDetailScreen extends StatefulWidget {
   final SoccerMatch match;
-  const MatchDetailScreen({Key? key, required this.match}) : super(key: key);
+  const MatchDetailScreen({super.key, required this.match});
   @override
   State<MatchDetailScreen> createState() => _MatchDetailScreenState();
 }
@@ -103,9 +102,9 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   // Defensive Data
   List<DefensiveActionData> _homeDefensiveActions = [];
   List<DefensiveActionData> _awayDefensiveActions = [];
-  DefensiveStats _homeDefensiveStats = const DefensiveStats(
+  final DefensiveStats _homeDefensiveStats = const DefensiveStats(
       tacklesWon: 15, tacklesTotal: 20, interceptions: 10, rinvii: 9);
-  DefensiveStats _awayDefensiveStats = const DefensiveStats(
+  final DefensiveStats _awayDefensiveStats = const DefensiveStats(
       tacklesWon: 11, tacklesTotal: 17, interceptions: 8, rinvii: 9);
 
   // Events

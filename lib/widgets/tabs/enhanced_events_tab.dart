@@ -46,7 +46,7 @@ class EnhancedEventsTab extends StatefulWidget {
   final void Function(LocalLineupPlayer player, Color teamColor, bool isDark, {List<LocalLineupPlayer> allPlayers}) showPlayerMatchStats;
 
   const EnhancedEventsTab({
-    Key? key,
+    super.key,
     required this.homeTeamName,
     required this.awayTeamName,
     required this.homeShotsTotal,
@@ -61,7 +61,7 @@ class EnhancedEventsTab extends StatefulWidget {
     required this.localizeEventDetail,
     required this.openPlayerStatsFromEvent,
     required this.showPlayerMatchStats,
-  }) : super(key: key);
+  });
 
   @override
   State<EnhancedEventsTab> createState() => _EnhancedEventsTabState();
@@ -139,8 +139,9 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     final filteredEvents =
         allEvents.where((e) => _activeEventFilters.contains(e.type)).toList();
 
-    if (!_eventsChronologicalOrder)
+    if (!_eventsChronologicalOrder) {
       filteredEvents.sort((a, b) => b.minute.compareTo(a.minute));
+    }
 
     // Running score for goal events
     final scoreAtMinute = <int, List<int>>{};
@@ -149,17 +150,18 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
       ..sort((a, b) => a.minute.compareTo(b.minute));
     for (final e in sortedAll) {
       if (e.type == 'goal') {
-        if (e.isHomeTeam)
+        if (e.isHomeTeam) {
           hGoals++;
-        else
+        } else {
           aGoals++;
+        }
       }
       scoreAtMinute[e.minute] = [hGoals, aGoals];
     }
 
     final bg = isDark ? Colors.grey[900]! : const Color(0xFFF5F6FA);
-    final homeColor = const Color(0xFF1565C0);
-    final awayColor = const Color(0xFFD32F2F);
+    const homeColor = Color(0xFF1565C0);
+    const awayColor = Color(0xFFD32F2F);
 
     return Container(
       color: bg,
@@ -180,14 +182,16 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                   itemBuilder: (context, index) {
                     final isChrono = _eventsChronologicalOrder;
                     // First item: scrollable momentum chart
-                    if (index == 0)
+                    if (index == 0) {
                       return _buildMomentumBar(allEvents, isDark, homeColor, awayColor);
+                    }
                     // Second item: KO if chrono, FT if reverse
-                    if (index == 1)
+                    if (index == 1) {
                       return _buildMatchMarker(
                           isChrono ? S.of(context)!.calcioInizio : S.of(context)!.finePartita,
                           isChrono ? 0 : 90,
                           isDark);
+                    }
                     // Last item: FT if chrono, KO if reverse
                     if (index == filteredEvents.length + 2) {
                       // [TEST-LIVE-B2P2] live: nascondi 'Fine Partita' finché < 90'
@@ -299,7 +303,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
           child: LayoutBuilder(builder: (context, constraints) {
             final w = constraints.maxWidth;
             final barWidth = w / segCount;
-            final halfH = 100.0 / 2;
+            const halfH = 100.0 / 2;
             return Stack(clipBehavior: Clip.none, children: [
               // Subtle grid
               Positioned(
@@ -733,10 +737,11 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                       onTap: () {
                         HapticFeedback.lightImpact();
                         setState(() {
-                          if (isActive)
+                          if (isActive) {
                             _activeEventFilters.remove(type);
-                          else
+                          } else {
                             _activeEventFilters.add(type);
+                          }
                         });
                         setSheetState(() {});
                       },
@@ -786,7 +791,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
   Widget _buildLiveEmptyTimeline(bool isDark) {
     final theme = Theme.of(context);
     final homeColor = theme.colorScheme.primary;
-    final awayColor = const Color(0xFFEF5350);
+    const awayColor = Color(0xFFEF5350);
     return ListView(
       controller: _scrollController,
       padding: EdgeInsets.zero,
@@ -860,7 +865,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                 color: accent.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: Text("${minute}\'",
+              child: Text("$minute'",
                   style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
@@ -952,13 +957,16 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
     final cardBg = isDark ? Colors.grey[850]! : Colors.white;
 
-    if (event.type == 'goal')
+    if (event.type == 'goal') {
       return _buildGoalEvent(
           event, isHome, isDark, teamColor, cardBg, tx, lb, score);
-    if (event.type == 'yellowCard' || event.type == 'redCard')
+    }
+    if (event.type == 'yellowCard' || event.type == 'redCard') {
       return _buildCardEvent(event, isHome, isDark, teamColor, cardBg, tx, lb);
-    if (event.type == 'substitution')
+    }
+    if (event.type == 'substitution') {
       return _buildSubEvent(event, isHome, isDark, teamColor, cardBg, tx, lb);
+    }
     return _buildMinorEvent(event, isHome, isDark, teamColor, tx, lb);
   }
 

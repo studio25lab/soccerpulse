@@ -336,7 +336,7 @@ class ApiService {
   Future<List<SoccerMatch>> fetchHeadToHead(int team1Id, int team2Id) async {
     try {
       final params = {
-        'h2h': '${team1Id}-${team2Id}',
+        'h2h': '$team1Id-$team2Id',
         'last': '10',
       };
 

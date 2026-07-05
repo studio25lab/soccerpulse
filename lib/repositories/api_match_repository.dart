@@ -2,8 +2,6 @@
 // Implementazione API — usa i metodi esistenti di ApiService
 
 import 'match_repository.dart';
-import '../models/local_lineup_player.dart';
-import '../models/local_match_event.dart';
 import '../models/match_stats_data.dart';
 import '../models/coach_data.dart';
 import '../api/api_service.dart';

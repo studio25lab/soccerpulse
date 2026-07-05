@@ -48,7 +48,7 @@ class LineupsTab extends StatefulWidget {
       {List<LocalLineupPlayer> allPlayers}) showPlayerMatchStats;
 
   const LineupsTab({
-    Key? key,
+    super.key,
     required this.homeTeamName,
     required this.awayTeamName,
     required this.matchData,
@@ -61,7 +61,7 @@ class LineupsTab extends StatefulWidget {
     required this.buildTeamSelector,
     required this.showCoachProfile,
     required this.showPlayerMatchStats,
-  }) : super(key: key);
+  });
 
   @override
   State<LineupsTab> createState() => _LineupsTabState();
@@ -125,12 +125,12 @@ class _LineupsTabState extends State<LineupsTab> {
     final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
 
-    final homeFormation = '4-3-3';
-    final awayFormation = '4-2-3-1';
+    const homeFormation = '4-3-3';
+    const awayFormation = '4-2-3-1';
     final homeBench = widget.generateBench(true);
     final awayBench = widget.generateBench(false);
-    final homeCoach = 'Maurizio Sarri';
-    final awayCoach = 'Stefano Pioli';
+    const homeCoach = 'Maurizio Sarri';
+    const awayCoach = 'Stefano Pioli';
 
     final lineup = widget.showHomeLineup ? homeLineup : awayLineup;
     final formation = widget.showHomeLineup ? homeFormation : awayFormation;
@@ -146,9 +146,9 @@ class _LineupsTabState extends State<LineupsTab> {
             .fold(0.0, (sum, p) => sum + p.rating) /
         lineup.where((p) => p.rating > 0).length;
     Color avgRatingBg;
-    if (avgRating >= 8.0)
+    if (avgRating >= 8.0) {
       avgRatingBg = const Color(0xFF1B5E20);
-    else if (avgRating >= 7.0)
+    } else if (avgRating >= 7.0)
       avgRatingBg = const Color(0xFF388E3C);
     else if (avgRating >= 6.5)
       avgRatingBg = const Color(0xFFF9A825);
@@ -396,9 +396,9 @@ class _LineupsTabState extends State<LineupsTab> {
 
     // Rating badge color per fascia
     Color ratingBg;
-    if (player.rating >= 8.0)
+    if (player.rating >= 8.0) {
       ratingBg = const Color(0xFF1B5E20);
-    else if (player.rating >= 7.0)
+    } else if (player.rating >= 7.0)
       ratingBg = const Color(0xFF388E3C);
     else if (player.rating >= 6.5)
       ratingBg = const Color(0xFFF9A825);
@@ -589,7 +589,7 @@ class _LineupsTabState extends State<LineupsTab> {
               ),
               // Pitch — responsive: max 420px height, wider on desktop
               LayoutBuilder(builder: (context, outerConstraints) {
-                final maxH = 460.0;
+                const maxH = 460.0;
                 // On narrow screens (mobile) use 0.75, on wide (desktop) use 0.85
                 final ratio = outerConstraints.maxWidth > 600 ? 0.85 : 0.75;
                 final calcH = outerConstraints.maxWidth / ratio;
@@ -730,9 +730,9 @@ class _LineupsTabState extends State<LineupsTab> {
 
     // Rating color
     Color ratingBg;
-    if (player.rating >= 8.0)
+    if (player.rating >= 8.0) {
       ratingBg = const Color(0xFF1B5E20);
-    else if (player.rating >= 7.0)
+    } else if (player.rating >= 7.0)
       ratingBg = const Color(0xFF388E3C);
     else if (player.rating >= 6.5)
       ratingBg = const Color(0xFFF9A825);
@@ -889,9 +889,9 @@ class _LineupsTabState extends State<LineupsTab> {
       bool isDark, Color tx, Color lb, Color cardBg,
       {List<LocalLineupPlayer> allPlayers = const []}) {
     Color ratingBg;
-    if (player.rating >= 8.0)
+    if (player.rating >= 8.0) {
       ratingBg = const Color(0xFF1B5E20);
-    else if (player.rating >= 7.0)
+    } else if (player.rating >= 7.0)
       ratingBg = const Color(0xFF388E3C);
     else if (player.rating >= 6.5)
       ratingBg = const Color(0xFFF9A825);

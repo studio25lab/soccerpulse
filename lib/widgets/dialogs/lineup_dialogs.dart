@@ -229,7 +229,7 @@ void showCoachProfile(BuildContext context, {required String coachName, required
                 const SizedBox(height: 14),
                 // Gol fatti/subiti
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 14),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                   child: Row(children: [
                     Expanded(child: _coachInfoTile(localizeShotData(context, 'Gol Fatti'), '${data['seasonGoalsFor']}', tx, lb, isDark)),
                     Container(width: 1, height: 30, color: divider),
@@ -261,7 +261,7 @@ void showCoachProfile(BuildContext context, {required String coachName, required
                   ]),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 14),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                   child: Row(children: [
                     Expanded(child: _coachInfoTile(localizeShotData(context, 'Partite'), '${stats['matches']}', tx, lb, isDark)),
                     Container(width: 1, height: 30, color: divider),
@@ -301,7 +301,7 @@ void showCoachProfile(BuildContext context, {required String coachName, required
                 ),
                 child: Row(children: [
                   Icon(Icons.person_search_rounded, size: 18, color: teamColor),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Text(localizeShotData(context, 'Vedi profilo completo'),
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: teamColor)),
                   const Spacer(),
@@ -525,7 +525,7 @@ Future<void> showMatchPlayerNotifDialog(BuildContext context, {required LocalLin
         final activeCount = prefs.values.where((v) => v).length;
 
         // Color per category
-        Color _catColor(String key) {
+        Color catColor(String key) {
           switch(key) {
             case 'goals': return const Color(0xFF4CAF50);
             case 'assists': return const Color(0xFF2196F3);
@@ -542,8 +542,8 @@ Future<void> showMatchPlayerNotifDialog(BuildContext context, {required LocalLin
           }
         }
 
-        Widget _tile(String key, IconData icon, String label, String desc, bool isOn) {
-          final color = _catColor(key);
+        Widget tile(String key, IconData icon, String label, String desc, bool isOn) {
+          final color = catColor(key);
           return Padding(
             padding: const EdgeInsets.only(bottom: 4),
             child: Material(color: Colors.transparent, child: InkWell(
@@ -589,7 +589,7 @@ Future<void> showMatchPlayerNotifDialog(BuildContext context, {required LocalLin
           );
         }
 
-        Widget _header(String t, IconData ic) => Padding(
+        Widget header(String t, IconData ic) => Padding(
           padding: const EdgeInsets.only(bottom: 8, top: 4),
           child: Row(children: [
             Icon(ic, size: 16, color: isDark ? Colors.white38 : Colors.grey[500]),
@@ -666,22 +666,22 @@ Future<void> showMatchPlayerNotifDialog(BuildContext context, {required LocalLin
             Flexible(child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                _header(S.of(context)!.offensive, Icons.sports_soccer),
-                _tile('goals', Icons.sports_soccer, S.of(context)!.goalNotif, S.of(context)!.goalDesc, prefs['goals'] ?? false),
-                _tile('assists', Icons.assistant_rounded, S.of(context)!.assistNotif, S.of(context)!.assistDesc, prefs['assists'] ?? false),
-                _tile('shotsOnTarget', Icons.gps_not_fixed, S.of(context)!.shotsOnTargetNotif, S.of(context)!.shotsOnTargetDesc, prefs['shotsOnTarget'] ?? false),
-                _tile('keyPasses', Icons.trending_up, S.of(context)!.keyPassesNotif, S.of(context)!.keyPassesDesc, prefs['keyPasses'] ?? false),
-                _tile('dribblesSuccessful', Icons.directions_run, S.of(context)!.dribblesNotif, S.of(context)!.dribblesDesc, prefs['dribblesSuccessful'] ?? false),
-                _tile('offsides', Icons.front_hand, S.of(context)!.offsidesNotif, S.of(context)!.offsidesDesc, prefs['offsides'] ?? false),
+                header(S.of(context)!.offensive, Icons.sports_soccer),
+                tile('goals', Icons.sports_soccer, S.of(context)!.goalNotif, S.of(context)!.goalDesc, prefs['goals'] ?? false),
+                tile('assists', Icons.assistant_rounded, S.of(context)!.assistNotif, S.of(context)!.assistDesc, prefs['assists'] ?? false),
+                tile('shotsOnTarget', Icons.gps_not_fixed, S.of(context)!.shotsOnTargetNotif, S.of(context)!.shotsOnTargetDesc, prefs['shotsOnTarget'] ?? false),
+                tile('keyPasses', Icons.trending_up, S.of(context)!.keyPassesNotif, S.of(context)!.keyPassesDesc, prefs['keyPasses'] ?? false),
+                tile('dribblesSuccessful', Icons.directions_run, S.of(context)!.dribblesNotif, S.of(context)!.dribblesDesc, prefs['dribblesSuccessful'] ?? false),
+                tile('offsides', Icons.front_hand, S.of(context)!.offsidesNotif, S.of(context)!.offsidesDesc, prefs['offsides'] ?? false),
                 const SizedBox(height: 16),
-                _header(S.of(context)!.discipline, Icons.style),
-                _tile('yellowCard', Icons.square_rounded, S.of(context)!.yellowCardNotif, S.of(context)!.yellowCardDesc, prefs['yellowCard'] ?? false),
-                _tile('redCard', Icons.square_rounded, S.of(context)!.redCardNotif, S.of(context)!.redCardDesc, prefs['redCard'] ?? false),
-                _tile('foulCommitted', Icons.warning_amber, S.of(context)!.foulsCommittedNotif, S.of(context)!.foulsCommittedDesc, prefs['foulCommitted'] ?? false),
-                _tile('foulSuffered', Icons.personal_injury, S.of(context)!.foulsSufferedNotif, S.of(context)!.foulsSufferedDesc, prefs['foulSuffered'] ?? false),
+                header(S.of(context)!.discipline, Icons.style),
+                tile('yellowCard', Icons.square_rounded, S.of(context)!.yellowCardNotif, S.of(context)!.yellowCardDesc, prefs['yellowCard'] ?? false),
+                tile('redCard', Icons.square_rounded, S.of(context)!.redCardNotif, S.of(context)!.redCardDesc, prefs['redCard'] ?? false),
+                tile('foulCommitted', Icons.warning_amber, S.of(context)!.foulsCommittedNotif, S.of(context)!.foulsCommittedDesc, prefs['foulCommitted'] ?? false),
+                tile('foulSuffered', Icons.personal_injury, S.of(context)!.foulsSufferedNotif, S.of(context)!.foulsSufferedDesc, prefs['foulSuffered'] ?? false),
                 const SizedBox(height: 16),
-                _header(tr(context, 'Altro'), Icons.swap_horiz),
-                _tile('substitutionOn', Icons.swap_horiz, S.of(context)!.substitutionNotif, S.of(context)!.substitutionDesc, prefs['substitutionOn'] ?? false),
+                header(tr(context, 'Altro'), Icons.swap_horiz),
+                tile('substitutionOn', Icons.swap_horiz, S.of(context)!.substitutionNotif, S.of(context)!.substitutionDesc, prefs['substitutionOn'] ?? false),
               ]),
             )),
           ]),

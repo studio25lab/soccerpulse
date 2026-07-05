@@ -491,7 +491,7 @@ class AttackHeatmapPainter extends CustomPainter {
     canvas.drawLine(from, to, paint);
     final dx = to.dx - from.dx;
     final sign = dx > 0 ? -1.0 : 1.0;
-    final tipSize = 12.0;
+    const tipSize = 12.0;
     canvas.drawLine(
         to, Offset(to.dx + sign * tipSize, to.dy - tipSize * 0.5), paint);
     canvas.drawLine(
@@ -526,10 +526,10 @@ class PossessionBarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final h = size.height;
     final w = size.width;
-    final barHeight = 8.0;
+    const barHeight = 8.0;
     final barY = (h - barHeight) / 2;
-    final radius = Radius.circular(barHeight / 2);
-    final gap = 3.0;
+    const radius = Radius.circular(barHeight / 2);
+    const gap = 3.0;
     final splitX = w * homePercent;
 
     // Home bar
@@ -697,7 +697,7 @@ class MomentumCurvePainter extends CustomPainter {
     // Draw home fill with gradient
     final homeFillPaint = Paint()
       ..shader = ui.Gradient.linear(
-        Offset(0, 0),
+        const Offset(0, 0),
         Offset(0, midY),
         [homeColor.withValues(alpha: 0.45), homeColor.withValues(alpha: 0.05)],
       );
@@ -825,7 +825,7 @@ class PreMatchFieldPainter extends CustomPainter {
       ..strokeWidth = 1.5;
 
     // Field border
-    final margin = 4.0;
+    const margin = 4.0;
     final fieldRect = Rect.fromLTWH(margin, margin, w - margin * 2, h - margin * 2);
     canvas.drawRect(fieldRect, paint);
 
@@ -886,7 +886,7 @@ class PreMatchFieldPainter extends CustomPainter {
     paint.style = PaintingStyle.stroke;
 
     // Corner arcs
-    final cR = 8.0;
+    const cR = 8.0;
     canvas.drawArc(Rect.fromLTWH(fl - cR, ft - cR, cR * 2, cR * 2), 0, 1.5708, false, paint);
     canvas.drawArc(Rect.fromLTWH(fl + fw - cR, ft - cR, cR * 2, cR * 2), 1.5708, 1.5708, false, paint);
     canvas.drawArc(Rect.fromLTWH(fl - cR, ft + fh - cR, cR * 2, cR * 2), 4.7124, 1.5708, false, paint);
@@ -993,8 +993,8 @@ List<List<double>> interpolateHeatGridV4(
   // Sigma largo per base liscia, stretto per picchi
   const sigmaWide = 0.30;
   const sigmaNarrow = 0.12;
-  final inv2sW = 1.0 / (2.0 * sigmaWide * sigmaWide);
-  final inv2sN = 1.0 / (2.0 * sigmaNarrow * sigmaNarrow);
+  const inv2sW = 1.0 / (2.0 * sigmaWide * sigmaWide);
+  const inv2sN = 1.0 / (2.0 * sigmaNarrow * sigmaNarrow);
 
   final grid = List.generate(outRows, (_) => List.filled(outCols, 0.0));
 

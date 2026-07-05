@@ -13,7 +13,7 @@ import 'package:soccerpulse/models/local_match_models.dart';
 import '../widgets/standings_list_view.dart';
 
 class StandingsScreen extends StatefulWidget {
-  const StandingsScreen({Key? key}) : super(key: key);
+  const StandingsScreen({super.key});
   @override
   State<StandingsScreen> createState() => _StandingsScreenState();
 }
@@ -100,8 +100,8 @@ class _StandingsScreenState extends State<StandingsScreen>
               unselectedLabelColor: Colors.white60,
               indicatorColor: Colors.white,
               indicatorWeight: 3,
-              labelStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-              unselectedLabelStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+              labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+              unselectedLabelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
               tabs: [
                 Tab(text: tr(context, 'Classifica')),
                 Tab(text: S.of(context)!.marcatori),
@@ -167,10 +167,10 @@ class _StandingsScreenState extends State<StandingsScreen>
     Color accentColor;
     switch (type) {
       case 'goals': title = S.of(context)!.classificaMarcatori; statLabel = S.of(context)!.gol; statIcon = Icons.sports_soccer; accentColor = const Color(0xFF4CAF50); break;
-      case 'assists': title = S.of(context)!.classificaAssistman; statLabel = S.of(context)!.assistNotif; statIcon = Icons.assistant_rounded; accentColor = Color(0xFF2196F3); break;
-      case 'ga': title = 'Gol + Assist'; statLabel = 'G+A'; statIcon = Icons.star_rounded; accentColor = Color(0xFFFFA726); break;
-      case 'cleanSheet': title = 'Clean Sheet'; statLabel = 'CS'; statIcon = Icons.shield_rounded; accentColor = Color(0xFF7E57C2); break;
-      default: title = tr(context, 'Cartellini'); statLabel = 'Cart.'; statIcon = Icons.style_rounded; accentColor = Color(0xFFE53935); break;
+      case 'assists': title = S.of(context)!.classificaAssistman; statLabel = S.of(context)!.assistNotif; statIcon = Icons.assistant_rounded; accentColor = const Color(0xFF2196F3); break;
+      case 'ga': title = 'Gol + Assist'; statLabel = 'G+A'; statIcon = Icons.star_rounded; accentColor = const Color(0xFFFFA726); break;
+      case 'cleanSheet': title = 'Clean Sheet'; statLabel = 'CS'; statIcon = Icons.shield_rounded; accentColor = const Color(0xFF7E57C2); break;
+      default: title = tr(context, 'Cartellini'); statLabel = 'Cart.'; statIcon = Icons.style_rounded; accentColor = const Color(0xFFE53935); break;
     }
 
     return Column(children: [
@@ -192,8 +192,8 @@ class _StandingsScreenState extends State<StandingsScreen>
         color: isDark ? Colors.white.withValues(alpha: 0.03) : Colors.grey.withValues(alpha: 0.05),
         child: Row(children: [
           SizedBox(width: 28, child: Center(child: Text('#', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: lb)))),
-          SizedBox(width: 48), // foto
-          SizedBox(width: 10),
+          const SizedBox(width: 48), // foto
+          const SizedBox(width: 10),
           Expanded(child: Text(tr(context, 'Giocatore'), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: lb))),
           if (type == 'cards') ...[
             SizedBox(width: 36, child: Center(child: Container(width: 10, height: 14,

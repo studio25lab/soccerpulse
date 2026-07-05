@@ -67,8 +67,9 @@ List<Map<String, dynamic>> generateMockMatchdays(int wins, int draws, int losses
     lastResult = pick;
     
     results.add(pick);
-    if (pick == 'W') rW--;
-    else if (pick == 'D') rD--;
+    if (pick == 'W') {
+      rW--;
+    } else if (pick == 'D') rD--;
     else rL--;
   }
 
@@ -171,9 +172,9 @@ class MatchdayBarPainter extends CustomPainter {
       if (a > maxGA) maxGA = a;
     }
 
-    final greenColor = const Color(0xFF4CAF50);
-    final redColor = const Color(0xFFE53935);
-    final yellowColor = const Color(0xFFF9A825);
+    const greenColor = Color(0xFF4CAF50);
+    const redColor = Color(0xFFE53935);
+    const yellowColor = Color(0xFFF9A825);
 
     // ── Baseline ──
     canvas.drawLine(

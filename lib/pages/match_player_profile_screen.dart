@@ -7,7 +7,6 @@
 // la PlayerProfileScreen di lib/pages/player_profile_screen.dart).
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
 import '../utils/l10n_helper.dart';
@@ -27,11 +26,11 @@ class MatchPlayerProfileScreen extends StatefulWidget {
   final Color teamColor;
 
   const MatchPlayerProfileScreen({
-    Key? key,
+    super.key,
     required this.player,
     required this.teamName,
     required this.teamColor,
-  }) : super(key: key);
+  });
 
   @override
   State<MatchPlayerProfileScreen> createState() => _MatchPlayerProfileScreenState();
@@ -608,9 +607,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
 
     Color ratingBg;
     final avg = (data['avgRating'] as double);
-    if (avg >= 7.5)
+    if (avg >= 7.5) {
       ratingBg = const Color(0xFF1B5E20);
-    else if (avg >= 7.0)
+    } else if (avg >= 7.0)
       ratingBg = const Color(0xFF388E3C);
     else if (avg >= 6.5)
       ratingBg = const Color(0xFFF9A825);
@@ -764,7 +763,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(tr(context, 'Allenatore'),
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),
                       ),
                       if (!isCoach) Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -824,7 +823,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 Tab(text: localizeShotData(context, 'Stagione')),
                 Tab(text: localizeShotData(context, 'Carriera')),
                 Tab(text: localizeShotData(context, 'Partite')),
-                if (!isCoach) Tab(text: 'Overall FC26'),
+                if (!isCoach) const Tab(text: 'Overall FC26'),
               ],
             ),
             isDark ? const Color(0xFF121212) : const Color(0xFFF5F6FA),
@@ -1038,7 +1037,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
     final hasMore = allMatches.length > 5 && !_showAllMatches;
     final teamColor = widget.teamColor;
 
-    return ListView(padding: EdgeInsets.all(16), children: [
+    return ListView(padding: const EdgeInsets.all(16), children: [
       _sectionTitle(tr(context, isCoach ? 'Ultime Partite (Allenatore)' : 'Ultime Partite'), tx),
       const SizedBox(height: 12),
       Container(
@@ -1058,8 +1057,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
               final events = m['events'] as List<Map<String, dynamic>>;
 
               Color ratingColor;
-              if (rating >= 7.5) ratingColor = const Color(0xFF1B5E20);
-              else if (rating >= 7.0) ratingColor = const Color(0xFF388E3C);
+              if (rating >= 7.5) {
+                ratingColor = const Color(0xFF1B5E20);
+              } else if (rating >= 7.0) ratingColor = const Color(0xFF388E3C);
               else if (rating >= 6.5) ratingColor = const Color(0xFFF9A825);
               else if (rating >= 6.0) ratingColor = const Color(0xFFEF6C00);
               else ratingColor = const Color(0xFFD32F2F);
@@ -1707,7 +1707,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       ),
 
       // ── RUOLI FC26 ──
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
       _sectionTitle(localizeShotData(context, 'Posizioni'), tx),
       const SizedBox(height: 12),
       Container(
@@ -1727,8 +1727,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
               final isLast = i == roles.length - 1;
               final fit = r['fit'] as int; // 0-100
               Color fitColor;
-              if (fit >= 80) fitColor = const Color(0xFF2E7D32);
-              else if (fit >= 60) fitColor = const Color(0xFF689F38);
+              if (fit >= 80) {
+                fitColor = const Color(0xFF2E7D32);
+              } else if (fit >= 60) fitColor = const Color(0xFF689F38);
               else if (fit >= 40) fitColor = const Color(0xFFF9A825);
               else fitColor = const Color(0xFFEF6C00);
               return Container(
@@ -1984,7 +1985,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       };
       career = coachCareerData[widget.player.name] ?? career;
     }
-    return ListView(padding: EdgeInsets.all(16), children: [
+    return ListView(padding: const EdgeInsets.all(16), children: [
       // Personal info
       _sectionTitle(tr(context, 'Informazioni personali'), tx),
       const SizedBox(height: 10),
@@ -2040,9 +2041,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                           fontWeight: FontWeight.w700,
                           color: lb))),
               if (isCoach) ...[
-                Expanded(flex: 1, child: Text(standingsAbbr(context, 'V'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.green), textAlign: TextAlign.center)),
-                Expanded(flex: 1, child: Text(standingsAbbr(context, 'P'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.orange), textAlign: TextAlign.center)),
-                Expanded(flex: 1, child: Text(standingsAbbr(context, 'S'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.red), textAlign: TextAlign.center)),
+                Expanded(flex: 1, child: Text(standingsAbbr(context, 'V'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.green), textAlign: TextAlign.center)),
+                Expanded(flex: 1, child: Text(standingsAbbr(context, 'P'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.orange), textAlign: TextAlign.center)),
+                Expanded(flex: 1, child: Text(standingsAbbr(context, 'S'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.red), textAlign: TextAlign.center)),
               ] else ...[
                 Expanded(flex: 1, child: Text('App', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
                 Expanded(flex: 1, child: Text(S.of(context)!.gol, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
@@ -2102,8 +2103,8 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                         style: TextStyle(fontSize: 12, color: lb))),
                 if (isCoach) ...[
                   Expanded(flex: 1, child: Text(c['wins'] ?? '-', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.green[700]), textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text(c['draws'] ?? '-', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.orange), textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text(c['losses'] ?? '-', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.red), textAlign: TextAlign.center)),
+                  Expanded(flex: 1, child: Text(c['draws'] ?? '-', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.orange), textAlign: TextAlign.center)),
+                  Expanded(flex: 1, child: Text(c['losses'] ?? '-', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.red), textAlign: TextAlign.center)),
                 ] else ...[
                   Expanded(flex: 1, child: Text(c['apps']!, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: tx), textAlign: TextAlign.center)),
                   Expanded(flex: 1, child: Text(c['goals']!, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: tx), textAlign: TextAlign.center)),
@@ -2123,12 +2124,12 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
               Expanded(
                   flex: 6,
                   child: Text(tr(context, 'Totale carriera'),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 13, fontWeight: FontWeight.w800))),
               if (isCoach) ...[
                 Expanded(flex: 1, child: Text(career.fold(0, (sum, c) => sum + int.parse(c['wins'] ?? '0')).toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.green[700]), textAlign: TextAlign.center)),
-                Expanded(flex: 1, child: Text(career.fold(0, (sum, c) => sum + int.parse(c['draws'] ?? '0')).toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.orange), textAlign: TextAlign.center)),
-                Expanded(flex: 1, child: Text(career.fold(0, (sum, c) => sum + int.parse(c['losses'] ?? '0')).toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.red), textAlign: TextAlign.center)),
+                Expanded(flex: 1, child: Text(career.fold(0, (sum, c) => sum + int.parse(c['draws'] ?? '0')).toString(), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.orange), textAlign: TextAlign.center)),
+                Expanded(flex: 1, child: Text(career.fold(0, (sum, c) => sum + int.parse(c['losses'] ?? '0')).toString(), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.red), textAlign: TextAlign.center)),
               ] else ...[
               Expanded(
                   flex: 1,

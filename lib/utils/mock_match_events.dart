@@ -19,21 +19,21 @@ import '../models/local_match_event.dart';
 List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
   return [
     // === 1° TEMPO ===
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 5,
         playerName: 'Zaccagni',
         detail: 'CORNER_LEFT',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 7,
         playerName: 'Tonali',
         detail: 'FOUL_ON:Zaccagni',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 8,
         playerName: 'Pedro',
@@ -41,21 +41,21 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 10,
         playerName: 'Tomori',
         detail: 'FOUL_ON:Zaccagni',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 11,
         playerName: 'Romagnoli',
         detail: 'FOUL_ON:Giroud',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'goal',
         minute: 12,
         playerName: 'Immobile',
@@ -63,14 +63,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro da area',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 15,
         playerName: 'Cataldi',
         detail: 'FOUL_ON:Leao',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 18,
         playerName: 'Leao',
@@ -78,21 +78,21 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Sinistro',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 19,
         playerName: 'Theo Hernandez',
         detail: 'CORNER_LEFT',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 20,
         playerName: 'Guendouzi',
         detail: 'FOUL_ON:Bennacer',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 15,
         playerName: 'Zaccagni',
@@ -108,21 +108,21 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         detail: S.of(context)!.falloTattico,
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 25,
         playerName: 'Zaccagni',
         detail: 'CORNER_RIGHT',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 26,
         playerName: 'Calabria',
         detail: 'FOUL_ON:Zaccagni',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 41,
         playerName: 'Pedro',
@@ -130,14 +130,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 29,
         playerName: 'Lazzari',
         detail: 'FOUL_ON:Leao',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 35,
         playerName: 'Leao',
@@ -145,21 +145,21 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Sinistro',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 31,
         playerName: 'Bennacer',
         detail: 'FOUL_ON:Luis Alberto',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 32,
         playerName: 'Luis Alberto',
         detail: 'CORNER_LEFT',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 33,
         playerName: 'Zaccagni',
@@ -167,35 +167,35 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Sinistro',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'yellowCard',
         minute: 34,
         playerName: 'Theo Hernandez',
         detail: 'FOUL_ON:Immobile',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 36,
         playerName: 'Marusic',
         detail: 'FOUL_ON:Pulisic',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 37,
         playerName: 'Zaccagni',
         detail: 'CORNER_RIGHT',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 37,
         playerName: 'Bennacer',
         detail: 'FOUL_ON:Pedro',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 38,
         playerName: 'Luis Alberto',
@@ -203,56 +203,56 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 39,
         playerName: 'Tomori',
         detail: 'FOUL_ON:Pedro',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 40,
         playerName: 'Theo Hernandez',
         detail: 'CORNER_RIGHT',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'offside',
         minute: 41,
         playerName: 'Giroud',
         detail: 'OFFSIDE_ACTIVE',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'offside',
         minute: 28,
         playerName: 'Immobile',
         detail: 'OFFSIDE_PASSIVE',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'offside',
         minute: 58,
         playerName: 'Leao',
         detail: 'OFFSIDE_ACTIVE',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'offside',
         minute: 70,
         playerName: 'Felipe Anderson',
         detail: 'OFFSIDE_ACTIVE',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'offside',
         minute: 82,
         playerName: 'Immobile',
         detail: 'OFFSIDE_PASSIVE',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 42,
         playerName: 'Theo Hernandez',
@@ -260,7 +260,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Sinistro',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 44,
         playerName: 'Romagnoli',
@@ -268,7 +268,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         isHomeTeam: true,
         playerPhoto: null),
     // === 2° TEMPO ===
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 48,
         playerName: 'Pedro',
@@ -276,14 +276,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 49,
         playerName: 'Kjaer',
         detail: 'FOUL_ON:Immobile',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 50,
         playerName: 'Bennacer',
@@ -291,7 +291,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'substitution',
         minute: 52,
         playerName: 'Pedro',
@@ -299,7 +299,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Cambio',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 52,
         playerName: 'Luis Alberto',
@@ -307,21 +307,21 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 53,
         playerName: 'Zaccagni',
         detail: 'CORNER_RIGHT',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 54,
         playerName: 'Patric',
         detail: 'FOUL_ON:Brahim Diaz',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 55,
         playerName: 'Felipe Anderson',
@@ -329,7 +329,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Sinistro',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'goal',
         minute: 56,
         playerName: 'Giroud',
@@ -337,28 +337,28 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Colpo di testa',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 57,
         playerName: 'Lazzari',
         detail: 'FOUL_ON:Theo',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 58,
         playerName: 'Calabria',
         detail: 'FOUL_ON:Felipe Anderson',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 59,
         playerName: 'Zaccagni',
         detail: 'CORNER_LEFT',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 60,
         playerName: 'Cataldi',
@@ -373,7 +373,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         detail: S.of(context)!.falloTattico,
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 63,
         playerName: 'Pulisic',
@@ -381,14 +381,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 64,
         playerName: 'Calabria',
         detail: 'FOUL_ON:Marusic',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'substitution',
         minute: 65,
         playerName: 'Luis Alberto',
@@ -396,14 +396,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Cambio',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 66,
         playerName: 'Tonali',
         detail: 'FOUL_ON:Cataldi',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 67,
         playerName: 'Immobile',
@@ -411,7 +411,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Colpo di testa',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'substitution',
         minute: 68,
         playerName: 'Cataldi',
@@ -419,14 +419,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Cambio',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 69,
         playerName: 'Vecino',
         detail: 'FOUL_ON:Brahim Diaz',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 71,
         playerName: 'Immobile',
@@ -434,21 +434,21 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Colpo di testa',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 71,
         playerName: 'Theo Hernandez',
         detail: 'CORNER_RIGHT',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 72,
         playerName: 'Brahim Diaz',
         detail: 'FOUL_ON:Guendouzi',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'substitution',
         minute: 72,
         playerName: 'Tonali',
@@ -456,7 +456,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Cambio',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 73,
         playerName: 'Guendouzi',
@@ -464,14 +464,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 74,
         playerName: 'Guendouzi',
         detail: 'FOUL_ON:Tonali',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'substitution',
         minute: 75,
         playerName: 'Giroud',
@@ -479,7 +479,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Cambio',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 71,
         playerName: 'Pulisic',
@@ -487,14 +487,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'corner',
         minute: 76,
         playerName: 'Theo Hernandez',
         detail: 'CORNER_LEFT',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'goal',
         minute: 78,
         playerName: 'Felipe Anderson',
@@ -502,14 +502,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Sinistro da area',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 79,
         playerName: 'Kjaer',
         detail: 'FOUL_ON:Immobile',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 80,
         playerName: 'Brahim Diaz',
@@ -517,21 +517,21 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 81,
         playerName: 'Tomori',
         detail: 'FOUL_ON:Immobile',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 83,
         playerName: 'Marusic',
         detail: 'FOUL_ON:Leao',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'substitution',
         minute: 83,
         playerName: 'Brahim Diaz',
@@ -539,7 +539,7 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Cambio',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'shot',
         minute: 85,
         playerName: 'Guendouzi',
@@ -547,14 +547,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         subDetail: 'Destro',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'yellowCard',
         minute: 85,
         playerName: 'Tomori',
         detail: 'FOUL_ON:Felipe Anderson',
         isHomeTeam: false,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 86,
         playerName: 'Pulisic',
@@ -568,14 +568,14 @@ List<LocalMatchEvent> generateMockMatchEvents(BuildContext context) {
         detail: S.of(context)!.proteste,
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 89,
         playerName: 'Patric',
         detail: 'FOUL_ON:Leao',
         isHomeTeam: true,
         playerPhoto: null),
-    LocalMatchEvent(
+    const LocalMatchEvent(
         type: 'foul',
         minute: 90,
         playerName: 'Leao',

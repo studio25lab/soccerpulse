@@ -36,7 +36,7 @@ class AttackView extends StatelessWidget {
   final List<LocalMatchEvent> Function() generateEvents;
 
   const AttackView({
-    Key? key,
+    super.key,
     required this.homeTeamName,
     required this.awayTeamName,
     required this.showHome,
@@ -44,7 +44,7 @@ class AttackView extends StatelessWidget {
     required this.mockAttackMomentum,
     required this.inSelectedHalf,
     required this.generateEvents,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -127,21 +127,22 @@ class AttackView extends StatelessWidget {
     // ══════ CONCENTRATION ZONES from momentum (per team) ══════
     // 6 zones (2 rows x 3 cols): [defense, midfield, attack]
     // Zone intensity = proportion of attacks in that zone
-    List<List<double>> _calcZones(bool isHome) {
+    List<List<double>> calcZones(bool isHome) {
       final teamData = data.where((d) => d[1] == isHome).toList();
-      if (teamData.isEmpty)
+      if (teamData.isEmpty) {
         return [
           [0.2, 0.2, 0.2],
           [0.2, 0.2, 0.2]
         ];
+      }
 
       // Count attacks by intensity bucket
       int defCount = 0, midCount = 0, atkCount = 0;
       for (final d in teamData) {
         final intensity = d[2] as double;
-        if (intensity < 0.4)
+        if (intensity < 0.4) {
           defCount++;
-        else if (intensity < 0.6)
+        } else if (intensity < 0.6)
           midCount++;
         else
           atkCount++;
@@ -167,7 +168,7 @@ class AttackView extends StatelessWidget {
       }
     }
 
-    final selectedZones = _calcZones(showHome);
+    final selectedZones = calcZones(showHome);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),

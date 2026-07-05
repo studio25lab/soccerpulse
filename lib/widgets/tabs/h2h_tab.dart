@@ -22,13 +22,13 @@ class H2HTab extends StatelessWidget {
   final void Function(SoccerMatch) onMatchTap;
 
   const H2HTab({
-    Key? key,
+    super.key,
     required this.homeName,
     required this.awayName,
     required this.homeColor,
     required this.awayColor,
     required this.onMatchTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -251,7 +251,7 @@ class H2HTab extends StatelessWidget {
                     Container(width: 1, height: 28, color: divider),
                     Column(children: [
                       Text(
-                          '${(homeGoals + awayGoals) / total > 0 ? ((homeGoals + awayGoals) / total).toStringAsFixed(1) : "0"}',
+                          (homeGoals + awayGoals) / total > 0 ? ((homeGoals + awayGoals) / total).toStringAsFixed(1) : "0",
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w900,

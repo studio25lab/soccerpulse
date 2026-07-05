@@ -27,8 +27,8 @@ class RealisticSoccerFieldPainter extends CustomPainter {
 
   void _drawEnhancedGrassPattern(Canvas canvas, Size size) {
     // ── Palette unificata Avanzate (= Mappa Tiri) ──
-    final darkGreen = const Color(0xFFC5DFC5);  // verde chiaro
-    final lightGreen = const Color(0xFFD5ECD5); // verde chiarissimo
+    const darkGreen = Color(0xFFC5DFC5);  // verde chiaro
+    const lightGreen = Color(0xFFD5ECD5); // verde chiarissimo
     final stripeWidth = size.width / 14;
 
     for (int i = 0; i < 14; i++) {
@@ -179,7 +179,7 @@ class RealisticSoccerFieldPainter extends CustomPainter {
 
     // ═══ CORNER ARCS ═══
     const cornerR = 10.0;
-    canvas.drawArc(Rect.fromCircle(center: Offset(m, m), radius: cornerR), 0,
+    canvas.drawArc(Rect.fromCircle(center: const Offset(m, m), radius: cornerR), 0,
         math.pi / 2, false, linePaint);
     canvas.drawArc(
         Rect.fromCircle(center: Offset(size.width - m, m), radius: cornerR),
@@ -232,8 +232,8 @@ class AnimatedShotMapPainter extends CustomPainter {
 
   void _drawHalfFieldVertical(Canvas canvas, Size size) {
     // Erba con strisce
-    final darkGreen = const Color(0xFF2E7D32);
-    final lightGreen = const Color(0xFF43A047);
+    const darkGreen = Color(0xFF2E7D32);
+    const lightGreen = Color(0xFF43A047);
     final stripeWidth = size.width / 12;
 
     for (int i = 0; i < 12; i++) {
@@ -632,7 +632,7 @@ class Advanced3DHeatmapPainter extends CustomPainter {
   }
 
   void _drawHeatmap(Canvas canvas, Size size) {
-    final gridSize = 15;
+    const gridSize = 15;
     final cellWidth = size.width / gridSize;
     final cellHeight = size.height / gridSize;
     final random = math.Random(isHome ? 42 : 99);

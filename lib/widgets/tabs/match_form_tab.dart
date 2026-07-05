@@ -35,7 +35,7 @@ class MatchFormTab extends StatefulWidget {
   final void Function(SoccerMatch) onMatchTap;
 
   const MatchFormTab({
-    Key? key,
+    super.key,
     required this.homeName,
     required this.awayName,
     required this.homeColor,
@@ -47,7 +47,7 @@ class MatchFormTab extends StatefulWidget {
     required this.onMatchTap,
     this.opponentLogoUrl,
     this.opponentColor,
-  }) : super(key: key);
+  });
 
   @override
   State<MatchFormTab> createState() => _MatchFormTabState();

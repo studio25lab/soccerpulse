@@ -37,7 +37,7 @@ class MatchEventOverlay extends StatefulWidget {
   final MatchEventNotification notification;
   final VoidCallback onDismissed;
 
-  const MatchEventOverlay({
+  const MatchEventOverlay({super.key, 
     required this.notification,
     required this.onDismissed,
   });

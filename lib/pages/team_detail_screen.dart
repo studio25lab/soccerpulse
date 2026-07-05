@@ -69,9 +69,9 @@ class TeamDetailScreen extends StatefulWidget {
   final TeamStanding teamStanding;
 
   const TeamDetailScreen({
-    Key? key,
+    super.key,
     required this.teamStanding,
-  }) : super(key: key);
+  });
 
   @override
   State<TeamDetailScreen> createState() => _TeamDetailScreenState();
@@ -487,7 +487,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        _localizeTeam(context, 'Posizione') + ' ${widget.teamStanding.position}',
+                        '${_localizeTeam(context, 'Posizione')} ${widget.teamStanding.position}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -1447,7 +1447,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               children: [
                 Text('${t.played} partite giocate', style: TextStyle(fontSize: 11, color: lb)),
                 Text('${(t.played > 0 ? (t.wins / t.played * 100) : 0).toStringAsFixed(0)}% vittorie', 
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: const Color(0xFF4CAF50))),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF4CAF50))),
               ],
             ),
           ])),
@@ -1460,10 +1460,10 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               const SizedBox(width: 8),
               Text(tr(context, 'Gol'), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
             ]),
-            SizedBox(height: 16),
-            _barStatRow(tr(context, 'Gol fatti'), t.goalsFor, 100, Color(0xFF4CAF50), tx, lb, isDark),
-            SizedBox(height: 10),
-            _barStatRow(tr(context, 'Gol subiti'), t.goalsAgainst, 100, Color(0xFFE53935), tx, lb, isDark),
+            const SizedBox(height: 16),
+            _barStatRow(tr(context, 'Gol fatti'), t.goalsFor, 100, const Color(0xFF4CAF50), tx, lb, isDark),
+            const SizedBox(height: 10),
+            _barStatRow(tr(context, 'Gol subiti'), t.goalsAgainst, 100, const Color(0xFFE53935), tx, lb, isDark),
             const SizedBox(height: 10),
             _barStatRow(_localizeTeam(context, 'Differenza'), t.goalsDiff, 60, t.goalsDiff >= 0 ? const Color(0xFF4CAF50) : const Color(0xFFE53935), tx, lb, isDark),
           ])),
@@ -1512,7 +1512,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               ),
               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Text(_localizeTeam(context, 'Media gol/partita'), style: TextStyle(fontSize: 12, color: lb)),
-                Text('${(t.played > 0 ? t.goalsFor / t.played : 0).toStringAsFixed(2)}', 
+                Text((t.played > 0 ? t.goalsFor / t.played : 0).toStringAsFixed(2), 
                     style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: tx)),
               ]),
             ),
@@ -1526,11 +1526,11 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
               const SizedBox(width: 8),
               Text(S.of(context)!.punti, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
             ]),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
               _bigStat('Totale', '${t.points}', accent, tx, lb),
-              _bigStat(tr(context, 'Punti/partita'), (t.played > 0 ? t.points / t.played : 0).toStringAsFixed(2), Color(0xFF42A5F5), tx, lb),
-              _bigStat(tr(context, 'Posizione'), '${t.position}°', Color(0xFFFFA726), tx, lb),
+              _bigStat(tr(context, 'Punti/partita'), (t.played > 0 ? t.points / t.played : 0).toStringAsFixed(2), const Color(0xFF42A5F5), tx, lb),
+              _bigStat(tr(context, 'Posizione'), '${t.position}°', const Color(0xFFFFA726), tx, lb),
             ]),
           ])),
         ],
@@ -1632,7 +1632,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
       future: _playersFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           // Show mock players when API data unavailable
@@ -2005,7 +2005,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
             border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
           ),
           child: Row(children: [
-            Icon(Icons.info_outline, size: 16, color: Colors.orange),
+            const Icon(Icons.info_outline, size: 16, color: Colors.orange),
             const SizedBox(width: 8),
             Expanded(child: Text(tr(context, 'Rosa provvisoria - dati API non disponibili'),
               style: TextStyle(fontSize: 12, color: Colors.orange[700]))),
@@ -2067,10 +2067,10 @@ class _TeamDetailScreenState extends State<TeamDetailScreen>
     // Colore posizione
     Color posColor;
     String posLabel;
-    if (t.position <= 4) { posColor = Color(0xFF4CAF50); posLabel = tr(context, 'Zona Champions League'); }
-    else if (t.position <= 6) { posColor = Color(0xFF42A5F5); posLabel = tr(context, 'Zona Europa League'); }
-    else if (t.position <= 7) { posColor = Color(0xFFFFA726); posLabel = tr(context, 'Zona Conference League'); }
-    else if (t.position >= 18) { posColor = Color(0xFFE53935); posLabel = tr(context, 'Zona Retrocessione'); }
+    if (t.position <= 4) { posColor = const Color(0xFF4CAF50); posLabel = tr(context, 'Zona Champions League'); }
+    else if (t.position <= 6) { posColor = const Color(0xFF42A5F5); posLabel = tr(context, 'Zona Europa League'); }
+    else if (t.position <= 7) { posColor = const Color(0xFFFFA726); posLabel = tr(context, 'Zona Conference League'); }
+    else if (t.position >= 18) { posColor = const Color(0xFFE53935); posLabel = tr(context, 'Zona Retrocessione'); }
     else { posColor = Colors.grey; posLabel = ''; }
 
     return SingleChildScrollView(

@@ -17,7 +17,7 @@ import '../models/local_lineup_player.dart';
 List<LocalLineupPlayer> generateMockLineup(bool isHome) {
   if (isHome) {
     return [
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 1,
           name: 'Provedel',
           position: 'GK',
@@ -29,7 +29,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 1,
           duelsWon: 1,
           recoveries: 1),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 4,
           name: 'Patric',
           position: 'CB',
@@ -49,7 +49,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           aerialTotal: 4,
           aerialWon: 3,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 13,
           name: 'Romagnoli',
           position: 'CB',
@@ -68,7 +68,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           aerialTotal: 6,
           aerialWon: 5,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 3,
           name: 'Lazzari',
           position: 'RB',
@@ -88,7 +88,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 7,
           duelsWon: 3,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 77,
           name: 'Marusic',
           position: 'LB',
@@ -108,7 +108,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 6,
           duelsWon: 3,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 32,
           name: 'Cataldi',
           position: 'CM',
@@ -131,7 +131,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 8,
           duelsWon: 4,
           minutesPlayed: 68),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 8,
           name: 'Guendouzi',
           position: 'CM',
@@ -156,7 +156,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           aerialTotal: 3,
           aerialWon: 1,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 10,
           name: 'Luis Alberto',
           position: 'CAM',
@@ -178,7 +178,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 9,
           duelsWon: 5,
           minutesPlayed: 65),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 20,
           name: 'Zaccagni',
           position: 'LW',
@@ -201,7 +201,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 10,
           duelsWon: 6,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 17,
           name: 'Immobile',
           position: 'ST',
@@ -226,7 +226,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           aerialTotal: 5,
           aerialWon: 3,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 7,
           name: 'Pedro',
           position: 'RW',
@@ -254,7 +254,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
     ];
   } else {
     return [
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 16,
           name: 'Maignan',
           position: 'GK',
@@ -266,7 +266,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 1,
           duelsWon: 0,
           recoveries: 1),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 23,
           name: 'Tomori',
           position: 'CB',
@@ -286,7 +286,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           aerialTotal: 5,
           aerialWon: 2,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 24,
           name: 'Kjaer',
           position: 'CB',
@@ -305,7 +305,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           aerialTotal: 7,
           aerialWon: 4,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 2,
           name: 'Calabria',
           position: 'RB',
@@ -326,7 +326,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 8,
           duelsWon: 3,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 19,
           name: 'Theo Hernandez',
           position: 'LB',
@@ -351,7 +351,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 9,
           duelsWon: 6,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 8,
           name: 'Tonali',
           position: 'CM',
@@ -373,7 +373,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           aerialTotal: 2,
           aerialWon: 1,
           minutesPlayed: 72),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 4,
           name: 'Bennacer',
           position: 'CM',
@@ -398,7 +398,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           aerialTotal: 3,
           aerialWon: 1,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 10,
           name: 'Brahim Diaz',
           position: 'CAM',
@@ -419,7 +419,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 8,
           duelsWon: 4,
           minutesPlayed: 83),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 17,
           name: 'Leao',
           position: 'LW',
@@ -444,7 +444,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           duelsTotal: 12,
           duelsWon: 7,
           minutesPlayed: 90),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 9,
           name: 'Giroud',
           position: 'ST',
@@ -467,7 +467,7 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
           aerialTotal: 8,
           aerialWon: 5,
           minutesPlayed: 75),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 21,
           name: 'Pulisic',
           position: 'RW',
@@ -497,13 +497,13 @@ List<LocalLineupPlayer> generateMockLineup(bool isHome) {
 List<LocalLineupPlayer> generateMockBench(bool isHome) {
   if (isHome) {
     return [
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 22,
           name: 'Maximiano',
           position: 'GK',
           rating: 0.0,
           minutesPlayed: 0),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 5,
           name: 'Vecino',
           position: 'CM',
@@ -517,7 +517,7 @@ List<LocalLineupPlayer> generateMockBench(bool isHome) {
           fouls: 1,
           duelsTotal: 3,
           duelsWon: 2),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 11,
           name: 'Felipe Anderson',
           position: 'RW',
@@ -536,7 +536,7 @@ List<LocalLineupPlayer> generateMockBench(bool isHome) {
           minutesPlayed: 38,
           duelsTotal: 5,
           duelsWon: 3),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 6,
           name: 'Marcos Antonio',
           position: 'CM',
@@ -549,7 +549,7 @@ List<LocalLineupPlayer> generateMockBench(bool isHome) {
           minutesPlayed: 25,
           duelsTotal: 3,
           duelsWon: 2),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 14,
           name: 'Hysaj',
           position: 'RB',
@@ -558,13 +558,13 @@ List<LocalLineupPlayer> generateMockBench(bool isHome) {
     ];
   } else {
     return [
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 83,
           name: 'Mirante',
           position: 'GK',
           rating: 0.0,
           minutesPlayed: 0),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 7,
           name: 'Adli',
           position: 'CM',
@@ -575,13 +575,13 @@ List<LocalLineupPlayer> generateMockBench(bool isHome) {
           minutesPlayed: 18,
           duelsTotal: 2,
           duelsWon: 1),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 33,
           name: 'Krunic',
           position: 'CM',
           rating: 0.0,
           minutesPlayed: 0),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 91,
           name: 'Jovic',
           position: 'ST',
@@ -595,13 +595,13 @@ List<LocalLineupPlayer> generateMockBench(bool isHome) {
           minutesPlayed: 15,
           duelsTotal: 2,
           duelsWon: 1),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 46,
           name: 'Gabbia',
           position: 'CB',
           rating: 0.0,
           minutesPlayed: 0),
-      LocalLineupPlayer(
+      const LocalLineupPlayer(
           number: 56,
           name: 'Saelemaekers',
           position: 'RW',

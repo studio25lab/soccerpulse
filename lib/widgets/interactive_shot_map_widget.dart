@@ -216,13 +216,13 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
         _summaryItem('Goal', goals.toString(), tx, lb, const Color(0xFF4CAF50)),
         _summaryDivider(dv),
         _summaryItem(
-            tr(context, 'Parati'), saved.toString(), tx, lb, Color(0xFF1B5E20)),
+            tr(context, 'Parati'), saved.toString(), tx, lb, const Color(0xFF1B5E20)),
         _summaryDivider(dv),
         _summaryItem(
-            tr(context, 'Fuori'), offTarget.toString(), tx, lb, Color(0xFFE53935)),
+            tr(context, 'Fuori'), offTarget.toString(), tx, lb, const Color(0xFFE53935)),
         _summaryDivider(dv),
         _summaryItem(
-            tr(context, 'Respinti'), blocked.toString(), tx, lb, Color(0xFFFF9800)),
+            tr(context, 'Respinti'), blocked.toString(), tx, lb, const Color(0xFFFF9800)),
       ]),
     );
   }
@@ -717,7 +717,7 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
             borderRadius: BorderRadius.circular(12)),
         child: Column(children: [
           Icon(Icons.sports_soccer_outlined, size: 48, color: Colors.grey[500]),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(tr(context, 'Nessun tiro disponibile'),
               style: TextStyle(fontSize: 14, color: Colors.grey[500])),
         ]),

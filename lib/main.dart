@@ -87,7 +87,7 @@ void main() async {
 }
 
 class SoccerPulseApp extends StatelessWidget {
-  const SoccerPulseApp({Key? key}) : super(key: key);
+  const SoccerPulseApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +139,6 @@ class SoccerPulseApp extends StatelessWidget {
         primary: primaryColor,
         secondary: secondaryColor,
         surface: Colors.white,
-        background: Color(0xFFF5F5F5),
         error: Color(0xFFD32F2F),
       ),
       scaffoldBackgroundColor: const Color(0xFFF5F5F5),
@@ -250,7 +249,6 @@ class SoccerPulseApp extends StatelessWidget {
         primary: primaryColor,
         secondary: secondaryColor,
         surface: Color(0xFF1E1E1E),
-        background: Color(0xFF121212),
         error: Color(0xFFEF5350),
       ),
       scaffoldBackgroundColor: const Color(0xFF121212),
@@ -364,7 +362,7 @@ class MainScreen extends StatefulWidget {
     // _onPageChanged esegue setState() dall'interno dello State (legale)
     globalKey.currentState?._onPageChanged(index);
   }
-  const MainScreen({Key? key}) : super(key: key);
+  const MainScreen({super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();

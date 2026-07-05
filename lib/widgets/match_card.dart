@@ -14,13 +14,13 @@ class MatchCard extends StatelessWidget {
   final bool showDate;
 
   const MatchCard({
-    Key? key,
+    super.key,
     required this.match,
     this.onTap,
     this.showLeague = true,
     this.showVenue = false,
     this.showDate = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

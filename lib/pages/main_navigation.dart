@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../generated/l10n.dart';
@@ -27,10 +26,10 @@ class MainNavigation extends StatefulWidget {
 
   final int initialIndex;
 
-  MainNavigation({
-    Key? key,
+  const MainNavigation({
+    super.key,
     this.initialIndex = 0,
-  }) : super(key: key);
+  });
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();

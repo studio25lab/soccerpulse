@@ -14,7 +14,7 @@ class GlassmorphicCard extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const GlassmorphicCard({
-    Key? key,
+    super.key,
     required this.child,
     this.borderRadius = 16.0,
     this.borderWidth = 1.0, // ADDED with default
@@ -23,7 +23,7 @@ class GlassmorphicCard extends StatelessWidget {
     this.opacity = 0.1,
     this.backgroundColor,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

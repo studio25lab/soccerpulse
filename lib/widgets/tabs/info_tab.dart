@@ -23,7 +23,7 @@ class InfoTab extends StatelessWidget {
   final String? referee;
 
   const InfoTab({
-    Key? key,
+    super.key,
     required this.homeTeamName,
     required this.awayTeamName,
     required this.date,
@@ -32,7 +32,7 @@ class InfoTab extends StatelessWidget {
     this.leagueName,
     this.round,
     this.referee,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

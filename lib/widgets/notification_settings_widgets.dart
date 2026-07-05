@@ -30,10 +30,10 @@ class NotifSheetContainer extends StatelessWidget {
   final double heightFactor;
 
   const NotifSheetContainer({
-    Key? key,
+    super.key,
     required this.children,
     this.heightFactor = 0.85,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +83,13 @@ class NotifSheetHeader extends StatelessWidget {
   final VoidCallback onClose;
 
   const NotifSheetHeader({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.onClose,
     this.allOn = false,
     this.onToggleAll,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +184,7 @@ class NotifSheetHeader extends StatelessWidget {
 class NotifPresetChips extends StatelessWidget {
   final List<NotifPresetChipData> presets;
 
-  const NotifPresetChips({Key? key, required this.presets}) : super(key: key);
+  const NotifPresetChips({super.key, required this.presets});
 
   @override
   Widget build(BuildContext context) {
@@ -241,12 +241,12 @@ class NotifMasterSwitch extends StatelessWidget {
   final ValueChanged<bool> onChanged;
 
   const NotifMasterSwitch({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.value,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -326,10 +326,10 @@ class NotifSectionHeader extends StatelessWidget {
   final IconData icon;
 
   const NotifSectionHeader({
-    Key? key,
+    super.key,
     required this.title,
     required this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +369,7 @@ class NotifSwitchRow extends StatelessWidget {
   final ValueChanged<bool> onChanged;
 
   const NotifSwitchRow({
-    Key? key,
+    super.key,
     required this.icon,
     required this.color,
     required this.title,
@@ -377,7 +377,7 @@ class NotifSwitchRow extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.enabled = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

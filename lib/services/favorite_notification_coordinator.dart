@@ -75,8 +75,7 @@ class FavoriteNotificationCoordinator {
 
   void _handleGoalEvent(GoalEvent event) {
     // ignore: avoid_print
-    print('[FAV-cdbg] A) GoalEvent ricevuto, matchId=' +
-        event.matchId.toString());
+    print('[FAV-cdbg] A) GoalEvent ricevuto, matchId=${event.matchId}');
     SoccerMatch? match;
     for (final m in liveUpdateService.currentMatches) {
       if (m.id == event.matchId) {
@@ -86,15 +85,11 @@ class FavoriteNotificationCoordinator {
     }
     if (match == null) {
       // ignore: avoid_print
-      print('[FAV-cdbg] B) match NON trovato in currentMatches '
-          '(tot=' + liveUpdateService.currentMatches.length.toString()
-          + ') -> SCARTATO');
+      print('[FAV-cdbg] B) match NON trovato in currentMatches (tot=${liveUpdateService.currentMatches.length}) -> SCARTATO');
       return;
     }
     // ignore: avoid_print
-    print('[FAV-cdbg] B) match trovato: ' + match.homeTeamName +
-        ' vs ' + match.awayTeamName + ', isLive=' +
-        match.isLive.toString());
+    print('[FAV-cdbg] B) match trovato: ${match.homeTeamName} vs ${match.awayTeamName}, isLive=${match.isLive}');
     if (!match.isLive) {
       // ignore: avoid_print
       print('[FAV-cdbg] C) match non live -> SCARTATO');
@@ -106,12 +101,7 @@ class FavoriteNotificationCoordinator {
     final homeWants = _teamWantsGoal(match.homeTeamId);
     final awayWants = _teamWantsGoal(match.awayTeamId);
     // ignore: avoid_print
-    print('[FAV-cdbg] D) filtro: matchWants=' + matchWants.toString() +
-        ' homeWants=' + homeWants.toString() +
-        ' awayWants=' + awayWants.toString() +
-        ' (matchId=' + match.id.toString() +
-        ' homeId=' + match.homeTeamId.toString() +
-        ' awayId=' + match.awayTeamId.toString() + ')');
+    print('[FAV-cdbg] D) filtro: matchWants=$matchWants homeWants=$homeWants awayWants=$awayWants (matchId=${match.id} homeId=${match.homeTeamId} awayId=${match.awayTeamId})');
     if (!matchWants && !homeWants && !awayWants) {
       // ignore: avoid_print
       print('[FAV-cdbg] D) nessuna notifica attiva -> SCARTATO');

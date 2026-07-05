@@ -26,7 +26,7 @@ class PreMatchInfoTab extends StatelessWidget {
   final String? referee;
 
   const PreMatchInfoTab({
-    Key? key,
+    super.key,
     required this.homeTeamName,
     required this.awayTeamName,
     required this.homeColor,
@@ -37,7 +37,7 @@ class PreMatchInfoTab extends StatelessWidget {
     this.venue,
     this.round,
     this.referee,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

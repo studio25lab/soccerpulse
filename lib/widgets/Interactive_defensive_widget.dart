@@ -352,11 +352,11 @@ class _InteractiveDefensiveWidgetState
   // ===================== FILTRO TIPO AZIONE =====================
   Widget _typeFilterRow() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(children: [
-        _typeChip(tr(context, 'Contrasti'), 'tackle', Color(0xFFE53935), _showTackles),
-        SizedBox(width: 8),
-        _typeChip(tr(context, 'Intercetti'), 'interception', Color(0xFFFF9800),
+        _typeChip(tr(context, 'Contrasti'), 'tackle', const Color(0xFFE53935), _showTackles),
+        const SizedBox(width: 8),
+        _typeChip(tr(context, 'Intercetti'), 'interception', const Color(0xFFFF9800),
             _showInterceptions),
       ]),
     );
@@ -511,7 +511,7 @@ class _InteractiveDefensiveWidgetState
         _summaryItem(tr(context, 'Totali'), actions.length.toString(), tx, lb, null),
         _summaryDivider(dv),
         _summaryItem(
-            tr(context, 'Contrasti'), tackles.toString(), tx, lb, Color(0xFFE53935)),
+            tr(context, 'Contrasti'), tackles.toString(), tx, lb, const Color(0xFFE53935)),
         _summaryDivider(dv),
         _summaryItem(tr(context, 'Intercetti'), intercepts.toString(), tx, lb,
             const Color(0xFFFF9800)),
@@ -682,7 +682,7 @@ class _InteractiveDefensiveWidgetState
         );
 
       default:
-        return Container(width: size, height: size);
+        return SizedBox(width: size, height: size);
     }
   }
 
@@ -699,7 +699,7 @@ class _InteractiveDefensiveWidgetState
                     shape: BoxShape.circle,
                     color: const Color(0xFFE53935),
                     border: Border.all(color: Colors.white, width: 1.5)),
-                child: Center(
+                child: const Center(
                     child: Icon(Icons.close, color: Colors.white, size: 9))),
             tr(context, 'Contrasti')),
         const SizedBox(width: 14),
@@ -911,22 +911,22 @@ class _InteractiveDefensiveWidgetState
         Row(children: [
           Expanded(child: _donutChart(hPct, widget.homeColor, tx)),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(tr(context, 'Contrasti vinti'),
                   style: TextStyle(
                       fontSize: 14, fontWeight: FontWeight.w600, color: tx),
                   textAlign: TextAlign.center)),
           Expanded(child: _donutChart(aPct, widget.awayColor, tx)),
         ]),
-        SizedBox(height: 28),
+        const SizedBox(height: 28),
         _compBar(tr(context, 'Contrasti'), hStats.tacklesTotal, aStats.tacklesTotal, tx, lb),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _compBar(
             tr(context, 'Contrasti vinti'), hStats.tacklesWon, aStats.tacklesWon, tx, lb),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _compBar(
             tr(context, 'Intercetti'), hStats.interceptions, aStats.interceptions, tx, lb),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _compBar(tr(context, 'Rinvii'), hStats.rinvii, aStats.rinvii, tx, lb),
       ]),
     );
@@ -1048,7 +1048,7 @@ class _InteractiveDefensiveWidgetState
         Text(tr(context, 'Top difensori'),
             style: TextStyle(
                 fontSize: 18, fontWeight: FontWeight.w700, color: tx)),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         Text(tr(context, 'Tocca un giocatore per filtrare il campo'),
             style: TextStyle(fontSize: 11, color: lb)),
         const SizedBox(height: 16),

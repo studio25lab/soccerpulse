@@ -9,7 +9,7 @@ import '../services/theme_service.dart';
 import '../services/haptic_service.dart';
 
 class QuickSettingsPanel extends StatefulWidget {
-  const QuickSettingsPanel({Key? key}) : super(key: key);
+  const QuickSettingsPanel({super.key});
 
   @override
   State<QuickSettingsPanel> createState() => _QuickSettingsPanelState();
@@ -142,7 +142,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
                               const SizedBox(width: 12),
                               Text(
                                 tr(context, 'Impostazioni Rapide'),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -403,7 +403,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
               const SizedBox(width: 8),
               Text(
                 tr(context, 'Notifiche'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
                 ),

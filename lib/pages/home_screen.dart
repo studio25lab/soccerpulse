@@ -16,7 +16,7 @@ import '../generated/l10n.dart';
 import 'match_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -865,8 +865,9 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _positionBadge(int pos, ThemeData theme) {
     Color color;
-    if (pos <= 4) color = const Color(0xFF4CAF50);
-    else if (pos <= 6) color = const Color(0xFF2196F3);
+    if (pos <= 4) {
+      color = const Color(0xFF4CAF50);
+    } else if (pos <= 6) color = const Color(0xFF2196F3);
     else if (pos == 7) color = const Color(0xFFFFA726);
     else if (pos >= 18) color = const Color(0xFFE53935);
     else color = Colors.grey;
@@ -877,7 +878,7 @@ class _HomeScreenState extends State<HomeScreen>
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text('${pos}°', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
+      child: Text('$pos°', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
     );
   }
 
@@ -927,7 +928,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           child: Icon(Icons.sports_soccer_rounded, size: 48, color: theme.primaryColor.withValues(alpha: 0.4)),
         ),
-        SizedBox(height: 24),
+        const SizedBox(height: 24),
         Text(tr(context, 'Nessuna partita'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: tx)),
         const SizedBox(height: 8),
         Text(tr(context, 'Non ci sono partite in questa sezione'),

@@ -21,7 +21,7 @@ import 'package:soccerpulse/models/local_match_models.dart';
 import 'package:soccerpulse/models/team_standing.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
@@ -165,7 +165,7 @@ class _SearchScreenState extends State<SearchScreen>
   List<TeamStanding> _getTeamStandings() {
     final emptyH = TeamStats(played: 19, win: 10, draw: 3, lose: 6, goalsFor: 30, goalsAgainst: 15);
     final emptyA = TeamStats(played: 19, win: 8, draw: 5, lose: 6, goalsFor: 25, goalsAgainst: 20);
-    TeamStanding _s(int pos, String name, String logoId, int w, int d, int l, int gf, int ga, int pts, String form) {
+    TeamStanding s(int pos, String name, String logoId, int w, int d, int l, int gf, int ga, int pts, String form) {
       return TeamStanding(
         teamId: name.hashCode.abs(), teamName: name,
         teamLogo: 'https://media.api-sports.io/football/teams/$logoId.png',
@@ -175,26 +175,26 @@ class _SearchScreenState extends State<SearchScreen>
       );
     }
     return [
-      _s(1, 'Napoli', '492', 28, 6, 4, 77, 28, 90, 'WWWWW'),
-      _s(2, 'Lazio', '487', 22, 8, 8, 60, 30, 74, 'WDWLW'),
-      _s(3, 'Inter', '505', 23, 3, 12, 71, 42, 72, 'WWLWW'),
-      _s(4, 'AC Milan', '489', 21, 6, 11, 64, 43, 69, 'WDWWL'),
-      _s(5, 'Atalanta', '499', 19, 7, 12, 59, 42, 64, 'DWLWW'),
-      _s(6, 'Roma', '497', 18, 8, 12, 50, 39, 62, 'WLPWL'),
-      _s(7, 'Juventus', '496', 22, 6, 10, 56, 33, 62, 'WDLWL'),
-      _s(8, 'Bologna', '500', 16, 10, 12, 48, 40, 58, 'DDWLW'),
-      _s(9, 'Fiorentina', '502', 15, 11, 12, 49, 44, 56, 'WDLWL'),
-      _s(10, 'Torino', '503', 14, 10, 14, 42, 42, 52, 'LDWDL'),
-      _s(11, 'Monza', '1579', 13, 11, 14, 40, 45, 50, 'DLWDL'),
-      _s(12, 'Udinese', '494', 12, 12, 14, 42, 50, 48, 'WLDLD'),
-      _s(13, 'Sassuolo', '488', 12, 8, 18, 44, 57, 44, 'LLWDL'),
-      _s(14, 'Empoli', '511', 10, 12, 16, 35, 50, 42, 'DLDWL'),
-      _s(15, 'Salernitana', '514', 10, 8, 20, 36, 62, 38, 'LLLWL'),
-      _s(16, 'Lecce', '867', 9, 11, 18, 32, 48, 38, 'LDLWL'),
-      _s(17, 'Verona', '504', 8, 11, 19, 37, 56, 35, 'LLDLD'),
-      _s(18, 'Spezia', '515', 7, 10, 21, 32, 60, 31, 'LLLDL'),
-      _s(19, 'Cremonese', '511', 5, 12, 21, 28, 60, 27, 'LLDLL'),
-      _s(20, 'Sampdoria', '498', 5, 7, 26, 23, 63, 22, 'LLLLL'),
+      s(1, 'Napoli', '492', 28, 6, 4, 77, 28, 90, 'WWWWW'),
+      s(2, 'Lazio', '487', 22, 8, 8, 60, 30, 74, 'WDWLW'),
+      s(3, 'Inter', '505', 23, 3, 12, 71, 42, 72, 'WWLWW'),
+      s(4, 'AC Milan', '489', 21, 6, 11, 64, 43, 69, 'WDWWL'),
+      s(5, 'Atalanta', '499', 19, 7, 12, 59, 42, 64, 'DWLWW'),
+      s(6, 'Roma', '497', 18, 8, 12, 50, 39, 62, 'WLPWL'),
+      s(7, 'Juventus', '496', 22, 6, 10, 56, 33, 62, 'WDLWL'),
+      s(8, 'Bologna', '500', 16, 10, 12, 48, 40, 58, 'DDWLW'),
+      s(9, 'Fiorentina', '502', 15, 11, 12, 49, 44, 56, 'WDLWL'),
+      s(10, 'Torino', '503', 14, 10, 14, 42, 42, 52, 'LDWDL'),
+      s(11, 'Monza', '1579', 13, 11, 14, 40, 45, 50, 'DLWDL'),
+      s(12, 'Udinese', '494', 12, 12, 14, 42, 50, 48, 'WLDLD'),
+      s(13, 'Sassuolo', '488', 12, 8, 18, 44, 57, 44, 'LLWDL'),
+      s(14, 'Empoli', '511', 10, 12, 16, 35, 50, 42, 'DLDWL'),
+      s(15, 'Salernitana', '514', 10, 8, 20, 36, 62, 38, 'LLLWL'),
+      s(16, 'Lecce', '867', 9, 11, 18, 32, 48, 38, 'LDLWL'),
+      s(17, 'Verona', '504', 8, 11, 19, 37, 56, 35, 'LLDLD'),
+      s(18, 'Spezia', '515', 7, 10, 21, 32, 60, 31, 'LLLDL'),
+      s(19, 'Cremonese', '511', 5, 12, 21, 28, 60, 27, 'LLDLL'),
+      s(20, 'Sampdoria', '498', 5, 7, 26, 23, 63, 22, 'LLLLL'),
     ];
   }
 
@@ -863,8 +863,9 @@ class _SearchScreenState extends State<SearchScreen>
 
   Widget _positionBadge(int pos) {
     Color color;
-    if (pos <= 4) color = const Color(0xFF4CAF50);
-    else if (pos <= 6) color = const Color(0xFF2196F3);
+    if (pos <= 4) {
+      color = const Color(0xFF4CAF50);
+    } else if (pos <= 6) color = const Color(0xFF2196F3);
     else if (pos == 7) color = const Color(0xFFFFA726);
     else if (pos >= 18) color = const Color(0xFFE53935);
     else color = Colors.grey;
@@ -874,7 +875,7 @@ class _SearchScreenState extends State<SearchScreen>
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text('${pos}°', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
+      child: Text('$pos°', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
     );
   }
 
@@ -997,7 +998,7 @@ class _SearchScreenState extends State<SearchScreen>
             ),
           ),
           const SizedBox(width: 12),
-          Icon(Icons.local_fire_department_rounded, size: 20, color: const Color(0xFFFF7043)),
+          const Icon(Icons.local_fire_department_rounded, size: 20, color: Color(0xFFFF7043)),
           const SizedBox(width: 8),
           Text(tr(context, 'Big Match Serie A'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: tx)),
         ]),

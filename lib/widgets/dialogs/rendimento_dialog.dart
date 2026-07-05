@@ -67,9 +67,15 @@ void showRendimento(
       int l = td['l'] as int;
 
       final matchResults = <int>[];
-      for (int i = 0; i < w; i++) matchResults.add(3);
-      for (int i = 0; i < d; i++) matchResults.add(1);
-      for (int i = 0; i < l; i++) matchResults.add(0);
+      for (int i = 0; i < w; i++) {
+        matchResults.add(3);
+      }
+      for (int i = 0; i < d; i++) {
+        matchResults.add(1);
+      }
+      for (int i = 0; i < l; i++) {
+        matchResults.add(0);
+      }
 
       final seed = team.hashCode.abs();
       for (int i = matchResults.length - 1; i > 0; i--) {

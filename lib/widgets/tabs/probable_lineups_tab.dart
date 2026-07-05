@@ -41,13 +41,13 @@ class ProbableLineupsTab extends StatelessWidget {
   final void Function(TappedPlayerInfo info) onPlayerTap;
 
   const ProbableLineupsTab({
-    Key? key,
+    super.key,
     required this.homeName,
     required this.awayName,
     required this.homeColor,
     required this.awayColor,
     required this.onPlayerTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

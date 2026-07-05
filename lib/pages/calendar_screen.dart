@@ -15,7 +15,7 @@ import '../services/match_notification_preferences_service.dart';
 import '../widgets/dialogs/match_notification_dialog.dart';
 
 class CalendarScreen extends StatefulWidget {
-  const CalendarScreen({Key? key}) : super(key: key);
+  const CalendarScreen({super.key});
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();

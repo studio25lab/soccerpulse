@@ -3,8 +3,6 @@
 // Quando si collegheranno le API, questa classe verrà sostituita da ApiMatchRepository
 
 import 'match_repository.dart';
-import '../models/local_lineup_player.dart';
-import '../models/local_match_event.dart';
 import '../models/match_stats_data.dart';
 import '../models/coach_data.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
@@ -85,7 +83,7 @@ class MockMatchRepository implements MatchRepository {
   @override
   Future<CoachData?> getCoachData(String coachName) async {
     final coaches = {
-      'Maurizio Sarri': CoachData(
+      'Maurizio Sarri': const CoachData(
         name: 'Maurizio Sarri',
         nationality: '🇮🇹 Italiano',
         age: 64,
@@ -96,18 +94,18 @@ class MockMatchRepository implements MatchRepository {
         seasonGoalsFor: 42, seasonGoalsAgainst: 28,
         style: 'Possesso palla, pressing alto, gioco verticale rapido',
         philosophy: 'Il "Sarrismo" si basa su un calcio offensivo e spettacolare, con movimenti sincronizzati e transizioni veloci.',
-        career: const [
+        career: [
           CoachCareerEntry(team: 'Lazio', period: '2021-2023'),
           CoachCareerEntry(team: 'Juventus', period: '2019-2020', trophy: '🏆 Serie A'),
           CoachCareerEntry(team: 'Chelsea', period: '2018-2019', trophy: '🏆 Europa League'),
           CoachCareerEntry(team: 'Napoli', period: '2015-2018'),
           CoachCareerEntry(team: 'Empoli', period: '2012-2015'),
         ],
-        stats: const CoachSeasonStats(
+        stats: CoachSeasonStats(
           matches: 27, winRate: 52, avgGoals: 1.56, cleanSheets: 8, avgPoints: 1.81,
         ),
       ),
-      'Stefano Pioli': CoachData(
+      'Stefano Pioli': const CoachData(
         name: 'Stefano Pioli',
         nationality: '🇮🇹 Italiano',
         age: 57,
@@ -118,14 +116,14 @@ class MockMatchRepository implements MatchRepository {
         seasonGoalsFor: 48, seasonGoalsAgainst: 26,
         style: 'Transizioni rapide, pressing coordinato, gioco sulle fasce',
         philosophy: 'Calcio pragmatico e moderno, con enfasi sulle ripartenze veloci e la solidità difensiva.',
-        career: const [
+        career: [
           CoachCareerEntry(team: 'Milan', period: '2019-2024', trophy: '🏆 Scudetto 2022'),
           CoachCareerEntry(team: 'Fiorentina', period: '2017-2019'),
           CoachCareerEntry(team: 'Inter', period: '2016-2017'),
           CoachCareerEntry(team: 'Lazio', period: '2014-2016'),
           CoachCareerEntry(team: 'Bologna', period: '2011-2014'),
         ],
-        stats: const CoachSeasonStats(
+        stats: CoachSeasonStats(
           matches: 27, winRate: 59, avgGoals: 1.78, cleanSheets: 10, avgPoints: 1.96,
         ),
       ),

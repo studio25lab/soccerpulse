@@ -46,7 +46,7 @@ void showPlayerMatchStats(
   required Map<String, dynamic>? Function(String name) getPlayerSeasonData,
 }) {
   final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
-  int _visualTab = -1;
+  int visualTab = -1;
   final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
   final bg = isDark ? const Color(0xFF1A1A1A) : Colors.white;
   final divider = isDark ? Colors.grey[800]! : Colors.grey[200]!;
@@ -54,9 +54,9 @@ void showPlayerMatchStats(
       isDark ? const Color(0xFF222222) : const Color(0xFFF8F8F8);
 
   Color ratingBg;
-  if (player.rating >= 8.0)
+  if (player.rating >= 8.0) {
     ratingBg = const Color(0xFF1B5E20);
-  else if (player.rating >= 7.0)
+  } else if (player.rating >= 7.0)
     ratingBg = const Color(0xFF388E3C);
   else if (player.rating >= 6.5)
     ratingBg = const Color(0xFFF9A825);
@@ -528,17 +528,17 @@ void showPlayerMatchStats(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(children: [
-                    _visualTabBtn(S.of(context)!.tiriSection, Icons.gps_fixed_rounded, _visualTab == 0, () {
-                      setTabState(() => _visualTab = _visualTab == 0 ? -1 : 0);
+                    _visualTabBtn(S.of(context)!.tiriSection, Icons.gps_fixed_rounded, visualTab == 0, () {
+                      setTabState(() => visualTab = visualTab == 0 ? -1 : 0);
                     }, isDark),
-                    _visualTabBtn(S.of(context)!.passaggiRLabel, Icons.swap_calls_rounded, _visualTab == 1, () {
-                      setTabState(() => _visualTab = _visualTab == 1 ? -1 : 1);
+                    _visualTabBtn(S.of(context)!.passaggiRLabel, Icons.swap_calls_rounded, visualTab == 1, () {
+                      setTabState(() => visualTab = visualTab == 1 ? -1 : 1);
                     }, isDark),
-                    _visualTabBtn(S.of(context)!.dribLabel, Icons.directions_run_rounded, _visualTab == 2, () {
-                      setTabState(() => _visualTab = _visualTab == 2 ? -1 : 2);
+                    _visualTabBtn(S.of(context)!.dribLabel, Icons.directions_run_rounded, visualTab == 2, () {
+                      setTabState(() => visualTab = visualTab == 2 ? -1 : 2);
                     }, isDark),
-                    _visualTabBtn(S.of(context)!.difLabel, Icons.shield_outlined, _visualTab == 3, () {
-                      setTabState(() => _visualTab = _visualTab == 3 ? -1 : 3);
+                    _visualTabBtn(S.of(context)!.difLabel, Icons.shield_outlined, visualTab == 3, () {
+                      setTabState(() => visualTab = visualTab == 3 ? -1 : 3);
                     }, isDark),
                   ]),
                 ),
@@ -550,7 +550,7 @@ void showPlayerMatchStats(
                     padding: const EdgeInsets.only(bottom: 20),
                     children: [
                       // ── HEATMAP (solo in home, nessuna tab selezionata) ──
-                      if (_visualTab == -1)
+                      if (visualTab == -1)
                         PlayerHeatmapCard(
                           playerName: player.name,
                           position: player.position,
@@ -561,7 +561,7 @@ void showPlayerMatchStats(
                       // ════════════════════════════
                       //  TAB 0: TIRI
                       // ════════════════════════════
-                      if (_visualTab == 0) ...[
+                      if (visualTab == 0) ...[
                         PlayerShotMapCard(
                           shots: (showHomeLineup ? homeShotsData : awayShotsData)
                               .where((s) => s.playerName == player.name)
@@ -598,7 +598,7 @@ void showPlayerMatchStats(
                       // ════════════════════════════
                       //  TAB 1: PASSAGGI
                       // ════════════════════════════
-                      if (_visualTab == 1) ...[
+                      if (visualTab == 1) ...[
                         PlayerPassMapCard(
                           playerName: player.name,
                           position: player.position,
@@ -636,7 +636,7 @@ void showPlayerMatchStats(
                       // ════════════════════════════
                       //  TAB 2: DRIBBLING
                       // ════════════════════════════
-                      if (_visualTab == 2) ...[
+                      if (visualTab == 2) ...[
                         _statSectionHeader(
                             S.of(context)!.dribblingLabel,
                             Icons.directions_run_rounded,
@@ -662,7 +662,7 @@ void showPlayerMatchStats(
                       // ════════════════════════════
                       //  TAB 3: DIFESA + DISCIPLINA
                       // ════════════════════════════
-                      if (_visualTab == 3) ...[
+                      if (visualTab == 3) ...[
                         PlayerDefensiveMapCard(
                           actions: (showHomeLineup ? homeDefensiveActions : awayDefensiveActions)
                               .where((a) => a.playerName == player.name)
@@ -671,7 +671,7 @@ void showPlayerMatchStats(
                           isDark: isDark,
                         ),
                         _statSectionHeader(S.of(context)!.difesaSection, Icons.shield_outlined,
-                            Color(0xFFE65100), sectionBg),
+                            const Color(0xFFE65100), sectionBg),
                         if (player.tackles > 0)
                           _statRow(
                               localizeShotData(context, 'Contrasti vinti'),

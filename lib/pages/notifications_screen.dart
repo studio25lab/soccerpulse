@@ -8,7 +8,7 @@ import '../services/haptic_service.dart';
 import '../widgets/glassmorphic_card.dart';
 
 class NotificationsScreen extends StatefulWidget {
-  const NotificationsScreen({Key? key}) : super(key: key);
+  const NotificationsScreen({super.key});
 
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
@@ -68,7 +68,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               onPressed: _markAllAsRead,
               child: Text(
                 tr(context, 'Segna tutte come lette'),
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
         ],

@@ -1,6 +1,5 @@
 // lib/widgets/live_notification_overlay.dart
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../models/soccer_match.dart';
 import '../pages/match_detail_screen.dart';
@@ -13,9 +12,9 @@ class LiveNotificationOverlay extends StatefulWidget {
   final Widget child;
 
   const LiveNotificationOverlay({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   static _LiveNotificationOverlayState? of(BuildContext context) {
     return context.findAncestorStateOfType<_LiveNotificationOverlayState>();
@@ -316,10 +315,10 @@ class GoalNotificationCard extends StatefulWidget {
   final VoidCallback onDismiss;
 
   const GoalNotificationCard({
-    Key? key,
+    super.key,
     required this.notification,
     required this.onDismiss,
-  }) : super(key: key);
+  });
 
   @override
   State<GoalNotificationCard> createState() => _GoalNotificationCardState();

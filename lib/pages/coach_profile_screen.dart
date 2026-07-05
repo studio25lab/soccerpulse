@@ -194,7 +194,7 @@ class CoachProfileScreen extends StatelessWidget {
                         ]),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(children: [
                       _infoTile(localizeShotData(context, 'Gol Fatti'), '${data['seasonGoalsFor']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),
@@ -212,7 +212,7 @@ class CoachProfileScreen extends StatelessWidget {
                   sectionBg: sectionBg,
                   child: Column(children: [
                     _sectionHeader(Icons.bar_chart_rounded, tr(context, 'STATISTICHE'), isDark),
-                    SizedBox(height: 14),
+                    const SizedBox(height: 14),
                     Row(children: [
                       _infoTile(localizeShotData(context, 'Partite'), '${stats['matches']}', tx, lb),
                       Container(width: 1, height: 30, color: divider),

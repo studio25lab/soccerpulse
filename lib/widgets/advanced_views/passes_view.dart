@@ -83,7 +83,7 @@ class PassesView extends StatefulWidget {
   final bool Function(int minute, int filter) inSelectedHalf;
 
   const PassesView({
-    Key? key,
+    super.key,
     required this.homeCrossOk,
     required this.homeCrossTotal,
     required this.homeFTPasses,
@@ -139,7 +139,7 @@ class PassesView extends StatefulWidget {
     required this.buildTeamSelector,
     required this.buildPeriodSelector,
     required this.inSelectedHalf,
-  }) : super(key: key);
+  });
 
   @override
   State<PassesView> createState() => _PassesViewState();
@@ -264,7 +264,7 @@ class _PassesViewState extends State<PassesView> {
           const SizedBox(height: 22),
           _passComparisonBarPremium(tr(context, 'Rimesse laterali'), periodScale(widget.homeThrowIns, _passesTimeFilter),
               periodScale(widget.awayThrowIns, _passesTimeFilter), homeColor, awayColor, tx, lb, isDark),
-          SizedBox(height: 22),
+          const SizedBox(height: 22),
           _passComparisonBarPremium(
               tr(context, 'Ingressi terzo offensivo'),
               periodScale(widget.homeFinalThirdEntries, _passesTimeFilter),

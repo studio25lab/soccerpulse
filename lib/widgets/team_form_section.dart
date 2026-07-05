@@ -59,7 +59,7 @@ class TeamFormSection extends StatelessWidget {
   final void Function(SoccerMatch) onMatchTap;
 
   const TeamFormSection({
-    Key? key,
+    super.key,
     required this.teamName,
     required this.form,
     required this.formLimit,
@@ -71,7 +71,7 @@ class TeamFormSection extends StatelessWidget {
     required this.onMatchTap,
     this.opponentLogoUrl,
     this.opponentColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

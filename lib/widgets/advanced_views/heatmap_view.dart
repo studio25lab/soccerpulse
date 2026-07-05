@@ -66,7 +66,7 @@ class HeatmapView extends StatefulWidget {
       bool isDark, {bool showTutti}) buildTeamSelector;
 
   const HeatmapView({
-    Key? key,
+    super.key,
     required this.homeTeamName,
     required this.awayTeamName,
     required this.homeCorners,
@@ -99,7 +99,7 @@ class HeatmapView extends StatefulWidget {
     required this.circularProgress,
     required this.heatZonesForPeriod,
     required this.buildTeamSelector,
-  }) : super(key: key);
+  });
 
   @override
   State<HeatmapView> createState() => _HeatmapViewState();
@@ -363,7 +363,7 @@ class _HeatmapViewState extends State<HeatmapView> {
           const SizedBox(height: 18),
           _heatmapCompBar(S.of(context)!.difesaSection, widget.homePossDefense, widget.awayPossDefense,
               homeColor, awayColor, tx, lb, isDark),
-          SizedBox(height: 14),
+          const SizedBox(height: 14),
           _heatmapCompBar(tr(context, 'Centrocampo'), widget.homePossMidfield, widget.awayPossMidfield,
               homeColor, awayColor, tx, lb, isDark),
           const SizedBox(height: 14),
@@ -552,7 +552,7 @@ class _HeatmapViewState extends State<HeatmapView> {
                   fontSize: 13, fontWeight: FontWeight.w600, color: lb)),
           const SizedBox(height: 12),
           _heatmapZoneBar(S.of(context)!.difesaSection, possDefense, 50, teamColor, tx, lb, isDark),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           _heatmapZoneBar(
               'Centrocampo', possMidfield, 50, teamColor, tx, lb, isDark),
           const SizedBox(height: 10),
@@ -609,10 +609,10 @@ class _HeatmapViewState extends State<HeatmapView> {
           Text(localizeShotData(context, 'Confronto con avversario'),
               style: TextStyle(
                   fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
-          SizedBox(height: 18),
+          const SizedBox(height: 18),
           _heatmapMetricVs(Icons.sports_soccer, localizeShotData(context, 'Tiri totali'), shots, oppShots,
               teamColor, oppColor, tx, lb),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _heatmapMetricVs(Icons.gps_fixed, localizeShotData(context, 'Tiri in porta'), shotsOnTarget,
               oppShotsOnTarget, teamColor, oppColor, tx, lb),
           const SizedBox(height: 16),

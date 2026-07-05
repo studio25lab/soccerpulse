@@ -29,11 +29,11 @@ class StandingsListView extends StatefulWidget {
   final bool showLegend;
 
   const StandingsListView({
-    Key? key,
+    super.key,
     required this.standings,
     this.highlightTeams = const [],
     this.showLegend = true,
-  }) : super(key: key);
+  });
 
   @override
   State<StandingsListView> createState() => _StandingsListViewState();
