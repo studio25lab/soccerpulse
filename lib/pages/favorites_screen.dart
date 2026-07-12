@@ -1073,6 +1073,8 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   notifyPenalties: key == 'penalties' ? val : settings.notifyPenalties,
                   notifyVarDecisions: key == 'var' ? val : settings.notifyVarDecisions,
                   notifyMatchStart: key == 'kickoff' ? val : settings.notifyMatchStart,
+                  // [TEST-LIVE-INIZIO2T] kickoff attiva anche inizio 2° tempo
+                  notifySecondHalfStart: key == 'kickoff' ? val : settings.notifySecondHalfStart,
                   notifyHalfTime: key == 'halftime' ? val : settings.notifyHalfTime,
                   notifyMatchEnd: key == 'fulltime' ? val : settings.notifyMatchEnd,
                   notifyYellowCards: key == 'yellowCards' ? val : settings.notifyYellowCards,

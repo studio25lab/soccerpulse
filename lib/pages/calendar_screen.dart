@@ -628,7 +628,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
           s = s.copyWith(notifyHomeGoals: value, notifyAwayGoals: value);
           break;
         case 'kickoff':
-          s = s.copyWith(notifyMatchStart: value);
+          // [TEST-LIVE-INIZIO2T] attiva anche l'inizio secondo tempo
+          s = s.copyWith(
+              notifyMatchStart: value, notifySecondHalfStart: value);
           break;
         case 'halftime':
           s = s.copyWith(notifyHalfTime: value);

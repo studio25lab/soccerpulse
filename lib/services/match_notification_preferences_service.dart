@@ -290,6 +290,10 @@ class MatchNotificationPreferencesService extends ChangeNotifier {
 
       case 'var':
         return settings.notifyVarDecisions;
+      case 'foul': // [TEST-LIVE-NOTIFFALLI]
+        return settings.notifyFouls;
+      case 'offside': // [TEST-LIVE-NOTIFFALLI]
+        return settings.notifyOffsides;
 
       default:
         return false;

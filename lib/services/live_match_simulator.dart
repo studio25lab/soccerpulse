@@ -31,6 +31,9 @@ class LiveMatchSimulator extends ChangeNotifier {
 
   final Random _random = Random();
   final Map<int, Timer> _matchTimers = {};
+  // [TEST-LIVE-CONTROLLI] stato velocità/pausa per la simulazione di test
+  final Map<int, int> _speedMult = {};   // 1 o 2
+  final Map<int, bool> _isPaused = {};
   final Map<int, StreamController<SoccerMatch>> _matchStreams = {};
   final Map<int, List<LiveMatchEvent>> _matchEvents = {};
   final Map<int, int> _matchMinutes = {};
@@ -259,19 +262,35 @@ class LiveMatchSimulator extends ChangeNotifier {
   // [TEST-LIVE] ─── modalità COPIONE per la partita di test ───────────
   final Map<int, int> _scriptedNextIdx = {};
 
+  // [TEST-LIVE-CONTROLLI] stato corrente della partita scriptata (per pausa/resume)
+  final Map<int, SoccerMatch> _scriptedLive = {};
+
   void startScriptedSimulation(SoccerMatch match) {
     if (_matchTimers.containsKey(match.id)) return;
     _matchMinutes[match.id] = 1;
     _matchEvents[match.id] = [];
     _scriptedNextIdx[match.id] = 0;
+    _speedMult[match.id] = 1;
+    _isPaused[match.id] = false;
     _matchStreams[match.id] = StreamController<SoccerMatch>.broadcast();
-    var liveMatch = match.copyWith(status: 'LIVE', elapsed: 1);
+    final liveMatch = match.copyWith(status: 'LIVE', elapsed: 1);
+    _scriptedLive[match.id] = liveMatch;
     _matchStreams[match.id]?.add(liveMatch);
+    _startScriptedTimer(match);
+  }
+
+  // [TEST-LIVE-CONTROLLI] (ri)crea il timer con l'intervallo corrente (velocità)
+  void _startScriptedTimer(SoccerMatch match) {
+    final mult = _speedMult[match.id] ?? 1;
+    final interval = (3300 / mult).round();
+    _matchTimers[match.id]?.cancel();
     _matchTimers[match.id] =
-        Timer.periodic(const Duration(milliseconds: 3300), (timer) {
+        Timer.periodic(Duration(milliseconds: interval), (timer) {
+      var liveMatch = _scriptedLive[match.id]!;
       final minute = _matchMinutes[match.id]!;
       if (minute == 45) {
         liveMatch = liveMatch.copyWith(elapsed: 45, status: 'HT');
+        _scriptedLive[match.id] = liveMatch;
         _matchStreams[match.id]?.add(liveMatch);
         _matchMinutes[match.id] = 46;
         notifyListeners();
@@ -282,16 +301,60 @@ class LiveMatchSimulator extends ChangeNotifier {
         timer.cancel();
         _matchTimers.remove(match.id);
         liveMatch = liveMatch.copyWith(elapsed: 90, status: 'FT');
+        _scriptedLive[match.id] = liveMatch;
         _matchStreams[match.id]?.add(liveMatch);
         notifyListeners();
         return;
       }
       liveMatch = _fireScriptedEvents(match.id, minute, liveMatch);
       _matchMinutes[match.id] = minute + 1;
-      liveMatch = liveMatch.copyWith(elapsed: minute);
+      // [TEST-LIVE-INIZIO2TSIM] nel 2° tempo rimetti status LIVE (per rilevare la ripresa)
+      if (minute >= 46) {
+        liveMatch = liveMatch.copyWith(elapsed: minute, status: 'LIVE');
+      } else {
+        liveMatch = liveMatch.copyWith(elapsed: minute);
+      }
+      _scriptedLive[match.id] = liveMatch;
       _matchStreams[match.id]?.add(liveMatch);
       notifyListeners();
     });
+  }
+
+  // [TEST-LIVE-CONTROLLI] controlli pausa/velocità per l'UI di test
+  bool isScriptedPaused(int matchId) => _isPaused[matchId] ?? false;
+  int scriptedSpeed(int matchId) => _speedMult[matchId] ?? 1;
+
+  void pauseScripted(int matchId) {
+    _matchTimers[matchId]?.cancel();
+    _matchTimers.remove(matchId);
+    _isPaused[matchId] = true;
+    notifyListeners();
+  }
+
+  void resumeScripted(SoccerMatch match) {
+    if (_matchTimers.containsKey(match.id)) return;
+    if ((_matchMinutes[match.id] ?? 90) >= 90) return; // già finita
+    _isPaused[match.id] = false;
+    _startScriptedTimer(match);
+    notifyListeners();
+  }
+
+  void toggleScriptedPause(SoccerMatch match) {
+    if (isScriptedPaused(match.id)) {
+      resumeScripted(match);
+    } else {
+      pauseScripted(match.id);
+    }
+  }
+
+  void toggleScriptedSpeed(SoccerMatch match) {
+    final cur = _speedMult[match.id] ?? 1;
+    _speedMult[match.id] = cur == 1 ? 2 : 1;
+    // se sta girando, ricrea il timer col nuovo intervallo
+    if (_matchTimers.containsKey(match.id)) {
+      _startScriptedTimer(match);
+    }
+    notifyListeners();
   }
 
   SoccerMatch _fireScriptedEvents(int matchId, int minute, SoccerMatch current) {
@@ -317,24 +380,34 @@ class LiveMatchSimulator extends ChangeNotifier {
     return live;
   }
 
+  // [TEST-LIVE-GOLNODESCR] gol senza descrizione tiro (solo assist)
   List<_ScriptedEntry> _buildScript() => [
-        _ScriptedEntry(4, () => LiveMatchEvent(type: 'foul', teamType: 'away', playerName: 'Rossi', minute: 4, details: 'Fallo a centrocampo')),
-        _ScriptedEntry(8, () => LiveMatchEvent(type: 'corner', teamType: 'home', playerName: 'Bianchi', minute: 8)),
-        _ScriptedEntry(12, () => LiveMatchEvent(type: 'goal', teamType: 'home', playerName: 'Bianchi', minute: 12, assistBy: 'Verdi')),
-        _ScriptedEntry(17, () => LiveMatchEvent(type: 'yellowCard', teamType: 'away', playerName: 'Neri', minute: 17, details: 'Fallo tattico')),
-        _ScriptedEntry(23, () => LiveMatchEvent(type: 'offside', teamType: 'home', playerName: 'Verdi', minute: 23)),
-        _ScriptedEntry(29, () => LiveMatchEvent(type: 'goal', teamType: 'away', playerName: 'Gialli', minute: 29, details: 'Di testa')),
-        _ScriptedEntry(34, () => LiveMatchEvent(type: 'foul', teamType: 'home', playerName: 'Verdi', minute: 34)),
+        // [TEST-LIVE-COPIONELAZIO] copione allineato a Lazio-Milan (token bilingue)
+        // primi minuti: eventi di test per verifiche rapide
+        _ScriptedEntry(4, () => LiveMatchEvent(type: 'foul', teamType: 'away', playerName: 'Rossi', minute: 4, details: 'FOUL_ON:Bianchi')),
+        _ScriptedEntry(6, () => LiveMatchEvent(type: 'var', teamType: 'away', playerName: 'VAR', minute: 6, details: 'Gol annullato per fuorigioco')),
+        _ScriptedEntry(7, () => LiveMatchEvent(type: 'substitution', teamType: 'home', playerName: 'Ferrari', minute: 7, assistBy: 'Colombo', details: 'SUB')),
+        _ScriptedEntry(9, () => LiveMatchEvent(type: 'shot', teamType: 'home', playerName: 'Verdi', minute: 9, details: 'Tiro parato|Destro')),
+        // partita vera e propria
+        _ScriptedEntry(12, () => LiveMatchEvent(type: 'goal', teamType: 'home', playerName: 'Bianchi', minute: 12, assistBy: 'Verdi', details: 'GOAL')),
+        _ScriptedEntry(15, () => LiveMatchEvent(type: 'corner', teamType: 'home', playerName: 'Bianchi', minute: 15, details: 'CORNER_LEFT')),
+        _ScriptedEntry(17, () => LiveMatchEvent(type: 'yellowCard', teamType: 'away', playerName: 'Neri', minute: 17, details: 'TACTICAL_FOUL')),
+        _ScriptedEntry(20, () => LiveMatchEvent(type: 'shot', teamType: 'away', playerName: 'Gialli', minute: 20, details: 'Tiro fuori|Sinistro')),
+        _ScriptedEntry(23, () => LiveMatchEvent(type: 'offside', teamType: 'home', playerName: 'Verdi', minute: 23, details: 'OFFSIDE_ACTIVE')),
+        _ScriptedEntry(29, () => LiveMatchEvent(type: 'goal', teamType: 'away', playerName: 'Gialli', minute: 29, assistBy: 'Marroni', details: 'GOAL')),
+        _ScriptedEntry(34, () => LiveMatchEvent(type: 'foul', teamType: 'home', playerName: 'Verdi', minute: 34, details: 'FOUL_ON:Gialli')),
+        _ScriptedEntry(38, () => LiveMatchEvent(type: 'corner', teamType: 'away', playerName: 'Marroni', minute: 38, details: 'CORNER_RIGHT')),
         _ScriptedEntry(41, () => LiveMatchEvent(type: 'penalty', teamType: 'home', playerName: 'Bianchi', minute: 41, details: 'Trasformato')),
-        _ScriptedEntry(49, () => LiveMatchEvent(type: 'yellowCard', teamType: 'home', playerName: 'Ferrari', minute: 49, details: 'Proteste')),
-        _ScriptedEntry(55, () => LiveMatchEvent(type: 'substitution', teamType: 'away', playerName: 'Gialli', minute: 55, assistBy: 'Marroni')),
-        _ScriptedEntry(61, () => LiveMatchEvent(type: 'corner', teamType: 'away', playerName: 'Marroni', minute: 61)),
+        _ScriptedEntry(49, () => LiveMatchEvent(type: 'yellowCard', teamType: 'home', playerName: 'Ferrari', minute: 49, details: 'PROTESTS')),
+        _ScriptedEntry(52, () => LiveMatchEvent(type: 'shot', teamType: 'home', playerName: 'Colombo', minute: 52, details: 'Tiro parato|Destro')),
+        _ScriptedEntry(55, () => LiveMatchEvent(type: 'substitution', teamType: 'away', playerName: 'Gialli', minute: 55, assistBy: 'Marroni', details: 'SUB')),
+        _ScriptedEntry(61, () => LiveMatchEvent(type: 'corner', teamType: 'away', playerName: 'Marroni', minute: 61, details: 'CORNER_LEFT')),
         _ScriptedEntry(66, () => LiveMatchEvent(type: 'var', teamType: 'away', playerName: 'VAR', minute: 66, details: 'Gol annullato per fuorigioco')),
         _ScriptedEntry(72, () => LiveMatchEvent(type: 'redCard', teamType: 'away', playerName: 'Neri', minute: 72, details: 'Somma di ammonizioni')),
-        _ScriptedEntry(78, () => LiveMatchEvent(type: 'offside', teamType: 'away', playerName: 'Marroni', minute: 78)),
-        _ScriptedEntry(84, () => LiveMatchEvent(type: 'substitution', teamType: 'home', playerName: 'Verdi', minute: 84, assistBy: 'Colombo')),
-        _ScriptedEntry(88, () => LiveMatchEvent(type: 'goal', teamType: 'home', playerName: 'Colombo', minute: 88, assistBy: 'Bianchi')),
-        _ScriptedEntry(90, () => LiveMatchEvent(type: 'foul', teamType: 'away', playerName: 'Rossi', minute: 90)),
+        _ScriptedEntry(78, () => LiveMatchEvent(type: 'offside', teamType: 'away', playerName: 'Marroni', minute: 78, details: 'OFFSIDE_PASSIVE')),
+        _ScriptedEntry(84, () => LiveMatchEvent(type: 'substitution', teamType: 'home', playerName: 'Verdi', minute: 84, assistBy: 'Colombo', details: 'SUB')),
+        _ScriptedEntry(88, () => LiveMatchEvent(type: 'goal', teamType: 'home', playerName: 'Colombo', minute: 88, assistBy: 'Bianchi', details: 'GOAL')),
+        _ScriptedEntry(90, () => LiveMatchEvent(type: 'foul', teamType: 'away', playerName: 'Rossi', minute: 90, details: 'FOUL_ON:Verdi')),
       ];
   // [TEST-LIVE] ─── fine modalità copione ─────────────────────────────
 

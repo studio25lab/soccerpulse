@@ -72,6 +72,11 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   final LiveMatchSimulator _liveSimulator = LiveMatchSimulator();
   StreamSubscription<SoccerMatch>? _liveMatchSubscription;
   int _lastProcessedEventCount = 0;
+  // [TEST-LIVE-SECONDOTEMPO] stato precedente per rilevare fine/inizio tempo
+  String? _lastMatchStatus;
+  bool _secondHalfNotified = false;
+  bool _firstHalfEndNotified = false;
+  bool _matchEndNotified = false; // [TEST-LIVE-NOTIFFT]
 
   // ── In-App Notification Queue ──
   final List<MatchEventNotification> _notificationQueue = [];
@@ -125,7 +130,9 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
           notifyHomeGoals: value, notifyAwayGoals: value);
         break;
       case 'kickoff':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyMatchStart: value);
+        // [TEST-LIVE-INIZIO2T] attiva anche l'inizio secondo tempo
+        _matchNotifSettings = _matchNotifSettings.copyWith(
+            notifyMatchStart: value, notifySecondHalfStart: value);
         break;
       case 'halftime':
         _matchNotifSettings = _matchNotifSettings.copyWith(notifyHalfTime: value);
@@ -194,6 +201,9 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   }
   final TextEditingController _playerSearchController = TextEditingController();
   int _currentMatchMinute = 67;
+  // [TEST-LIVE-SCOREHEADER] punteggio live per l'header (init in initState)
+  int? _currentHomeScore;
+  int? _currentAwayScore;
 
   // ==========================================
   // STATISTICHE CENTRALIZZATE (fonte unica)
@@ -397,13 +407,65 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         }
         _lastProcessedEventCount = events.length;
       }
+      // [TEST-LIVE-SECONDOTEMPO] rileva fine primo tempo / inizio secondo tempo
+      final status = updatedMatch.status;
+      if (status == 'HT' && !_firstHalfEndNotified) {
+        _firstHalfEndNotified = true;
+        // [TEST-LIVE-RISULTATO1T] passa il punteggio al 45'
+        _emitHalfEvent('halfTime',
+            score: 'SCORE|${updatedMatch.homeScore}|${updatedMatch.awayScore}');
+      }
+      if (_lastMatchStatus == 'HT' && status == 'LIVE' &&
+          !_secondHalfNotified) {
+        _secondHalfNotified = true;
+        _emitHalfEvent('secondHalfStart');
+      }
+      // [TEST-LIVE-PRIORFT] fine partita: notifica PRIORITARIA (subito, no coda)
+      if (status == 'FT' && !_matchEndNotified) {
+        _matchEndNotified = true;
+        // [TEST-LIVE-RECSEQ] ritarda 800ms: prima il fallo, poi la fine partita
+        final endEvent = LiveMatchEvent(
+          type: 'matchEnd',
+          teamType: 'none',
+          playerName: '',
+          minute: 90,
+          details: 'SCORE|${updatedMatch.homeScore}|${updatedMatch.awayScore}',
+        );
+        Future.delayed(const Duration(milliseconds: 800), () {
+          if (!mounted) return;
+          _showPriorityNotification(MatchEventNotification(
+            type: 'matchEnd',
+            title: _getNotificationTitle(endEvent),
+            subtitle: _getNotificationSubtitle(endEvent),
+            icon: _getNotificationIcon('matchEnd'),
+            color: _getNotificationColor('matchEnd'),
+            minute: 90,
+          ));
+        });
+      }
+      _lastMatchStatus = status;
       // [TEST-LIVE] refresh UI (minuto, punteggio, tab Eventi)
       if (mounted) {
         setState(() {
           _currentMatchMinute = updatedMatch.elapsed ?? _currentMatchMinute;
+          // [TEST-LIVE-SCOREHEADER] aggiorna il punteggio live
+          _currentHomeScore = updatedMatch.homeScore;
+          _currentAwayScore = updatedMatch.awayScore;
         });
       }
     });
+  }
+
+  // [TEST-LIVE-SECONDOTEMPO] emette una notifica di fase (fine 1T / inizio 2T)
+  void _emitHalfEvent(String type, {String? score}) {
+    final minute = type == 'halfTime' ? 45 : 46;
+    _processLiveEvent(LiveMatchEvent(
+      type: type,
+      teamType: 'none',
+      playerName: '',
+      minute: minute,
+      details: score, // [TEST-LIVE-RISULTATO1T]
+    ));
   }
 
   void _processLiveEvent(LiveMatchEvent event) {
@@ -417,6 +479,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       case 'substitution': eventType = 'substitution'; break;
       case 'corner': eventType = 'corner'; break;
       case 'shotOnTarget': eventType = 'shot_on_target'; break;
+      case 'shot': eventType = 'shot_on_target'; break; // [TEST-LIVE-NOTIFFALLI]
+      case 'foul': eventType = 'foul'; break; // [TEST-LIVE-NOTIFFALLI]
       case 'offside': eventType = 'offside'; break;
       case 'matchStart': eventType = 'match_start'; break;
       case 'halfTime': eventType = 'half_time'; break;
@@ -455,6 +519,9 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       case 'penalty': return tr(context, '⚠️ Rigore');
       case 'var': return tr(context, '📺 VAR Check');
       case 'substitution': return tr(context, '🔄 Sostituzione');
+      case 'foul': return tr(context, '⚠️ Fallo'); // [TEST-LIVE-TITOLI]
+      case 'offside': return tr(context, '🏳️ Fuorigioco'); // [TEST-LIVE-TITOLI]
+      case 'shot': return tr(context, '🎯 Tiro'); // [TEST-LIVE-TITOLI]
       case 'corner': return tr(context, "🚩 Calcio d'angolo");
       case 'shotOnTarget': return tr(context, '🎯 Tiro in porta');
       case 'offside': return tr(context, '🏳️ Fuorigioco');
@@ -466,6 +533,30 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     }
   }
 
+  // [TEST-LIVE-NOTIFTOKEN] rende leggibile un token di details per le notifiche
+  String _cleanNotifDetail(String raw) {
+    if (raw.isEmpty) return '';
+    // split su '|': prima parte marker/esito, seconda descrizione/piede
+    final parts = raw.split('|');
+    final p0 = parts.isNotEmpty ? parts[0] : '';
+    final p1 = parts.length > 1 ? parts[1] : null;
+    // GOAL|<descr> -> solo descrizione
+    if (p0 == 'GOAL') return p1 ?? '';
+    // [TEST-LIVE-NOTIFALLINEA] tiri: solo il tipo, SENZA il piede
+    if (p0.startsWith('Tiro')) {
+      return _localizeEventDetail(context, p0);
+    }
+    // [TEST-LIVE-NOTIFALLINEA] fallo: solo 'Fallo' (chi commette è già il nome principale)
+    if (p0.startsWith('FOUL_ON:')) {
+      final isEn = Localizations.localeOf(context).languageCode == 'en';
+      return isEn ? 'Foul' : 'Fallo';
+    }
+    // SUB -> niente (gestito da Esce/Entra)
+    if (p0 == 'SUB') return '';
+    // altri token noti -> passa da _localizeEventDetail
+    return _localizeEventDetail(context, p0);
+  }
+
   String _getNotificationSubtitle(LiveMatchEvent event) {
     final teamLabel = event.teamType == 'home'
         ? widget.match.homeTeamName
@@ -473,12 +564,39 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     // Match-level events (no player)
     if (event.type == 'matchStart' || event.type == 'halfTime' || 
         event.type == 'secondHalfStart' || event.type == 'matchEnd') {
+      // [TEST-LIVE-NOTIFFT] risultato nel testo per fine primo tempo E fine partita
+      if ((event.type == 'halfTime' || event.type == 'matchEnd') &&
+          (event.details ?? '').startsWith('SCORE|')) {
+        final parts = event.details!.split('|');
+        if (parts.length >= 3) {
+          return '${widget.match.homeTeamName} ${parts[1]} - ${parts[2]} ${widget.match.awayTeamName}';
+        }
+      }
       return '${widget.match.homeTeamName} vs ${widget.match.awayTeamName}';
     }
+    // [TEST-LIVE-NOTIFTESTO] testo differenziato per tipo evento
+    // CAMBIO: Esce/Entra (playerName esce, assistBy entra)
+    if (event.type == 'substitution') {
+      String sub = "${event.minute}' - ${tr(context, 'Esce')}: ${event.playerName}";
+      if (event.assistBy != null) {
+        sub += ' / ${tr(context, 'Entra')}: ${event.assistBy}';
+      }
+      if (teamLabel.isNotEmpty) sub += ' ($teamLabel)';
+      return sub;
+    }
+    // [TEST-LIVE-MINUTOTESTO] minuto nel testo (oltre che nel badge), come le altre
     String text = "${event.minute}' - ${event.playerName}";
     if (teamLabel.isNotEmpty) text += ' ($teamLabel)';
-    if (event.assistBy != null) text += '\n${tr(context, 'Assist')}: ${event.assistBy}';
-    if (event.details != null) text += ' - ${event.details}';
+    // ASSIST solo per gol e rigori
+    if (event.assistBy != null &&
+        (event.type == 'goal' || event.type == 'penalty')) {
+      text += ' · ${tr(context, 'Assist')}: ${event.assistBy}';
+    }
+    // dettagli puliti (token -> leggibile)
+    if (event.details != null) {
+      final clean = _cleanNotifDetail(event.details!);
+      if (clean.isNotEmpty) text += ' · $clean';
+    }
     return text;
   }
 
@@ -520,11 +638,39 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     }
   }
 
+  // [TEST-LIVE-PRIORFT] mostra una notifica con priorità (svuota la coda)
+  void _showPriorityNotification(MatchEventNotification notif) {
+    // [TEST-LIVE-IMPILA] con le notifiche impilate appare subito comunque
+    _showInAppNotification(notif);
+  }
+
+  // [TEST-LIVE-IMPILA] entry attive (per impilare e riposizionare)
+  final List<OverlayEntry> _activeEntries = [];
+
   void _showInAppNotification(MatchEventNotification notif) {
-    _notificationQueue.add(notif);
-    if (!_isShowingNotification) {
-      _displayNextNotification();
-    }
+    if (!mounted) return;
+    _haptic.mediumImpact();
+    final overlay = Overlay.of(context);
+    late OverlayEntry entry;
+    final myIndex = _activeEntries.length;
+    entry = OverlayEntry(
+      builder: (context) => MatchEventOverlay(
+        notification: notif,
+        stackIndex: _activeEntries.indexOf(entry) >= 0
+            ? _activeEntries.indexOf(entry)
+            : myIndex,
+        onDismissed: () {
+          entry.remove();
+          _activeEntries.remove(entry);
+          // riposiziona le rimanenti
+          for (final e in _activeEntries) {
+            e.markNeedsBuild();
+          }
+        },
+      ),
+    );
+    _activeEntries.add(entry);
+    overlay.insert(entry);
   }
 
   void _displayNextNotification() {
@@ -595,6 +741,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     return Scaffold(
       body: Column(children: [
         _buildEnhancedHeader(theme, isDark),
+        // [TEST-LIVE-CONTROLLI] barra controlli simulazione (solo test 9999)
+        if (widget.match.id == 9999) _buildSimControls(),
         _buildModernTabBar(theme, isDark),
         Expanded(
             child: TabBarView(
@@ -624,6 +772,60 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   // ============================================================================
   // HEADER
   // ============================================================================
+  // [TEST-LIVE-CONTROLLI] barra con tasti Pausa e Velocità x2 (solo partita test)
+  Widget _buildSimControls() {
+    final sim = _liveSimulator;
+    final paused = sim.isScriptedPaused(widget.match.id);
+    final speed = sim.scriptedSpeed(widget.match.id);
+    return Container(
+      color: Colors.deepPurple.withValues(alpha: 0.08),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('[TEST]',
+              style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.deepPurple)),
+          const SizedBox(width: 16),
+          // Pausa / Play
+          OutlinedButton.icon(
+            onPressed: () {
+              sim.toggleScriptedPause(widget.match);
+              setState(() {});
+            },
+            icon: Icon(paused ? Icons.play_arrow_rounded : Icons.pause_rounded,
+                size: 18),
+            label: Text(paused ? 'Riprendi' : 'Pausa'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.deepPurple,
+              side: const BorderSide(color: Colors.deepPurple),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Velocità x1 / x2
+          OutlinedButton.icon(
+            onPressed: () {
+              sim.toggleScriptedSpeed(widget.match);
+              setState(() {});
+            },
+            icon: const Icon(Icons.fast_forward_rounded, size: 18),
+            label: Text('x$speed'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: speed == 2 ? Colors.white : Colors.deepPurple,
+              backgroundColor:
+                  speed == 2 ? Colors.deepPurple : Colors.transparent,
+              side: const BorderSide(color: Colors.deepPurple),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildEnhancedHeader(ThemeData theme, bool isDark) {
     return Container(
       padding: EdgeInsets.only(
@@ -743,7 +945,8 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
                 border:
                     Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2)),
             child: Text(
-                '${widget.match.homeScore} - ${widget.match.awayScore}',
+                // [TEST-LIVE-SCOREHEADER] usa il punteggio live (fallback al match)
+                '${_currentHomeScore ?? widget.match.homeScore} - ${_currentAwayScore ?? widget.match.awayScore}',
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 40,
@@ -1703,51 +1906,145 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   // [TEST-LIVE-B2] genera il momentum live dagli eventi del copione.
   // Per ogni minuto 1..90 produce [minuto, isHome, intensita].
   // L'intensita sale vicino agli eventi della squadra corrispondente.
+  // [TEST-LIVE-FROZEN] momentum congelato: generato UNA volta, colori stabili.
+  List<List<dynamic>>? _frozenMomentum;
+
   List<List<dynamic>> _buildLiveMomentum() {
-    final events = _liveSimulator.getMatchEvents(9999);
+    // Se già generato, restituiscilo (non ricalcolare -> niente cambi colore)
+    if (_frozenMomentum != null) return _frozenMomentum!;
+
+    // Il copione è fisso e noto: definiamo qui i minuti "caldi" per squadra.
+    // (minuto, isHome, forza) — forza 1.0 = gol/rigore, 0.6 = altro evento.
+    // Deriva dagli stessi minuti del copione in live_match_simulator.
+    const hot = <List<dynamic>>[
+      [4, false, 0.6],   // fallo away
+      [8, true, 0.6],    // corner home
+      [12, true, 1.0],   // GOL home
+      [17, false, 0.6],  // giallo away
+      [23, true, 0.6],   // fuorigioco home
+      [29, false, 1.0],  // GOL away
+      [34, true, 0.6],   // fallo home
+      [41, true, 1.0],   // rigore home
+      [49, true, 0.6],   // giallo home
+      [55, false, 0.6],  // cambio away
+      [61, false, 0.6],  // corner away
+      [66, false, 0.6],  // VAR away
+      [72, false, 1.0],  // rosso away (evento forte)
+      [78, false, 0.6],  // fuorigioco away
+      [84, true, 0.6],   // cambio home
+      [88, true, 1.0],   // GOL home
+      [90, false, 0.6],  // fallo away
+    ];
+
     final result = <List<dynamic>>[];
     for (int m = 1; m <= 90; m++) {
-      // trova l'evento piu vicino entro 3 minuti
-      double intensity = 0.25;
-      bool isHome = m.isEven; // default alternato
-      for (final e in events) {
-        final dist = (e.minute - m).abs();
+      double intensity = 0.0;
+      bool isHome;
+      // default deterministico: chi "controlla" il minuto in base a blocchi
+      // di gioco fissi (non casuali, non dipendono dagli eventi runtime).
+      // Blocchi che alternano il possesso in modo stabile.
+      if (m <= 12) {
+        isHome = true;               // apertura casa
+      } else if (m <= 29) {
+        isHome = (m % 2 == 0) ? false : true; // contesa, tende ospite
+      } else if (m <= 45) {
+        isHome = true;               // finale 1T casa
+      } else if (m <= 66) {
+        isHome = false;              // ospite preme 2T
+      } else if (m <= 78) {
+        isHome = (m % 2 == 0) ? true : false;
+      } else {
+        isHome = true;               // finale casa
+      }
+
+      // intensità di base stabile (dipende solo dal minuto -> non cambia)
+      intensity = 0.2 + ((m * 13) % 5) / 10.0; // 0.2..0.6, deterministica
+
+      // applica i picchi dei minuti caldi (fissi), con falloff sui vicini
+      for (final h in hot) {
+        final hm = h[0] as int;
+        final hHome = h[1] as bool;
+        final hForce = h[2] as double;
+        final dist = (hm - m).abs();
         if (dist <= 3) {
-          isHome = e.teamType == 'home';
-          // gol/rigore = picco; altri eventi = intensita media
-          final strong = e.type == 'goal' || e.type == 'penalty';
-          final base = strong ? 1.0 : 0.6;
-          final falloff = 1.0 - (dist / 4.0);
-          final val = base * falloff;
+          final val = hForce * (1.0 - dist / 4.0);
           if (val > intensity) {
             intensity = val;
+            isHome = hHome; // vicino a un evento, il colore è di quella squadra
           }
         }
       }
-      // piccola oscillazione per non essere piatto
-      if (intensity <= 0.25) {
-        intensity = 0.2 + ((m * 7) % 5) / 10.0; // 0.2..0.6 pseudo-vario
-        isHome = (m % 3) != 0;
-      }
+
       result.add([m, isHome, intensity.clamp(0.0, 1.0)]);
     }
+
+    _frozenMomentum = result;
     return result;
   }
 
-  // [TEST-LIVE] converte LiveMatchEvent -> LocalMatchEvent
+  // [TEST-LIVE-COPIONELAZIO] converte LiveMatchEvent -> LocalMatchEvent
+  // mappa i campi per TIPO, usando i token bilingue di Lazio-Milan.
+  // In LiveMatchEvent i dettagli stanno in `details` (con eventuale '|'
+  // per separare esito|piede o marker|descrizione) e in `assistBy`.
   List<LocalMatchEvent> _convertLiveEventsToLocal(List<LiveMatchEvent> live) {
     return live.map((e) {
+      final raw = e.details ?? '';
+      final parts = raw.split('|');
+      final p0 = parts.isNotEmpty ? parts[0] : '';
+      final p1 = parts.length > 1 ? parts[1] : null;
+
       String type = e.type;
-      if (e.type == 'penalty' &&
-          (e.details ?? '').toLowerCase().contains('sbagl')) {
-        type = 'penaltyMiss';
+      String? detail;
+      String? subDetail;
+
+      switch (e.type) {
+        case 'goal':
+          // details = 'GOAL|<descrizione tiro>', assist in assistBy
+          detail = e.assistBy != null ? 'Assist: ${e.assistBy}' : null;
+          subDetail = p1; // es. 'Destro da area', 'Di testa'
+          break;
+        case 'penalty':
+          if (p0.toLowerCase().contains('sbagl')) {
+            type = 'penaltyMiss';
+          }
+          detail = e.assistBy != null ? 'Assist: ${e.assistBy}' : null;
+          subDetail = p0.isNotEmpty ? p0 : null; // 'Trasformato'
+          break;
+        case 'foul':
+          detail = p0; // 'FOUL_ON:X' -> tradotto da _localizeEventDetail
+          break;
+        case 'shot':
+          detail = p0;      // 'Tiro parato' / 'Tiro fuori'
+          subDetail = p1;   // 'Destro' / 'Sinistro'
+          break;
+        case 'corner':
+          detail = p0;      // 'CORNER_LEFT' / 'CORNER_RIGHT'
+          break;
+        case 'yellowCard':
+        case 'redCard':
+          detail = p0;      // 'TACTICAL_FOUL' / 'PROTESTS' / 'Somma di ammonizioni'
+          break;
+        case 'offside':
+          detail = p0;      // 'OFFSIDE_ACTIVE' / 'OFFSIDE_PASSIVE'
+          break;
+        case 'substitution':
+          detail = e.assistBy;      // chi ENTRA
+          subDetail = 'Cambio';
+          break;
+        case 'var':
+          subDetail = p0.isNotEmpty ? p0 : null; // motivo annullamento
+          break;
+        default:
+          detail = e.assistBy;
+          subDetail = p0.isNotEmpty ? p0 : null;
       }
+
       return LocalMatchEvent(
         type: type,
         minute: e.minute,
         playerName: e.playerName,
-        detail: e.assistBy,
-        subDetail: e.details,
+        detail: detail,
+        subDetail: subDetail,
         isHomeTeam: e.teamType == 'home',
       );
     }).toList();

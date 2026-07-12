@@ -37,9 +37,12 @@ class MatchEventOverlay extends StatefulWidget {
   final MatchEventNotification notification;
   final VoidCallback onDismissed;
 
+  // [TEST-LIVE-IMPILA] posizione nella pila (0 = in cima)
+  final int stackIndex;
   const MatchEventOverlay({super.key, 
     required this.notification,
     required this.onDismissed,
+    this.stackIndex = 0,
   });
 
   @override
@@ -99,8 +102,10 @@ class _MatchEventOverlayState extends State<MatchEventOverlay>
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final topPadding = MediaQuery.of(context).padding.top;
 
+    // [TEST-LIVE-IMPILA] impila: ogni notifica scende di 78px
+    final stackOffset = widget.stackIndex * 78.0;
     return Positioned(
-      top: topPadding + 8,
+      top: topPadding + 8 + stackOffset,
       left: 12,
       right: 12,
       child: SlideTransition(

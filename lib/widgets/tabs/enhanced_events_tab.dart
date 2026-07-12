@@ -69,24 +69,39 @@ class EnhancedEventsTab extends StatefulWidget {
 
 class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
   // ── State locali (precedentemente nel padre) ──
-  bool _eventsChronologicalOrder = true;
+  // [TEST-LIVE-RECSEQ] default = Recenti (nelle live si vuole vedere
+  // subito cosa e' appena successo)
+  bool _eventsChronologicalOrder = false;
 
   Set<String> _activeEventFilters = {
     'goal',
     'yellowCard',
     'redCard',
-    'substitution'
+    'substitution',
+    'var', // [TEST-LIVE-VAR]
   };
 
   static const _keyEventTypes = {
     'goal',
     'yellowCard',
     'redCard',
-    'substitution'
+    'substitution',
+    'var', // [TEST-LIVE-VAR]
   };
 
   final ScrollController _scrollController = ScrollController();
   final Map<int, GlobalKey> _eventKeys = {};
+
+  // [TEST-LIVE-DIDUPDATE] aggiorna la timeline quando cambia il minuto live
+  // (senza ricreare il widget: filtri/ordine/scroll restano intatti)
+  @override
+  void didUpdateWidget(EnhancedEventsTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.liveMinute != widget.liveMinute) {
+      // il minuto è avanzato: rileggi gli eventi e ridisegna
+      if (mounted) setState(() {});
+    }
+  }
 
   @override
   void dispose() {
@@ -137,10 +152,28 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
 
     // Filter by active event types
     final filteredEvents =
-        allEvents.where((e) => _activeEventFilters.contains(e.type)).toList();
+        allEvents.where((e) => _activeEventFilters.contains(e.type) ||
+            /* [TEST-LIVE-RIGORI] rigori mostrati coi gol */
+            ((e.type == 'penalty' || e.type == 'penaltyMiss') &&
+                _activeEventFilters.contains('goal'))).toList();
 
+    // [TEST-LIVE-INTEV] inserisci un evento 'halfTime' al 45' se siamo nel 2 tempo
+    // [TEST-LIVE-BANNER45] banner a 45' (appena finisce il 1° tempo)
+    if (widget.liveMinute != null && widget.liveMinute! >= 45) {
+      final hasHT = filteredEvents.any((e) => e.type == 'halfTime');
+      if (!hasHT) {
+        filteredEvents.add(LocalMatchEvent(
+          type: 'halfTime',
+          minute: 45,
+          playerName: '',
+          isHomeTeam: true,
+        ));
+      }
+    }
     if (!_eventsChronologicalOrder) {
       filteredEvents.sort((a, b) => b.minute.compareTo(a.minute));
+    } else {
+      filteredEvents.sort((a, b) => a.minute.compareTo(b.minute));
     }
 
     // Running score for goal events
@@ -149,7 +182,8 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     final sortedAll = List<LocalMatchEvent>.from(allEvents)
       ..sort((a, b) => a.minute.compareTo(b.minute));
     for (final e in sortedAll) {
-      if (e.type == 'goal') {
+      // [TEST-LIVE-PNTRIG] conta gol e rigori trasformati (non i rigori sbagliati)
+      if (e.type == 'goal' || e.type == 'penalty') {
         if (e.isHomeTeam) {
           hGoals++;
         } else {
@@ -183,10 +217,19 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                     final isChrono = _eventsChronologicalOrder;
                     // First item: scrollable momentum chart
                     if (index == 0) {
-                      return _buildMomentumBar(allEvents, isDark, homeColor, awayColor);
+                      // [TEST-LIVE-PERF] isola il ridisegno della matchline
+                      return RepaintBoundary(
+                        child: _buildMomentumBar(allEvents, isDark, homeColor, awayColor),
+                      );
                     }
                     // Second item: KO if chrono, FT if reverse
                     if (index == 1) {
+                      // [TEST-LIVE-FTRECENTI] in Recenti il FT è qui: nascondilo finché < 90'
+                      final showFT2 = widget.liveMinute == null ||
+                          widget.liveMinute! >= 90;
+                      if (!isChrono && !showFT2) {
+                        return const SizedBox.shrink();
+                      }
                       return _buildMatchMarker(
                           isChrono ? S.of(context)!.calcioInizio : S.of(context)!.finePartita,
                           isChrono ? 0 : 90,
@@ -206,6 +249,11 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                           isDark);
                     }
                     final event = filteredEvents[index - 2];
+                    // [TEST-LIVE-INTEV] evento halfTime: marcatore intervallo
+                    if (event.type == 'halfTime') {
+                      return _buildMatchMarker(
+                          _halfTimeLabel(scoreAtMinute), 45, isDark);
+                    }
                     final score = scoreAtMinute[event.minute] ?? [0, 0];
                     // HT separator: detect crossing between 1st and 2nd half
                     bool needsHT = false;
@@ -219,11 +267,13 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                     }
                     final eventKey =
                         _eventKeys.putIfAbsent(event.minute, () => GlobalKey());
-                    return Column(key: eventKey, children: [
-                      if (needsHT) _buildMatchMarker(S.of(context)!.intervallo, 45, isDark),
+                    // [TEST-LIVE-PERF] isola il ridisegno di ogni evento
+                    return RepaintBoundary(
+                      child: Column(key: eventKey, children: [
+                      // [TEST-LIVE-INTEV] (intervallo ora e' evento halfTime)
                       _buildCentralTimelineEvent(
                           event, score, isDark, homeColor, awayColor),
-                    ]);
+                    ]));
                   },
                 ),
         ),
@@ -237,16 +287,22 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
     final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
     final dividerColor = isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.withValues(alpha: 0.12);
-    // [TEST-LIVE-B2] partita test: usa momentum live troncato al minuto corrente
+    // [TEST-LIVE-FIXMOM] partita test: 90 slot fissi, minuti futuri azzerati
+    // (NON rimuoverli, altrimenti la barra si allarga a tutta la width).
     final data = (widget.liveMomentum != null && widget.liveMinute != null)
         ? widget.liveMomentum!
-            .where((e) => (e[0] as int) <= widget.liveMinute!)
+            .map((e) => (e[0] as int) <= widget.liveMinute!
+                ? e
+                : [e[0], e[1], 0.0])
             .toList()
         : widget.mockAttackMomentum;
     final segCount = data.length;
 
     // Eventi per i marker
-    final goalEvents = allEvents.where((e) => e.type == 'goal').toList();
+    // [TEST-LIVE-PALLRIG] pallino anche per i rigori trasformati
+    final goalEvents = allEvents
+        .where((e) => e.type == 'goal' || e.type == 'penalty')
+        .toList();
     final cardEvents = allEvents.where((e) => e.type == 'yellowCard' || e.type == 'redCard').toList();
 
     return Container(
@@ -557,7 +613,10 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
         ? S.of(context)!.eventiChiave
         : '${_activeEventFilters.length} filtri attivi';
     final filteredCount =
-        allEvents.where((e) => _activeEventFilters.contains(e.type)).length;
+        allEvents.where((e) => _activeEventFilters.contains(e.type) ||
+            /* [TEST-LIVE-RIGORI] rigori mostrati coi gol */
+            ((e.type == 'penalty' || e.type == 'penaltyMiss') &&
+                _activeEventFilters.contains('goal'))).length;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
@@ -661,6 +720,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
       ('foul', '⚠️', S.of(context)!.falliLabel),
       ('corner', '🚩', tr(context, 'Corner')),
       ('offside', '🏳️', tr(context, 'Fuorigioco')),
+      ('var', '📺', 'VAR'), // [TEST-LIVE-VAR]
     ];
 
     showModalBottomSheet(
@@ -713,7 +773,8 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                           'shot',
                           'foul',
                           'corner',
-                          'offside'
+                          'offside',
+                          'var', // [TEST-LIVE-TUTTIVAR]
                         });
                     setSheetState(() {});
                   },
@@ -769,11 +830,11 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                                     : FontWeight.w400,
                                 color: isActive ? color : lb,
                               )),
-                          if (isActive) ...[
-                            const SizedBox(width: 6),
-                            Icon(Icons.check_circle_rounded,
-                                size: 16, color: color),
-                          ],
+                          // [TEST-LIVE-PILLOLE] spazio spunta sempre riservato (larghezza fissa)
+                          const SizedBox(width: 6),
+                          Icon(Icons.check_circle_rounded,
+                              size: 16,
+                              color: isActive ? color : Colors.transparent),
                         ]),
                       ),
                     );
@@ -790,7 +851,7 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
   // mostra la barra momentum e il "Calcio d'inizio" fin dal 1' minuto.
   Widget _buildLiveEmptyTimeline(bool isDark) {
     final theme = Theme.of(context);
-    final homeColor = theme.colorScheme.primary;
+    final homeColor = const Color(0xFF1565C0); // [TEST-LIVE-COLORVERO] blu come timeline normale
     const awayColor = Color(0xFFEF5350);
     return ListView(
       controller: _scrollController,
@@ -801,6 +862,20 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
         const SizedBox(height: 24),
       ],
     );
+  }
+
+  // [TEST-LIVE-SECONDOTEMPO] label intervallo con il risultato al 45'
+  String _halfTimeLabel(Map<int, List<int>> scoreAtMinute) {
+    // trova il punteggio all'ultimo minuto <= 45
+    int h = 0, a = 0;
+    for (int m = 45; m >= 0; m--) {
+      if (scoreAtMinute.containsKey(m)) {
+        h = scoreAtMinute[m]![0];
+        a = scoreAtMinute[m]![1];
+        break;
+      }
+    }
+    return '${S.of(context)!.intervallo} · $h-$a';
   }
 
   Widget _buildMatchMarker(String label, int minute, bool isDark) {
@@ -891,7 +966,9 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
   Widget _buildCentralTimelineEvent(LocalMatchEvent event, List<int> score,
       bool isDark, Color homeColor, Color awayColor) {
     final isHome = event.isHomeTeam;
-    final isGoal = event.type == 'goal';
+    // [TEST-LIVE-RIGRIQ] i rigori usano il riquadro grande come i gol
+    final isGoal = event.type == 'goal' ||
+        event.type == 'penalty' || event.type == 'penaltyMiss';
     final isKey = _keyEventTypes.contains(event.type);
     final teamColor = isHome ? homeColor : awayColor;
     final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
@@ -957,7 +1034,9 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     final lb = isDark ? Colors.grey[500]! : Colors.grey[600]!;
     final cardBg = isDark ? Colors.grey[850]! : Colors.white;
 
-    if (event.type == 'goal') {
+    // [TEST-LIVE-RIGRIQ] rigori (trasformati/sbagliati) come i gol
+    if (event.type == 'goal' ||
+        event.type == 'penalty' || event.type == 'penaltyMiss') {
       return _buildGoalEvent(
           event, isHome, isDark, teamColor, cardBg, tx, lb, score);
     }
@@ -967,12 +1046,22 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     if (event.type == 'substitution') {
       return _buildSubEvent(event, isHome, isDark, teamColor, cardBg, tx, lb);
     }
+    // [TEST-LIVE-VARBOX] VAR con riquadro medio dedicato
+    if (event.type == 'var') {
+      return _buildVarEvent(event, isHome, isDark, cardBg, tx, lb);
+    }
     return _buildMinorEvent(event, isHome, isDark, teamColor, tx, lb);
   }
 
   Widget _buildGoalEvent(LocalMatchEvent event, bool isHome, bool isDark,
       Color teamColor, Color cardBg, Color tx, Color lb, List<int> score) {
     final textAlign = isHome ? TextAlign.right : TextAlign.left;
+    // [TEST-LIVE-RIGRIQ] rigore sbagliato: colore spento (grigio/rosso)
+    final bool isPenMiss = event.type == 'penaltyMiss';
+    final bool isPen = event.type == 'penalty';
+    if (isPenMiss) {
+      teamColor = const Color(0xFF9E9E9E); // grigio spento
+    }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
@@ -1021,7 +1110,18 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                   if (isHome)
                     Icon(Icons.sports_soccer, size: 18, color: teamColor),
                 ]),
-            if (event.detail != null && event.detail!.isNotEmpty)
+            // [TEST-LIVE-RIGRIQ] sotto-testo: Rigore / Rigore sbagliato / assist
+            if (isPen || isPenMiss)
+              Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(
+                      isPenMiss
+                          ? tr(context, 'Rigore sbagliato')
+                          : tr(context, 'Rigore'),
+                      style: TextStyle(
+                          fontSize: 11, color: lb, fontStyle: FontStyle.italic),
+                      textAlign: textAlign))
+            else if (event.detail != null && event.detail!.isNotEmpty)
               Padding(
                   padding: const EdgeInsets.only(top: 2),
                   child: Text(widget.localizeEventDetail(context, event.detail!),
@@ -1084,6 +1184,15 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                         ? CrossAxisAlignment.end
                         : CrossAxisAlignment.start,
                     children: [
+                  // [TEST-LIVE-TL3] etichetta tipo cartellino
+                  Text(
+                      isRed
+                          ? tr(context, 'Cartellino Rosso')
+                          : tr(context, 'Cartellino Giallo'),
+                      style: TextStyle(
+                          fontSize: 10, fontWeight: FontWeight.w600,
+                          color: cardColor),
+                      textAlign: textAlign),
                   Text(event.playerName,
                       style: TextStyle(
                           fontSize: 13, fontWeight: FontWeight.w700, color: tx),
@@ -1118,40 +1227,44 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
         );
 
     // ── In/Out rows ──
+    // [TEST-LIVE-CAMBIOTL] chi ENTRA: "Entra: <nome>" + freccia SU verde
     Widget inRow() => Row(mainAxisSize: MainAxisSize.min, children: [
           if (isHome)
             Flexible(
-                child: Text(widget.localizeEventDetail(context, event.detail),
+                child: Text(
+                    '${tr(context, 'Entra')}: ${widget.localizeEventDetail(context, event.detail)}',
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
                         color: greenIn))),
           if (isHome) const SizedBox(width: 4),
-          Icon(Icons.arrow_downward_rounded, size: 12, color: greenIn),
+          Icon(Icons.arrow_upward_rounded, size: 12, color: greenIn),
           if (!isHome) const SizedBox(width: 4),
           if (!isHome)
             Flexible(
-                child: Text(widget.localizeEventDetail(context, event.detail),
+                child: Text(
+                    '${tr(context, 'Entra')}: ${widget.localizeEventDetail(context, event.detail)}',
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
                         color: greenIn))),
         ]);
 
+    // [TEST-LIVE-CAMBIOTL] chi ESCE: "Esce: <nome>" + freccia GIÙ rossa
     Widget outRow() => Row(mainAxisSize: MainAxisSize.min, children: [
           if (isHome)
             Flexible(
-                child: Text(event.playerName,
+                child: Text('${tr(context, 'Esce')}: ${event.playerName}',
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: redOut))),
           if (isHome) const SizedBox(width: 4),
-          Icon(Icons.arrow_upward_rounded, size: 12, color: redOut),
+          Icon(Icons.arrow_downward_rounded, size: 12, color: redOut),
           if (!isHome) const SizedBox(width: 4),
           if (!isHome)
             Flexible(
-                child: Text(event.playerName,
+                child: Text('${tr(context, 'Esce')}: ${event.playerName}',
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -1185,8 +1298,9 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                         ? CrossAxisAlignment.end
                         : CrossAxisAlignment.start,
                     children: [
-                  inRow(),
+                  // [TEST-LIVE-ORDINECAMBIO] prima Esce, poi Entra (come le notifiche)
                   outRow(),
+                  inRow(),
                   if (hasSubDetail)
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
@@ -1205,6 +1319,130 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
     );
   }
 
+  // [TEST-LIVE-VARTEXT] testo dell'evento minore.
+  // Per il VAR (e eventi con esito) mostra l'esito invece del nome.
+  String _minorEventText(LocalMatchEvent event) {
+    final label = _eventTypeLabel(event.type);
+    // VAR: l'esito sta in subDetail (es. 'Gol annullato per fuorigioco')
+    if (event.type == 'var') {
+      final esito = (event.subDetail != null && event.subDetail!.isNotEmpty)
+          ? widget.localizeEventDetail(context, event.subDetail!)
+          : event.playerName;
+      return label.isNotEmpty ? '$label · $esito' : esito;
+    }
+    // [TEST-LIVE-NODOPPIONE] come Lazio-Milan: solo dettaglio + nome (niente doppione)
+    final det = (event.detail != null && event.detail!.isNotEmpty)
+        ? widget.localizeEventDetail(context, event.detail!)
+        : '';
+    if (det.isNotEmpty) {
+      return '$det · ${event.playerName}';
+    }
+    // se non c'è dettaglio, usa l'etichetta del tipo come fallback
+    return label.isNotEmpty
+        ? '$label · ${event.playerName}'
+        : event.playerName;
+  }
+
+  // [TEST-LIVE-EVLABEL] etichetta leggibile e tradotta per il tipo di evento
+  String _eventTypeLabel(String type) {
+    switch (type) {
+      case 'foul':
+        return tr(context, 'Fallo');
+      case 'offside':
+        return tr(context, 'Fuorigioco');
+      case 'corner':
+        return tr(context, 'Corner');
+      case 'var':
+        return 'VAR';
+      case 'substitution':
+        return tr(context, 'Sostituzione');
+      case 'penalty':
+        return tr(context, 'Rigore');
+      case 'penaltyMiss':
+        return tr(context, 'Rigore sbagliato');
+      case 'shot':
+      case 'shotOnTarget':
+        return tr(context, 'Tiro');
+      default:
+        return '';
+    }
+  }
+
+  // [TEST-LIVE-VARBOX] riquadro medio per il VAR (più prominente di un evento minore)
+  Widget _buildVarEvent(LocalMatchEvent event, bool isHome, bool isDark,
+      Color cardBg, Color tx, Color lb) {
+    const varColor = Color(0xFF2196F3); // blu VAR
+    final textAlign = isHome ? TextAlign.right : TextAlign.left;
+    // [TEST-LIVE-VARFULL] squadra a cui è annullato + motivo
+    final squadra = event.isHomeTeam
+        ? widget.homeTeamName
+        : widget.awayTeamName;
+    final motivo = (event.subDetail != null && event.subDetail!.isNotEmpty)
+        ? widget.localizeEventDetail(context, event.subDetail!)
+        : '';
+    final esito = motivo.isNotEmpty ? '$squadra · $motivo' : squadra;
+
+    Widget varIcon() => Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: varColor.withValues(alpha: isDark ? 0.22 : 0.12),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: varColor.withValues(alpha: 0.4), width: 1),
+          ),
+          child: const Icon(Icons.tv_rounded, size: 17, color: varColor),
+        );
+
+    final texts = Column(
+      crossAxisAlignment:
+          isHome ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('VAR',
+            style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                color: varColor,
+                letterSpacing: 0.5),
+            textAlign: textAlign),
+        if (esito.isNotEmpty) ...[
+          const SizedBox(height: 2),
+          Text(esito,
+              style: TextStyle(
+                  fontSize: 12.5, fontWeight: FontWeight.w600, color: tx),
+              textAlign: textAlign),
+        ],
+      ],
+    );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: varColor.withValues(alpha: 0.3), width: 1.2),
+        boxShadow: [
+          BoxShadow(
+              color: varColor.withValues(alpha: isDark ? 0.15 : 0.08),
+              blurRadius: 6,
+              offset: const Offset(0, 2)),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment:
+            isHome ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          if (!isHome) varIcon(),
+          if (!isHome) const SizedBox(width: 10),
+          Flexible(child: texts),
+          if (isHome) const SizedBox(width: 10),
+          if (isHome) varIcon(),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMinorEvent(LocalMatchEvent event, bool isHome, bool isDark,
       Color teamColor, Color tx, Color lb) {
     final icon = widget.getEventIcon(event.type);
@@ -1220,7 +1458,9 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
             if (!isHome) const SizedBox(width: 5),
             Flexible(
                 child: Text(
-              '${event.playerName}${event.detail != null ? " · ${widget.localizeEventDetail(context, event.detail!)}" : ""}',
+              // [TEST-LIVE-EVLABEL] etichetta tipo + giocatore + eventuale dettaglio
+              // [TEST-LIVE-VARTEXT] VAR mostra l'esito (subDetail) invece del nome
+              _minorEventText(event),
               style: TextStyle(
                   fontSize: 11, color: lb, fontWeight: FontWeight.w400),
               textAlign: isHome ? TextAlign.right : TextAlign.left,

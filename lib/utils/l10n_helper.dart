@@ -177,6 +177,19 @@ const _map = <String, String>{
   'Tocca un giocatore per filtrare': 'Tap a player to filter',
   'Tutti i tentativi verso la porta': 'All attempts towards goal',
   'Fuorigioco': 'Offsides',
+  // [TEST-LIVE-EVLABEL] etichette tipi evento (timeline)
+  'Fallo': 'Foul',
+  'Fuorigioco (evento)': 'Offside',
+  // [TEST-LIVE-TRAD-EN] traduzioni notifiche/eventi
+  'Esce': 'Out',
+  'Entra': 'In',
+  '⚠️ Fallo': '⚠️ Foul',
+  '🎯 Tiro': '🎯 Shot',
+  'Inizio tempo': 'Kick-off',
+  'Calcio d\'angolo': 'Corner',
+  'Sostituzione': 'Substitution',
+  'Rigore sbagliato': 'Penalty missed',
+
   'Dati riferiti alla partita intera': 'Data refers to the entire match',
   'Contrasti (vinti)': 'Tackles (won)',
   'Passaggi precisi': 'Accurate passes',
