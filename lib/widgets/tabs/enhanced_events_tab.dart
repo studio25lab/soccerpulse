@@ -336,11 +336,12 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(S.of(context)!.faseOffensiva,
+                Text(tr(context, 'Pressione offensiva'),
                     style: TextStyle(
                         fontSize: 13, fontWeight: FontWeight.w700, color: tx, letterSpacing: 0.2)),
                 const SizedBox(height: 2),
-                Text(tr(context, 'Pressione offensiva minuto per minuto'),
+                // [TEST-LIVE-SOTTOTAP] spiega che gol e cartellini sono cliccabili
+                Text(tr(context, 'Tocca gol e cartellini per andare all\'evento'),
                     style: TextStyle(
                         fontSize: 10, color: lb, fontWeight: FontWeight.w400, height: 1.2)),
               ],

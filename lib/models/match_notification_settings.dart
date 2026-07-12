@@ -50,8 +50,10 @@ class MatchNotificationSettings {
     this.notifyFouls = false,
     this.notifyOffsides = false,
     this.notifyMatchStart = true,
-    this.notifyHalfTime = false,
-    this.notifySecondHalfStart = false,
+    // [TEST-LIVE-DEFTEMPI] fine 1 tempo (con risultato) e inizio 2 tempo
+    // attivi di default: sono tra le notifiche piu' utili
+    this.notifyHalfTime = true,
+    this.notifySecondHalfStart = true,
     this.notifyMatchEnd = true,
     this.notifyVarDecisions = true,
     this.minuteUpdateInterval = 0,

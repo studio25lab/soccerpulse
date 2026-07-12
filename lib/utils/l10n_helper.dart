@@ -123,6 +123,8 @@ const _map = <String, String>{
   'Minuti giocati': 'Minutes played',
   'Profilo': 'Profile',
   'Pressione offensiva minuto per minuto': 'Offensive pressure minute by minute',
+    'Pressione offensiva': 'Attacking pressure',
+    "Tocca gol e cartellini per andare all'evento": "Tap goals and cards to jump to the event",
   'Confronta': 'Compare',
   'Profilo Completo': 'Full Profile',
   'Modulo': 'Formation',
