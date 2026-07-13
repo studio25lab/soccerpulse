@@ -264,4 +264,88 @@ class MatchNotificationSettings {
 
   @override
   int get hashCode => matchId.hashCode;
+
+  // [REFACTOR-STEP1] UNICA FONTE DI VERITA' per la logica notifiche.
+  // Prima era duplicata in match_detail, calendar, favorites, team_detail,
+  // home_screen. Ora sta qui: un bug si corregge una volta sola.
+
+  /// Aggiorna un singolo interruttore dalla sua chiave.
+  /// Ritorna una NUOVA istanza (il modello e' immutabile).
+  /// Include il master sync: accendere un toggle accende 'enabled'.
+  MatchNotificationSettings updateFromKey(String key, bool value) {
+    MatchNotificationSettings s;
+    switch (key) {
+      case 'goals':
+        s = copyWith(notifyHomeGoals: value, notifyAwayGoals: value);
+        break;
+      case 'kickoff':
+        // un solo interruttore per inizio 1 e 2 tempo
+        s = copyWith(notifyMatchStart: value, notifySecondHalfStart: value);
+        break;
+      case 'halftime':
+        s = copyWith(notifyHalfTime: value);
+        break;
+      case 'fulltime':
+        s = copyWith(notifyMatchEnd: value);
+        break;
+      case 'yellowCards':
+        s = copyWith(notifyYellowCards: value);
+        break;
+      case 'redCards':
+        s = copyWith(notifyRedCards: value);
+        break;
+      case 'substitutions':
+        s = copyWith(notifySubstitutions: value);
+        break;
+      case 'corners':
+        s = copyWith(notifyCorners: value);
+        break;
+      case 'offsides':
+        s = copyWith(notifyOffsides: value);
+        break;
+      case 'shotsOnTarget':
+        s = copyWith(notifyShotsOnTarget: value);
+        break;
+      case 'fouls':
+        s = copyWith(notifyFouls: value);
+        break;
+      case 'penalties':
+        s = copyWith(notifyPenalties: value);
+        break;
+      case 'var':
+        s = copyWith(notifyVarDecisions: value);
+        break;
+      default:
+        s = this;
+    }
+    // master sync: accendere un toggle accende il master
+    if (value && !s.enabled) {
+      s = s.copyWith(enabled: true);
+    }
+    return s;
+  }
+
+  /// Attiva o disattiva TUTTE le notifiche in un colpo.
+  /// Ritorna una NUOVA istanza.
+  MatchNotificationSettings setAll(bool value) {
+    return copyWith(
+      enabled: value,
+      notifyHomeGoals: value,
+      notifyAwayGoals: value,
+      notifyYellowCards: value,
+      notifyRedCards: value,
+      notifySubstitutions: value,
+      notifyShotsOnTarget: value,
+      notifyCorners: value,
+      notifyPenalties: value,
+      notifyFouls: value,
+      notifyOffsides: value,
+      notifyMatchStart: value,
+      notifyHalfTime: value,
+      notifySecondHalfStart: value,
+      notifyMatchEnd: value,
+      notifyVarDecisions: value,
+    );
+  }
+
 }

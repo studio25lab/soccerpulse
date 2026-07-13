@@ -12,6 +12,7 @@ import '../services/favorites_service.dart';
 import '../services/match_notification_preferences_service.dart';
 import '../models/match_notification_settings.dart';
 import '../widgets/notification_settings_widgets.dart';
+import '../widgets/dialogs/match_notification_dialog.dart'; // [REFACTOR-STEP2]
 import '../generated/l10n.dart';
 import 'match_detail_screen.dart';
 
@@ -446,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen>
                 onTap: () {
                   _haptic.lightImpact();
                   _manualNotifMatches.add(match.id);
-                  _showMatchNotifSheet(match, theme, isDark);
+                  _openMatchNotifDialog(match); // [REFACTOR-STEP2]
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(4),
@@ -553,304 +554,34 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   // [FAV-D2b] match sheet unificato
-  void _showMatchNotifSheet(SoccerMatch match, ThemeData theme, bool isDark) {
-    final matchId = match.id;
-    final notifService = context.read<MatchNotificationPreferencesService>();
-    var settings = notifService.getSettingsForMatch(matchId);
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            final en = settings.enabled;
-
-            // Tutte le notifiche di dettaglio attive?
-            final allOn = settings.notifyHomeGoals &&
-                settings.notifyAwayGoals &&
-                settings.notifyPenalties &&
-                settings.notifyVarDecisions &&
-                settings.notifyMatchStart &&
-                settings.notifyHalfTime &&
-                settings.notifyMatchEnd &&
-                settings.notifyYellowCards &&
-                settings.notifyRedCards &&
-                settings.notifySubstitutions &&
-                settings.notifyCorners &&
-                settings.notifyOffsides &&
-                settings.notifyShotsOnTarget &&
-                settings.notifyFouls;
-
-            final activeCount = settings.activeNotificationsCount;
-
-            void save(MatchNotificationSettings s) {
-              setSheetState(() {
-                settings = s;
-                notifService.saveSettingsForMatch(s);
-              });
-            }
-
-            void applyPreset(String name) {
-              _haptic.mediumImpact();
-              switch (name) {
-                case 'goals':
-                  save(MatchNotificationSettings.goalsOnly(matchId));
-                  break;
-                case 'minimal':
-                  save(MatchNotificationSettings.minimal(matchId));
-                  break;
-                case 'complete':
-                  save(MatchNotificationSettings.complete(matchId));
-                  break;
-                case 'disabled':
-                  save(MatchNotificationSettings.disabled(matchId));
-                  _manualNotifMatches.remove(matchId);
-                  break;
-              }
-            }
-
-            void toggleAll() {
-              _haptic.lightImpact();
-              if (allOn) {
-                save(MatchNotificationSettings.disabled(matchId));
-                _manualNotifMatches.remove(matchId);
-              } else {
-                save(MatchNotificationSettings.complete(matchId));
-              }
-            }
-
-            return NotifSheetContainer(
-              children: [
-                NotifSheetHeader(
-                  title: tr(context, 'Notifiche Partita'),
-                  subtitle:
-                      '${match.homeTeamName} vs ${match.awayTeamName}',
-                  allOn: allOn,
-                  onToggleAll: toggleAll,
-                  onClose: () {
-                    _haptic.lightImpact();
-                    Navigator.pop(context);
-                  },
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        NotifPresetChips(
-                          presets: [
-                            NotifPresetChipData(
-                              label: tr(context, 'Solo Goal'),
-                              icon: Icons.sports_soccer,
-                              onTap: () => applyPreset('goals'),
-                            ),
-                            NotifPresetChipData(
-                              label: tr(context, 'Predefinito'),
-                              icon: Icons.notifications_none,
-                              onTap: () => applyPreset('minimal'),
-                            ),
-                            NotifPresetChipData(
-                              label: tr(context, 'Completo'),
-                              icon: Icons.notifications_active,
-                              onTap: () => applyPreset('complete'),
-                            ),
-                            NotifPresetChipData(
-                              label: tr(context, 'Disattiva tutto'),
-                              icon: Icons.notifications_off,
-                              onTap: () => applyPreset('disabled'),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        NotifMasterSwitch(
-                          title: tr(context, 'Notifiche Partita'),
-                          subtitle: en
-                              ? '$activeCount ${tr(context, 'eventi attivi')}'
-                              : tr(context, 'Disattivate'),
-                          value: en,
-                          onChanged: (v) {
-                            _haptic.lightImpact();
-                            save(settings.copyWith(enabled: v));
-                          },
-                        ),
-                        const SizedBox(height: 4),
-
-                        NotifSectionHeader(
-                          title: tr(context, 'Risultato'),
-                          icon: Icons.flag_rounded,
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.sports_soccer,
-                          color: const Color(0xFF4CAF50),
-                          title: tr(context, 'Goal'),
-                          subtitle:
-                              tr(context, 'Notifica con marcatore e minuto'),
-                          value: settings.notifyHomeGoals,
-                          enabled: en,
-                          onChanged: (v) => save(settings.copyWith(
-                            notifyHomeGoals: v,
-                            notifyAwayGoals: v,
-                          )),
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.gps_fixed_rounded,
-                          color: const Color(0xFFE91E63),
-                          title: tr(context, 'Rigori'),
-                          subtitle: tr(context,
-                              'Rigori assegnati, segnati e sbagliati'),
-                          value: settings.notifyPenalties,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyPenalties: v)),
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.videocam_rounded,
-                          color: const Color(0xFF2196F3),
-                          title: tr(context, 'Decisioni VAR'),
-                          subtitle: tr(context,
-                              'Revisioni e decisioni arbitrali al VAR'),
-                          value: settings.notifyVarDecisions,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyVarDecisions: v)),
-                        ),
-
-                        NotifSectionHeader(
-                          title: tr(context, 'Tempi di gioco'),
-                          icon: Icons.timer_rounded,
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.play_circle_outline_rounded,
-                          color: const Color(0xFF66BB6A),
-                          title: tr(context, 'Inizio tempo'),
-                          subtitle: tr(context,
-                              'Calcio d\'inizio 1° e 2° tempo'),
-                          value: settings.notifyMatchStart,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyMatchStart: v)),
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.pause_circle_outline_rounded,
-                          color: const Color(0xFFFFA726),
-                          title: tr(context, 'Fine primo tempo'),
-                          subtitle: tr(context,
-                              'Risultato parziale all\'intervallo'),
-                          value: settings.notifyHalfTime,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyHalfTime: v)),
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.stop_circle_outlined,
-                          color: const Color(0xFFEF5350),
-                          title: tr(context, 'Fischio finale'),
-                          subtitle: tr(context,
-                              'Risultato finale della partita'),
-                          value: settings.notifyMatchEnd,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyMatchEnd: v)),
-                        ),
-
-                        NotifSectionHeader(
-                          title: tr(context, 'Disciplina'),
-                          icon: Icons.shield_rounded,
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.square_rounded,
-                          color: const Color(0xFFFFCA28),
-                          title: tr(context, 'Cartellini gialli'),
-                          subtitle:
-                              tr(context, 'Ammonizioni ai giocatori'),
-                          value: settings.notifyYellowCards,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyYellowCards: v)),
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.square_rounded,
-                          color: const Color(0xFFE53935),
-                          title: tr(context, 'Cartellini rossi'),
-                          subtitle: tr(context,
-                              'Espulsioni dirette e doppie ammonizioni'),
-                          value: settings.notifyRedCards,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyRedCards: v)),
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.swap_horiz_rounded,
-                          color: const Color(0xFF42A5F5),
-                          title: tr(context, 'Sostituzioni'),
-                          subtitle: tr(context, 'Cambi e sostituzioni'),
-                          value: settings.notifySubstitutions,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifySubstitutions: v)),
-                        ),
-
-                        NotifSectionHeader(
-                          title: tr(context, 'Gioco'),
-                          icon: Icons.sports_rounded,
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.flag_outlined,
-                          color: const Color(0xFF26A69A),
-                          title: tr(context, 'Calci d\'angolo'),
-                          subtitle: tr(context, 'Corner battuti'),
-                          value: settings.notifyCorners,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyCorners: v)),
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.front_hand_rounded,
-                          color: const Color(0xFF8D6E63),
-                          title: tr(context, 'Fuorigioco'),
-                          subtitle: tr(context, 'Fuorigioco fischiati'),
-                          value: settings.notifyOffsides,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyOffsides: v)),
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.gps_fixed,
-                          color: const Color(0xFF5C6BC0),
-                          title: tr(context, 'Tiri in porta'),
-                          subtitle: tr(context,
-                              'Tiri nello specchio della porta'),
-                          value: settings.notifyShotsOnTarget,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyShotsOnTarget: v)),
-                        ),
-                        NotifSwitchRow(
-                          icon: Icons.warning_amber_rounded,
-                          color: const Color(0xFF78909C),
-                          title: tr(context, 'Falli'),
-                          subtitle:
-                              tr(context, 'Falli commessi importanti'),
-                          value: settings.notifyFouls,
-                          enabled: en,
-                          onChanged: (v) =>
-                              save(settings.copyWith(notifyFouls: v)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
+  // [REFACTOR-STEP2] usa il dialog UFFICIALE (niente piu' pannello duplicato).
+  // Prima qui c'erano ~299 righe di pannello copiato,
+  // con testi diversi da match_detail/calendar -> traduzioni incoerenti.
+  Future<void> _openMatchNotifDialog(SoccerMatch match) async {
+    final notifSvc = context.read<MatchNotificationPreferencesService>();
+    await showMatchNotificationDialogV2(
+      context,
+      match: match,
+      getSettings: () => notifSvc.getSettingsForMatch(match.id),
+      setSettings: (s) {
+        notifSvc.saveSettingsForMatch(s);
+        if (mounted) setState(() {});
       },
-    ).then((_) {
-      if (mounted) setState(() {});
-    });
+      service: notifSvc,
+      haptic: _haptic,
+      onUpdateFromKey: (key, value) {
+        // logica centralizzata nel modello (STEP 1)
+        final cur = notifSvc.getSettingsForMatch(match.id);
+        notifSvc.saveSettingsForMatch(cur.updateFromKey(key, value));
+        if (mounted) setState(() {});
+      },
+      onSetAll: (value) {
+        final cur = notifSvc.getSettingsForMatch(match.id);
+        notifSvc.saveSettingsForMatch(cur.setAll(value));
+        if (mounted) setState(() {});
+      },
+    );
+    if (mounted) setState(() {});
   }
 
   // ── Mock scorers ──

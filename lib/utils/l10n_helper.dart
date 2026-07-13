@@ -62,6 +62,7 @@ String standingsAbbr(BuildContext context, String italianAbbr) {
 }
 
 const _map = <String, String>{
+  'Predefinito': 'Default',
   'Espulsioni dirette e per doppio giallo': 'Straight reds and second yellows',
   'Notifica con marcatore e minuto': 'Scorer and minute included',
   'Revisioni e decisioni arbitrali al VAR': 'VAR reviews and referee decisions',

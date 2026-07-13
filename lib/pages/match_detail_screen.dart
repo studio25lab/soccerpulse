@@ -994,6 +994,11 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     // ── Italian token in italian: pass-through; in english: localize ──
     if (!isEn) return detail;
     if (detail.startsWith('Assist:')) return detail;
+    // [FIX-4TR] prima la mappa traduzioni generale (VAR, cartellini,
+    // 'Somma di ammonizioni', 'Gol annullato per fuorigioco'...),
+    // poi il fallback sui dati dei tiri.
+    final t = tr(context, detail);
+    if (t != detail) return t;
     return localizeShotData(context, detail);
   }
   void _navigateToTeamDetail(int teamId, String teamName, String? teamLogo) async {

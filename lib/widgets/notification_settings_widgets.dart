@@ -10,6 +10,7 @@
 // callback, non conoscono i servizi.
 
 import 'package:flutter/material.dart';
+import '../utils/l10n_helper.dart'; // [FIX-4TR]
 
 /// Dato di un preset mostrato come chip.
 class NotifPresetChipData {
@@ -161,7 +162,10 @@ class NotifSheetHeader extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  allOn ? 'Disattiva' : 'Attiva tutto',
+                  // [FIX-4TR] ora passano dal sistema di traduzione
+                  allOn
+                      ? tr(context, 'Disattiva')
+                      : tr(context, 'Attiva tutto'),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
