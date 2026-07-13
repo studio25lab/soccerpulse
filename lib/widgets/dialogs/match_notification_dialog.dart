@@ -229,7 +229,7 @@ Future<void> showMatchNotificationDialogV2(
                       NotifSwitchRow(
                         icon: Icons.stop_circle_outlined,
                         color: const Color(0xFFEF5350),
-                        title: tr(context, 'Fischio finale'),
+                        title: tr(context, 'Fine partita'),
                         subtitle:
                             tr(context, 'Risultato finale della partita'),
                         value: s.notifyMatchEnd,

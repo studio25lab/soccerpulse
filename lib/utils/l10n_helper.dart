@@ -62,6 +62,14 @@ String standingsAbbr(BuildContext context, String italianAbbr) {
 }
 
 const _map = <String, String>{
+  'Espulsioni dirette e per doppio giallo': 'Straight reds and second yellows',
+  'Notifica con marcatore e minuto': 'Scorer and minute included',
+  'Revisioni e decisioni arbitrali al VAR': 'VAR reviews and referee decisions',
+  'Cambi effettuati da entrambe le squadre': 'Substitutions by both teams',
+  'Corner battuti da entrambe le squadre': 'Corners taken by both teams',
+  "Risultato parziale all'intervallo": "Half-time score",
+  'Somma di ammonizioni': 'Second yellow card',
+  'Gol annullato per fuorigioco': 'Goal disallowed for offside',
   'PORTIERE': 'GOALKEEPER',
   'DIFENSORE': 'DEFENDER',
   'CENTROCAMPISTA': 'MIDFIELDER',
