@@ -62,6 +62,17 @@ String standingsAbbr(BuildContext context, String italianAbbr) {
 }
 
 const _map = <String, String>{
+  'Rosa Fanta': 'Fanta Squad',
+  'giocatori in rosa': 'players in squad',
+  'Nessun giocatore in rosa': 'No players in squad',
+  'La tua rosa è vuota': 'Your squad is empty',
+  'Aggiungi i tuoi giocatori toccando la stella nella ricerca, nei preferiti o nella scheda giocatore.': 'Add your players by tapping the star in search, favorites, or the player profile.',
+  'Portieri': 'Goalkeepers',
+  'Difensori': 'Defenders',
+  'Centrocampisti': 'Midfielders',
+  'Attaccanti': 'Forwards',
+  'Ultimo': 'Last',
+  'rimosso dalla rosa': 'removed from squad',
   'Voto finale': 'Final rating',
   'Voto fine 1° tempo': 'Half-time rating',
   'Espulsioni dirette o per doppio giallo': 'Straight or second-yellow reds',

@@ -9,6 +9,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 // Services
 import 'services/theme_service.dart';
 import 'services/favorites_service.dart';
+import 'services/fanta_roster_service.dart'; // [ROSA-TAB]
 import 'services/live_update_service.dart';
 import 'services/favorite_notification_coordinator.dart';
 import 'services/haptic_service.dart';
@@ -21,6 +22,8 @@ import 'pages/home_screen.dart';
 import 'pages/calendar_screen.dart';
 import 'pages/favorites_screen.dart';
 import 'pages/standings_screen.dart';
+import 'pages/fanta_roster_screen.dart'; // [ROSA-TAB-MAIN]
+import 'utils/l10n_helper.dart'; // [ROSA-TAB-MAIN]
 import 'pages/settings_screen.dart';
 import 'pages/search_screen.dart';
 
@@ -54,6 +57,8 @@ void main() async {
 
   final favoritesService = FavoritesService();
   await favoritesService.loadFavorites();
+  final fantaRosterService = FantaRosterService(); // [ROSA-TAB]
+  await fantaRosterService.loadRoster();
 
   final liveUpdateService = LiveUpdateService();
 
@@ -73,6 +78,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider.value(value: themeService),
         ChangeNotifierProvider.value(value: favoritesService),
+        ChangeNotifierProvider.value(value: fantaRosterService), // [ROSA-TAB]
         ChangeNotifierProvider.value(value: liveUpdateService),
         ChangeNotifierProvider.value(
             value: matchNotificationPrefsService), // 🆕
@@ -384,12 +390,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     const CalendarScreen(),
     const FavoritesScreen(),
     const StandingsScreen(),
+    const FantaRosterScreen(), // [ROSA-TAB-MAIN]
   ];
 
   // Titoli pagine (localizzati nel build)
   List<String> _getTitles(BuildContext context) {
     final s = S.of(context)!;
-    return ['SoccerPulse', s.calendar, s.favorites, s.standings];
+    return ['SoccerPulse', s.calendar, s.favorites, s.standings, tr(context, 'Rosa Fanta')];
   }
 
   @override
@@ -620,6 +627,46 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     ? Icons.leaderboard
                     : Icons.leaderboard_outlined),
                 label: S.of(context)!.standings,
+              ),
+              // [ROSA-TAB-MAIN] tab Rosa Fanta
+              BottomNavigationBarItem(
+                icon: Stack(
+                  children: [
+                    Icon(_currentIndex == 4 ? Icons.star : Icons.star_outline),
+                    Consumer<FantaRosterService>(
+                      builder: (context, roster, child) {
+                        final count = roster.count;
+                        if (count == 0) return const SizedBox.shrink();
+                        return Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF9C27B0),
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 1),
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 16,
+                              minHeight: 16,
+                            ),
+                            child: Text(
+                              count > 9 ? '9+' : count.toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                label: 'Rosa Fanta',
               ),
             ],
           )
