@@ -1838,9 +1838,25 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   void _openPlayerStatsFromEvent(String playerName, bool isHome, bool isDark) {
     final homeLineup = _generateMockLocalLineup(true);
     final awayLineup = _generateMockLocalLineup(false);
-    final lineup = isHome ? homeLineup : awayLineup;
-    final player = lineup.cast<LocalLineupPlayer?>().firstWhere(
+    // [FIX-PANCHINA] cerca in titolari E panchina (i subentrati tirano!)
+    final homeBench = _generateMockBench(true);
+    final awayBench = _generateMockBench(false);
+    final pool = isHome
+        ? [...homeLineup, ...homeBench]
+        : [...awayLineup, ...awayBench];
+    var player = pool.cast<LocalLineupPlayer?>().firstWhere(
         (p) => p!.name == playerName, orElse: () => null);
+    // fallback: cerca in entrambe le squadre (nomi a volte non combaciano
+    // con isHome dedotto dai dati dei tiri)
+    if (player == null) {
+      final all = [...homeLineup, ...homeBench, ...awayLineup, ...awayBench];
+      player = all.cast<LocalLineupPlayer?>().firstWhere(
+          (p) => p!.name == playerName, orElse: () => null);
+      if (player != null) {
+        isHome = homeLineup.any((p) => p.name == playerName) ||
+            homeBench.any((p) => p.name == playerName);
+      }
+    }
     if (player == null) return;
     const hc = Color(0xFF1565C0);
     const ac = Color(0xFFD32F2F);

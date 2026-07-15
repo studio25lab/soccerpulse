@@ -624,11 +624,22 @@ class _InteractiveShotMapWidgetState extends State<InteractiveShotMapWidget>
               _avatar(s, dk),
               const SizedBox(width: 14),
               Expanded(
-                  child: Text(s.playerName,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: tx))),
+                  // [FIX-CLICKNOME] nome cliccabile: apre la scheda giocatore
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (widget.onPlayerTap != null) {
+                        widget.onPlayerTap!(s.playerName);
+                      }
+                    },
+                    child: Text(s.playerName,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: tx,
+                            decoration: TextDecoration.underline,
+                            decorationColor: tx.withValues(alpha: 0.25))),
+                  )),
               Text(s.minuteDisplay,
                   style: TextStyle(
                       fontSize: 20, fontWeight: FontWeight.w800, color: tx)),

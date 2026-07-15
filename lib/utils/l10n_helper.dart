@@ -62,6 +62,15 @@ String standingsAbbr(BuildContext context, String italianAbbr) {
 }
 
 const _map = <String, String>{
+  'Tempi di gioco': 'Match periods',
+  "Calcio d'inizio 1° e 2° tempo": "Kick-off of both halves",
+  'Fine primo tempo': 'Half-time',
+  'Notifiche Squadra': 'Team Notifications',
+  'Goal della Squadra': 'Team Goals',
+  'Goal degli Avversari': 'Opponent Goals',
+  'Quando segna la squadra seguita': 'When your team scores',
+  'Quando segna la squadra avversaria': 'When the opponent scores',
+  'Gioco': 'Play',
   'Predefinito': 'Default',
   'Espulsioni dirette e per doppio giallo': 'Straight reds and second yellows',
   'Notifica con marcatore e minuto': 'Scorer and minute included',

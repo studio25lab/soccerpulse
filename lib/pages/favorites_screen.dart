@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import '../widgets/dialogs/match_notification_dialog.dart'; // [REFACTOR-STEP4]
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/soccer_match.dart';
 import '../models/team_standing.dart';
@@ -1030,261 +1031,52 @@ class _FavoritesScreenState extends State<FavoritesScreen>
   }
 
   // ── Match notification sheet — usa MatchNotificationPreferencesService ──
+  // [REFACTOR-STEP4] usa il dialog UFFICIALE (niente piu' pannello duplicato).
+  // Prima qui c'erano ~256 righe di pannello copiato, con testi
+  // hardcoded non tradotti. Ora usa lo stesso dialog di home/match/team.
+  // Il SoccerMatch si costruisce dalla mappa come in _openMatchDetail.
   Future<void> _showMatchNotificationSheet(Map<String, dynamic> m, ThemeData theme, bool isDark) async {
-    final matchId = m['id'] as int;
-    final notifService = context.read<MatchNotificationPreferencesService>();
-    var settings = notifService.getSettingsForMatch(matchId);
-
-    final bg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
-    final tx = isDark ? Colors.white : const Color(0xFF1A1A1A);
-    final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
-
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            final toggles = <String, bool>{
-              'goals': settings.notifyHomeGoals,
-              'penalties': settings.notifyPenalties,
-              'var': settings.notifyVarDecisions,
-              'kickoff': settings.notifyMatchStart,
-              'halftime': settings.notifyHalfTime,
-              'fulltime': settings.notifyMatchEnd,
-              'yellowCards': settings.notifyYellowCards,
-              'redCards': settings.notifyRedCards,
-              'substitutions': settings.notifySubstitutions,
-              'corners': settings.notifyCorners,
-              'offsides': settings.notifyOffsides,
-              'shotsOnTarget': settings.notifyShotsOnTarget,
-              'fouls': settings.notifyFouls,
-            };
-            final activeCount = toggles.values.where((v) => v).length;
-            final allOn = toggles.values.every((v) => v);
-
-            void updateSetting(String key, bool val) {
-              setSheetState(() {
-                settings = MatchNotificationSettings(
-                  matchId: matchId,
-                  notifyHomeGoals: key == 'goals' ? val : settings.notifyHomeGoals,
-                  notifyAwayGoals: key == 'goals' ? val : settings.notifyAwayGoals,
-                  notifyPenalties: key == 'penalties' ? val : settings.notifyPenalties,
-                  notifyVarDecisions: key == 'var' ? val : settings.notifyVarDecisions,
-                  notifyMatchStart: key == 'kickoff' ? val : settings.notifyMatchStart,
-                  // [TEST-LIVE-INIZIO2T] kickoff attiva anche inizio 2° tempo
-                  notifySecondHalfStart: key == 'kickoff' ? val : settings.notifySecondHalfStart,
-                  notifyHalfTime: key == 'halftime' ? val : settings.notifyHalfTime,
-                  notifyMatchEnd: key == 'fulltime' ? val : settings.notifyMatchEnd,
-                  notifyYellowCards: key == 'yellowCards' ? val : settings.notifyYellowCards,
-                  notifyRedCards: key == 'redCards' ? val : settings.notifyRedCards,
-                  notifySubstitutions: key == 'substitutions' ? val : settings.notifySubstitutions,
-                  notifyCorners: key == 'corners' ? val : settings.notifyCorners,
-                  notifyOffsides: key == 'offsides' ? val : settings.notifyOffsides,
-                  notifyShotsOnTarget: key == 'shotsOnTarget' ? val : settings.notifyShotsOnTarget,
-                  notifyFouls: key == 'fouls' ? val : settings.notifyFouls,
-                  enabled: true,
-                );
-                notifService.saveSettingsForMatch(settings);
-              });
-            }
-
-            void setAll(bool val) {
-              setSheetState(() {
-                settings = val
-                    ? MatchNotificationSettings.complete(matchId)
-                    : MatchNotificationSettings.disabled(matchId);
-                notifService.saveSettingsForMatch(settings);
-              });
-            }
-
-            Widget sectionHeader(String title, IconData icon) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8, top: 4),
-                child: Row(children: [
-                  Icon(icon, size: 16, color: isDark ? Colors.white38 : Colors.grey[500]),
-                  const SizedBox(width: 8),
-                  Text(title, style: TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.8,
-                    color: isDark ? Colors.white38 : Colors.grey[500],
-                  )),
-                ]),
-              );
-            }
-
-            Widget notifTile(String key, IconData icon, String title, String subtitle, Color color) {
-              final isOn = toggles[key] ?? false;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(14),
-                    onTap: () {
-                      _haptic.lightImpact();
-                      updateSetting(key, !isOn);
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: isOn ? color.withValues(alpha: isDark ? 0.12 : 0.06) : Colors.transparent,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: isOn
-                              ? color.withValues(alpha: isDark ? 0.3 : 0.2)
-                              : isDark ? Colors.white10 : Colors.grey[200]!,
-                          width: isOn ? 1.5 : 1,
-                        ),
-                      ),
-                      child: Row(children: [
-                        Container(
-                          width: 40, height: 40,
-                          decoration: BoxDecoration(
-                            color: color.withValues(alpha: isOn ? 0.15 : 0.08),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(icon, size: 20,
-                              color: isOn ? color : isDark ? Colors.white30 : Colors.grey[400]),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(title, style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w700,
-                              color: isOn
-                                  ? (isDark ? Colors.white : Colors.black87)
-                                  : (isDark ? Colors.white54 : Colors.grey[500]),
-                            )),
-                            const SizedBox(height: 2),
-                            Text(subtitle, style: TextStyle(
-                              fontSize: 11,
-                              color: isDark ? Colors.white30 : Colors.grey[400],
-                            )),
-                          ]),
-                        ),
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: 44, height: 26,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(13),
-                            color: isOn ? color : isDark ? Colors.white12 : Colors.grey[300],
-                          ),
-                          child: AnimatedAlign(
-                            duration: const Duration(milliseconds: 200),
-                            alignment: isOn ? Alignment.centerRight : Alignment.centerLeft,
-                            child: Container(
-                              margin: const EdgeInsets.all(3),
-                              width: 20, height: 20,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]),
-                    ),
-                  ),
-                ),
-              );
-            }
-
-            return Container(
-              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
-              decoration: BoxDecoration(
-                color: bg,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, -5))],
-              ),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 12),
-                  width: 40, height: 4,
-                  decoration: BoxDecoration(color: isDark ? Colors.white24 : Colors.grey[300], borderRadius: BorderRadius.circular(2)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-                  child: Row(children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: theme.primaryColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(Icons.notifications_active, color: theme.primaryColor, size: 24),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('${m['homeTeam']} vs ${m['awayTeam']}',
-                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: tx)),
-                        const SizedBox(height: 2),
-                        Text(
-                          activeCount > 0 ? '$activeCount/${toggles.length} ${tr(context, 'notifiche attive')}' : tr(context, 'Nessuna notifica attiva'),
-                          style: TextStyle(fontSize: 13, color: lb),
-                        ),
-                      ]),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _haptic.lightImpact();
-                        setAll(!allOn);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: allOn ? theme.primaryColor : isDark ? Colors.white10 : Colors.grey[100],
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: allOn ? theme.primaryColor : isDark ? Colors.white24 : Colors.grey[300]!,
-                          ),
-                        ),
-                        child: Text(
-                          allOn ? S.of(context)!.deactivate : S.of(context)!.activateAll,
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                              color: allOn ? Colors.white : isDark ? Colors.white70 : Colors.grey[700]),
-                        ),
-                      ),
-                    ),
-                  ]),
-                ),
-                Divider(color: isDark ? Colors.white12 : Colors.grey[200], height: 1),
-                Flexible(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      sectionHeader('Risultato', Icons.sports_score),
-                      notifTile('goals', Icons.sports_soccer, S.of(context)!.goalNotif, 'Notifica con marcatore e minuto', const Color(0xFF4CAF50)),
-                      notifTile('penalties', Icons.gps_fixed, 'Rigori', 'Rigori assegnati, segnati e sbagliati', const Color(0xFFE91E63)),
-                      notifTile('var', Icons.videocam, 'Decisioni VAR', 'Revisioni e decisioni arbitrali al VAR', const Color(0xFF2196F3)),
-                      const SizedBox(height: 16),
-                      sectionHeader('Tempi di gioco', Icons.timer),
-                      notifTile('kickoff', Icons.play_circle_outline, 'Inizio tempo', 'Calcio d\'inizio 1° e 2° tempo', const Color(0xFF66BB6A)),
-                      notifTile('halftime', Icons.pause_circle_outline, 'Fine primo tempo', 'Risultato parziale all\'intervallo', const Color(0xFFFFA726)),
-                      notifTile('fulltime', Icons.stop_circle_outlined, 'Fischio finale', 'Risultato finale della partita', const Color(0xFFEF5350)),
-                      const SizedBox(height: 16),
-                      sectionHeader('Disciplina', Icons.style),
-                      notifTile('yellowCards', Icons.square_rounded, S.of(context)!.cartelliniGialliNotif, S.of(context)!.ammonizioni2, const Color(0xFFFFCA28)),
-                      notifTile('redCards', Icons.square_rounded, S.of(context)!.cartelliniRossiNotif, S.of(context)!.espulsioniNotif, const Color(0xFFE53935)),
-                      const SizedBox(height: 16),
-                      sectionHeader('Eventi di gioco', Icons.analytics),
-                      notifTile('substitutions', Icons.swap_horiz, 'Sostituzioni', 'Cambi effettuati da entrambe le squadre', const Color(0xFF42A5F5)),
-                      notifTile('corners', Icons.flag, S.of(context)!.calciAngoloDett, S.of(context)!.cornerDesc, const Color(0xFF26A69A)),
-                      notifTile('offsides', Icons.front_hand, S.of(context)!.fuorigiocoLabel, S.of(context)!.posizioniOffside, const Color(0xFF7E57C2)),
-                      notifTile('shotsOnTarget', Icons.gps_not_fixed, tr(context, 'Tiri in porta'), 'Tiri nello specchio della porta', const Color(0xFFFF7043)),
-                      notifTile('fouls', Icons.warning_amber, S.of(context)!.falliNotif, S.of(context)!.falliDesc, const Color(0xFF8D6E63)),
-                    ]),
-                  ),
-                ),
-              ]),
-            );
-          },
-        );
+    final match = SoccerMatch(
+      id: m['id'] as int,
+      homeTeamId: m['homeId'] as int,
+      homeTeamName: m['homeTeam'] as String,
+      homeTeamLogo: m['homeLogo'] as String?,
+      awayTeamId: m['awayId'] as int,
+      awayTeamName: m['awayTeam'] as String,
+      awayTeamLogo: m['awayLogo'] as String?,
+      homeScore: m['homeScore'] as int? ?? 0,
+      awayScore: m['awayScore'] as int? ?? 0,
+      status: m['status'] as String,
+      date: DateTime.now(),
+      time: m['time'] as String,
+      venue: '',
+      leagueName: m['league'] as String? ?? 'Serie A',
+      round: m['round'] as String? ?? '',
+    );
+    final notifSvc = context.read<MatchNotificationPreferencesService>();
+    await showMatchNotificationDialogV2(
+      context,
+      match: match,
+      getSettings: () => notifSvc.getSettingsForMatch(match.id),
+      setSettings: (s) {
+        notifSvc.saveSettingsForMatch(s);
+        if (mounted) setState(() {});
+      },
+      service: notifSvc,
+      haptic: _haptic,
+      onUpdateFromKey: (key, value) {
+        // logica centralizzata nel modello (STEP 1)
+        final cur = notifSvc.getSettingsForMatch(match.id);
+        notifSvc.saveSettingsForMatch(cur.updateFromKey(key, value));
+        if (mounted) setState(() {});
+      },
+      onSetAll: (value) {
+        final cur = notifSvc.getSettingsForMatch(match.id);
+        notifSvc.saveSettingsForMatch(cur.setAll(value));
+        if (mounted) setState(() {});
       },
     );
+    if (mounted) setState(() {});
   }
 
   // ═══════════════════════════════════════════════════════════
