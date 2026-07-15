@@ -548,8 +548,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           final favSvc = ctx.read<FavoritesService>();
                           final isFav = favSvc.isMatchFavorite(match.id);
                           final isLive = match.status == 'LIVE' || match.status == '1H' || match.status == '2H' || match.status == 'HT';
+                          // [CAMP-FUTURE] partite ancora da giocare
+                          final isUpcoming = match.status == 'NS' || match.status == 'TBD';
                           return Row(mainAxisSize: MainAxisSize.min, children: [
-                            if (isLive) ...[
+                            if (isLive || isUpcoming) ...[
                               Builder(builder: (bellCtx) {
                                 final notifSvc = bellCtx.read<MatchNotificationPreferencesService>();
                                 final settings = notifSvc.getSettingsForMatch(match.id);
@@ -622,76 +624,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final notifSvc = context.read<MatchNotificationPreferencesService>();
 
     void updateFromKey(String key, bool value) {
-      var s = notifSvc.getSettingsForMatch(match.id);
-      switch (key) {
-        case 'goals':
-          s = s.copyWith(notifyHomeGoals: value, notifyAwayGoals: value);
-          break;
-        case 'kickoff':
-          // [TEST-LIVE-INIZIO2T] attiva anche l'inizio secondo tempo
-          s = s.copyWith(
-              notifyMatchStart: value, notifySecondHalfStart: value);
-          break;
-        case 'halftime':
-          s = s.copyWith(notifyHalfTime: value);
-          break;
-        case 'fulltime':
-          s = s.copyWith(notifyMatchEnd: value);
-          break;
-        case 'yellowCards':
-          s = s.copyWith(notifyYellowCards: value);
-          break;
-        case 'redCards':
-          s = s.copyWith(notifyRedCards: value);
-          break;
-        case 'substitutions':
-          s = s.copyWith(notifySubstitutions: value);
-          break;
-        case 'corners':
-          s = s.copyWith(notifyCorners: value);
-          break;
-        case 'offsides':
-          s = s.copyWith(notifyOffsides: value);
-          break;
-        case 'shotsOnTarget':
-          s = s.copyWith(notifyShotsOnTarget: value);
-          break;
-        case 'fouls':
-          s = s.copyWith(notifyFouls: value);
-          break;
-        case 'penalties':
-          s = s.copyWith(notifyPenalties: value);
-          break;
-        case 'var':
-          s = s.copyWith(notifyVarDecisions: value);
-          break;
-      }
-      if (value && !s.enabled) {
-        s = s.copyWith(enabled: true);
-      }
+      // [REFACTOR-STEP5] logica nel modello (STEP 1)
+      final s = notifSvc.getSettingsForMatch(match.id).updateFromKey(key, value);
       notifSvc.saveSettingsForMatch(s);
     }
 
     void setAll(bool value) {
-      var s = notifSvc.getSettingsForMatch(match.id);
-      s = s.copyWith(
-        enabled: value,
-        notifyHomeGoals: value,
-        notifyAwayGoals: value,
-        notifyYellowCards: value,
-        notifyRedCards: value,
-        notifySubstitutions: value,
-        notifyShotsOnTarget: value,
-        notifyCorners: value,
-        notifyPenalties: value,
-        notifyFouls: value,
-        notifyOffsides: value,
-        notifyMatchStart: value,
-        notifyHalfTime: value,
-        notifySecondHalfStart: value,
-        notifyMatchEnd: value,
-        notifyVarDecisions: value,
-      );
+      // [REFACTOR-STEP5] logica nel modello (STEP 1)
+      final s = notifSvc.getSettingsForMatch(match.id).setAll(value);
       notifSvc.saveSettingsForMatch(s);
     }
 

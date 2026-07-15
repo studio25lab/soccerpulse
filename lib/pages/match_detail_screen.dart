@@ -124,79 +124,14 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       _matchNotifSettings.hasActiveNotifications;
 
   void _updateMatchNotifFromKey(String key, bool value) {
-    switch (key) {
-      case 'goals':
-        _matchNotifSettings = _matchNotifSettings.copyWith(
-          notifyHomeGoals: value, notifyAwayGoals: value);
-        break;
-      case 'kickoff':
-        // [TEST-LIVE-INIZIO2T] attiva anche l'inizio secondo tempo
-        _matchNotifSettings = _matchNotifSettings.copyWith(
-            notifyMatchStart: value, notifySecondHalfStart: value);
-        break;
-      case 'halftime':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyHalfTime: value);
-        break;
-      case 'fulltime':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyMatchEnd: value);
-        break;
-      case 'yellowCards':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyYellowCards: value);
-        break;
-      case 'redCards':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyRedCards: value);
-        break;
-      case 'substitutions':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifySubstitutions: value);
-        break;
-      case 'corners':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyCorners: value);
-        break;
-      case 'offsides':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyOffsides: value);
-        break;
-      case 'shotsOnTarget':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyShotsOnTarget: value);
-        break;
-      case 'fouls':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyFouls: value);
-        break;
-      case 'penalties':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyPenalties: value);
-        break;
-      case 'var':
-        _matchNotifSettings = _matchNotifSettings.copyWith(notifyVarDecisions: value);
-        break;
-    }
-    // [FAV-D2c-fix] master sync: accendere un toggle accende il master
-    if (value && !_matchNotifSettings.enabled) {
-      _matchNotifSettings =
-          _matchNotifSettings.copyWith(enabled: true);
-    }
-    // Persiste su disco
+    // [REFACTOR-STEP5] logica nel modello (STEP 1)
+    _matchNotifSettings = _matchNotifSettings.updateFromKey(key, value);
     _matchNotifService.saveSettingsForMatch(_matchNotifSettings);
   }
 
   void _setAllMatchNotif(bool value) {
-    // [FAV-D2c-fix] master sync: enabled segue value
-    _matchNotifSettings = _matchNotifSettings.copyWith(
-      enabled: value,
-      notifyHomeGoals: value,
-      notifyAwayGoals: value,
-      notifyYellowCards: value,
-      notifyRedCards: value,
-      notifySubstitutions: value,
-      notifyShotsOnTarget: value,
-      notifyCorners: value,
-      notifyPenalties: value,
-      notifyFouls: value,
-      notifyOffsides: value,
-      notifyMatchStart: value,
-      notifyHalfTime: value,
-      notifySecondHalfStart: value,
-      notifyMatchEnd: value,
-      notifyVarDecisions: value,
-    );
+    // [REFACTOR-STEP5] logica nel modello (STEP 1)
+    _matchNotifSettings = _matchNotifSettings.setAll(value);
     _matchNotifService.saveSettingsForMatch(_matchNotifSettings);
   }
   final TextEditingController _playerSearchController = TextEditingController();
