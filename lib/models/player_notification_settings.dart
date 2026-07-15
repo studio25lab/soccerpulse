@@ -38,6 +38,9 @@ class PlayerNotificationSettings {
   final bool notifyKeyPasses;
   final bool notifyDribblesSuccessful;
   final bool notifyOffsides;
+  // [FIX-CAMPIVOTO] voti Fanta (campi dedicati)
+  final bool notifyFantaRatingHT;
+  final bool notifyFantaRatingFT;
 
   // Abilitazione generale
   final bool enabled;
@@ -64,6 +67,8 @@ class PlayerNotificationSettings {
     this.notifyKeyPasses = false,
     this.notifyDribblesSuccessful = false,
     this.notifyOffsides = false,
+    this.notifyFantaRatingHT = true,
+    this.notifyFantaRatingFT = true,
     this.enabled = true,
   });
 
@@ -185,6 +190,8 @@ class PlayerNotificationSettings {
     bool? notifyKeyPasses,
     bool? notifyDribblesSuccessful,
     bool? notifyOffsides,
+    bool? notifyFantaRatingHT,
+    bool? notifyFantaRatingFT,
     bool? enabled,
   }) {
     return PlayerNotificationSettings(
@@ -211,6 +218,8 @@ class PlayerNotificationSettings {
       notifyDribblesSuccessful:
           notifyDribblesSuccessful ?? this.notifyDribblesSuccessful,
       notifyOffsides: notifyOffsides ?? this.notifyOffsides,
+      notifyFantaRatingHT: notifyFantaRatingHT ?? this.notifyFantaRatingHT,
+      notifyFantaRatingFT: notifyFantaRatingFT ?? this.notifyFantaRatingFT,
       enabled: enabled ?? this.enabled,
     );
   }
@@ -239,6 +248,8 @@ class PlayerNotificationSettings {
       'notifyKeyPasses': notifyKeyPasses,
       'notifyDribblesSuccessful': notifyDribblesSuccessful,
       'notifyOffsides': notifyOffsides,
+      'notifyFantaRatingHT': notifyFantaRatingHT,
+      'notifyFantaRatingFT': notifyFantaRatingFT,
       'enabled': enabled,
     };
   }
@@ -267,6 +278,8 @@ class PlayerNotificationSettings {
       notifyDribblesSuccessful:
           json['notifyDribblesSuccessful'] as bool? ?? false,
       notifyOffsides: json['notifyOffsides'] as bool? ?? false,
+      notifyFantaRatingHT: json['notifyFantaRatingHT'] as bool? ?? true,
+      notifyFantaRatingFT: json['notifyFantaRatingFT'] as bool? ?? true,
       enabled: json['enabled'] as bool? ?? true,
     );
   }

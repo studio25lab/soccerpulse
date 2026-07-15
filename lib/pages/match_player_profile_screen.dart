@@ -60,8 +60,8 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       'shots': _playerNotifSettings.notifyShotsOffTarget,
       'shotsOnTarget': _playerNotifSettings.notifyShotsOnTarget,
       'offsides': _playerNotifSettings.notifyOffsides,
-      'fantaRatingHT': _playerNotifSettings.notifyKeyPasses,
-      'fantaRatingFT': _playerNotifSettings.notifyDribblesSuccessful,
+      'fantaRatingHT': _playerNotifSettings.notifyFantaRatingHT,
+      'fantaRatingFT': _playerNotifSettings.notifyFantaRatingFT,
     };
   }
 
@@ -92,10 +92,12 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
         _playerNotifSettings = _playerNotifSettings.copyWith(notifyOffsides: value);
         break;
       case 'fantaRatingHT':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyKeyPasses: value);
+        _playerNotifSettings =
+            _playerNotifSettings.copyWith(notifyFantaRatingHT: value);
         break;
       case 'fantaRatingFT':
-        _playerNotifSettings = _playerNotifSettings.copyWith(notifyDribblesSuccessful: value);
+        _playerNotifSettings =
+            _playerNotifSettings.copyWith(notifyFantaRatingFT: value);
         break;
     }
     _playerNotifService.saveSettingsForPlayer(_playerNotifSettings);

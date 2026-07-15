@@ -347,6 +347,11 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         // [TEST-LIVE-RISULTATO1T] passa il punteggio al 45'
         _emitHalfEvent('halfTime',
             score: 'SCORE|${updatedMatch.homeScore}|${updatedMatch.awayScore}');
+        // [TEST-LIVE-VOTO] voto primo tempo (dopo la notifica intervallo)
+        Future.delayed(const Duration(milliseconds: 1200), () {
+          if (!mounted) return;
+          _emitVoteNotification('Immobile', 7.0, true);
+        });
       }
       if (_lastMatchStatus == 'HT' && status == 'LIVE' &&
           !_secondHalfNotified) {
@@ -375,6 +380,11 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
             minute: 90,
           ));
         });
+        // [TEST-LIVE-VOTO] voto finale (dopo la notifica fine partita)
+        Future.delayed(const Duration(milliseconds: 1600), () {
+          if (!mounted) return;
+          _emitVoteNotification('Immobile', 7.5, false);
+        });
       }
       _lastMatchStatus = status;
       // [TEST-LIVE] refresh UI (minuto, punteggio, tab Eventi)
@@ -387,6 +397,22 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
         });
       }
     });
+  }
+
+  // [TEST-LIVE-VOTO] notifica voto Fanta (test: giocatore fisso).
+  // Con le API vere, il voto verra' dall'algoritmo Voto Matchline.
+  void _emitVoteNotification(String player, double vote, bool isHalfTime) {
+    final label = isHalfTime
+        ? '$player — Voto 1° Tempo: ${vote.toStringAsFixed(1)}'
+        : '$player — Voto Finale: ${vote.toStringAsFixed(1)}';
+    _showInAppNotification(MatchEventNotification(
+      type: 'fantaVote',
+      title: tr(context, '⭐ Voto Live'),
+      subtitle: label,
+      icon: isHalfTime ? Icons.star_half : Icons.star,
+      color: const Color(0xFF9C27B0),
+      minute: isHalfTime ? 45 : 90,
+    ));
   }
 
   // [TEST-LIVE-SECONDOTEMPO] emette una notifica di fase (fine 1T / inizio 2T)
