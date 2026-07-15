@@ -1,6 +1,6 @@
 // lib/pages/home_screen.dart
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; // [PULIZIA-WARN-A]
 import '../utils/l10n_helper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,7 +11,6 @@ import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
 import '../services/match_notification_preferences_service.dart';
 import '../models/match_notification_settings.dart';
-import '../widgets/notification_settings_widgets.dart';
 import '../widgets/dialogs/match_notification_dialog.dart'; // [REFACTOR-STEP2]
 import '../generated/l10n.dart';
 import 'match_detail_screen.dart';

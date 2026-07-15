@@ -40,7 +40,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool get isCoach => widget.player.position == 'ALL';
-  int get _tabCount => isCoach ? 3 : 4;
+  int get _tabCount => 3; // [RM-FC26] tab FC26 rimosso
   final HapticService _playerHaptic = HapticService();
 
   // ── Player Notification Service ──
@@ -145,6 +145,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
   }
 
   // ── Player Notification Settings Bottom Sheet ──
+  // [TRAD-PGIOC2] testi tradotti via tr()
   void _showPlayerNotificationDialog() {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -330,7 +331,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                             key: 'shotsOnTarget',
                             icon: Icons.gps_fixed,
                             title: localizeShotData(context, 'Tiri in porta'),
-                            subtitle: 'Tiri nello specchio della porta',
+                            subtitle: tr(context, 'Tiri nello specchio della porta'),
                             color: const Color(0xFF2196F3),
                             isDark: isDark,
                             setSheetState: setSheetState,
@@ -339,7 +340,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                             key: 'offsides',
                             icon: Icons.front_hand,
                             title: tr(context, 'Fuorigioco'),
-                            subtitle: 'Quando viene segnalato in offside',
+                            subtitle: tr(context, 'Quando viene segnalato in offside'),
                             color: const Color(0xFF7E57C2),
                             isDark: isDark,
                             setSheetState: setSheetState,
@@ -352,8 +353,8 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                           _pNotifTile(
                             key: 'yellowCards',
                             icon: Icons.square_rounded,
-                            title: 'Cartellino giallo',
-                            subtitle: 'Ammonizioni e doppi gialli',
+                            title: tr(context, 'Cartellino giallo'),
+                            subtitle: tr(context, 'Ammonizioni e doppi gialli'),
                             color: const Color(0xFFFFCA28),
                             isDark: isDark,
                             setSheetState: setSheetState,
@@ -361,8 +362,8 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                           _pNotifTile(
                             key: 'redCards',
                             icon: Icons.square_rounded,
-                            title: 'Cartellino rosso',
-                            subtitle: 'Espulsioni dirette o per doppio giallo',
+                            title: tr(context, 'Cartellino rosso'),
+                            subtitle: tr(context, 'Espulsioni dirette o per doppio giallo'),
                             color: const Color(0xFFE53935),
                             isDark: isDark,
                             setSheetState: setSheetState,
@@ -371,7 +372,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                             key: 'foulsCommitted',
                             icon: Icons.warning_amber,
                             title: tr(context, 'Falli commessi'),
-                            subtitle: 'Falli fatti dal giocatore',
+                            subtitle: tr(context, 'Falli fatti dal giocatore'),
                             color: const Color(0xFFFF7043),
                             isDark: isDark,
                             setSheetState: setSheetState,
@@ -380,7 +381,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                             key: 'foulsSuffered',
                             icon: Icons.personal_injury,
                             title: tr(context, 'Falli subiti'),
-                            subtitle: 'Falli subiti dal giocatore',
+                            subtitle: tr(context, 'Falli subiti dal giocatore'),
                             color: const Color(0xFF8D6E63),
                             isDark: isDark,
                             setSheetState: setSheetState,
@@ -394,9 +395,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                           _pNotifTile(
                             key: 'fantaRatingHT',
                             icon: Icons.star_half,
-                            title: 'Voto fine 1° tempo',
+                            title: tr(context, 'Voto fine 1° tempo'),
                             subtitle:
-                                'Voto parziale fantacalcio all\'intervallo',
+                                tr(context, 'Voto parziale fantacalcio all\'intervallo'),
                             color: const Color(0xFFAB47BC),
                             isDark: isDark,
                             setSheetState: setSheetState,
@@ -404,9 +405,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                           _pNotifTile(
                             key: 'fantaRatingFT',
                             icon: Icons.star,
-                            title: 'Voto finale',
+                            title: tr(context, 'Voto finale'),
                             subtitle:
-                                'Voto definitivo fantacalcio a fine partita',
+                                tr(context, 'Voto definitivo fantacalcio a fine partita'),
                             color: const Color(0xFF9C27B0),
                             isDark: isDark,
                             setSheetState: setSheetState,
@@ -823,7 +824,6 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 Tab(text: localizeShotData(context, 'Stagione')),
                 Tab(text: localizeShotData(context, 'Carriera')),
                 Tab(text: localizeShotData(context, 'Partite')),
-                if (!isCoach) const Tab(text: 'Overall FC26'),
               ],
             ),
             isDark ? const Color(0xFF121212) : const Color(0xFFF5F6FA),
@@ -840,7 +840,6 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
             // ── TAB 3: PARTITE ──
             _buildMatchesTab(data, p, tx, lb, cardBg, divider, isDark),
             // ── TAB 4: OVERALL FC26 ──
-            if (!isCoach) _buildSkillsTab(data, tx, lb, cardBg, isDark),
 
           ]),
         ),
@@ -1578,348 +1577,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
     return double.parse((base + offset).clamp(5.5, 9.0).toStringAsFixed(1));
   }
 
-  Widget _buildSkillsTab(Map<String, dynamic> data, Color tx, Color lb,
-      Color cardBg, bool isDark) {
-    final skills = data['skills'] as Map<String, dynamic>? ?? {};
-    final overall = data['overall'] as int? ?? 0;
 
-    // Rating tier color
-    Color tierColor;
-    String tierLabel;
-    if (overall >= 83) {
-      tierColor = const Color(0xFFD4AF37); // Gold
-      tierLabel = 'GOLD';
-    } else if (overall >= 75) {
-      tierColor = const Color(0xFFC0C0C0); // Silver
-      tierLabel = 'SILVER';
-    } else {
-      tierColor = const Color(0xFFCD7F32); // Bronze
-      tierLabel = 'BRONZE';
-    }
-
-    return ListView(padding: const EdgeInsets.all(16), children: [
-      // ── OVR HERO CARD ──
-      Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    tierColor.withValues(alpha: 0.15),
-                    tierColor.withValues(alpha: 0.05),
-                  ]
-                : [
-                    tierColor.withValues(alpha: 0.12),
-                    tierColor.withValues(alpha: 0.04),
-                  ],
-          ),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: tierColor.withValues(alpha: isDark ? 0.3 : 0.25),
-            width: 1.5,
-          ),
-        ),
-        child: Column(children: [
-          // Tier badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: tierColor.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              tierLabel,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                color: tierColor,
-                letterSpacing: 2,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          // Big OVR number
-          Text(
-            '$overall',
-            style: TextStyle(
-              fontSize: 72,
-              fontWeight: FontWeight.w900,
-              color: tierColor,
-              height: 1.0,
-              letterSpacing: -2,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'OVERALL',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: tx.withValues(alpha: 0.5),
-              letterSpacing: 3,
-            ),
-          ),
-          const SizedBox(height: 16),
-          // Mini stat chips row
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            alignment: WrapAlignment.center,
-            children: skills.entries.map((e) {
-              final val = (e.value as num).toInt();
-              return Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: _getStatColor(val).withValues(alpha: isDark ? 0.15 : 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color:
-                        _getStatColor(val).withValues(alpha: isDark ? 0.3 : 0.2),
-                  ),
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text(
-                    tr(context, e.key),
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: tx.withValues(alpha: 0.6),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    '$val',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: _getStatColor(val),
-                    ),
-                  ),
-                ]),
-              );
-            }).toList(),
-          ),
-        ]),
-      ),
-
-      // ── RUOLI FC26 ──
-      const SizedBox(height: 8),
-      _sectionTitle(localizeShotData(context, 'Posizioni'), tx),
-      const SizedBox(height: 12),
-      Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: cardBg,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1)),
-        ),
-        child: Builder(builder: (ctx) {
-          final pos = widget.player.position;
-          final roles = _getFC26Roles(pos, overall);
-          return Column(
-            children: roles.asMap().entries.map((entry) {
-              final i = entry.key;
-              final r = entry.value;
-              final isLast = i == roles.length - 1;
-              final fit = r['fit'] as int; // 0-100
-              Color fitColor;
-              if (fit >= 80) {
-                fitColor = const Color(0xFF2E7D32);
-              } else if (fit >= 60) fitColor = const Color(0xFF689F38);
-              else if (fit >= 40) fitColor = const Color(0xFFF9A825);
-              else fitColor = const Color(0xFFEF6C00);
-              return Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  border: isLast ? null : Border(bottom: BorderSide(
-                    color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.withValues(alpha: 0.1),
-                  )),
-                ),
-                child: Row(children: [
-                  // Position badge
-                  Container(
-                    width: 42, height: 28,
-                    decoration: BoxDecoration(
-                      color: fitColor.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: fitColor.withValues(alpha: 0.3)),
-                    ),
-                    child: Center(
-                      child: Text(r['pos'] as String,
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: fitColor)),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  // Role name
-                  Expanded(
-                    child: Text(tr(context, r['name'] as String),
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: tx)),
-                  ),
-                ]),
-              );
-            }).toList(),
-          );
-        }),
-      ),
-      const SizedBox(height: 20),
-      // ── STAT BARS ──
-      _sectionTitle(tr(context, 'Dettaglio parametri'), tx),
-      const SizedBox(height: 12),
-      ...skills.entries.map((e) {
-        final label = e.key;
-        final val = (e.value as num).toDouble();
-        final color = _getStatColor(val.toInt());
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Row(children: [
-            SizedBox(
-              width: 36,
-              child: Text(
-                tr(context, label),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: tx.withValues(alpha: 0.7),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Stack(children: [
-                // Background track
-                Container(
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.08)
-                        : Colors.black.withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                // Filled bar
-                FractionallySizedBox(
-                  widthFactor: (val / 99).clamp(0.0, 1.0),
-                  child: Container(
-                    height: 8,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          color,
-                          color.withValues(alpha: 0.7),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 28,
-              child: Text(
-                '${val.toInt()}',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  color: color,
-                ),
-              ),
-            ),
-          ]),
-        );
-      }),
-    ]);
-  }
-
-  // Stat color helper for FC26 bars
-  List<Map<String, dynamic>> _getFC26Roles(String position, int overall) {
-    // Ruoli FC26 basati sulla posizione reale + overall
-    const rolesMap = {
-      'GK': [
-        {'pos': 'POR', 'name': 'Portiere', 'baseFit': 95},
-        {'pos': 'POR-L', 'name': 'Portiere Libero', 'baseFit': 55},
-      ],
-      'CB': [
-        {'pos': 'DC', 'name': 'Difensore Centrale', 'baseFit': 95},
-        {'pos': 'DCS', 'name': 'Difensore Centrale Sinistro', 'baseFit': 80},
-        {'pos': 'DCD', 'name': 'Difensore Centrale Destro', 'baseFit': 80},
-      ],
-      'LB': [
-        {'pos': 'TS', 'name': 'Terzino Sinistro', 'baseFit': 95},
-        {'pos': 'ES', 'name': 'Esterno Sinistro', 'baseFit': 70},
-        {'pos': 'DCS', 'name': 'Difensore Centrale Sinistro', 'baseFit': 50},
-      ],
-      'RB': [
-        {'pos': 'TD', 'name': 'Terzino Destro', 'baseFit': 95},
-        {'pos': 'ED', 'name': 'Esterno Destro', 'baseFit': 70},
-        {'pos': 'DCD', 'name': 'Difensore Centrale Destro', 'baseFit': 50},
-      ],
-      'DM': [
-        {'pos': 'CDC', 'name': 'Centrocampista Difensivo', 'baseFit': 95},
-        {'pos': 'CC', 'name': 'Centrocampista Centrale', 'baseFit': 75},
-        {'pos': 'DC', 'name': 'Difensore Centrale', 'baseFit': 45},
-      ],
-      'CM': [
-        {'pos': 'CC', 'name': 'Centrocampista Centrale', 'baseFit': 95},
-        {'pos': 'CDC', 'name': 'Centrocampista Difensivo', 'baseFit': 65},
-        {'pos': 'COC', 'name': 'Centrocampista Offensivo', 'baseFit': 70},
-        {'pos': 'ES', 'name': 'Esterno Sinistro', 'baseFit': 45},
-      ],
-      'AM': [
-        {'pos': 'COC', 'name': 'Centrocampista Offensivo', 'baseFit': 95},
-        {'pos': 'CC', 'name': 'Centrocampista Centrale', 'baseFit': 60},
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 70},
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 70},
-      ],
-      'LW': [
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 95},
-        {'pos': 'ES', 'name': 'Esterno Sinistro', 'baseFit': 75},
-        {'pos': 'AT', 'name': 'Attaccante', 'baseFit': 65},
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 55},
-      ],
-      'RW': [
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 95},
-        {'pos': 'ED', 'name': 'Esterno Destro', 'baseFit': 75},
-        {'pos': 'AT', 'name': 'Attaccante', 'baseFit': 65},
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 55},
-      ],
-      'CF': [
-        {'pos': 'AT', 'name': 'Attaccante', 'baseFit': 95},
-        {'pos': 'COC', 'name': 'Centrocampista Offensivo', 'baseFit': 65},
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 60},
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 60},
-      ],
-      'ST': [
-        {'pos': 'AT', 'name': 'Attaccante', 'baseFit': 95},
-        {'pos': 'ATD', 'name': 'Seconda Punta', 'baseFit': 80},
-        {'pos': 'AS', 'name': 'Ala Sinistra', 'baseFit': 50},
-        {'pos': 'AD', 'name': 'Ala Destra', 'baseFit': 50},
-      ],
-    };
-
-    final roles = rolesMap[position] ?? rolesMap['CM']!;
-    // Aggiusta fit in base all'overall
-    final overallFactor = (overall - 60) / 40.0; // 0.0 at 60, 1.0 at 100
-    return roles.map((r) {
-      final base = r['baseFit'] as int;
-      final adjusted = (base * (0.7 + 0.3 * overallFactor)).round().clamp(15, 99);
-      return {'pos': r['pos'], 'name': r['name'], 'fit': adjusted};
-    }).toList();
-  }
-
-  Color _getStatColor(int val) {
-    if (val >= 80) return const Color(0xFF4CAF50); // Green
-    if (val >= 70) return const Color(0xFF8BC34A); // Light green
-    if (val >= 60) return const Color(0xFFF9A825); // Amber 800 (contrasto su chiaro)
-    if (val >= 50) return const Color(0xFFFF9800); // Orange
-    return const Color(0xFFF44336); // Red
-  }
 
   // ── CAREER TAB ──
   Widget _buildCareerTab(Map<String, dynamic> data, Color tx, Color lb,

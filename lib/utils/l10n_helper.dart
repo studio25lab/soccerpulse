@@ -62,6 +62,12 @@ String standingsAbbr(BuildContext context, String italianAbbr) {
 }
 
 const _map = <String, String>{
+  'Voto finale': 'Final rating',
+  'Voto fine 1° tempo': 'Half-time rating',
+  'Espulsioni dirette o per doppio giallo': 'Straight or second-yellow reds',
+  'Quando viene segnalato in offside': 'When flagged offside',
+  "Voto parziale fantacalcio all'intervallo": "Half-time fantasy rating",
+  'Voto definitivo fantacalcio a fine partita': 'Final fantasy rating at full time',
   'Riprova': 'Retry',
   'Errore': 'Error',
   'Mostra tutti i risultati per': 'Show all results for',

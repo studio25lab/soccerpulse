@@ -22,7 +22,6 @@ import 'coach_profile_screen.dart';
 import 'match_player_profile_screen.dart'; // [FAV-extract4]
 
 import 'package:soccerpulse/services/match_notification_preferences_service.dart';
-import 'package:soccerpulse/models/match_notification_settings.dart';
 import 'package:provider/provider.dart';
 import '../widgets/dialogs/match_notification_dialog.dart'; // [REFACTOR-STEP3]
 import 'package:soccerpulse/models/local_match_models.dart';

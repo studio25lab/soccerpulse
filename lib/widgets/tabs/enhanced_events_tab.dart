@@ -256,15 +256,6 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
                     }
                     final score = scoreAtMinute[event.minute] ?? [0, 0];
                     // HT separator: detect crossing between 1st and 2nd half
-                    bool needsHT = false;
-                    if (index > 2) {
-                      final prevEvent = filteredEvents[index - 3];
-                      if (isChrono) {
-                        needsHT = prevEvent.minute <= 45 && event.minute > 45;
-                      } else {
-                        needsHT = prevEvent.minute > 45 && event.minute <= 45;
-                      }
-                    }
                     final eventKey =
                         _eventKeys.putIfAbsent(event.minute, () => GlobalKey());
                     // [TEST-LIVE-PERF] isola il ridisegno di ogni evento
@@ -851,7 +842,6 @@ class _EnhancedEventsTabState extends State<EnhancedEventsTab> {
   // [TEST-LIVE-B2P2] timeline minima per partita live a lista vuota:
   // mostra la barra momentum e il "Calcio d'inizio" fin dal 1' minuto.
   Widget _buildLiveEmptyTimeline(bool isDark) {
-    final theme = Theme.of(context);
     final homeColor = const Color(0xFF1565C0); // [TEST-LIVE-COLORVERO] blu come timeline normale
     const awayColor = Color(0xFFEF5350);
     return ListView(

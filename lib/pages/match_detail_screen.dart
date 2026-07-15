@@ -9,7 +9,7 @@
 // ✅ Eventi con Timeline, Filtri, Vista Compatta, Espandibili
 // ============================================================================
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; // [PULIZIA-WARN-B]
 import '../utils/l10n_helper.dart';
 import '../utils/mock_form_data.dart';
 import '../utils/mock_shot_data.dart';
@@ -79,8 +79,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
   bool _matchEndNotified = false; // [TEST-LIVE-NOTIFFT]
 
   // ── In-App Notification Queue ──
-  final List<MatchEventNotification> _notificationQueue = [];
-  bool _isShowingNotification = false;
 
   MatchData? _matchData;
 
@@ -459,7 +457,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
       case 'shot': return tr(context, '🎯 Tiro'); // [TEST-LIVE-TITOLI]
       case 'corner': return tr(context, "🚩 Calcio d'angolo");
       case 'shotOnTarget': return tr(context, '🎯 Tiro in porta');
-      case 'offside': return tr(context, '🏳️ Fuorigioco');
       case 'matchStart': return tr(context, '🏁 Partita Iniziata!');
       case 'halfTime': return tr(context, '⏱️ Fine Primo Tempo');
       case 'secondHalfStart': return tr(context, '▶️ Inizio Secondo Tempo');
@@ -608,31 +605,6 @@ class _MatchDetailScreenState extends State<MatchDetailScreen>
     overlay.insert(entry);
   }
 
-  void _displayNextNotification() {
-    if (_notificationQueue.isEmpty) {
-      _isShowingNotification = false;
-      return;
-    }
-    _isShowingNotification = true;
-    final notif = _notificationQueue.removeAt(0);
-    _haptic.mediumImpact();
-
-    late OverlayEntry entry;
-    entry = OverlayEntry(
-      builder: (context) => MatchEventOverlay(
-        notification: notif,
-        onDismissed: () {
-          entry.remove();
-          Future.delayed(const Duration(milliseconds: 300), () {
-            _displayNextNotification();
-          });
-        },
-      ),
-    );
-
-    final overlay = Overlay.of(context);
-    overlay.insert(entry);
-  }
 
 
   @override
