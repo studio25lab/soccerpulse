@@ -516,6 +516,18 @@ class _SearchScreenState extends State<SearchScreen>
                       ),
                     ),
                   ),
+                // [CASETTA-RICERCA] casetta Home
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Future.delayed(const Duration(milliseconds: 250),
+                        () => MainScreen.switchTab(0));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4, right: 4),
+                    child: Icon(Icons.home_rounded, size: 20, color: lb),
+                  ),
+                ),
               ]),
             ),
           ),

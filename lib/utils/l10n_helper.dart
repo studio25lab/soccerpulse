@@ -62,6 +62,7 @@ String standingsAbbr(BuildContext context, String italianAbbr) {
 }
 
 const _map = <String, String>{
+  'aggiunto alla rosa': 'added to squad',
   'Rosa Fanta': 'Fanta Squad',
   'giocatori in rosa': 'players in squad',
   'Nessun giocatore in rosa': 'No players in squad',

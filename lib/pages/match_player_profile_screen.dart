@@ -16,6 +16,8 @@ import '../models/player_notification_settings.dart';
 import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
 import '../services/player_notification_preferences_service.dart';
+import '../services/fanta_roster_service.dart'; // [STELLA-ROSA]
+import '../models/player.dart'; // [STELLA-ROSA]
 import 'match_detail_screen.dart';
 import '../utils/mock_player_profile_data.dart';
 import 'match_player_profile_internals.dart';
@@ -685,6 +687,55 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                       });
                     }
                   });
+                },
+              );
+            }),
+            // [STELLA-ROSA] Stella Rosa Fanta
+            StatefulBuilder(builder: (ctx, setStarState) {
+              final roster = ctx.watch<FantaRosterService>();
+              final pid = widget.player.name.hashCode.abs();
+              final inRoster = roster.isInRoster(pid);
+              return IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: inRoster
+                        ? const Color(0xFF9C27B0).withValues(alpha: 0.35)
+                        : Colors.black26,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    inRoster ? Icons.star_rounded : Icons.star_border_rounded,
+                    color: Colors.white, size: 18,
+                  ),
+                ),
+                tooltip: tr(context, 'Rosa Fanta'),
+                onPressed: () {
+                  _playerHaptic.lightImpact();
+                  final sd = getPlayerSeasonData(widget.player.name);
+                  final player = Player(
+                    id: pid,
+                    name: widget.player.name,
+                    position: widget.player.position,
+                    teamId: 0,
+                    teamName: widget.teamName,
+                    rating: (sd?['avgRating'] as num?)?.toDouble() ??
+                        widget.player.rating,
+                    goals: (sd?['goals'] as num?)?.toInt() ?? 0,
+                    assists: (sd?['assists'] as num?)?.toInt() ?? 0,
+                    appearances: (sd?['appearances'] as num?)?.toInt() ?? 0,
+                    yellowCards: (sd?['yellowCards'] as num?)?.toInt() ?? 0,
+                    redCards: (sd?['redCards'] as num?)?.toInt() ?? 0,
+                  );
+                  roster.toggleRoster(player);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(inRoster
+                          ? '${widget.player.name} ${tr(context, 'rimosso dalla rosa')}'
+                          : '${widget.player.name} ${tr(context, 'aggiunto alla rosa')}'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
                 },
               );
             }),

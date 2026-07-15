@@ -493,6 +493,16 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         appBar: AppBar(
           title: Text(_getTitles(context)[_currentIndex]),
           actions: [
+            // [CASETTA-APPBAR] casetta Home (tutte le tab tranne Home)
+            if (_currentIndex != 0)
+              IconButton(
+                icon: const Icon(Icons.home_rounded),
+                tooltip: 'Home',
+                onPressed: () {
+                  _haptic.lightImpact();
+                  MainScreen.switchTab(0);
+                },
+              ),
             // Icona ricerca
             IconButton(
               icon: const Icon(Icons.search),
