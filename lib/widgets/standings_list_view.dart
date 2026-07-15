@@ -434,7 +434,7 @@ class _StandingsListViewState extends State<StandingsListView> {
         border: Border.all(color: divider),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Regolamento',
+        Text(tr(context, 'Regolamento'),
             style: TextStyle(
                 fontSize: 13, fontWeight: FontWeight.w700, color: tx)),
         const SizedBox(height: 10),

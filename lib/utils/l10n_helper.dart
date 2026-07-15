@@ -62,6 +62,10 @@ String standingsAbbr(BuildContext context, String italianAbbr) {
 }
 
 const _map = <String, String>{
+  'Riprova': 'Retry',
+  'Errore': 'Error',
+  'Mostra tutti i risultati per': 'Show all results for',
+  'App': 'App',
   'Tempi di gioco': 'Match periods',
   "Calcio d'inizio 1° e 2° tempo": "Kick-off of both halves",
   'Fine primo tempo': 'Half-time',

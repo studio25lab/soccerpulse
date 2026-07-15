@@ -142,9 +142,9 @@ class _StandingsScreenState extends State<StandingsScreen>
           return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 12),
-            Text('Errore: ${snapshot.error}', style: TextStyle(color: lb)),
+            Text('${tr(context, 'Errore')}: ${snapshot.error}', style: TextStyle(color: lb)),
             const SizedBox(height: 12),
-            ElevatedButton(onPressed: _loadStandings, child: const Text('Riprova')),
+            ElevatedButton(onPressed: _loadStandings, child: Text(tr(context, 'Riprova'))),
           ]));
         }
 

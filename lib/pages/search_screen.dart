@@ -743,7 +743,7 @@ class _SearchScreenState extends State<SearchScreen>
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Icon(Icons.search_rounded, size: 16, color: theme.primaryColor),
                   const SizedBox(width: 8),
-                  Text('Mostra tutti i risultati per "$_searchQuery"',
+                  Text('${tr(context, 'Mostra tutti i risultati per')} "$_searchQuery"',
                       style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: theme.primaryColor)),
                 ]),
               ),

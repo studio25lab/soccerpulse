@@ -954,7 +954,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                     color: (data['recentForm'] as List)[i] == 'W' ? const Color(0xFF2E7D32)
                         : (data['recentForm'] as List)[i] == 'D' ? const Color(0xFFF9A825) : const Color(0xFFD32F2F))))),
               const SizedBox(height: 4),
-              Text('G${i + 1}', style: TextStyle(fontSize: 10, color: lb)),
+              Text('${Localizations.localeOf(context).languageCode == 'en' ? 'M' : 'G'}${i + 1}', style: TextStyle(fontSize: 10, color: lb)), // [AUDIT-EN]
             ]),
         ]),
       ),
@@ -2045,7 +2045,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 Expanded(flex: 1, child: Text(standingsAbbr(context, 'P'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.orange), textAlign: TextAlign.center)),
                 Expanded(flex: 1, child: Text(standingsAbbr(context, 'S'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.red), textAlign: TextAlign.center)),
               ] else ...[
-                Expanded(flex: 1, child: Text('App', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
+                Expanded(flex: 1, child: Text(tr(context, 'App'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
                 Expanded(flex: 1, child: Text(S.of(context)!.gol, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: lb), textAlign: TextAlign.center)),
               ],
             ]),
