@@ -393,13 +393,13 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
 
                           // ── FANTACALCIO ──
                           _pNotifSection(
-                              'Fantacalcio', Icons.star_rate, isDark),
+                              'Voto Fanta', Icons.star_rate, isDark) /* [NAMING-FANTA] */,
                           _pNotifTile(
                             key: 'fantaRatingHT',
                             icon: Icons.star_half,
                             title: tr(context, 'Voto fine 1° tempo'),
                             subtitle:
-                                tr(context, 'Voto parziale fantacalcio all\'intervallo'),
+                                tr(context, 'Voto Fanta parziale all\'intervallo'),
                             color: const Color(0xFFAB47BC),
                             isDark: isDark,
                             setSheetState: setSheetState,
@@ -409,7 +409,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                             icon: Icons.star,
                             title: tr(context, 'Voto finale'),
                             subtitle:
-                                tr(context, 'Voto definitivo fantacalcio a fine partita'),
+                                tr(context, 'Voto Fanta finale a fine partita'),
                             color: const Color(0xFF9C27B0),
                             isDark: isDark,
                             setSheetState: setSheetState,
