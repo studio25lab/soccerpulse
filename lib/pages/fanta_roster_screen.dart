@@ -58,6 +58,7 @@ class _FantaRosterScreenState extends State<FantaRosterScreen> {
             return CustomScrollView(
               slivers: [
                 _buildHeader(context, roster, isDark, theme),
+                _buildSquadSelector(context, roster, isDark, theme), // [FASE2A-SQUADRE]
                 if (roster.isEmpty)
                   SliverFillRemaining(
                     hasScrollBody: false,
@@ -77,6 +78,268 @@ class _FantaRosterScreenState extends State<FantaRosterScreen> {
           },
         ),
       ),
+    );
+  }
+
+  // [FASE2A-SQUADRE] ── Selettore squadre ──
+  Widget _buildSquadSelector(BuildContext context, FantaRosterService roster,
+      bool isDark, ThemeData theme) {
+    final tx = isDark ? Colors.white : const Color(0xFF1A1A2E);
+    final lb = isDark ? Colors.grey[400]! : Colors.grey[600]!;
+    const purple = Color(0xFF9C27B0);
+    final squads = roster.squads;
+    final activeId = roster.activeSquadId;
+    return SliverToBoxAdapter(
+      child: Container(
+        height: 44,
+        margin: const EdgeInsets.only(bottom: 8),
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: [
+            for (final sq in squads) ...[
+              GestureDetector(
+                onTap: () {
+                  _haptic.lightImpact();
+                  roster.setActiveSquad(sq.id);
+                },
+                onLongPress: () {
+                  _haptic.lightImpact();
+                  _showSquadOptions(context, roster, sq.id, sq.name);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: sq.id == activeId
+                        ? purple
+                        : (isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white),
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(
+                      color: sq.id == activeId
+                          ? purple
+                          : (isDark ? Colors.white.withValues(alpha: 0.12) : Colors.grey.withValues(alpha: 0.2)),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.shield_rounded,
+                          size: 15,
+                          color: sq.id == activeId ? Colors.white : lb),
+                      const SizedBox(width: 6),
+                      Text(
+                        sq.name,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: sq.id == activeId ? Colors.white : tx,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: sq.id == activeId
+                              ? Colors.white.withValues(alpha: 0.25)
+                              : purple.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          '${sq.players.length}',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: sq.id == activeId ? Colors.white : purple,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            // chip "+" crea squadra
+            if (roster.canAddSquad)
+              GestureDetector(
+                onTap: () {
+                  _haptic.lightImpact();
+                  _showCreateSquadDialog(context, roster);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.white,
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(
+                      color: purple.withValues(alpha: 0.4),
+                      style: BorderStyle.solid,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.add_rounded, size: 17, color: purple),
+                      const SizedBox(width: 4),
+                      Text(
+                        tr(context, 'Nuova squadra'),
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w700, color: purple),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // [FASE2A-SQUADRE] dialog crea squadra
+  void _showCreateSquadDialog(BuildContext context, FantaRosterService roster) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(tr(context, 'Nuova squadra')),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            maxLength: 24,
+            decoration: InputDecoration(
+              hintText: tr(context, 'Nome squadra'),
+              border: const OutlineInputBorder(),
+            ),
+            onSubmitted: (_) {
+              final name = controller.text.trim();
+              if (name.isNotEmpty) {
+                roster.createSquad(name);
+                Navigator.pop(ctx);
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(tr(context, 'Annulla')),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final name = controller.text.trim();
+                if (name.isNotEmpty) {
+                  roster.createSquad(name);
+                  Navigator.pop(ctx);
+                }
+              },
+              child: Text(tr(context, 'Crea')),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // [FASE2A-SQUADRE] menu opzioni squadra (rinomina/elimina) - completato in fase 2b
+  void _showSquadOptions(BuildContext context, FantaRosterService roster,
+      String squadId, String squadName) {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.edit_rounded),
+                title: Text(tr(context, 'Rinomina')),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _showRenameSquadDialog(context, roster, squadId, squadName);
+                },
+              ),
+              if (roster.squadCount > 1)
+                ListTile(
+                  leading: const Icon(Icons.delete_rounded, color: Colors.red),
+                  title: Text(tr(context, 'Elimina'),
+                      style: const TextStyle(color: Colors.red)),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _confirmDeleteSquad(context, roster, squadId, squadName);
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // [FASE2A-SQUADRE] dialog rinomina
+  void _showRenameSquadDialog(BuildContext context, FantaRosterService roster,
+      String squadId, String currentName) {
+    final controller = TextEditingController(text: currentName);
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(tr(context, 'Rinomina squadra')),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            maxLength: 24,
+            decoration: InputDecoration(
+              hintText: tr(context, 'Nome squadra'),
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(tr(context, 'Annulla')),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final name = controller.text.trim();
+                if (name.isNotEmpty) {
+                  roster.renameSquad(squadId, name);
+                  Navigator.pop(ctx);
+                }
+              },
+              child: Text(tr(context, 'Salva')),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // [FASE2A-SQUADRE] conferma elimina
+  void _confirmDeleteSquad(BuildContext context, FantaRosterService roster,
+      String squadId, String squadName) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(tr(context, 'Elimina squadra')),
+          content: Text(
+              tr(context, 'Vuoi davvero eliminare questa squadra?')),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(tr(context, 'Annulla')),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () {
+                roster.deleteSquad(squadId);
+                Navigator.pop(ctx);
+              },
+              child: Text(tr(context, 'Elimina')),
+            ),
+          ],
+        );
+      },
     );
   }
 

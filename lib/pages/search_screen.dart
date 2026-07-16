@@ -9,6 +9,7 @@ import '../models/soccer_match.dart';
 import '../models/team.dart';
 import '../models/player.dart'; // [FIX-CUORE-META]
 import '../services/fanta_roster_service.dart'; // [STELLA-RICERCA]
+import '../widgets/fanta_squad_picker.dart'; // [STELLA-PICKER]
 import '../api/api_service.dart';
 import '../services/haptic_service.dart';
 import 'match_detail_screen.dart';
@@ -1020,7 +1021,7 @@ class _SearchScreenState extends State<SearchScreen>
                             goals: p.goals ?? 0,
                             assists: p.assists ?? 0,
                           );
-                          roster.toggleRoster(player);
+                          handleStarTap(context, player); // [STELLA-PICKER]
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(3),
@@ -1502,7 +1503,7 @@ class _SearchScreenState extends State<SearchScreen>
                                 goals: p['goals'] as int? ?? 0,
                                 assists: p['assists'] as int? ?? 0,
                               );
-                              roster.toggleRoster(player);
+                              handleStarTap(context, player); // [STELLA-PICKER]
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(3),
@@ -1902,15 +1903,7 @@ class _SearchScreenState extends State<SearchScreen>
                           goals: p.goals ?? 0,
                           assists: p.assists ?? 0,
                         );
-                        roster.toggleRoster(player);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(inRoster
-                                ? '${p.name} ${tr(context, 'rimosso dalla rosa')}'
-                                : '${p.name} ${tr(context, 'aggiunto alla rosa')}'),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
+                        handleStarTap(context, player); // [STELLA-PICKER]
                       },
                     );
                   },

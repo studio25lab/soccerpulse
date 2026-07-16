@@ -16,7 +16,8 @@ import '../models/player_notification_settings.dart';
 import '../services/haptic_service.dart';
 import '../services/favorites_service.dart';
 import '../services/player_notification_preferences_service.dart';
-import '../services/fanta_roster_service.dart'; // [STELLA-ROSA]
+import '../services/fanta_roster_service.dart';
+import '../widgets/fanta_squad_picker.dart'; // [STELLA-PICKER] // [STELLA-ROSA]
 import '../models/player.dart'; // [STELLA-ROSA]
 import 'match_detail_screen.dart';
 import '../utils/mock_player_profile_data.dart';
@@ -765,15 +766,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                     yellowCards: (sd?['yellowCards'] as num?)?.toInt() ?? 0,
                     redCards: (sd?['redCards'] as num?)?.toInt() ?? 0,
                   );
-                  roster.toggleRoster(player);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(inRoster
-                          ? '${widget.player.name} ${tr(context, 'rimosso dalla rosa')}'
-                          : '${widget.player.name} ${tr(context, 'aggiunto alla rosa')}'),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
+                  handleStarTap(context, player); // [STELLA-PICKER]
                 },
               );
             }),

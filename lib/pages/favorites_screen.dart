@@ -10,6 +10,7 @@ import '../models/soccer_match.dart';
 import '../models/team_standing.dart';
 import '../services/favorites_service.dart';
 import '../services/fanta_roster_service.dart'; // [STELLA-PREFERITI]
+import '../widgets/fanta_squad_picker.dart'; // [STELLA-PICKER]
 import '../models/player.dart'; // [STELLA-PREFERITI]
 import '../services/haptic_service.dart';
 import '../generated/l10n.dart';
@@ -1410,15 +1411,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                       yellowCards: yellowCards,
                       redCards: redCards,
                     );
-                    roster.toggleRoster(player);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(inRoster
-                            ? '${name} ${tr(context, 'rimosso dalla rosa')}'
-                            : '${name} ${tr(context, 'aggiunto alla rosa')}'),
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
+                    handleStarTap(context, player); // [STELLA-PICKER]
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(4),
