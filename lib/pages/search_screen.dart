@@ -971,7 +971,7 @@ class _SearchScreenState extends State<SearchScreen>
                   Builder(builder: (ctx) {
                     final favSvc = ctx.watch<FavoritesService>();
                     final pid = p.name.hashCode.abs();
-                    final isFav = favSvc.isPlayerFavorite(pid);
+                    final isFav = favSvc.isPlayerFavoriteByName(p.name); // [CUORI-BY-NAME]
                     return GestureDetector(
                       onTap: () {
                         _haptic.lightImpact();
@@ -1004,8 +1004,8 @@ class _SearchScreenState extends State<SearchScreen>
                   // Stella rosa
                   Consumer<FantaRosterService>(
                     builder: (ctx, roster, _) {
-                      final pid = p.name.hashCode.abs();
-                      final inRoster = roster.isInRoster(pid);
+                      final pid = p.name.hashCode.abs(); // [STELLE-BY-NAME]
+                      final inRoster = roster.isInRosterByName(p.name);
                       return GestureDetector(
                         onTap: () {
                           _haptic.lightImpact();
@@ -1457,7 +1457,7 @@ class _SearchScreenState extends State<SearchScreen>
                       Builder(builder: (ctx) {
                         final favSvc = ctx.watch<FavoritesService>();
                         final pid = (p['name'] as String).hashCode.abs();
-                        final isFav = favSvc.isPlayerFavorite(pid);
+                        final isFav = favSvc.isPlayerFavoriteByName(p['name'] as String); // [CUORI-BY-NAME]
                         return GestureDetector(
                           onTap: () {
                             _haptic.lightImpact();
@@ -1486,8 +1486,8 @@ class _SearchScreenState extends State<SearchScreen>
                       }),
                       Consumer<FantaRosterService>(
                         builder: (ctx, roster, _) {
-                          final pid = (p['name'] as String).hashCode.abs();
-                          final inRoster = roster.isInRoster(pid);
+                          final pid = (p['name'] as String).hashCode.abs(); // [STELLE-BY-NAME]
+                          final inRoster = roster.isInRosterByName(p['name'] as String);
                           return GestureDetector(
                             onTap: () {
                               _haptic.lightImpact();
@@ -1879,8 +1879,8 @@ class _SearchScreenState extends State<SearchScreen>
                 // [STELLA-RICERCA] stella Rosa Fanta
                 Consumer<FantaRosterService>(
                   builder: (ctx, roster, _) {
-                    final pid = p.name.hashCode.abs();
-                    final inRoster = roster.isInRoster(pid);
+                    final pid = p.name.hashCode.abs(); // [STELLE-BY-NAME]
+                    final inRoster = roster.isInRosterByName(p.name);
                     return IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: Icon(

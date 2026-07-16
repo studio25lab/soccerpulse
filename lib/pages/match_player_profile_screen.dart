@@ -130,6 +130,20 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       widget.player.number,
       widget.player.name,
     );
+    // [CAMPANELLA-BY-NAME] fallback: se non attive per number, cerca per nome
+    if (!_playerNotifSettings.hasActiveNotifications) {
+      final byName = _playerNotifService.getSettingsByPlayerName(widget.player.name);
+      if (byName != null && byName.hasActiveNotifications) {
+        _playerNotifSettings = byName;
+      }
+    }
+    // [CAMPANELLA-BY-NAME] fallback: se non attive per number, cerca per nome
+    if (!_playerNotifSettings.hasActiveNotifications) {
+      final byName = _playerNotifService.getSettingsByPlayerName(widget.player.name);
+      if (byName != null && byName.hasActiveNotifications) {
+        _playerNotifSettings = byName;
+      }
+    }
     _playerNotifService.loadSettings().then((_) {
       if (mounted) {
         setState(() {
@@ -137,6 +151,20 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
             widget.player.number,
             widget.player.name,
           );
+          // [CAMPANELLA-BY-NAME] fallback per nome
+          if (!_playerNotifSettings.hasActiveNotifications) {
+            final byName2 = _playerNotifService.getSettingsByPlayerName(widget.player.name);
+            if (byName2 != null && byName2.hasActiveNotifications) {
+              _playerNotifSettings = byName2;
+            }
+          }
+          // [CAMPANELLA-BY-NAME] fallback per nome
+          if (!_playerNotifSettings.hasActiveNotifications) {
+            final byName2 = _playerNotifService.getSettingsByPlayerName(widget.player.name);
+            if (byName2 != null && byName2.hasActiveNotifications) {
+              _playerNotifSettings = byName2;
+            }
+          }
         });
       }
     });
@@ -650,9 +678,9 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
               ),
             // Cuore preferiti
             StatefulBuilder(builder: (ctx, setSheetState) {
-              final favService = ctx.read<FavoritesService>();
+              final favService = ctx.watch<FavoritesService>();
               final playerId = widget.player.name.hashCode.abs();
-              final isFav = favService.isPlayerFavorite(playerId);
+              final isFav = favService.isPlayerFavorite(playerId); // [CC-SCHEDA-PROFILO] per ID (coerente col toggle)
               return IconButton(
                 icon: Container(
                   padding: const EdgeInsets.all(6),
@@ -685,7 +713,17 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                         'age': seasonData2?['age'] ?? 0,
                         'team': widget.teamName,
                       });
+                      // [CC-SCHEDA-PROFILO] regola cuore->campanella: accendi default se spente
+                      final existingNotif = _playerNotifService.getSettingsByPlayerName(widget.player.name);
+                      if (existingNotif == null || !existingNotif.hasActiveNotifications) {
+                        final preset = PlayerNotificationSettings.essentialOnly(
+                          widget.player.number, widget.player.name);
+                        _playerNotifService.saveSettingsForPlayer(preset);
+                        _playerNotifService.updateAllSettingsForPlayerByName(
+                          widget.player.name, preset);
+                      }
                     }
+                    // cuore rimosso: NON tocca le notifiche
                   });
                 },
               );
@@ -693,8 +731,8 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
             // [STELLA-ROSA] Stella Rosa Fanta
             StatefulBuilder(builder: (ctx, setStarState) {
               final roster = ctx.watch<FantaRosterService>();
-              final pid = widget.player.name.hashCode.abs();
-              final inRoster = roster.isInRoster(pid);
+              final pid = widget.player.name.hashCode.abs(); // [STELLE-BY-NAME]
+              final inRoster = roster.isInRosterByName(widget.player.name);
               return IconButton(
                 icon: Container(
                   padding: const EdgeInsets.all(6),

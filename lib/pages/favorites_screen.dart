@@ -1391,8 +1391,8 @@ class _FavoritesScreenState extends State<FavoritesScreen>
             // [STELLA-PREFERITI] stella Rosa Fanta
             Consumer<FantaRosterService>(
               builder: (ctx, roster, _) {
-                final pid = name.hashCode.abs();
-                final inRoster = roster.isInRoster(pid);
+                final pid = name.hashCode.abs(); // [STELLE-BY-NAME]
+                final inRoster = roster.isInRosterByName(name);
                 return GestureDetector(
                   onTap: () {
                     _haptic.lightImpact();
@@ -1905,14 +1905,21 @@ class _FavoritesScreenState extends State<FavoritesScreen>
   }
 
   void _syncPlayerNotifications(int playerId, String playerName, bool added, {int? playerNumber}) {
+    // [CUORE-CAMPANELLA-LOGICA]
+    // Regola: il cuore puo' solo ACCENDERE la campanella (mai spegnerla).
+    // - cuore attivato + notifiche spente -> accende default
+    // - cuore attivato + notifiche gia' attive -> non tocca
+    // - cuore rimosso -> non tocca le notifiche
     final notifService = context.read<PlayerNotificationPreferencesService>();
     final notifId = playerNumber ?? playerId;
     if (added) {
-      final preset = PlayerNotificationSettings.essentialOnly(notifId, playerName);
-      notifService.saveSettingsForPlayer(preset);
-    } else {
-      notifService.removeSettingsForPlayer(notifId);
+      final existing = notifService.getSettingsByPlayerName(playerName);
+      if (existing == null || !existing.hasActiveNotifications) {
+        final preset = PlayerNotificationSettings.essentialOnly(notifId, playerName);
+        notifService.saveSettingsForPlayer(preset);
+      }
     }
+    // cuore rimosso: NON tocchiamo le notifiche (restano come sono)
   }
 
 

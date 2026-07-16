@@ -68,6 +68,56 @@ class FantaRosterService extends ChangeNotifier {
   /// Verifica se un giocatore e' nella rosa (per la stella).
   bool isInRoster(int playerId) => _rosterIds.contains(playerId);
 
+  // [ANTI-DOPPIONI] ─────────────────────────────────────────────
+  // Prevenzione doppioni: due nomi come "Provedel" e "Ivan Provedel"
+  // (stesso giocatore, nomi diversi tra schermate mock) vanno trattati
+  // come lo stesso. Soluzione provvisoria in attesa degli ID veri (API).
+
+  /// Normalizza un nome: minuscolo, senza accenti, spazi singoli, trim.
+  String _normName(String name) {
+    var s = name.toLowerCase().trim();
+    const from = 'àáâãäèéêëìíîïòóôõöùúûüñç';
+    const to   = 'aaaaaeeeeiiiiooooouuuunc';
+    final buf = StringBuffer();
+    for (final ch in s.split('')) {
+      final i = from.indexOf(ch);
+      buf.write(i >= 0 ? to[i] : ch);
+    }
+    s = buf.toString();
+    // collassa spazi multipli
+    s = s.replaceAll(RegExp(r'\s+'), ' ');
+    return s;
+  }
+
+  /// Due nomi sono lo "stesso giocatore" se, normalizzati:
+  /// - sono uguali, oppure
+  /// - uno e' contenuto nell'altro (es. "provedel" in "ivan provedel"), oppure
+  /// - condividono il cognome (ultima parola) se lunga >= 4 lettere.
+  bool _sameName(String a, String b) {
+    final na = _normName(a);
+    final nb = _normName(b);
+    if (na == nb) return true;
+    if (na.isEmpty || nb.isEmpty) return false;
+    if (na.contains(nb) || nb.contains(na)) return true;
+    final lastA = na.split(' ').last;
+    final lastB = nb.split(' ').last;
+    if (lastA.length >= 4 && lastA == lastB) return true;
+    return false;
+  }
+
+  /// Cerca in rosa un giocatore con nome equivalente. null se non c'e'.
+  Player? _findDuplicate(String name) {
+    for (final p in _rosterPlayers) {
+      if (_sameName(p.name, name)) return p;
+    }
+    return null;
+  }
+
+  /// Come isInRoster ma per nome (usato dalle stelle per coerenza visiva):
+  /// la stella di "Provedel" risulta piena se "Ivan Provedel" e' in rosa.
+  bool isInRosterByName(String name) => _findDuplicate(name) != null;
+  // ───────────────────────────────────────────────────────────────
+
   // ── Mappatura ruolo: da 'position' (stringa) al ruolo fanta classico ──
   // Gestisce sia codici brevi (GK/CB/CM/ST) sia nomi estesi italiani
   // ("Portiere", "Terzino Sinistro", "Ala Destra", ecc.).
@@ -159,8 +209,12 @@ class FantaRosterService extends ChangeNotifier {
 
   /// Aggiunge o rimuove un giocatore dalla rosa (toggle).
   void toggleRoster(Player player) {
+    // [ANTI-DOPPIONI] se esiste gia' un equivalente per nome, rimuovilo
+    final dup = _findDuplicate(player.name);
     if (_rosterIds.contains(player.id)) {
       removeFromRoster(player.id);
+    } else if (dup != null) {
+      removeFromRoster(dup.id);
     } else {
       addToRoster(player);
     }
@@ -168,6 +222,8 @@ class FantaRosterService extends ChangeNotifier {
 
   void addToRoster(Player player) {
     if (_rosterIds.contains(player.id)) return;
+    // [ANTI-DOPPIONI] evita doppioni con nome equivalente (es. Provedel / Ivan Provedel)
+    if (_findDuplicate(player.name) != null) return;
     _rosterIds.add(player.id);
     _rosterPlayers.add(player);
     _save();

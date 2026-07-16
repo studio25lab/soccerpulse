@@ -220,6 +220,56 @@ class FavoritesService extends ChangeNotifier {
 
   bool isPlayerFavorite(int playerId) => _favoritePlayerIds.contains(playerId);
 
+  // [CUORE-BY-NAME] ─────────────────────────────────────────────
+  // Coerenza per nome: "Provedel" e "Ivan Provedel" (stesso giocatore,
+  // nomi diversi tra schermate mock) trattati come lo stesso.
+  // Provvisorio in attesa degli ID veri (API).
+
+  String _normNameFav(String name) {
+    var s = name.toLowerCase().trim();
+    const fromCh = 'àáâãäèéêëìíîïòóôõöùúûüñç';
+    const toCh   = 'aaaaaeeeeiiiiooooouuuunc';
+    final buf = StringBuffer();
+    for (final ch in s.split('')) {
+      final i = fromCh.indexOf(ch);
+      buf.write(i >= 0 ? toCh[i] : ch);
+    }
+    s = buf.toString().replaceAll(RegExp(r'\s+'), ' ');
+    return s;
+  }
+
+  bool _sameNameFav(String a, String b) {
+    final na = _normNameFav(a);
+    final nb = _normNameFav(b);
+    if (na == nb) return true;
+    if (na.isEmpty || nb.isEmpty) return false;
+    if (na.contains(nb) || nb.contains(na)) return true;
+    final lastA = na.split(' ').last;
+    final lastB = nb.split(' ').last;
+    if (lastA.length >= 4 && lastA == lastB) return true;
+    return false;
+  }
+
+  /// Restituisce tutti i nomi dei giocatori preferiti (da meta e da Player).
+  Iterable<String> _favoriteNames() sync* {
+    for (final m in _playerMeta.values) {
+      final n = m['name'];
+      if (n is String && n.isNotEmpty) yield n;
+    }
+    for (final p in _favoritePlayers) {
+      if (p.name.isNotEmpty) yield p.name;
+    }
+  }
+
+  /// Come isPlayerFavorite ma per nome (usato dai cuori per coerenza visiva).
+  bool isPlayerFavoriteByName(String name) {
+    for (final fn in _favoriteNames()) {
+      if (_sameNameFav(fn, name)) return true;
+    }
+    return false;
+  }
+  // ───────────────────────────────────────────────────────────────
+
   // ── Add data ──
   void addFavoriteTeamData(TeamStanding team) {
     if (!_favoriteTeams.any((t) => t.teamId == team.teamId)) {

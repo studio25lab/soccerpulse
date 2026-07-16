@@ -232,19 +232,19 @@ void showPlayerMatchStats(
                         'team': teamName,
                         'teamId': showHomeLineup ? homeTeamId : awayTeamId,
                       });
-                      // Attiva notifiche base — salva con entrambi gli ID
-                      final preset = PlayerNotificationSettings.essentialOnly(player.number, player.name);
-                      await notifSvc.saveSettingsForPlayer(preset);
-                      final matchPreset = PlayerNotificationSettings.essentialOnly(
-                        player.number, player.name, matchId: matchId,
-                      );
-                      await notifSvc.saveSettingsForPlayer(matchPreset);
-                      // Sync per nome a tutte le entries
-                      await notifSvc.updateAllSettingsForPlayerByName(player.name, preset);
-                    } else {
-                      // Rimuovi TUTTE le notifiche per questo giocatore
-                      await notifSvc.removeAllSettingsForPlayerByName(player.name);
+                      // [CC-DIALOG-LIVE] regola: accendi default SOLO se spente
+                      final existingNotif = notifSvc.getSettingsByPlayerName(player.name);
+                      if (existingNotif == null || !existingNotif.hasActiveNotifications) {
+                        final preset = PlayerNotificationSettings.essentialOnly(player.number, player.name);
+                        await notifSvc.saveSettingsForPlayer(preset);
+                        final matchPreset = PlayerNotificationSettings.essentialOnly(
+                          player.number, player.name, matchId: matchId,
+                        );
+                        await notifSvc.saveSettingsForPlayer(matchPreset);
+                        await notifSvc.updateAllSettingsForPlayerByName(player.name, preset);
+                      }
                     }
+                    // [CC-DIALOG-LIVE] cuore rimosso: NON tocca le notifiche
                     setSheetState(() {});
                   },
                   child: Container(
