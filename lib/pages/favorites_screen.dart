@@ -9,6 +9,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../models/soccer_match.dart';
 import '../models/team_standing.dart';
 import '../services/favorites_service.dart';
+import '../services/fanta_roster_service.dart'; // [STELLA-PREFERITI]
+import '../models/player.dart'; // [STELLA-PREFERITI]
 import '../services/haptic_service.dart';
 import '../generated/l10n.dart';
 import '../widgets/glassmorphic_card.dart';
@@ -1386,6 +1388,50 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         child: Column(children: [
           // ── Header: league-style row con heart + bell a destra ──
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            // [STELLA-PREFERITI] stella Rosa Fanta
+            Consumer<FantaRosterService>(
+              builder: (ctx, roster, _) {
+                final pid = name.hashCode.abs();
+                final inRoster = roster.isInRoster(pid);
+                return GestureDetector(
+                  onTap: () {
+                    _haptic.lightImpact();
+                    final player = Player(
+                      id: pid,
+                      name: name,
+                      position: position,
+                      teamId: 0,
+                      teamName: p['team'] as String? ?? '',
+                      photo: p['photo'] as String?,
+                      rating: rating,
+                      goals: goals,
+                      assists: assists,
+                      appearances: appearances,
+                      yellowCards: yellowCards,
+                      redCards: redCards,
+                    );
+                    roster.toggleRoster(player);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(inRoster
+                            ? '${name} ${tr(context, 'rimosso dalla rosa')}'
+                            : '${name} ${tr(context, 'aggiunto alla rosa')}'),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      inRoster ? Icons.star_rounded : Icons.star_border_rounded,
+                      size: 20,
+                      color: inRoster ? const Color(0xFF9C27B0) : lb.withValues(alpha: 0.4),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 2),
             GestureDetector(
               onTap: () {
                 _haptic.lightImpact();

@@ -7,7 +7,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/soccer_match.dart';
 import '../models/team.dart';
-import '../models/player.dart';
+import '../models/player.dart'; // [FIX-CUORE-META]
+import '../services/fanta_roster_service.dart'; // [STELLA-RICERCA]
 import '../api/api_service.dart';
 import '../services/haptic_service.dart';
 import 'match_detail_screen.dart';
@@ -16,6 +17,8 @@ import 'match_player_profile_screen.dart'; // [FAV-extract4]
 import 'team_detail_screen.dart';
 import '../main.dart';
 import '../services/favorites_service.dart';
+import '../widgets/player_notification_sheet.dart'; // [TRE-ICONE-TOP]
+import '../services/player_notification_preferences_service.dart'; // [TRE-ICONE-TOP]
 import '../services/match_notification_preferences_service.dart';
 import 'package:soccerpulse/models/local_match_models.dart';
 import 'package:soccerpulse/models/team_standing.dart';
@@ -959,6 +962,103 @@ class _SearchScreenState extends State<SearchScreen>
                 ),
                 child: Text('${p.goals ?? 0} ⚽', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF2E7D32))),
               ),
+              const SizedBox(width: 8),
+              // [TRE-ICONE-TOP] 3 icone: cuore + stella + campanella
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Cuore preferiti
+                  Builder(builder: (ctx) {
+                    final favSvc = ctx.watch<FavoritesService>();
+                    final pid = p.name.hashCode.abs();
+                    final isFav = favSvc.isPlayerFavorite(pid);
+                    return GestureDetector(
+                      onTap: () {
+                        _haptic.lightImpact();
+                        if (!isFav) {
+                          favSvc.storePlayerMeta(pid, {
+                            'name': p.name,
+                            'position': p.position.contains('Att') || p.position.toLowerCase().contains('ala') ? 'F'
+                                : p.position.contains('Cen') ? 'M'
+                                : p.position.contains('Dif') || p.position.contains('Terz') ? 'D'
+                                : p.position.contains('Por') ? 'G' : 'F',
+                            'team': p.teamName,
+                            'teamId': p.teamId,
+                            'rating': p.rating,
+                            'goals': p.goals ?? 0,
+                            'assists': p.assists ?? 0,
+                          });
+                        }
+                        favSvc.togglePlayerFavorite(pid);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(3),
+                        child: Icon(
+                          isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                          size: 20,
+                          color: isFav ? Colors.red : lb.withValues(alpha: 0.4),
+                        ),
+                      ),
+                    );
+                  }),
+                  // Stella rosa
+                  Consumer<FantaRosterService>(
+                    builder: (ctx, roster, _) {
+                      final pid = p.name.hashCode.abs();
+                      final inRoster = roster.isInRoster(pid);
+                      return GestureDetector(
+                        onTap: () {
+                          _haptic.lightImpact();
+                          final player = Player(
+                            id: pid,
+                            name: p.name,
+                            position: p.position,
+                            teamId: p.teamId,
+                            teamName: p.teamName,
+                            photo: p.photo,
+                            rating: p.rating,
+                            goals: p.goals ?? 0,
+                            assists: p.assists ?? 0,
+                          );
+                          roster.toggleRoster(player);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(3),
+                          child: Icon(
+                            inRoster ? Icons.star_rounded : Icons.star_border_rounded,
+                            size: 20,
+                            color: inRoster ? const Color(0xFF9C27B0) : lb.withValues(alpha: 0.4),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // Campanella notifiche (pannello condiviso)
+                  Builder(builder: (ctx) {
+                    final ns = ctx.watch<PlayerNotificationPreferencesService>();
+                    final hasNotif = ns.getSettingsByPlayerName(p.name) != null;
+                    return GestureDetector(
+                      onTap: () {
+                        _haptic.lightImpact();
+                        showPlayerNotificationSheet(
+                          context,
+                          playerName: p.name,
+                          playerId: p.name.hashCode.abs(),
+                          photo: p.photo,
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(3),
+                        child: Icon(
+                          hasNotif ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
+                          size: 20,
+                          color: hasNotif ? const Color(0xFF4CAF50) : lb.withValues(alpha: 0.4),
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
             ]),
           );
         },
@@ -1349,6 +1449,97 @@ class _SearchScreenState extends State<SearchScreen>
                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: ratingColor(rating))),
                     ),
                   ]),
+                  const SizedBox(width: 8),
+                  // [TRE-ICONE-TOPGIOC] cuore + stella + campanella
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Builder(builder: (ctx) {
+                        final favSvc = ctx.watch<FavoritesService>();
+                        final pid = (p['name'] as String).hashCode.abs();
+                        final isFav = favSvc.isPlayerFavorite(pid);
+                        return GestureDetector(
+                          onTap: () {
+                            _haptic.lightImpact();
+                            if (!isFav) {
+                              favSvc.storePlayerMeta(pid, {
+                                'name': p['name'],
+                                'position': (p['pos'] == 'ATT') ? 'F' : (p['pos'] == 'CEN') ? 'M' : (p['pos'] == 'DIF') ? 'D' : 'G',
+                                'team': p['team'],
+                                'teamId': 0,
+                                'rating': p['rating'],
+                                'goals': p['goals'],
+                                'assists': p['assists'],
+                              });
+                            }
+                            favSvc.togglePlayerFavorite(pid);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(3),
+                            child: Icon(
+                              isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                              size: 19,
+                              color: isFav ? Colors.red : lb.withValues(alpha: 0.4),
+                            ),
+                          ),
+                        );
+                      }),
+                      Consumer<FantaRosterService>(
+                        builder: (ctx, roster, _) {
+                          final pid = (p['name'] as String).hashCode.abs();
+                          final inRoster = roster.isInRoster(pid);
+                          return GestureDetector(
+                            onTap: () {
+                              _haptic.lightImpact();
+                              final player = Player(
+                                id: pid,
+                                name: p['name'] as String,
+                                position: p['pos'] as String,
+                                teamId: 0,
+                                teamName: p['team'] as String,
+                                photo: p['photo'] as String?,
+                                rating: (p['rating'] as num).toDouble(),
+                                goals: p['goals'] as int? ?? 0,
+                                assists: p['assists'] as int? ?? 0,
+                              );
+                              roster.toggleRoster(player);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(3),
+                              child: Icon(
+                                inRoster ? Icons.star_rounded : Icons.star_border_rounded,
+                                size: 19,
+                                color: inRoster ? const Color(0xFF9C27B0) : lb.withValues(alpha: 0.4),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      Builder(builder: (ctx) {
+                        final ns = ctx.watch<PlayerNotificationPreferencesService>();
+                        final hasNotif = ns.getSettingsByPlayerName(p['name'] as String) != null;
+                        return GestureDetector(
+                          onTap: () {
+                            _haptic.lightImpact();
+                            showPlayerNotificationSheet(
+                              context,
+                              playerName: p['name'] as String,
+                              playerId: (p['name'] as String).hashCode.abs(),
+                              photo: p['photo'] as String?,
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(3),
+                            child: Icon(
+                              hasNotif ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
+                              size: 19,
+                              color: hasNotif ? const Color(0xFF4CAF50) : lb.withValues(alpha: 0.4),
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
                 ]),
               ),
             ).animate().fadeIn(delay: Duration(milliseconds: i * 50)).slideX(begin: 0.03, end: 0);
@@ -1682,10 +1873,54 @@ class _SearchScreenState extends State<SearchScreen>
             ),
             title: Text(p.name, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: tx)),
             subtitle: Text('${p.teamName} • ${p.position}', style: TextStyle(fontSize: 12, color: lb)),
-            trailing: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text('${p.goals}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: theme.primaryColor)),
-              Text('gol', style: TextStyle(fontSize: 10, color: lb)),
-            ]),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // [STELLA-RICERCA] stella Rosa Fanta
+                Consumer<FantaRosterService>(
+                  builder: (ctx, roster, _) {
+                    final pid = p.name.hashCode.abs();
+                    final inRoster = roster.isInRoster(pid);
+                    return IconButton(
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(
+                        inRoster ? Icons.star_rounded : Icons.star_border_rounded,
+                        color: inRoster ? const Color(0xFF9C27B0) : lb,
+                        size: 24,
+                      ),
+                      tooltip: tr(context, 'Rosa Fanta'),
+                      onPressed: () {
+                        _haptic.lightImpact();
+                        final player = Player(
+                          id: pid,
+                          name: p.name,
+                          position: p.position,
+                          teamId: p.teamId,
+                          teamName: p.teamName,
+                          photo: p.photo,
+                          rating: p.rating,
+                          goals: p.goals ?? 0,
+                          assists: p.assists ?? 0,
+                        );
+                        roster.toggleRoster(player);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(inRoster
+                                ? '${p.name} ${tr(context, 'rimosso dalla rosa')}'
+                                : '${p.name} ${tr(context, 'aggiunto alla rosa')}'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text('${p.goals}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: theme.primaryColor)),
+                  Text('gol', style: TextStyle(fontSize: 10, color: lb)),
+                ]),
+              ],
+            ),
             onTap: () {
               _haptic.lightImpact();
               final llp = LocalLineupPlayer(

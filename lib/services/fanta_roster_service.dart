@@ -78,7 +78,7 @@ class FantaRosterService extends ChangeNotifier {
         p.contains('gk') ||
         p.contains('goalkeeper') ||
         p == 'g' ||
-        p == 'por') {
+        p.contains('por')) {
       return FantaRole.portiere;
     }
     // Attaccante (incluse Ali e Punte: nel classic le ali sono attaccanti)
@@ -89,6 +89,7 @@ class FantaRosterService extends ChangeNotifier {
         p.contains('attacker') ||
         p.contains('forward') ||
         p.contains('striker') ||
+        p.contains('att') ||
         p == 'st' ||
         p == 'cf' ||
         p == 'lw' ||
@@ -105,6 +106,7 @@ class FantaRosterService extends ChangeNotifier {
         p.contains('mezzala') ||
         p.contains('mezz') ||
         p.contains('midfielder') ||
+        p.contains('cen') ||
         p == 'cm' ||
         p == 'dm' ||
         p == 'am' ||
@@ -120,6 +122,7 @@ class FantaRosterService extends ChangeNotifier {
         p.contains('centrale') ||
         p.contains('defender') ||
         p.contains('back') ||
+        p.contains('dif') ||
         p == 'cb' ||
         p == 'lb' ||
         p == 'rb' ||
