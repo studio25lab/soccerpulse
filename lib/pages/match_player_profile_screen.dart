@@ -63,6 +63,11 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       'shots': _playerNotifSettings.notifyShotsOffTarget,
       'shotsOnTarget': _playerNotifSettings.notifyShotsOnTarget,
       'offsides': _playerNotifSettings.notifyOffsides,
+      // [ALLINEA-NOTIF] voci allineate ai preferiti
+      'assists': _playerNotifSettings.notifyAssists,
+      'keyPasses': _playerNotifSettings.notifyKeyPasses,
+      'dribblesSuccessful': _playerNotifSettings.notifyDribblesSuccessful,
+      'substitutionOn': _playerNotifSettings.notifySubstitutionOn,
       'fantaRatingHT': _playerNotifSettings.notifyFantaRatingHT,
       'fantaRatingFT': _playerNotifSettings.notifyFantaRatingFT,
     };
@@ -94,6 +99,21 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
       case 'offsides':
         _playerNotifSettings = _playerNotifSettings.copyWith(notifyOffsides: value);
         break;
+      // [ALLINEA-NOTIF]
+      case 'assists':
+        _playerNotifSettings = _playerNotifSettings.copyWith(notifyAssists: value);
+        break;
+      case 'keyPasses':
+        _playerNotifSettings = _playerNotifSettings.copyWith(notifyKeyPasses: value);
+        break;
+      case 'dribblesSuccessful':
+        _playerNotifSettings =
+            _playerNotifSettings.copyWith(notifyDribblesSuccessful: value);
+        break;
+      case 'substitutionOn':
+        _playerNotifSettings =
+            _playerNotifSettings.copyWith(notifySubstitutionOn: value);
+        break;
       case 'fantaRatingHT':
         _playerNotifSettings =
             _playerNotifSettings.copyWith(notifyFantaRatingHT: value);
@@ -103,23 +123,40 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
             _playerNotifSettings.copyWith(notifyFantaRatingFT: value);
         break;
     }
-    _playerNotifService.saveSettingsForPlayer(_playerNotifSettings);
+    // [CC-SAVE-PROVIDER] salva sull'istanza del Provider (che legge la campanella)
+    final notifProvider = context.read<PlayerNotificationPreferencesService>();
+    notifProvider.saveSettingsForPlayer(_playerNotifSettings);
+    notifProvider.updateAllSettingsForPlayerByName(widget.player.name, _playerNotifSettings);
   }
 
   void _setAllPlayerNotif(bool value) {
     _playerNotifSettings = _playerNotifSettings.copyWith(
       notifyGoals: value,
+      notifyAssists: value,
+      notifyShotsOnTarget: value,
+      notifyShotsOffTarget: value,
       notifyYellowCard: value,
       notifyRedCard: value,
       notifyFoulCommitted: value,
       notifyFoulSuffered: value,
-      notifyShotsOnTarget: value,
-      notifyShotsOffTarget: value,
-      notifyOffsides: value,
+      notifySubstitutionOn: value,
+      notifySubstitutionOff: value,
+      notifyInterceptions: value,
+      notifyTackles: value,
+      notifyClearances: value,
+      notifySaves: value,
+      notifyPenaltySaved: value,
       notifyKeyPasses: value,
       notifyDribblesSuccessful: value,
+      notifyOffsides: value,
+      notifyFantaRatingHT: value,
+      notifyFantaRatingFT: value,
     );
-    _playerNotifService.saveSettingsForPlayer(_playerNotifSettings);
+    // [CC-SAVE-PROVIDER] salva sull'istanza del Provider (che legge la campanella)
+    final notifProvider = context.read<PlayerNotificationPreferencesService>();
+    notifProvider.saveSettingsForPlayer(_playerNotifSettings);
+    notifProvider.updateAllSettingsForPlayerByName(widget.player.name, _playerNotifSettings);
+    debugPrint('[DEBUG] dopo save: hasActive=${_playerNotifSettings.hasActiveNotifications} byName=${notifProvider.getSettingsByPlayerName(widget.player.name)?.hasActiveNotifications}');
   }
 
   @override
@@ -352,6 +389,15 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                             setSheetState: setSheetState,
                           ),
                           _pNotifTile(
+                            key: 'assists',
+                            icon: Icons.assistant_rounded,
+                            title: tr(context, 'Assist'),
+                            subtitle: tr(context, 'Quando serve un assist'),
+                            color: const Color(0xFF2196F3),
+                            isDark: isDark,
+                            setSheetState: setSheetState,
+                          ),
+                          _pNotifTile(
                             key: 'shots',
                             icon: Icons.gps_not_fixed,
                             title: localizeShotData(context, 'Tiri totali'),
@@ -375,6 +421,33 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                             title: tr(context, 'Fuorigioco'),
                             subtitle: tr(context, 'Quando viene segnalato in offside'),
                             color: const Color(0xFF7E57C2),
+                            isDark: isDark,
+                            setSheetState: setSheetState,
+                          ),
+                          _pNotifTile(
+                            key: 'keyPasses',
+                            icon: Icons.trending_up,
+                            title: tr(context, 'Passaggi chiave'),
+                            subtitle: tr(context, 'Passaggi che creano occasioni'),
+                            color: const Color(0xFF26A69A),
+                            isDark: isDark,
+                            setSheetState: setSheetState,
+                          ),
+                          _pNotifTile(
+                            key: 'dribblesSuccessful',
+                            icon: Icons.directions_run,
+                            title: tr(context, 'Dribbling riusciti'),
+                            subtitle: tr(context, 'Quando salta un avversario'),
+                            color: const Color(0xFF66BB6A),
+                            isDark: isDark,
+                            setSheetState: setSheetState,
+                          ),
+                          _pNotifTile(
+                            key: 'substitutionOn',
+                            icon: Icons.swap_horiz,
+                            title: tr(context, 'Sostituzione'),
+                            subtitle: tr(context, 'Quando entra o esce dal campo'),
+                            color: const Color(0xFF42A5F5),
                             isDark: isDark,
                             setSheetState: setSheetState,
                           ),
@@ -681,7 +754,7 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
             StatefulBuilder(builder: (ctx, setSheetState) {
               final favService = ctx.watch<FavoritesService>();
               final playerId = widget.player.name.hashCode.abs();
-              final isFav = favService.isPlayerFavorite(playerId); // [CC-SCHEDA-PROFILO] per ID (coerente col toggle)
+              final isFav = favService.isPlayerFavoriteByName(widget.player.name); // [CUORE-ROBUSTO] visualizzazione per nome
               return IconButton(
                 icon: Container(
                   padding: const EdgeInsets.all(6),
@@ -697,7 +770,11 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 onPressed: () {
                   _playerHaptic.lightImpact();
                   setState(() {
-                    favService.togglePlayerFavorite(playerId);
+                    if (isFav) {
+                      favService.removePlayerFavoriteByName(widget.player.name);
+                    } else {
+                      favService.togglePlayerFavorite(playerId);
+                    }
                     if (!isFav) {
                       final seasonData2 = getPlayerSeasonData(widget.player.name);
                       favService.storePlayerMeta(playerId, {
@@ -714,13 +791,15 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                         'age': seasonData2?['age'] ?? 0,
                         'team': widget.teamName,
                       });
-                      // [CC-SCHEDA-PROFILO] regola cuore->campanella: accendi default se spente
-                      final existingNotif = _playerNotifService.getSettingsByPlayerName(widget.player.name);
+                      // [CC-FIX-ISTANZA] regola cuore->campanella: accendi default se spente
+                      // USA L'ISTANZA DEL PROVIDER (stessa che legge la campanella)
+                      final notifSvcProvider = context.read<PlayerNotificationPreferencesService>();
+                      final existingNotif = notifSvcProvider.getSettingsByPlayerName(widget.player.name);
                       if (existingNotif == null || !existingNotif.hasActiveNotifications) {
                         final preset = PlayerNotificationSettings.essentialOnly(
                           widget.player.number, widget.player.name);
-                        _playerNotifService.saveSettingsForPlayer(preset);
-                        _playerNotifService.updateAllSettingsForPlayerByName(
+                        notifSvcProvider.saveSettingsForPlayer(preset);
+                        notifSvcProvider.updateAllSettingsForPlayerByName(
                           widget.player.name, preset);
                       }
                     }
@@ -770,26 +849,31 @@ class _MatchPlayerProfileScreenState extends State<MatchPlayerProfileScreen>
                 },
               );
             }),
-            // Campanella notifiche
-            IconButton(
-              icon: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: _playerNotifEnabled
-                      ? widget.teamColor.withValues(alpha: 0.3)
-                      : Colors.black26,
-                  borderRadius: BorderRadius.circular(10),
+            // Campanella notifiche - [CAMPANELLA-REATTIVA]
+            Builder(builder: (ctx) {
+              final ns = ctx.watch<PlayerNotificationPreferencesService>();
+              final byName = ns.getSettingsByPlayerName(widget.player.name);
+              final notifOn = byName != null && byName.hasActiveNotifications;
+              return IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: notifOn
+                        ? widget.teamColor.withValues(alpha: 0.3)
+                        : Colors.black26,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    notifOn
+                        ? Icons.notifications_active
+                        : Icons.notifications_none,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
-                child: Icon(
-                  _playerNotifEnabled
-                      ? Icons.notifications_active
-                      : Icons.notifications_none,
-                  color: Colors.white,
-                  size: 18,
-                ),
-              ),
-              onPressed: _showPlayerNotificationDialog,
-            ),
+                onPressed: _showPlayerNotificationDialog,
+              );
+            }),
             const SizedBox(width: 4),
           ],
           flexibleSpace: FlexibleSpaceBar(

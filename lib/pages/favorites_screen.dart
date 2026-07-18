@@ -1192,6 +1192,19 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     final favIds = _favoritesService.favoritePlayerIds.toSet();
     if (favIds.isEmpty) return [];
     final result = _mockPlayers.where((p) => favIds.contains(p['id'] as int)).toList();
+    // [CUORE-ROBUSTO] registra i nomi dei mock preferiti nel servizio,
+    // cosi' isPlayerFavoriteByName li riconosce (es. dalla scheda profilo).
+    for (final p in result) {
+      _favoritesService.storePlayerMetaSilent(p['id'] as int, {
+        'name': p['name'],
+        'position': p['position'],
+        'team': p['team'],
+        'teamId': p['teamId'] ?? 0,
+        'rating': p['rating'],
+        'goals': p['goals'],
+        'assists': p['assists'],
+      });
+    }
     // Aggiungi giocatori da formazioni (non nel mock)
     for (final id in favIds) {
       if (!result.any((p) => p['id'] == id)) {
@@ -1951,6 +1964,10 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               'substitutionOn': settings.notifySubstitutionOn,
               'keyPasses': settings.notifyKeyPasses,
               'offsides': settings.notifyOffsides,
+              // [ALLINEA-NOTIF-FAV] voci allineate alla scheda profilo
+              'shots': settings.notifyShotsOffTarget,
+              'fantaRatingHT': settings.notifyFantaRatingHT,
+              'fantaRatingFT': settings.notifyFantaRatingFT,
             };
             final activeCount = toggles.values.where((v) => v).length;
             final allOn = toggles.values.every((v) => v);
@@ -1969,6 +1986,9 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                   notifySubstitutionOn: key == 'substitutionOn' ? val : null,
                   notifyKeyPasses: key == 'keyPasses' ? val : null,
                   notifyOffsides: key == 'offsides' ? val : null,
+                  notifyShotsOffTarget: key == 'shots' ? val : null,
+                  notifyFantaRatingHT: key == 'fantaRatingHT' ? val : null,
+                  notifyFantaRatingFT: key == 'fantaRatingFT' ? val : null,
                   enabled: true,
                 );
                 // Salva per TUTTI gli ID associati a questo giocatore
@@ -1979,19 +1999,32 @@ class _FavoritesScreenState extends State<FavoritesScreen>
 
             void setAll(bool val) {
               setSheetState(() {
-                if (val) {
-                  settings = settings.copyWith(
-                    notifyGoals: true, notifyAssists: true, notifyShotsOnTarget: true, notifyDribblesSuccessful: true,
-                    notifyYellowCard: true, notifyRedCard: true, notifyFoulCommitted: true,
-                    notifyFoulSuffered: true, notifySubstitutionOn: true,
-                    notifyKeyPasses: true, notifyOffsides: true, enabled: true);
-                } else {
-                  settings = settings.copyWith(
-                    notifyGoals: false, notifyAssists: false, notifyShotsOnTarget: false, notifyDribblesSuccessful: false,
-                    notifyYellowCard: false, notifyRedCard: false, notifyFoulCommitted: false,
-                    notifyFoulSuffered: false, notifySubstitutionOn: false,
-                    notifyKeyPasses: false, notifyOffsides: false, enabled: false);
-                }
+                // [ALLINEA-NOTIF-FAV] copre TUTTI i campi notify* del modello:
+                // elencarne solo alcuni lasciava attivi i restanti e
+                // "disattiva tutto" non spegneva davvero la campanella.
+                settings = settings.copyWith(
+                  notifyGoals: val,
+                  notifyAssists: val,
+                  notifyShotsOnTarget: val,
+                  notifyShotsOffTarget: val,
+                  notifyYellowCard: val,
+                  notifyRedCard: val,
+                  notifyFoulCommitted: val,
+                  notifyFoulSuffered: val,
+                  notifySubstitutionOn: val,
+                  notifySubstitutionOff: val,
+                  notifyInterceptions: val,
+                  notifyTackles: val,
+                  notifyClearances: val,
+                  notifySaves: val,
+                  notifyPenaltySaved: val,
+                  notifyKeyPasses: val,
+                  notifyDribblesSuccessful: val,
+                  notifyOffsides: val,
+                  notifyFantaRatingHT: val,
+                  notifyFantaRatingFT: val,
+                  enabled: val,
+                );
                 // Salva per TUTTI gli ID associati a questo giocatore
                 notifService.saveSettingsForPlayer(settings);
                 notifService.updateAllSettingsForPlayerByName(playerName, settings);
@@ -2083,6 +2116,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                     tile('goals', Icons.sports_soccer, S.of(context)!.goalNotif, S.of(context)!.goalDesc, const Color(0xFF4CAF50)),
                     tile('assists', Icons.assistant_rounded, S.of(context)!.assistNotif, S.of(context)!.assistDesc, const Color(0xFF2196F3)),
                     tile('shotsOnTarget', Icons.gps_not_fixed, S.of(context)!.shotsOnTargetNotif, S.of(context)!.shotsOnTargetDesc, const Color(0xFFFF7043)),
+                    tile('shots', Icons.gps_not_fixed, tr(context, 'Tiri totali'), tr(context, 'Tutti i tentativi verso la porta'), const Color(0xFF42A5F5)),
                     tile('keyPasses', Icons.trending_up, S.of(context)!.keyPassesNotif, S.of(context)!.keyPassesDesc, const Color(0xFF26A69A)),
                     tile('dribblesSuccessful', Icons.directions_run, S.of(context)!.dribblesNotif, S.of(context)!.dribblesDesc, const Color(0xFF66BB6A)),
                     tile('offsides', Icons.front_hand, S.of(context)!.offsidesNotif, S.of(context)!.offsidesDesc, const Color(0xFF7E57C2)),
@@ -2095,6 +2129,10 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                     const SizedBox(height: 16),
                     header(S.of(context)!.other, Icons.swap_horiz),
                     tile('substitutionOn', Icons.swap_horiz, S.of(context)!.substitutionNotif, S.of(context)!.substitutionDesc, const Color(0xFF42A5F5)),
+                    const SizedBox(height: 12),
+                    header(tr(context, 'Voto Matchline'), Icons.star_rounded),
+                    tile('fantaRatingHT', Icons.timelapse, tr(context, 'Voto primo tempo'), tr(context, 'Il voto a fine primo tempo'), const Color(0xFFFFA726)),
+                    tile('fantaRatingFT', Icons.emoji_events, tr(context, 'Voto finale'), tr(context, 'Il voto a fine partita'), const Color(0xFF66BB6A)),
                   ]),
                 )),
               ]),

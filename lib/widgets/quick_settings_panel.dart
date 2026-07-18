@@ -77,6 +77,7 @@ class _QuickSettingsPanelState extends State<QuickSettingsPanel>
           right: 16,
           bottom: 80,
           child: FloatingActionButton(
+            heroTag: 'qsp-main-fab',
             onPressed: _togglePanel,
             backgroundColor: theme.primaryColor,
             child: AnimatedIcon(

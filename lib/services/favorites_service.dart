@@ -208,6 +208,12 @@ class FavoritesService extends ChangeNotifier {
     _playerMeta[playerId] = meta;
   }
 
+  /// Come storePlayerMeta ma SENZA notifyListeners (per uso nel build,
+  /// es. registrare i nomi dei preferiti mock senza causare rebuild loop).
+  void storePlayerMetaSilent(int playerId, Map<String, dynamic> meta) {
+    _playerMeta[playerId] = meta;
+  }
+
   Map<String, dynamic>? getPlayerMeta(int playerId) => _playerMeta[playerId];
   void storeMatchDisplayData(int matchId, Map<String, dynamic> data) {
     _matchDisplayData[matchId] = data;
@@ -267,6 +273,35 @@ class FavoritesService extends ChangeNotifier {
       if (_sameNameFav(fn, name)) return true;
     }
     return false;
+  }
+
+  /// Rimuove dai preferiti il giocatore che corrisponde (per nome) a [name].
+  /// Confronto intelligente (Provedel / Ivan Provedel = stesso).
+  void removePlayerFavoriteByName(String name) {
+    int? idToRemove;
+    // cerca tra i meta
+    for (final entry in _playerMeta.entries) {
+      final n = entry.value['name'];
+      if (n is String && _sameNameFav(n, name)) {
+        idToRemove = entry.key;
+        break;
+      }
+    }
+    // cerca tra i Player favoriti
+    if (idToRemove == null) {
+      for (final p in _favoritePlayers) {
+        if (_sameNameFav(p.name, name)) {
+          idToRemove = p.id;
+          break;
+        }
+      }
+    }
+    if (idToRemove != null && _favoritePlayerIds.contains(idToRemove)) {
+      _favoritePlayerIds.remove(idToRemove);
+      _favoritePlayers.removeWhere((p) => p.id == idToRemove);
+      _saveFavorites();
+      notifyListeners();
+    }
   }
   // ───────────────────────────────────────────────────────────────
 
